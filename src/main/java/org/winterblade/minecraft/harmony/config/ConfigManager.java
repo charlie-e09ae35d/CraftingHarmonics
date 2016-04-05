@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.config;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.commons.lang3.ArrayUtils;
 import org.winterblade.minecraft.harmony.config.operations.ConfigOperation;
+import org.winterblade.minecraft.harmony.config.operations.CraftingSet;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -20,6 +21,7 @@ public class ConfigManager {
     private final String configPath;
 
     private boolean doRegen;
+    private Map<String, CraftingSet> sets;
 
     /**
      * Generates a new config manager using the config path
@@ -29,6 +31,10 @@ public class ConfigManager {
         this.configPath = configPath;
         initBaseSettings();
         setupRecipeSets();
+    }
+
+    public CraftingSet GetSet(String set) {
+        return sets.get(set);
     }
 
     private void initBaseSettings() {
@@ -98,7 +104,7 @@ public class ConfigManager {
         }
 
         // Now that we have the files... register them...
-        Map<String, ConfigOperation[]> sets = new HashMap<String, ConfigOperation[]>();
+        Map<String, ConfigOperation[]> configSets = new HashMap<String, ConfigOperation[]>();
 
         for(ConfigFile file : setConfigs) {
             System.out.println("Registering sets from '" + file.name + "' - " + file.description);
@@ -112,12 +118,19 @@ public class ConfigManager {
                 // Check if we need to merge a list, or if it's a separate set.
                 // This may end up complicating things in the long run as it will depend on load order, but
                 // will still allow users to modify sets across files as long as they don't step on each other.
-                if(sets.containsKey(set.name)) {
-                    sets.put(set.name, ArrayUtils.addAll(sets.get(set.name), set.operations));
+                if(configSets.containsKey(set.name)) {
+                    configSets.put(set.name, ArrayUtils.addAll(configSets.get(set.name), set.operations));
                 } else {
-                    sets.put(set.name, set.operations);
+                    configSets.put(set.name, set.operations);
                 }
             }
+        }
+
+        sets = new HashMap<String, CraftingSet>();
+
+        // Now, process the sets:
+        for(String set : configSets.keySet()) {
+            sets.put(set, new CraftingSet(configSets.get(set)));
         }
     }
 }

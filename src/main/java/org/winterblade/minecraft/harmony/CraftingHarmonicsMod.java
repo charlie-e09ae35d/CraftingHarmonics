@@ -11,6 +11,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
+import org.winterblade.minecraft.harmony.config.operations.CraftingSet;
 
 import java.io.File;
 import java.util.List;
@@ -24,9 +25,9 @@ public class CraftingHarmonicsMod {
     public static final String VERSION = "0.1";
 
     private String configPath;
+    private ConfigManager configManager;
 
     public CraftingHarmonicsMod() {
-//        GetRecipeList();
     }
 
     @Mod.EventHandler
@@ -42,7 +43,15 @@ public class CraftingHarmonicsMod {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         // Handle config
-        ConfigManager configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
+        configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
+    }
+
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        // Always apply the default set:
+        CraftingSet defaultSet = configManager.GetSet("default");
+
+        if(defaultSet != null) defaultSet.Apply(CraftingManager.getInstance());
     }
 
     private void GetRecipeList() {
@@ -82,6 +91,5 @@ public class CraftingHarmonicsMod {
             }
         }
         System.out.println("------------------------------------------------------------------------------");
-
     }
 }
