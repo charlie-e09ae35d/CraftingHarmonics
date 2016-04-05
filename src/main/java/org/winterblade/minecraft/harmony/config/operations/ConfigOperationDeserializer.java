@@ -9,15 +9,16 @@ import java.util.TreeMap;
 /**
  * Created by Matt on 4/5/2016.
  */
-public class ConfigOperationDeserializer implements JsonDeserializer<ConfigOperation> {
+public class ConfigOperationDeserializer implements JsonDeserializer<IConfigOperation> {
     private static Map<String, Class> map = new TreeMap<String, Class>();
 
     static {
         map.put("remove", RemoveOperation.class);
+        map.put("add", AddShapedOperation.class);
     }
 
     @Override
-    public ConfigOperation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public IConfigOperation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
 
         String type = jsonObject.get("type").getAsString();

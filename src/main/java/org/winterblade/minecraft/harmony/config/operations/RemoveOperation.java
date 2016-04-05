@@ -5,8 +5,9 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by Matt on 4/5/2016.
  */
-public class RemoveOperation implements ConfigOperation {
+public class RemoveOperation implements IConfigOperation {
     public String what;
+    private String[] parts;
 
     public boolean Matches(ItemStack recipeOutput) {
         // If we have a null output... ignore it.
@@ -16,7 +17,6 @@ public class RemoveOperation implements ConfigOperation {
         if(what == "*" || what == "*:*") return true;
 
         String name = recipeOutput.getUnlocalizedName();
-        String[] parts = what.split(":");
 
         if(parts.length <= 1) {
             // Match the entire thing against the name
@@ -32,5 +32,10 @@ public class RemoveOperation implements ConfigOperation {
         }
 
         return false;
+    }
+
+    @Override
+    public void Init() {
+        parts = what.split(":");
     }
 }

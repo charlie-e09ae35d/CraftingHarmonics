@@ -4,8 +4,8 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.commons.lang3.ArrayUtils;
-import org.winterblade.minecraft.harmony.config.operations.ConfigOperation;
-import org.winterblade.minecraft.harmony.config.operations.CraftingSet;
+import org.winterblade.minecraft.harmony.config.operations.IConfigOperation;
+import org.winterblade.minecraft.harmony.CraftingSet;
 
 import java.io.File;
 import java.io.IOException;
@@ -124,7 +124,7 @@ public class ConfigManager {
         }
 
         // Now that we have the files... register them...
-        Map<String, ConfigOperation[]> configSets = new HashMap<String, ConfigOperation[]>();
+        Map<String, IConfigOperation[]> configSets = new HashMap<String, IConfigOperation[]>();
 
         for(ConfigFile file : setConfigs) {
             System.out.println("Registering sets from '" + file.name + "' - " + file.description);
