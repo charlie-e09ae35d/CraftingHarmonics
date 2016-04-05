@@ -1,11 +1,15 @@
 package org.winterblade.minecraft.harmony.config;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.commons.lang3.ArrayUtils;
 import org.winterblade.minecraft.harmony.config.operations.ConfigOperation;
 import org.winterblade.minecraft.harmony.config.operations.CraftingSet;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -62,9 +66,23 @@ public class ConfigManager {
         File setsDir = new File(configPath + "Sets/");
 
         // Make sure we have a set directory before trying to iterate it...
-        if(!setsDir.exists() && !setsDir.mkdir()) {
-            System.err.println("Unable to create config/CraftingHarmonics/Sets/ for CraftingHarmonics.");
-            return;
+        if(!setsDir.exists()) {
+            if(!setsDir.mkdir()) {
+                System.err.println("Unable to create config/CraftingHarmonics/Sets/ for CraftingHarmonics.");
+                return;
+            }
+
+            // Generate a sample config for users...
+            // TODO: Fix edge case where this isn't a directory at this point?
+            try {
+                PrintWriter out = new PrintWriter(setsDir + "/default.json.sample");
+                String sampleText = Resources.toString(Resources.getResource("default.json.sample"), Charsets.UTF_8);
+                out.println(sampleText);
+                out.close();
+            } catch (IOException e) {
+                System.err.println("Error writing sample config to config directory.");
+                return;
+            }
         }
 
         // Also make sure it's actually a directory
@@ -84,6 +102,8 @@ public class ConfigManager {
         List<ConfigFile> setConfigs = new ArrayList<ConfigFile>();
 
         for(File config : files) {
+            if(!config.getName().endsWith(".json")) continue;
+
             System.out.println("Reading set definition " + config.getPath());
             try {
                 // There's a lot that could go wrong here...

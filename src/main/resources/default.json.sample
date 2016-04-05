@@ -1,0 +1,15 @@
+{
+    name: "Default",
+    description: "Pregenerated file",
+    sets: [
+        {
+            name: "default",
+            operations: [
+                {
+                    type: "remove",
+                    what: "minecraft:tile.blockLapis"
+                }
+            ]
+        }
+    ]
+}
