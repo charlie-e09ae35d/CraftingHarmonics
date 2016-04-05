@@ -3,10 +3,8 @@ package org.winterblade.minecraft.harmony.config;
 import net.minecraftforge.common.config.Configuration;
 import org.apache.commons.lang3.ArrayUtils;
 import org.winterblade.minecraft.harmony.config.operations.ConfigOperation;
-import scala.actors.threadpool.Arrays;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
