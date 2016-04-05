@@ -26,7 +26,7 @@ public class CraftingHarmonicsMod {
     private String configPath;
 
     public CraftingHarmonicsMod() {
-        GetRecipeList();
+//        GetRecipeList();
     }
 
     @Mod.EventHandler

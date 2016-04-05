@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,9 +25,11 @@ public class ConfigManager {
     public ConfigManager(String configPath) {
         this.configPath = configPath;
         initBaseSettings();
+        setupRecipeSets();
     }
 
     private void initBaseSettings() {
+        System.out.println("Loading main settings file " + configPath + "Settings.cfg");
         Configuration configMain = new Configuration(new File(configPath + "Settings.cfg"));
 
         configMain.load();
@@ -46,6 +49,7 @@ public class ConfigManager {
     }
 
     private void setupRecipeSets() {
+        System.out.println("Reading set definitions from " + configPath + "Sets/");
         File setsDir = new File(configPath + "Sets/");
 
         // Make sure we have a set directory before trying to iterate it...
@@ -68,10 +72,21 @@ public class ConfigManager {
             return;
         }
 
+        List<ConfigFile> setConfigs = new ArrayList<ConfigFile>();
+
         for(File config : files) {
-                List<String> encoded;
+            System.out.println("Reading set definition " + config.getPath());
             try {
-                encoded = Files.readAllLines(Paths.get(config.getPath()));
+                // There's a lot that could go wrong here...
+                ConfigFile file = ConfigFile.Deserialize(new String(Files.readAllBytes(Paths.get(config.getPath()))));
+
+                if(file.name == null) file.name = config.getName();
+                if(file.description == null) file.description = "";
+                System.out.println("Registering set " + file.name + " - " + file.description);
+
+                // TODO: Sanity check that we've got a real set here...
+
+                setConfigs.add(file);
             } catch (IOException e) {
                 e.printStackTrace();
             }
