@@ -119,7 +119,7 @@ public class ConfigManager {
                 if(file.name == null) file.name = config.getName();
                 setConfigs.add(file);
             } catch (Exception e) {
-                System.err.println("Error processing Set file " + config.getPath());
+                System.err.println("Error processing Set file " + config.getPath() + ": " + e.getMessage());
             }
         }
 

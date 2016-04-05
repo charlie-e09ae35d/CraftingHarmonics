@@ -7,7 +7,17 @@
             operations: [
                 {
                     type: "remove",
-                    what: "minecraft:tile.blockLapis"
+                    what: "minecraft:lapis_block"
+                },
+                {
+                    type: "addShaped",
+                    output: "minecraft:dye:0",
+                    quantity: 1,
+                    shape: [
+                        "", "minecraft:stick","",
+                        "minecraft:stick", "", "minecraft:stick",
+                        "","",""
+                    ]
                 }
             ]
         }

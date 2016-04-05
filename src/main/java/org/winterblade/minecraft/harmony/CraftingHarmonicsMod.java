@@ -7,6 +7,7 @@ import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
+import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
 import java.util.List;
 
@@ -42,6 +43,8 @@ public class CraftingHarmonicsMod {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        ItemRegistry.Init();
+
         // Always apply the default set:
         CraftingSet defaultSet = configManager.GetSet("default");
 

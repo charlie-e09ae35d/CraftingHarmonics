@@ -14,7 +14,7 @@ public class ConfigOperationDeserializer implements JsonDeserializer<IConfigOper
 
     static {
         map.put("remove", RemoveOperation.class);
-        map.put("add", AddShapedOperation.class);
+        map.put("addshaped", AddShapedOperation.class);
     }
 
     @Override
@@ -29,6 +29,8 @@ public class ConfigOperationDeserializer implements JsonDeserializer<IConfigOper
         // And that it exists:
         type = type.toLowerCase();
         if(!map.containsKey(type)) throw new RuntimeException("Unknown type " + type + " for operation.");
+
+        System.out.println("Adding type " + type);
 
         // Now convert it:
         return context.deserialize(json, map.get(type));
