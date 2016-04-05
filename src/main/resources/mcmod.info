@@ -1,0 +1,16 @@
+[
+{
+  "modid": "craftingharmonics",
+  "name": "Crafting Harmonics",
+  "description": "Mod for managing crafting recipes.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["TarynWinterblade"],
+  "credits": "Forge/FML, @voxcpw for his tutorial on setting this up, and MineTweaker for doing this in the past.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

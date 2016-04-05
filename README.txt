@@ -1,0 +1,1 @@
+Very basic recipe manager implementation for 1.9.
