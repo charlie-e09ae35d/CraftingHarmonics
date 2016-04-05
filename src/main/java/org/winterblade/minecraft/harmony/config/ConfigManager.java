@@ -1,14 +1,18 @@
 package org.winterblade.minecraft.harmony.config;
 
 import net.minecraftforge.common.config.Configuration;
+import org.apache.commons.lang3.ArrayUtils;
 import org.winterblade.minecraft.harmony.config.operations.ConfigOperation;
+import scala.actors.threadpool.Arrays;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Matt on 4/5/2016.
@@ -89,19 +93,32 @@ public class ConfigManager {
 
                 // Now let's actually deal with it...
                 if(file.name == null) file.name = config.getName();
-                System.out.println("Registering set " + file.name + " - " + file.description);
-
-                for (ConfigSet set : file.sets) {
-                    System.out.println(set.name);
-
-                    for(ConfigOperation op : set.operations) {
-                        op.Run();
-                    }
-                }
-
                 setConfigs.add(file);
             } catch (Exception e) {
                 System.err.println("Error processing Set file " + config.getPath());
+            }
+        }
+
+        // Now that we have the files... register them...
+        Map<String, ConfigOperation[]> sets = new HashMap<String, ConfigOperation[]>();
+
+        for(ConfigFile file : setConfigs) {
+            System.out.println("Registering sets from '" + file.name + "' - " + file.description);
+
+            for (ConfigSet set : file.sets) {
+                if(set.name == null || set.operations == null || set.operations.length <= 0) {
+                    System.err.println("Error reading set definition.");
+                    continue;
+                }
+
+                // Check if we need to merge a list, or if it's a separate set.
+                // This may end up complicating things in the long run as it will depend on load order, but
+                // will still allow users to modify sets across files as long as they don't step on each other.
+                if(sets.containsKey(set.name)) {
+                    sets.put(set.name, ArrayUtils.addAll(sets.get(set.name), set.operations));
+                } else {
+                    sets.put(set.name, set.operations);
+                }
             }
         }
     }
