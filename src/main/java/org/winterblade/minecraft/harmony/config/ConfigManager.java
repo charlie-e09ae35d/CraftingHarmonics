@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.config;
 
 import net.minecraftforge.common.config.Configuration;
+import org.winterblade.minecraft.harmony.config.operations.ConfigOperation;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,15 +81,27 @@ public class ConfigManager {
                 // There's a lot that could go wrong here...
                 ConfigFile file = ConfigFile.Deserialize(new String(Files.readAllBytes(Paths.get(config.getPath()))));
 
+                // Sanity check to make sure we actually read something useful here...
+                if(file.sets == null) {
+                    System.err.println(config.getPath() + " had no sets node inside it.");
+                    continue;
+                }
+
+                // Now let's actually deal with it...
                 if(file.name == null) file.name = config.getName();
-                if(file.description == null) file.description = "";
                 System.out.println("Registering set " + file.name + " - " + file.description);
 
-                // TODO: Sanity check that we've got a real set here...
+                for (ConfigSet set : file.sets) {
+                    System.out.println(set.name);
+
+                    for(ConfigOperation op : set.operations) {
+                        op.Run();
+                    }
+                }
 
                 setConfigs.add(file);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                System.err.println("Error processing Set file " + config.getPath());
             }
         }
     }
