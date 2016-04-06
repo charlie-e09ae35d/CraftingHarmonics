@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import org.winterblade.minecraft.harmony.config.operations.IAddOperation;
@@ -10,6 +11,7 @@ import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Matt on 4/5/2016.
@@ -34,12 +36,22 @@ public class CraftingSet {
         }
     }
 
+    /**
+     * Apply recipe updates to the crafting manager.
+     * @param manager   The crafting manager to update.
+     */
     public void Apply(CraftingManager manager) {
-        // Apply removals first, which requires we have the recipe list:
         List<IRecipe> recipeList = manager.getRecipeList();
 
         RemoveRecipes(recipeList);
+        AddRecipes(recipeList);
+    }
 
+    /**
+     * Adds all recipes from this set.
+     * @param recipeList    The recipe list to add to.
+     */
+    public void AddRecipes(List<IRecipe> recipeList) {
         for(IAddOperation add : adds) {
             try {
                 add.Init();
@@ -54,9 +66,18 @@ public class CraftingSet {
         }
     }
 
-    private void RemoveRecipes(List<IRecipe> recipeList) {
+    /**
+     * Remove all matching recipes from the given recipe list.
+     * @param recipeList    The recipe list to remove from.
+     */
+    public void RemoveRecipes(List<IRecipe> recipeList) {
         for(RemoveOperation removal : removals) {
-            removal.Init();
+            try {
+                removal.Init();
+            } catch (ItemMissingException ex) {
+                System.err.println(ex.getMessage());
+                continue;
+            }
 
             for(Iterator<IRecipe> recipeIterator = recipeList.iterator(); recipeIterator.hasNext(); ) {
                 IRecipe recipe = recipeIterator.next();
@@ -65,6 +86,30 @@ public class CraftingSet {
                 // We matched something:
                 System.out.println("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
                 recipeIterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Removes recipes from the furnace recipe list.
+     * @param smeltingList
+     */
+    public void RemoveFurnaceRecipes(Map<ItemStack, ItemStack> smeltingList) {
+        for(RemoveOperation removal : removals) {
+            try {
+                removal.Init();
+            } catch (ItemMissingException ex) {
+                System.err.println(ex.getMessage());
+                continue;
+            }
+
+            for(Iterator<Map.Entry<ItemStack, ItemStack>> furnaceIterator = smeltingList.entrySet().iterator(); furnaceIterator.hasNext(); ) {
+                Map.Entry<ItemStack, ItemStack> recipe = furnaceIterator.next();
+                if(!removal.Matches(recipe.getValue())) continue;
+
+                // We matched something:
+                System.out.println("Removing " + recipe.getValue().getUnlocalizedName() + " from the furnace.");
+                furnaceIterator.remove();
             }
         }
     }
