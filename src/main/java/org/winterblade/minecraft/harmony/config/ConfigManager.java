@@ -24,7 +24,7 @@ public class ConfigManager {
 
     private final String configPath;
 
-    private Map<String, CraftingSet> sets;
+    private Map<String, CraftingSet> sets = new HashMap<>();;
 
     /**
      * Generates a new config manager using the config path
@@ -46,7 +46,7 @@ public class ConfigManager {
 
         // Make sure we have a set directory before trying to iterate it...
         if(!setsDir.exists()) {
-            if(!setsDir.mkdir()) {
+            if(!setsDir.mkdirs()) {
                 System.err.println("Unable to create config/CraftingHarmonics/Sets/ for CraftingHarmonics.");
                 return;
             }
@@ -124,8 +124,6 @@ public class ConfigManager {
                 }
             }
         }
-
-        sets = new HashMap<>();
 
         // Now, process the sets:
         for(String set : configSets.keySet()) {
