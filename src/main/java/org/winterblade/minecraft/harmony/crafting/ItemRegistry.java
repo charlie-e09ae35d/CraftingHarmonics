@@ -99,23 +99,32 @@ public class ItemRegistry {
      * @return          The ItemStack requested
      * @throws ItemMissingException When the item cannot be found in the registry.
      */
-    public static ItemStack TranslateToItemStack(String item, int quantity ) throws ItemMissingException {
+    public static ItemStack TranslateToItemStack(String item, int quantity) throws ItemMissingException {
         if(item == null || item.equals("")) return null;
 
         String[] parts = item.split(":");
 
+        ItemStack itemStack = null;
+
         if(parts.length == 1) {
-            return GetItem("minecraft:" + parts[1], quantity);
+            itemStack = GetItem("minecraft:" + parts[1], 1);
         } else if(parts.length == 2) {
-            return GetItem(parts[0] + ":" + parts[1], quantity);
+            itemStack = GetItem(parts[0] + ":" + parts[1], 1);
         } else if(parts.length == 3) {
-            return GetItem(parts[0] + ":" + parts[1], quantity, Integer.parseInt(parts[2]));
+            itemStack = GetItem(parts[0] + ":" + parts[1], 1, Integer.parseInt(parts[2]));
         } else if(parts.length >= 4) {
-            return parts[2].equals("*")
+            itemStack = parts[2].equals("*")
                 ? GetItem(parts[0] + ":" + parts[1], Integer.parseInt(parts[3]))
                 : GetItem(parts[0] + ":" + parts[1], Integer.parseInt(parts[3]), Integer.parseInt(parts[2]));
         }
 
-        return null;
+        if(itemStack == null) return null;
+
+        // Set our stack size if a valid quantity was specified (and larger than one):
+        if(1 < quantity && quantity <= itemStack.getMaxStackSize()) {
+            itemStack.stackSize = quantity;
+        }
+
+        return itemStack;
     }
 }

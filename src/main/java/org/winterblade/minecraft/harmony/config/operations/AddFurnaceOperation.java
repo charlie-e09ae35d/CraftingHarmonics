@@ -26,12 +26,8 @@ public class AddFurnaceOperation implements IConfigOperation {
 
     @Override
     public void Init() throws ItemMissingException {
-        outputItemStack = ItemRegistry.TranslateToItemStack(output);
+        outputItemStack = ItemRegistry.TranslateToItemStack(output, quantity);
         if(outputItemStack == null) throw new RuntimeException("Unable to find requested output item '" + output + "'.");
-
-        if(1 < quantity && quantity <= 64) {
-            outputItemStack.stackSize = quantity;
-        }
 
         inputItem = ItemRegistry.TranslateToItemStack(with);
         if(inputItem == null) throw new RuntimeException("Unable to find requested input item '" + with + "'.");
