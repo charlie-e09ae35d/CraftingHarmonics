@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
@@ -17,7 +18,7 @@ import java.util.Map;
  * Created by Matt on 4/5/2016.
  */
 @RecipeOperation(name = "remove")
-public class RemoveOperation implements IRecipeOperation {
+public class RemoveOperation extends BaseRecipeOperation {
     /**
      * Serialized properties
      */
@@ -121,6 +122,27 @@ public class RemoveOperation implements IRecipeOperation {
             System.out.println("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
             recipeIterator.remove();
         }
+    }
+
+    @Override
+    public int compareTo(IRecipeOperation o) {
+        int baseCompare = super.compareTo(o);
+        if(baseCompare != 0) return baseCompare;
+
+        // Pull to the top:
+        if(!(o instanceof RemoveOperation)) return -1;
+
+        RemoveOperation other = (RemoveOperation) o;
+
+        // Make sure we're initialized first...
+        if(matchType == null) return 1;
+        if(other.matchType == null) return -1;
+
+        // Otherwise, sort by...
+        int matchTypeComparison = matchType.compareTo(other.matchType);
+        return (matchTypeComparison != 0)
+                ? matchTypeComparison
+                : what.compareTo(other.what);
     }
 
     private enum RemoveMatchType {
