@@ -127,4 +127,29 @@ public class ItemRegistry {
 
         return itemStack;
     }
+
+    /**
+     * Checks if the given item stacks are equivalent
+     * @param a The first item stack
+     * @param b The second item stack
+     * @return  If the items, stack size, and metadata are equivalent.
+     */
+    public static boolean AreItemsEquivalent(ItemStack a, ItemStack b) {
+        return AreItemsEquivalent(a.getItem(), b.getItem())
+                && a.stackSize == b.stackSize
+                && a.getMetadata() == b.getMetadata();
+    }
+
+    /**
+     * Checks if the given items are equivalent.
+     * @param a The first item
+     * @param b The second item
+     * @return  If the items' fully qualified names are equal.
+     */
+    public static boolean AreItemsEquivalent(Item a, Item b) {
+        String aName = GetFullyQualifiedItemName(a);
+        String bName = GetFullyQualifiedItemName(b);
+
+        return (aName.equals(bName));
+    }
 }
