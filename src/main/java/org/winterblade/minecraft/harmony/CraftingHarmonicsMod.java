@@ -17,7 +17,7 @@ import java.util.List;
 @Mod(modid = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.MODID, version = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.VERSION)
 public class CraftingHarmonicsMod {
     public static final String MODID = "craftingharmonics";
-    public static final String VERSION = "0.2";
+    public static final String VERSION = "0.3";
 
     private String configPath;
     private ConfigManager configManager;
