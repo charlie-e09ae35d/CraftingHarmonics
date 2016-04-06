@@ -57,7 +57,6 @@ public class CraftingSet {
     private void RemoveRecipes(List<IRecipe> recipeList) {
         for(RemoveOperation removal : removals) {
             removal.Init();
-            int remove = -1;
 
             for(Iterator<IRecipe> recipeIterator = recipeList.iterator(); recipeIterator.hasNext(); ) {
                 IRecipe recipe = recipeIterator.next();

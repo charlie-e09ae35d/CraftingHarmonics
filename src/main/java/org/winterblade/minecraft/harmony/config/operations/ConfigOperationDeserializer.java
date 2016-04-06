@@ -15,6 +15,7 @@ public class ConfigOperationDeserializer implements JsonDeserializer<IConfigOper
     static {
         map.put("remove", RemoveOperation.class);
         map.put("addshaped", AddShapedOperation.class);
+        map.put("addshapeless", AddShapelessOperation.class);
     }
 
     @Override
