@@ -35,7 +35,7 @@
                     __comment: "You can also specify the quantity on the end of the output; use * to ignore metadata.",
                     __result: "Adds a recipe turning three sticks into 10 stone.  OP!",
                     type: "addShaped",
-                    output: "minecraft:stone:*:10",
+                    output: "minecraft:stone:0:10",
                     width: 1,
                     height: 3,
                     with: ["minecraft:stick","minecraft:stick","minecraft:stick"]
@@ -79,9 +79,9 @@
                 },
                 {
                     __comment: "Furnace fuels can be added as well, though not removed; you can only add new fuels or increase pre-existing fuels at the moment.",
-                    __result: "Allows the use of any dye as a fuel for one item",
+                    __result: "Allows the use of any wool as a fuel for one item",
                     type: "addFurnaceFuel",
-                    what: "minecraft:dye",
+                    what: "minecraft:wool:*",
                     burnTime: 200
                 }
             ]
