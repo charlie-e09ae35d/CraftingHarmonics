@@ -30,8 +30,6 @@ public class AddShapelessOperation implements IAddOperation {
     public void Init() throws ItemMissingException {
         if(with.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
 
-        if(quantity <= 0 || quantity > 64) quantity = 1;
-
         input = new ArrayList<ItemStack>();
 
         for(String item : with) {
@@ -41,7 +39,6 @@ public class AddShapelessOperation implements IAddOperation {
         }
 
         outputItemStack = ItemRegistry.TranslateToItemStack(output, quantity);
-
         if(outputItemStack == null) throw new RuntimeException("Unable to find requested output item '" + output + "'.");
     }
 

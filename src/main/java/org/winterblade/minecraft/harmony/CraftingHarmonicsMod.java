@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.fml.common.Mod;
@@ -10,6 +11,7 @@ import org.winterblade.minecraft.harmony.config.ConfigManager;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Matt on 4/5/2016.
@@ -48,45 +50,11 @@ public class CraftingHarmonicsMod {
         // Always apply the default set:
         CraftingSet defaultSet = configManager.GetSet("default");
 
-        if(defaultSet != null) defaultSet.Apply(CraftingManager.getInstance());
-    }
-
-    private void GetRecipeList() {
-        CraftingManager craftingManager = CraftingManager.getInstance();
-
-        System.out.println("------------------------------------------------------------------------------");
-        if(craftingManager == null) {
-            System.out.println("Unable to get crafting manager.");
-            return;
+        if(defaultSet != null) {
+            defaultSet.Init();
+            defaultSet.Apply(CraftingManager.getInstance());
+            defaultSet.RemoveFurnaceRecipes(FurnaceRecipes.instance().getSmeltingList());
+            defaultSet.AddRecipes(FurnaceRecipes.instance().getSmeltingList());
         }
-
-        List<IRecipe> recipeList = craftingManager.getRecipeList();
-
-        for (int i = 0; i < recipeList.size(); i++) {
-            IRecipe recipe = recipeList.get(i);
-            ItemStack output = recipe.getRecipeOutput();
-            if(output == null) continue;
-
-            if(recipe instanceof ShapedRecipes) {
-                ShapedRecipes shaped = (ShapedRecipes) recipe;
-                ItemStack[] recipeItems = shaped.recipeItems;
-
-                String inputs = i + " Shaped [";
-
-                for (ItemStack recipeItem : recipeItems) {
-                    if(recipeItem != null) {
-                        inputs += recipeItem.getUnlocalizedName() + ", ";
-                    } else {
-                        inputs += "_, ";
-                    }
-                }
-
-                System.out.println(inputs + "]: " + output.getUnlocalizedName());
-            }
-            else {
-                System.out.println(i + " is Unknown Crafting Type: " + output.getUnlocalizedName());
-            }
-        }
-        System.out.println("------------------------------------------------------------------------------");
     }
 }
