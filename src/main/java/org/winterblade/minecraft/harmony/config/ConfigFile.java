@@ -2,7 +2,6 @@ package org.winterblade.minecraft.harmony.config;
 
 import com.google.gson.*;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
-import org.winterblade.minecraft.harmony.config.operations.ConfigOperationDeserializer;
 
 import java.util.List;
 

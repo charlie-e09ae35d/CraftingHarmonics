@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class ItemRegistry {
     private static final BiMap<String, Item> itemsByFullyQualifiedName = HashBiMap.create();
-    private static final Map<String, ArrayList<Item>> itemsByMod = new HashMap<String, ArrayList<Item>>();
+    private static final Map<String, ArrayList<Item>> itemsByMod = new HashMap<>();
 
     public static void Init() {
         // Get the item's location
@@ -35,7 +35,7 @@ public class ItemRegistry {
             itemsByFullyQualifiedName.put(name, item);
 
             // Also store it by its mod:
-            if(!itemsByMod.containsKey(mod)) itemsByMod.put(mod, new ArrayList<Item>());
+            if(!itemsByMod.containsKey(mod)) itemsByMod.put(mod, new ArrayList<>());
             itemsByMod.get(mod).add(item);
         }
         System.out.println("Item registry complete.");

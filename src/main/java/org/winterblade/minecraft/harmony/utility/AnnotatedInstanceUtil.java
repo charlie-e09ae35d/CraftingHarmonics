@@ -43,7 +43,7 @@ public class AnnotatedInstanceUtil {
                 System.out.println("Loading '" + asmClass.getSimpleName() + "' for recipe type " + name);
                 instances.put(name.toLowerCase(), asmClass);
             } catch (ClassNotFoundException e) {
-                System.err.println("Failed to load: " + asmData.getClassName() + ".\n" + e.getStackTrace());
+                System.err.println("Failed to load: " + asmData.getClassName() + ".\n" + Arrays.toString(e.getStackTrace()));
             }
         }
         return instances;

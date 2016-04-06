@@ -3,7 +3,7 @@ package org.winterblade.minecraft.harmony;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
-import org.winterblade.minecraft.harmony.config.operations.ConfigOperationDeserializer;
+import org.winterblade.minecraft.harmony.config.ConfigOperationDeserializer;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.utility.AnnotatedInstanceUtil;
 
@@ -19,16 +19,6 @@ public class CraftingHarmonicsMod {
     private ConfigManager configManager;
 
     public CraftingHarmonicsMod() {
-    }
-
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent event)
-    {
-    }
-
-    @Mod.EventHandler
-    public void loadComplete(FMLLoadCompleteEvent event)
-    {
     }
 
     @Mod.EventHandler
