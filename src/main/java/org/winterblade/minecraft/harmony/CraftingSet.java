@@ -1,9 +1,6 @@
 package org.winterblade.minecraft.harmony;
 
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
-import org.winterblade.minecraft.harmony.config.operations.AddFurnaceOperation;
-import org.winterblade.minecraft.harmony.config.operations.IAddOperation;
-import org.winterblade.minecraft.harmony.config.operations.RemoveOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 
 import java.util.ArrayList;

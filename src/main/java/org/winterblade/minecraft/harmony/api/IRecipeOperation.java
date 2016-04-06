@@ -1,6 +1,5 @@
 package org.winterblade.minecraft.harmony.api;
 
-import net.minecraft.item.crafting.IRecipe;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 
 /**

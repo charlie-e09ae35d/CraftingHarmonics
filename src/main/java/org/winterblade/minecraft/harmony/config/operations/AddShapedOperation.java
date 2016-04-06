@@ -2,7 +2,6 @@ package org.winterblade.minecraft.harmony.config.operations;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import org.apache.commons.lang3.ArrayUtils;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;

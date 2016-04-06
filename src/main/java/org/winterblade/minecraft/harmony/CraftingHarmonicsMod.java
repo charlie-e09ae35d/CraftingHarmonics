@@ -1,21 +1,11 @@
 package org.winterblade.minecraft.harmony;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import net.minecraftforge.fml.common.event.*;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
 import org.winterblade.minecraft.harmony.config.operations.ConfigOperationDeserializer;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.utility.AnnotatedInstanceUtil;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Matt on 4/5/2016.
