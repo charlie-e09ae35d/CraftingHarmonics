@@ -51,12 +51,8 @@ public class CraftingHarmonicsMod {
         CraftingSet defaultSet = configManager.GetSet("default");
 
         if(defaultSet != null) {
+            defaultSet.Init();
             defaultSet.Apply(CraftingManager.getInstance());
-            for(Map.Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet()) {
-                System.out.println("Furnace: " + ItemRegistry.GetFullyQualifiedItemName(entry.getKey().getItem())
-                        + ":" + entry.getKey().getMetadata() + " -> "
-                        + ItemRegistry.GetFullyQualifiedItemName(entry.getValue().getItem()) + ":" + entry.getValue().getMetadata());
-            }
             defaultSet.RemoveFurnaceRecipes(FurnaceRecipes.instance().getSmeltingList());
         }
     }

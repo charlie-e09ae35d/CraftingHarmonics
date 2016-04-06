@@ -37,6 +37,14 @@ public class CraftingSet {
     }
 
     /**
+     * Initializes the operations
+     */
+    public void Init() {
+        InitOperationList(removals);
+        InitOperationList(adds);
+    }
+
+    /**
      * Apply recipe updates to the crafting manager.
      * @param manager   The crafting manager to update.
      */
@@ -53,13 +61,6 @@ public class CraftingSet {
      */
     public void AddRecipes(List<IRecipe> recipeList) {
         for(IAddOperation add : adds) {
-            try {
-                add.Init();
-            }
-            catch (ItemMissingException ex) {
-                System.err.println(ex.getMessage());
-                continue;
-            }
             IRecipe recipe = add.CreateRecipe();
             System.out.println("Adding recipe for " + recipe.getRecipeOutput().getUnlocalizedName());
             recipeList.add(recipe);
@@ -72,13 +73,6 @@ public class CraftingSet {
      */
     public void RemoveRecipes(List<IRecipe> recipeList) {
         for(RemoveOperation removal : removals) {
-            try {
-                removal.Init();
-            } catch (ItemMissingException ex) {
-                System.err.println(ex.getMessage());
-                continue;
-            }
-
             for(Iterator<IRecipe> recipeIterator = recipeList.iterator(); recipeIterator.hasNext(); ) {
                 IRecipe recipe = recipeIterator.next();
                 if(!removal.Matches(recipe.getRecipeOutput())) continue;
@@ -92,17 +86,10 @@ public class CraftingSet {
 
     /**
      * Removes recipes from the furnace recipe list.
-     * @param smeltingList
+     * @param smeltingList  The list of furnace recipes
      */
     public void RemoveFurnaceRecipes(Map<ItemStack, ItemStack> smeltingList) {
         for(RemoveOperation removal : removals) {
-            try {
-                removal.Init();
-            } catch (ItemMissingException ex) {
-                System.err.println(ex.getMessage());
-                continue;
-            }
-
             for(Iterator<Map.Entry<ItemStack, ItemStack>> furnaceIterator = smeltingList.entrySet().iterator(); furnaceIterator.hasNext(); ) {
                 Map.Entry<ItemStack, ItemStack> recipe = furnaceIterator.next();
                 if(!removal.Matches(recipe.getValue())) continue;
@@ -110,6 +97,20 @@ public class CraftingSet {
                 // We matched something:
                 System.out.println("Removing " + recipe.getValue().getUnlocalizedName() + " from the furnace.");
                 furnaceIterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Initialize a given operation list.
+     * @param ops   The operations to initialize.
+     */
+    private void InitOperationList(List<? extends IConfigOperation> ops) {
+        for(IConfigOperation op : ops) {
+            try {
+                op.Init();
+            } catch (ItemMissingException ex) {
+                System.err.println(ex.getMessage());
             }
         }
     }
