@@ -67,7 +67,7 @@ public class ItemRegistry {
      * @throws ItemMissingException When the item cannot be found in the registry.
      */
     public static ItemStack GetItem(String fullyQualifiedName, int quantity) throws ItemMissingException {
-        return GetItem(fullyQualifiedName, 1, 0);
+        return GetItem(fullyQualifiedName, quantity, 0);
     }
 
     /**
@@ -100,7 +100,7 @@ public class ItemRegistry {
      * @throws ItemMissingException When the item cannot be found in the registry.
      */
     public static ItemStack TranslateToItemStack(String item, int quantity ) throws ItemMissingException {
-        if(item.equals("")) return null;
+        if(item == null || item.equals("")) return null;
 
         String[] parts = item.split(":");
 
@@ -108,8 +108,12 @@ public class ItemRegistry {
             return GetItem("minecraft:" + parts[1], quantity);
         } else if(parts.length == 2) {
             return GetItem(parts[0] + ":" + parts[1], quantity);
-        } else if(parts.length >= 3) {
+        } else if(parts.length == 3) {
             return GetItem(parts[0] + ":" + parts[1], quantity, Integer.parseInt(parts[2]));
+        } else if(parts.length >= 4) {
+            return parts[2].equals("*")
+                ? GetItem(parts[0] + ":" + parts[1], Integer.parseInt(parts[3]))
+                : GetItem(parts[0] + ":" + parts[1], Integer.parseInt(parts[3]), Integer.parseInt(parts[2]));
         }
 
         return null;

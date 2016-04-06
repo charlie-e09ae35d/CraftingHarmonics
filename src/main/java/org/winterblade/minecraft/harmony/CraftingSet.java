@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import org.winterblade.minecraft.harmony.config.operations.AddFurnaceOperation;
 import org.winterblade.minecraft.harmony.config.operations.IAddOperation;
 import org.winterblade.minecraft.harmony.config.operations.IConfigOperation;
 import org.winterblade.minecraft.harmony.config.operations.RemoveOperation;
@@ -19,6 +20,7 @@ import java.util.Map;
 public class CraftingSet {
     private final List<RemoveOperation> removals = new ArrayList<RemoveOperation>();
     private final List<IAddOperation> adds = new ArrayList<IAddOperation>();
+    private final List<AddFurnaceOperation> addFurnaces = new ArrayList<AddFurnaceOperation>();
 
     /**
      * Creates a crafting set using the given set of operations
@@ -30,6 +32,8 @@ public class CraftingSet {
                 removals.add((RemoveOperation) op);
             } else if(op instanceof IAddOperation) {
                 adds.add((IAddOperation) op);
+            } else if(op instanceof AddFurnaceOperation) {
+                addFurnaces.add((AddFurnaceOperation) op);
             } else {
                 System.err.println("An unknown ConfigOperation was added to a set somehow.");
             }
@@ -42,6 +46,7 @@ public class CraftingSet {
     public void Init() {
         InitOperationList(removals);
         InitOperationList(adds);
+        InitOperationList(addFurnaces);
     }
 
     /**
@@ -81,6 +86,18 @@ public class CraftingSet {
                 System.out.println("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
                 recipeIterator.remove();
             }
+        }
+    }
+
+    /**
+     * Adds all furnace-type recipes from this set.
+     * @param smeltingList    The smelting list to add to.
+     */
+    public void AddRecipes(Map<ItemStack, ItemStack> smeltingList) {
+        for(AddFurnaceOperation add : addFurnaces) {
+            Map.Entry<ItemStack, ItemStack> recipe = add.CreateRecipe();
+            System.out.println("Adding furnace recipe for " + recipe.getValue().getUnlocalizedName());
+            smeltingList.put(recipe.getKey(), recipe.getValue());
         }
     }
 
