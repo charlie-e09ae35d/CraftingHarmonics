@@ -15,8 +15,7 @@
                     quantity: 1,
                     with: [
                         "", "minecraft:stick","",
-                        "minecraft:stick", "", "minecraft:stick",
-                        "","",""
+                        "minecraft:stick", "", "minecraft:stick"
                     ]
                 },
                 {

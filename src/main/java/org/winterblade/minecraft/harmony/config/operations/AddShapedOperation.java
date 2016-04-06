@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.config.operations;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
+import org.apache.commons.lang3.ArrayUtils;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
@@ -17,11 +18,12 @@ public class AddShapedOperation implements IAddOperation {
     public int quantity;
     public String[] shape; // 0.2 support
     public String[] with;
+    public int width;
+    public int height;
 
     /**
      * Actual items and whatnot
      */
-    private transient int size;
     private transient ItemStack[] input;
     private transient ItemStack outputItemStack;
 
@@ -29,7 +31,54 @@ public class AddShapedOperation implements IAddOperation {
     public void Init() throws ItemMissingException {
         if(with.length > 0) shape = with;
 
-        size = shape.length == 4 ? 2 : 3;
+        String[] filler = new String[1];
+        filler[0] = "";
+
+        if(shape.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
+
+        // There are some edge cases in here where the user might have meant one
+        // thing and receives another.  Not accounting for that just now.
+        // Also: these default to assuming width over height.
+        switch(shape.length) {
+            case 1: // This is now virtually a shapeless recipe...
+                width = height = 1;
+                break;
+            case 2:
+            case 3:
+                if(width <= 0 && height <= 0) {
+                    width = shape.length;
+                    height = 1;
+                } else if(width <= 0) {
+                    width = 1;
+                    height = shape.length;
+                } else if(height <= 0) {
+                    height = 1;
+                    width = shape.length;
+                }
+                break;
+            case 4:
+                width = height = 2;
+                break;
+            case 5: // Uh, what?  Make it 6
+                shape = ArrayUtils.addAll(shape, filler);
+            case 6:
+                if(height <= 0) {
+                    height = 2;
+                    width = 3;
+                } else if(width <= 0) {
+                    width = 2;
+                    height = 3;
+                }
+                break;
+            case 7:
+                shape = ArrayUtils.addAll(shape, filler);
+            case 8:
+                shape = ArrayUtils.addAll(shape, filler);
+            default:
+                width = height = 3;
+                break;
+        }
+
         if(quantity <= 0 || quantity > 64) quantity = 1;
 
         input = new ItemStack[shape.length];
@@ -45,6 +94,6 @@ public class AddShapedOperation implements IAddOperation {
 
     @Override
     public IRecipe CreateRecipe() {
-        return new ShapedRecipes(size, size, input, outputItemStack);
+        return new ShapedRecipes(width, height, input, outputItemStack);
     }
 }
