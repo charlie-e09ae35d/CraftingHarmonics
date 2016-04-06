@@ -52,9 +52,7 @@ public class CraftingHarmonicsMod {
 
         if(defaultSet != null) {
             defaultSet.Init();
-            defaultSet.Apply(CraftingManager.getInstance());
-            defaultSet.RemoveFurnaceRecipes(FurnaceRecipes.instance().getSmeltingList());
-            defaultSet.AddRecipes(FurnaceRecipes.instance().getSmeltingList());
+            defaultSet.Apply();
         }
     }
 }

@@ -8,4 +8,6 @@ import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
  */
 public interface IRecipeOperation {
     void Init() throws ItemMissingException;
+
+    void Apply();
 }
