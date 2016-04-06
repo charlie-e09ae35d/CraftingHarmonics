@@ -83,6 +83,21 @@
                     type: "addFurnaceFuel",
                     what: "minecraft:wool:*",
                     burnTime: 200
+                },
+                {
+                    __comment: "Brewing recipes can be added as well; you can either specify the input (ie: water bottles; this cannot be a stackable item) and ingredient (ie nether wart) separately...",
+                    __result: "Brews lava buckets, plus netherrack to make obsidian; you won't get the bucket back.",
+                    type: "addBrew",
+                    output: "minecraft:obsidian",
+                    input: "minecraft:lava_bucket",
+                    ingredient: "minecraft:netherrack"
+                },
+                {
+                    __comment: "Or together in the 'with' property; input first, then ingredient",
+                    __result: "Brews water buckets, plus netherrack to make soul sand; you also won't get the bucket back.",
+                    type: "addBrew",
+                    output: "minecraft:soul_sand",
+                    with: ["minecraft:water_bucket", "minecraft:netherrack"]
                 }
             ]
         }
