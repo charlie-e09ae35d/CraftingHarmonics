@@ -13,7 +13,7 @@ import org.winterblade.minecraft.harmony.utility.AnnotatedInstanceUtil;
 @Mod(modid = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.MODID, version = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.VERSION)
 public class CraftingHarmonicsMod {
     public static final String MODID = "craftingharmonics";
-    public static final String VERSION = "0.4";
+    public static final String VERSION = "0.5";
 
     private String configPath;
     private ConfigManager configManager;
