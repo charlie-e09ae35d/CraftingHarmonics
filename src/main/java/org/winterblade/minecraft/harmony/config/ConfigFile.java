@@ -1,6 +1,8 @@
 package org.winterblade.minecraft.harmony.config;
 
-import com.google.gson.*;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 
 import java.util.List;
@@ -20,7 +22,7 @@ public class ConfigFile {
      */
     public static ConfigFile Deserialize(String json) {
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
+        gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.IDENTITY);
         gsonBuilder.registerTypeAdapter(IRecipeOperation.class, new ConfigOperationDeserializer());
         Gson gson = gsonBuilder.create();
         return gson.fromJson(json, ConfigFile.class);

@@ -1,11 +1,14 @@
 package org.winterblade.minecraft.harmony.utility;
 
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
+import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Borrowed mostly from mezz's JEI class of the same name; modified to load the name of the operation
@@ -16,7 +19,7 @@ public class AnnotatedInstanceUtil {
     }
 
     public static Map<String, Class> getRecipeOperations(@Nonnull ASMDataTable asmDataTable) {
-        return getInstances(asmDataTable, RecipeOperation.class, IRecipeOperation.class);
+        return getInstances(asmDataTable, RecipeOperation.class, BaseRecipeOperation.class);
     }
 
     private static <T> Map<String, Class> getInstances(@Nonnull ASMDataTable asmDataTable, Class annotationClass, Class<T> instanceClass) {
