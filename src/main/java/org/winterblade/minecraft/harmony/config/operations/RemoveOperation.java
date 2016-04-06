@@ -5,6 +5,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
+import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
@@ -15,6 +16,7 @@ import java.util.Map;
 /**
  * Created by Matt on 4/5/2016.
  */
+@RecipeOperation(name = "remove")
 public class RemoveOperation implements IRecipeOperation {
     /**
      * Serialized properties
