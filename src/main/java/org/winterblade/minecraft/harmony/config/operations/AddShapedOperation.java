@@ -79,7 +79,8 @@ public class AddShapedOperation implements IAddOperation {
                 break;
         }
 
-        if(quantity <= 0 || quantity > 64) quantity = 1;
+        outputItemStack = ItemRegistry.TranslateToItemStack(output, quantity);
+        if(outputItemStack == null) throw new RuntimeException("Unable to find requested output item '" + output + "'.");
 
         input = new ItemStack[shape.length];
 
@@ -87,9 +88,6 @@ public class AddShapedOperation implements IAddOperation {
             input[i] = ItemRegistry.TranslateToItemStack(shape[i]);
         }
 
-        outputItemStack = ItemRegistry.TranslateToItemStack(output, quantity);
-
-        if(outputItemStack == null) throw new RuntimeException("Unable to find requested output item '" + output + "'.");
     }
 
     @Override

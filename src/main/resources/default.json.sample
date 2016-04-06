@@ -6,10 +6,14 @@
             name: "default",
             operations: [
                 {
+                    __comment: "You can remove recipes that result in a particular block",
+                    __result: "Removes Lapis blocks from being craftable",
                     type: "remove",
                     what: "minecraft:lapis_block"
                 },
                 {
+                    __comment: "You can add shaped recipes",
+                    __result: "Turns 3 sticks in a triangle format into black dye",
                     type: "addShaped",
                     output: "minecraft:dye:0",
                     quantity: 1,
@@ -19,6 +23,8 @@
                     ]
                 },
                 {
+                    __comment: "If you want a tall recipe instead, specify the width or height (or both!)",
+                    __result: "Adds in a recipe with five sticks to turn into another dye.",
                     type: "addShaped",
                     output: "minecraft:dye:12",
                     width: 2,
@@ -26,10 +32,34 @@
                     with: ["minecraft:stick","minecraft:stick","minecraft:stick","minecraft:stick","minecraft:stick"]
                 },
                 {
+                    __comment: "You can also specify the quantity on the end of the output; use * to ignore metadata.",
+                    __result: "Adds a recipe turning three sticks into 10 stone.  OP!",
+                    type: "addShaped",
+                    output: "minecraft:stone:*:10",
+                    width: 1,
+                    height: 3,
+                    with: ["minecraft:stick","minecraft:stick","minecraft:stick"]
+                },
+                {
+                    __comment: "You can also add shapeless recipes.",
+                    __result: "Turns one black and one red dye into five red dye.",
                     type: "addShapeless",
                     output: "minecraft:dye:1",
                     quantity: 5,
-                    with: ["minecraft:dye:0"]
+                    with: ["minecraft:dye:0", "minecraft:dye:1"]
+                },
+                {
+                    __comment: "Furnace recipes will also be removed with remove; this actually removes 2 separate recipes.",
+                    __result: "Removes logs from being smelted into charcoal.",
+                    type: "remove",
+                    what: "minecraft:coal:1"
+                },
+                {
+                    __comment: "Furnace recipes can be added in with addFurnace.",
+                    __result: "Turns a stick into 3 charcoal.",
+                    type: "addFurnace",
+                    output: "minecraft:coal:1:3",
+                    with: "minecraft:stick"
                 }
             ]
         }
