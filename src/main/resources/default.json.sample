@@ -61,6 +61,13 @@
                     output: "minecraft:coal:1:3",
                     with: "minecraft:stick"
                 }
+                {
+                    __comment: "Normally all removes happen before all adds; you can specify priority to change up this order; higher priorities go later.  The default priority is 0.",
+                    __result: "Removes the super OP recipe we just added.",
+                    type: "remove",
+                    what: "minecraft:coal:1",
+                    priority: 10
+                }
             ]
         }
     ]
