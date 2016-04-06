@@ -1,6 +1,6 @@
 {
-    name: "Default",
-    description: "Pregenerated file",
+    name: "Sample File",
+    description: "Sample file for reference; will do weird things with dyes as configured below.",
     sets: [
         {
             name: "default",
@@ -13,11 +13,17 @@
                     type: "addShaped",
                     output: "minecraft:dye:0",
                     quantity: 1,
-                    shape: [
+                    with: [
                         "", "minecraft:stick","",
                         "minecraft:stick", "", "minecraft:stick",
                         "","",""
                     ]
+                },
+                {
+                    type: "addShapeless",
+                    output: "minecraft:dye:1",
+                    quantity: 5,
+                    with: ["minecraft:dye:0"]
                 }
             ]
         }
