@@ -5,7 +5,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import org.winterblade.minecraft.harmony.config.operations.AddFurnaceOperation;
 import org.winterblade.minecraft.harmony.config.operations.IAddOperation;
-import org.winterblade.minecraft.harmony.config.operations.IConfigOperation;
+import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.config.operations.RemoveOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 
@@ -26,8 +26,8 @@ public class CraftingSet {
      * Creates a crafting set using the given set of operations
      * @param configOperations
      */
-    public CraftingSet(IConfigOperation[] configOperations) {
-        for(IConfigOperation op : configOperations) {
+    public CraftingSet(IRecipeOperation[] configOperations) {
+        for(IRecipeOperation op : configOperations) {
             if(op instanceof RemoveOperation) {
                 removals.add((RemoveOperation) op);
             } else if(op instanceof IAddOperation) {
@@ -122,8 +122,8 @@ public class CraftingSet {
      * Initialize a given operation list.
      * @param ops   The operations to initialize.
      */
-    private void InitOperationList(List<? extends IConfigOperation> ops) {
-        for(IConfigOperation op : ops) {
+    private void InitOperationList(List<? extends IRecipeOperation> ops) {
+        for(IRecipeOperation op : ops) {
             try {
                 op.Init();
             } catch (ItemMissingException ex) {

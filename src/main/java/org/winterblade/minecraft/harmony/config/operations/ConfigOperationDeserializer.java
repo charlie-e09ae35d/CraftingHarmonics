@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.config.operations;
 
 import com.google.gson.*;
+import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -9,7 +10,7 @@ import java.util.TreeMap;
 /**
  * Created by Matt on 4/5/2016.
  */
-public class ConfigOperationDeserializer implements JsonDeserializer<IConfigOperation> {
+public class ConfigOperationDeserializer implements JsonDeserializer<IRecipeOperation> {
     private static Map<String, Class> map = new TreeMap<String, Class>();
 
     static {
@@ -20,7 +21,7 @@ public class ConfigOperationDeserializer implements JsonDeserializer<IConfigOper
     }
 
     @Override
-    public IConfigOperation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public IRecipeOperation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
 
         String type = jsonObject.get("type").getAsString();

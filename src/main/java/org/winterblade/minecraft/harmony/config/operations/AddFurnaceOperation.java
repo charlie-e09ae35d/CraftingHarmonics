@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.config.operations;
 
 import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
+import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
@@ -10,7 +11,7 @@ import java.util.Map;
 /**
  * Created by Matt on 4/5/2016.
  */
-public class AddFurnaceOperation implements IConfigOperation {
+public class AddFurnaceOperation implements IRecipeOperation {
     /**
      * Serialized properties:
      */

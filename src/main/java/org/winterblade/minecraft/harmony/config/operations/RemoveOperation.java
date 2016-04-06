@@ -1,13 +1,14 @@
 package org.winterblade.minecraft.harmony.config.operations;
 
 import net.minecraft.item.ItemStack;
+import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
 /**
  * Created by Matt on 4/5/2016.
  */
-public class RemoveOperation implements IConfigOperation {
+public class RemoveOperation implements IRecipeOperation {
     /**
      * Serialized properties
      */
