@@ -19,6 +19,13 @@
                     ]
                 },
                 {
+                    type: "addShaped",
+                    output: "minecraft:dye:12",
+                    width: 2,
+                    height: 3,
+                    with: ["minecraft:stick","minecraft:stick","minecraft:stick","minecraft:stick","minecraft:stick"]
+                },
+                {
                     type: "addShapeless",
                     output: "minecraft:dye:1",
                     quantity: 5,

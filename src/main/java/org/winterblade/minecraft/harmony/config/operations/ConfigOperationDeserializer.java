@@ -31,8 +31,6 @@ public class ConfigOperationDeserializer implements JsonDeserializer<IConfigOper
         type = type.toLowerCase();
         if(!map.containsKey(type)) throw new RuntimeException("Unknown type " + type + " for operation.");
 
-        System.out.println("Adding type " + type);
-
         // Now convert it:
         return context.deserialize(json, map.get(type));
     }

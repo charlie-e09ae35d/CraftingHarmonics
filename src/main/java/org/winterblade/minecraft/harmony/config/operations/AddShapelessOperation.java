@@ -28,6 +28,8 @@ public class AddShapelessOperation implements IAddOperation {
 
     @Override
     public void Init() throws ItemMissingException {
+        if(with.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
+
         if(quantity <= 0 || quantity > 64) quantity = 1;
 
         input = new ArrayList<ItemStack>();

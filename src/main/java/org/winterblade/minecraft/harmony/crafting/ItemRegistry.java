@@ -6,14 +6,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
-import net.minecraftforge.fml.common.registry.GameData;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.PersistentRegistryManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Matt on 4/5/2016.
@@ -35,7 +31,7 @@ public class ItemRegistry {
             Item item = Item.itemRegistry.getObject(itemResource);
 
             // Store it by its full name:
-            System.out.println("Registering '" + name + "' in item registry.");
+//            System.out.println("Registering '" + name + "' in item registry.");
             itemsByFullyQualifiedName.put(name, item);
 
             // Also store it by its mod:
