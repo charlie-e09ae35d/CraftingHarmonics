@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.crafting.operations;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
+import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
@@ -41,5 +42,18 @@ public class AddFurnaceFuel extends BaseRecipeOperation {
         }
 
         FuelRegistry.getInstance().AddFuel(fuel, burnTime);
+    }
+
+    @Override
+    public int compareTo(IRecipeOperation o) {
+        int baseCompare = super.compareTo(o);
+        if(baseCompare != 0) return baseCompare;
+
+        // Keep classes together:
+        if(!(o.getClass().equals(getClass())))
+            return o.getClass().getSimpleName().compareTo(getClass().getSimpleName());
+
+        // Otherwise, sort on name:
+        return what.compareTo(((AddFurnaceFuel) o).what);
     }
 }
