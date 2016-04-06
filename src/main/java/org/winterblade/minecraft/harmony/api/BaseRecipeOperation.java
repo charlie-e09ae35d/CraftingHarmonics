@@ -11,7 +11,7 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
     @Override
     public int compareTo(IRecipeOperation o) {
         // Don't try and sort:
-        if(priority <= 0 || !(o instanceof BaseRecipeOperation)) return 0;
+        if(!(BaseRecipeOperation.class.isAssignableFrom(o.getClass()))) return 0;
 
         return priority - ((BaseRecipeOperation) o).priority;
     }
