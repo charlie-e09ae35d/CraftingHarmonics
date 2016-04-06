@@ -3,7 +3,6 @@ package org.winterblade.minecraft.harmony.crafting.operations;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
@@ -15,12 +14,10 @@ import java.util.List;
  * Created by Matt on 4/5/2016.
  */
 @RecipeOperation(name = "addShapeless")
-public class AddShapelessOperation implements IRecipeOperation {
+public class AddShapelessOperation extends BaseAddOperation {
     /**
      * Serialized properties:
      */
-    private String output;
-    private int quantity;
     private String[] with;
 
     /**

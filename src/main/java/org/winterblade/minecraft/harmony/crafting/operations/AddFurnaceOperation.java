@@ -2,7 +2,6 @@ package org.winterblade.minecraft.harmony.crafting.operations;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
@@ -11,12 +10,10 @@ import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
  * Created by Matt on 4/5/2016.
  */
 @RecipeOperation(name = "addFurnace")
-public class AddFurnaceOperation implements IRecipeOperation {
+public class AddFurnaceOperation extends BaseAddOperation {
     /**
      * Serialized properties:
      */
-    private String output;
-    private int quantity;
     private String with;
     private float experience;
 
@@ -40,4 +37,5 @@ public class AddFurnaceOperation implements IRecipeOperation {
         System.out.println("Adding furnace recipe for " + outputItemStack.getUnlocalizedName());
         FurnaceRecipes.instance().addSmeltingRecipe(inputItem, outputItemStack, experience);
     }
+
 }

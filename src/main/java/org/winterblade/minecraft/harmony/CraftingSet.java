@@ -3,16 +3,13 @@ package org.winterblade.minecraft.harmony;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Matt on 4/5/2016.
  */
 public class CraftingSet {
-    private final List<IRecipeOperation> operations = new ArrayList<>();
+    private final SortedSet<IRecipeOperation> operations = new TreeSet<>();
 
     /**
      * Creates a crafting set using the given set of operations
