@@ -4,8 +4,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapedRecipes;
 import org.apache.commons.lang3.ArrayUtils;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
@@ -14,12 +12,10 @@ import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
  * Created by Matt on 4/5/2016.
  */
 @RecipeOperation(name = "addShaped")
-public class AddShapedOperation extends BaseRecipeOperation {
+public class AddShapedOperation extends BaseAddOperation {
     /**
      * Serialized properties:
      */
-    private String output;
-    private int quantity;
     private String[] shape; // 0.2 support
     private String[] with;
     private int width;
@@ -98,18 +94,5 @@ public class AddShapedOperation extends BaseRecipeOperation {
     public void Apply() {
         System.out.println("Adding shaped recipe for " + outputItemStack.getUnlocalizedName());
         CraftingManager.getInstance().addRecipe(new ShapedRecipes(width, height, input, outputItemStack));
-    }
-
-    @Override
-    public int compareTo(IRecipeOperation o) {
-        int baseCompare = super.compareTo(o);
-        if(baseCompare != 0) return baseCompare;
-
-        // Keep classes together:
-        if(!(o instanceof AddShapedOperation))
-            return o.getClass().getSimpleName().compareTo(AddShapedOperation.class.getSimpleName());
-
-        // Otherwise, sort on name:
-        return output.compareTo(((AddShapedOperation) o).output);
     }
 }

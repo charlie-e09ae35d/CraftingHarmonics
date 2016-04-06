@@ -3,8 +3,6 @@ package org.winterblade.minecraft.harmony.crafting.operations;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
@@ -16,12 +14,10 @@ import java.util.List;
  * Created by Matt on 4/5/2016.
  */
 @RecipeOperation(name = "addShapeless")
-public class AddShapelessOperation extends BaseRecipeOperation {
+public class AddShapelessOperation extends BaseAddOperation {
     /**
      * Serialized properties:
      */
-    private String output;
-    private int quantity;
     private String[] with;
 
     /**
@@ -50,18 +46,5 @@ public class AddShapelessOperation extends BaseRecipeOperation {
     public void Apply() {
         System.out.println("Adding shapeless recipe for " + outputItemStack.getUnlocalizedName());
         CraftingManager.getInstance().addRecipe(new ShapelessRecipes(outputItemStack, input));
-    }
-
-    @Override
-    public int compareTo(IRecipeOperation o) {
-        int baseCompare = super.compareTo(o);
-        if(baseCompare != 0) return baseCompare;
-
-        // Keep classes together:
-        if(!(o instanceof AddShapelessOperation))
-            return o.getClass().getSimpleName().compareTo(AddShapelessOperation.class.getSimpleName());
-
-        // Otherwise, sort on name:
-        return output.compareTo(((AddShapelessOperation) o).output);
     }
 }
