@@ -1,16 +1,20 @@
 package org.winterblade.minecraft.harmony.config.operations;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import org.apache.commons.lang3.ArrayUtils;
+import org.winterblade.minecraft.harmony.api.IRecipeOperation;
+import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
 /**
  * Created by Matt on 4/5/2016.
  */
-public class AddShapedOperation implements IAddOperation {
+@RecipeOperation(name = "addShaped")
+public class AddShapedOperation implements IRecipeOperation {
     /**
      * Serialized properties:
      */
@@ -91,7 +95,8 @@ public class AddShapedOperation implements IAddOperation {
     }
 
     @Override
-    public IRecipe CreateRecipe() {
-        return new ShapedRecipes(width, height, input, outputItemStack);
+    public void Apply() {
+        System.out.println("Adding shaped recipe for " + outputItemStack.getUnlocalizedName());
+        CraftingManager.getInstance().addRecipe(new ShapedRecipes(width, height, input, outputItemStack));
     }
 }

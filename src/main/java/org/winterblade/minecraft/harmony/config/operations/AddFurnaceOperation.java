@@ -2,6 +2,9 @@ package org.winterblade.minecraft.harmony.config.operations;
 
 import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import org.winterblade.minecraft.harmony.api.IRecipeOperation;
+import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
@@ -10,13 +13,15 @@ import java.util.Map;
 /**
  * Created by Matt on 4/5/2016.
  */
-public class AddFurnaceOperation implements IConfigOperation {
+@RecipeOperation(name = "addFurnace")
+public class AddFurnaceOperation implements IRecipeOperation {
     /**
      * Serialized properties:
      */
     private String output;
     private int quantity;
     private String with;
+    private float experience;
 
     /**
      * Actual items and whatnot
@@ -33,7 +38,9 @@ public class AddFurnaceOperation implements IConfigOperation {
         if(inputItem == null) throw new RuntimeException("Unable to find requested input item '" + with + "'.");
     }
 
-    public Map.Entry<ItemStack, ItemStack> CreateRecipe() {
-        return Maps.immutableEntry(inputItem, outputItemStack);
+    @Override
+    public void Apply() {
+        System.out.println("Adding furnace recipe for " + outputItemStack.getUnlocalizedName());
+        FurnaceRecipes.instance().addSmeltingRecipe(inputItem, outputItemStack, experience);
     }
 }

@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.config.operations;
 
 import com.google.gson.*;
+import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -9,18 +10,11 @@ import java.util.TreeMap;
 /**
  * Created by Matt on 4/5/2016.
  */
-public class ConfigOperationDeserializer implements JsonDeserializer<IConfigOperation> {
-    private static Map<String, Class> map = new TreeMap<String, Class>();
-
-    static {
-        map.put("remove", RemoveOperation.class);
-        map.put("addshaped", AddShapedOperation.class);
-        map.put("addshapeless", AddShapelessOperation.class);
-        map.put("addfurnace", AddFurnaceOperation.class);
-    }
+public class ConfigOperationDeserializer implements JsonDeserializer<IRecipeOperation> {
+    private static Map<String, Class> deserializerMap = new TreeMap<String, Class>();
 
     @Override
-    public IConfigOperation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public IRecipeOperation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
 
         String type = jsonObject.get("type").getAsString();
@@ -30,9 +24,15 @@ public class ConfigOperationDeserializer implements JsonDeserializer<IConfigOper
 
         // And that it exists:
         type = type.toLowerCase();
-        if(!map.containsKey(type)) throw new RuntimeException("Unknown type " + type + " for operation.");
+        if(!deserializerMap.containsKey(type)) throw new RuntimeException("Unknown type " + type + " for operation.");
 
         // Now convert it:
-        return context.deserialize(json, map.get(type));
+        return context.deserialize(json, deserializerMap.get(type));
+    }
+
+    public static void CreateDeserializers(Map<String, Class> deserializers) {
+        for(Map.Entry<String, Class> deserializer : deserializers.entrySet()) {
+            deserializerMap.put(deserializer.getKey(), deserializer.getValue());
+        }
     }
 }

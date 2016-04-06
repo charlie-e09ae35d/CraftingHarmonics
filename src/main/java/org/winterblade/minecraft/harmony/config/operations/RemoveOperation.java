@@ -1,13 +1,23 @@
 package org.winterblade.minecraft.harmony.config.operations;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.item.crafting.IRecipe;
+import org.winterblade.minecraft.harmony.api.IRecipeOperation;
+import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Matt on 4/5/2016.
  */
-public class RemoveOperation implements IConfigOperation {
+@RecipeOperation(name = "remove")
+public class RemoveOperation implements IRecipeOperation {
     /**
      * Serialized properties
      */
@@ -73,6 +83,43 @@ public class RemoveOperation implements IConfigOperation {
             modId = parts[0];
             itemName = parts[1];
             matchType = RemoveMatchType.ItemAndMod;
+        }
+    }
+
+    @Override
+    public void Apply() {
+        RemoveCraftingRecpies();
+        RemoveFurnaceRecpies();
+    }
+
+    /**
+     * Removes recipes from the furnace, if it matches.
+     */
+    private void RemoveFurnaceRecpies() {
+        Map<ItemStack, ItemStack> smeltingList = FurnaceRecipes.instance().getSmeltingList();
+        for(Iterator<Map.Entry<ItemStack, ItemStack>> furnaceIterator = smeltingList.entrySet().iterator(); furnaceIterator.hasNext(); ) {
+            Map.Entry<ItemStack, ItemStack> recipe = furnaceIterator.next();
+            if(!Matches(recipe.getValue())) continue;
+
+            // We matched something:
+            System.out.println("Removing " + recipe.getValue().getUnlocalizedName() + " from the furnace.");
+            furnaceIterator.remove();
+        }
+    }
+
+    /**
+     * Removes recpies from the crafting grid, if it matches.
+     */
+    private void RemoveCraftingRecpies() {
+        List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
+
+        for(Iterator<IRecipe> recipeIterator = recipeList.iterator(); recipeIterator.hasNext(); ) {
+            IRecipe recipe = recipeIterator.next();
+            if(!Matches(recipe.getRecipeOutput())) continue;
+
+            // We matched something:
+            System.out.println("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
+            recipeIterator.remove();
         }
     }
 
