@@ -41,6 +41,15 @@
                     with: ["minecraft:stick","minecraft:stick","minecraft:stick"]
                 },
                 {
+                    __comment: "You can also specify ore dictionary entries by surrounding the name with chevrons.",
+                    __result: "Adds a lever recipe with two sticks and any log",
+                    type: "addShaped",
+                    output: "minecraft:lever",
+                    width: 1,
+                    height: 3,
+                    with: ["minecraft:stick","minecraft:stick","<logWood>"]
+                },
+                {
                     __comment: "You can also add shapeless recipes.",
                     __result: "Turns one black and one red dye into five red dye.",
                     type: "addShapeless",
