@@ -24,7 +24,6 @@ public class ConfigManager {
 
     private final String configPath;
 
-    private boolean doRegen;
     private Map<String, CraftingSet> sets;
 
     /**
@@ -33,7 +32,6 @@ public class ConfigManager {
      */
     public ConfigManager(String configPath) {
         this.configPath = configPath;
-        initBaseSettings();
         setupRecipeSets();
     }
 
@@ -41,25 +39,6 @@ public class ConfigManager {
         return sets.get(set);
     }
 
-    private void initBaseSettings() {
-        System.out.println("Loading main settings file " + configPath + "Settings.cfg");
-        Configuration configMain = new Configuration(new File(configPath + "Settings.cfg"));
-
-        configMain.load();
-
-        // TODO: Turn this off once we know they really want to do this.
-        // ... or just make it a command.
-        doRegen = configMain.getBoolean("RegenerateConfigs",
-                Configuration.CATEGORY_GENERAL,
-                false,
-                "Should we regenerate the config files based on current recipes in the game.  This will completely clear your current configs!")
-            &&  configMain.getBoolean("RegenerateConfigsConfirm",
-                Configuration.CATEGORY_GENERAL,
-                false,
-                "Should we really regenerate the config files based on current recipes in the game?  I mean, really?");
-
-        configMain.save();
-    }
 
     private void setupRecipeSets() {
         System.out.println("Reading set definitions from " + configPath + "Sets/");
@@ -99,7 +78,7 @@ public class ConfigManager {
             return;
         }
 
-        List<ConfigFile> setConfigs = new ArrayList<ConfigFile>();
+        List<ConfigFile> setConfigs = new ArrayList<>();
 
         for(File config : files) {
             if(!config.getName().endsWith(".json")) continue;
@@ -124,7 +103,7 @@ public class ConfigManager {
         }
 
         // Now that we have the files... register them...
-        Map<String, IRecipeOperation[]> configSets = new HashMap<String, IRecipeOperation[]>();
+        Map<String, IRecipeOperation[]> configSets = new HashMap<>();
 
         for(ConfigFile file : setConfigs) {
             System.out.println("Registering sets from '" + file.name + "' - " + file.description);
@@ -146,7 +125,7 @@ public class ConfigManager {
             }
         }
 
-        sets = new HashMap<String, CraftingSet>();
+        sets = new HashMap<>();
 
         // Now, process the sets:
         for(String set : configSets.keySet()) {

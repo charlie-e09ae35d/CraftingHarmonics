@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.config.operations;
+package org.winterblade.minecraft.harmony.config;
 
 import com.google.gson.*;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
@@ -11,7 +11,7 @@ import java.util.TreeMap;
  * Created by Matt on 4/5/2016.
  */
 public class ConfigOperationDeserializer implements JsonDeserializer<IRecipeOperation> {
-    private static Map<String, Class> deserializerMap = new TreeMap<String, Class>();
+    private final static Map<String, Class> deserializerMap = new TreeMap<>();
 
     @Override
     public IRecipeOperation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

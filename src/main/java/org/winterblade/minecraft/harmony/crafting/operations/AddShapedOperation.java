@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.config.operations;
+package org.winterblade.minecraft.harmony.crafting.operations;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -17,12 +17,12 @@ public class AddShapedOperation implements IRecipeOperation {
     /**
      * Serialized properties:
      */
-    public String output;
-    public int quantity;
-    public String[] shape; // 0.2 support
-    public String[] with;
-    public int width;
-    public int height;
+    private String output;
+    private int quantity;
+    private String[] shape; // 0.2 support
+    private String[] with;
+    private int width;
+    private int height;
 
     /**
      * Actual items and whatnot

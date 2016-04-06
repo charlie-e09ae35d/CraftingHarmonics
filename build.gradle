@@ -24,6 +24,10 @@ version = "0.4"
 group= "org.winterblade.minecraft.craftingharmonics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "craftingharmonics"
 
+// java version
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
 minecraft {
     version = "1.9-12.16.0.1845-1.9"
     runDir = "run"

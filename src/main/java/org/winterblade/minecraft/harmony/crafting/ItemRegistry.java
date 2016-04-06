@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class ItemRegistry {
     private static final BiMap<String, Item> itemsByFullyQualifiedName = HashBiMap.create();
-    private static final Map<String, ArrayList<Item>> itemsByMod = new HashMap<String, ArrayList<Item>>();
+    private static final Map<String, ArrayList<Item>> itemsByMod = new HashMap<>();
 
     public static void Init() {
         // Get the item's location

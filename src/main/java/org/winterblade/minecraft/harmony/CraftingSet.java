@@ -4,6 +4,7 @@ import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,20 +12,20 @@ import java.util.List;
  * Created by Matt on 4/5/2016.
  */
 public class CraftingSet {
-    private final List<IRecipeOperation> operations = new ArrayList<IRecipeOperation>();
+    private final List<IRecipeOperation> operations = new ArrayList<>();
 
     /**
      * Creates a crafting set using the given set of operations
-     * @param configOperations
+     * @param recipeOperations  The operations to add to this set.
      */
-    public CraftingSet(IRecipeOperation[] configOperations) {
-        Collections.addAll(operations, configOperations);
+    public CraftingSet(IRecipeOperation[] recipeOperations) {
+        Collections.addAll(operations, recipeOperations);
     }
 
     /**
      * Initializes the operations
      */
-    public void Init() {
+    void Init() {
         for(IRecipeOperation op : operations) {
             try {
                 op.Init();
@@ -34,13 +35,13 @@ public class CraftingSet {
         }
     }
 
-    public void Apply() {
+    void Apply() {
         for(IRecipeOperation op : operations) {
             try {
                 op.Apply();
             }
             catch(Exception ex) {
-                System.err.println("Error applying operation.\n" + ex.getStackTrace());
+                System.err.println("Error applying operation.\n" + Arrays.toString(ex.getStackTrace()));
             }
         }
     }

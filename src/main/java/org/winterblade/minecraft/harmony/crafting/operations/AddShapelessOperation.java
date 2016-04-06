@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.config.operations;
+package org.winterblade.minecraft.harmony.crafting.operations;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -19,9 +19,9 @@ public class AddShapelessOperation implements IRecipeOperation {
     /**
      * Serialized properties:
      */
-    public String output;
-    public int quantity;
-    public String[] with;
+    private String output;
+    private int quantity;
+    private String[] with;
 
     /**
      * Actual items and whatnot
@@ -33,7 +33,7 @@ public class AddShapelessOperation implements IRecipeOperation {
     public void Init() throws ItemMissingException {
         if(with.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
 
-        input = new ArrayList<ItemStack>();
+        input = new ArrayList<>();
 
         for(String item : with) {
             ItemStack inputItem = ItemRegistry.TranslateToItemStack(item);

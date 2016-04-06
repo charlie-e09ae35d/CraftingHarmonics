@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.config.operations;
+package org.winterblade.minecraft.harmony.crafting.operations;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
