@@ -35,7 +35,7 @@ public class ItemRegistry {
             itemsByFullyQualifiedName.put(name, item);
 
             // Also store it by its mod:
-            if(!itemsByMod.containsKey(mod)) itemsByMod.put(mod, new ArrayList<>());
+            if(!itemsByMod.containsKey(mod)) itemsByMod.put(mod, new ArrayList<Item>());
             itemsByMod.get(mod).add(item);
         }
         System.out.println("Item registry complete.");
