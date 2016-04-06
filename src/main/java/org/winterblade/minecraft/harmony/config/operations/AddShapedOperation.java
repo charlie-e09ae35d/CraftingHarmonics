@@ -15,7 +15,8 @@ public class AddShapedOperation implements IAddOperation {
      */
     public String output;
     public int quantity;
-    public String[] shape;
+    public String[] shape; // 0.2 support
+    public String[] with;
 
     /**
      * Actual items and whatnot
@@ -26,6 +27,8 @@ public class AddShapedOperation implements IAddOperation {
 
     @Override
     public void Init() throws ItemMissingException {
+        if(with.length > 0) shape = with;
+
         size = shape.length == 4 ? 2 : 3;
         if(quantity <= 0 || quantity > 64) quantity = 1;
 
