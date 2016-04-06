@@ -1,8 +1,9 @@
-package org.winterblade.minecraft.harmony.config.operations;
+package org.winterblade.minecraft.harmony.crafting.operations;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
@@ -12,13 +13,12 @@ import java.util.List;
 /**
  * Created by Matt on 4/5/2016.
  */
-public class AddShapelessOperation implements IAddOperation {
+@RecipeOperation(name = "addShapeless")
+public class AddShapelessOperation extends BaseAddOperation {
     /**
      * Serialized properties:
      */
-    public String output;
-    public int quantity;
-    public String[] with;
+    private String[] with;
 
     /**
      * Actual items and whatnot
@@ -30,7 +30,7 @@ public class AddShapelessOperation implements IAddOperation {
     public void Init() throws ItemMissingException {
         if(with.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
 
-        input = new ArrayList<ItemStack>();
+        input = new ArrayList<>();
 
         for(String item : with) {
             ItemStack inputItem = ItemRegistry.TranslateToItemStack(item);
@@ -43,7 +43,8 @@ public class AddShapelessOperation implements IAddOperation {
     }
 
     @Override
-    public IRecipe CreateRecipe() {
-        return new ShapelessRecipes(outputItemStack, input);
+    public void Apply() {
+        System.out.println("Adding shapeless recipe for " + outputItemStack.getUnlocalizedName());
+        CraftingManager.getInstance().addRecipe(new ShapelessRecipes(outputItemStack, input));
     }
 }
