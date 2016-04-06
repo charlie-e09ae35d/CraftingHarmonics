@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,6 +111,8 @@ public class ItemRegistry {
             itemStack = GetItem("minecraft:" + parts[1], 1);
         } else if(parts.length == 2) {
             itemStack = GetItem(parts[0] + ":" + parts[1], 1);
+        } else if (parts.length == 3 && parts[2].equals("*")) {
+            itemStack = GetItem(parts[0] + ":" + parts[1], 1, OreDictionary.WILDCARD_VALUE);
         } else if(parts.length == 3) {
             itemStack = GetItem(parts[0] + ":" + parts[1], 1, Integer.parseInt(parts[2]));
         } else if(parts.length >= 4) {
@@ -126,5 +129,29 @@ public class ItemRegistry {
         }
 
         return itemStack;
+    }
+
+    /**
+     * Checks if the given item stacks are equivalent
+     * @param a The first item stack
+     * @param b The second item stack
+     * @return  If the items, stack size, and metadata are equivalent.
+     */
+    public static boolean AreItemsEquivalent(ItemStack a, ItemStack b) {
+        return AreItemsEquivalent(a.getItem(), b.getItem())
+                && (a.getMetadata() == OreDictionary.WILDCARD_VALUE || a.getMetadata() == b.getMetadata());
+    }
+
+    /**
+     * Checks if the given items are equivalent.
+     * @param a The first item
+     * @param b The second item
+     * @return  If the items' fully qualified names are equal.
+     */
+    public static boolean AreItemsEquivalent(Item a, Item b) {
+        String aName = GetFullyQualifiedItemName(a);
+        String bName = GetFullyQualifiedItemName(b);
+
+        return (aName.equals(bName));
     }
 }
