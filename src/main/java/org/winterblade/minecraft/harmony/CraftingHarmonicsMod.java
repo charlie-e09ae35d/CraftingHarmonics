@@ -1,9 +1,13 @@
 package org.winterblade.minecraft.harmony;
 
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
 import org.winterblade.minecraft.harmony.config.ConfigOperationDeserializer;
+import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.utility.AnnotatedInstanceUtil;
 
@@ -28,6 +32,11 @@ public class CraftingHarmonicsMod {
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
+    }
+
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event) {
+        GameRegistry.registerFuelHandler(FuelRegistry.getInstance());
     }
 
     @Mod.EventHandler

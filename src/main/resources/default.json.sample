@@ -76,6 +76,13 @@
                     output: "minecraft:stick",
                     with: "minecraft:coal:0",
                     experience: 0.2
+                },
+                {
+                    __comment: "Furnace fuels can be added as well, though not removed; you can only add new fuels or increase pre-existing fuels at the moment.",
+                    __result: "Allows the use of any dye as a fuel for one item",
+                    type: "addFurnaceFuel",
+                    what: "minecraft:dye",
+                    burnTime: 200
                 }
             ]
         }
