@@ -1,6 +1,6 @@
 {
     name: "Sample File",
-    description: "Sample file for reference; will do weird things with dyes as configured below.",
+    description: "Sample file for reference.  To use it, remove the '.sample' extension; only .json files are parsed.",
     sets: [
         {
             name: "default",
@@ -56,6 +56,13 @@
                     output: "minecraft:dye:1",
                     quantity: 5,
                     with: ["minecraft:dye:0", "minecraft:dye:1"]
+                },
+                {
+                    __comment: "Ore dictionary works here as well.",
+                    __result: "Turns three glass panes into a piece of glass.",
+                    type: "addShapeless",
+                    output: "minecraft:glass",
+                    with: ["<paneGlass>","<paneGlass>","<paneGlass>"]
                 },
                 {
                     __comment: "Furnace recipes will also be removed with remove; this actually removes 2 separate recipes.",
