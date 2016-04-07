@@ -1,6 +1,6 @@
 {
     name: "Sample File",
-    description: "Sample file for reference; will do weird things with dyes as configured below.",
+    description: "Sample file for reference.  To use it, remove the '.sample' extension; only .json files are parsed.",
     sets: [
         {
             name: "default",
@@ -41,12 +41,28 @@
                     with: ["minecraft:stick","minecraft:stick","minecraft:stick"]
                 },
                 {
+                    __comment: "You can also specify ore dictionary entries by surrounding the name with chevrons.",
+                    __result: "Adds a lever recipe with two sticks and any log",
+                    type: "addShaped",
+                    output: "minecraft:lever",
+                    width: 1,
+                    height: 3,
+                    with: ["minecraft:stick","minecraft:stick","<logWood>"]
+                },
+                {
                     __comment: "You can also add shapeless recipes.",
                     __result: "Turns one black and one red dye into five red dye.",
                     type: "addShapeless",
                     output: "minecraft:dye:1",
                     quantity: 5,
                     with: ["minecraft:dye:0", "minecraft:dye:1"]
+                },
+                {
+                    __comment: "Ore dictionary works here as well.",
+                    __result: "Turns three glass panes into a piece of glass.",
+                    type: "addShapeless",
+                    output: "minecraft:glass",
+                    with: ["<paneGlass>","<paneGlass>","<paneGlass>"]
                 },
                 {
                     __comment: "Furnace recipes will also be removed with remove; this actually removes 2 separate recipes.",
@@ -98,6 +114,13 @@
                     type: "addBrew",
                     output: "minecraft:soul_sand",
                     with: ["minecraft:water_bucket", "minecraft:netherrack"]
+                },
+                {
+                    __comment: "You can also add entries to the ore dictionary; for instance, this will allow you to use glass bottles in place of panes (like in the panes to glass recipe above).",
+                    __result: "Adds glass bottles to the paneGlass list.",
+                    type: "registerOreDictItem",
+                    what: "minecraft:glass_bottle",
+                    oreDict: "paneGlass"
                 }
             ]
         }

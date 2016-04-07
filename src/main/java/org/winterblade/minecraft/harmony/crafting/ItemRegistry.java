@@ -154,4 +154,22 @@ public class ItemRegistry {
 
         return (aName.equals(bName));
     }
+
+    /**
+     * Checks to see if a given entry is an ore dictionary name or an item.
+     * @param entry  The entry to check
+     * @return      True if this is an ore dictionary item.
+     */
+    public static boolean IsOreDictionaryEntry(String entry) {
+        return entry.startsWith("<");
+    }
+
+    /**
+     * Gets the ore dictionary name for an entry
+     * @param entry The entry to check
+     * @return      The ore dictionary name
+     */
+    public static String GetOreDictionaryName(String entry) {
+        return entry.substring(1,entry.length()-1);
+    }
 }
