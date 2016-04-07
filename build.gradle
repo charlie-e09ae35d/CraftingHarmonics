@@ -118,8 +118,10 @@ uploadArchives {
     repositories.mavenDeployer {
         dependsOn 'buildArtifacts'
 
-        repository(url: "http://maven.winterblade.org/content/repositories/Crafting_Harmonics") {
-            authentication(userName: "minecraft", password: project.getProperty('mavenPass'))
+        if(project.hasProperty('mavenPass')) {
+            repository(url: "http://maven.winterblade.org/content/repositories/Crafting_Harmonics") {
+                authentication(userName: "minecraft", password: project.getProperty('mavenPass'))
+            }
         }
 
         pom {
