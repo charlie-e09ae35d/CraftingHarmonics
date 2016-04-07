@@ -96,7 +96,8 @@ task getTCVersionInfo << {
     version = "${version}${branch}${hash}${counter}"
 }
 
-task printTCVersionInfo(dependsOn: getTCVersionInfo) << {
+//noinspection GroovyAssignabilityCheck
+task printTCVersionInfo(dependsOn: 'getTCVersionInfo') << {
     println("##teamcity[setParameter name='ProjectVersion' value='${version}']")
     println("##teamcity[buildNumber '${version}']")
 }
@@ -110,4 +111,4 @@ task artifactDeobf(type: Copy, dependsOn: ['jar']) {
     }
 }
 
-task buildArtifacts(dependsOn: ['build','artifactDeobf','reobfJar'])
+task buildArtifacts(dependsOn: ['sourceJar','artifactDeobf','reobfJar'])
