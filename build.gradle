@@ -84,3 +84,12 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+task artifactDeobf(type: Copy, dependsOn: jar) {
+    outputs.upToDateWhen { false }
+    from 'build/libs/' + project.property("archivesBaseName") + '-' + project.property("version") + '.jar'
+    into 'build/libs/'
+    rename { String fileName ->
+        fileName.replace('.jar','-deobf.jar')
+    }
+}
