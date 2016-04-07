@@ -126,7 +126,7 @@ uploadArchives {
 
         pom {
             groupId = project.group
-            version = project.version
+            version = "${version}" // So it gets processed after it's set from TC if it's a dev build
             artifactId = project.archivesBaseName
             project {
                 name project.archivesBaseName
