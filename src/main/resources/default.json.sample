@@ -114,6 +114,13 @@
                     type: "addBrew",
                     output: "minecraft:soul_sand",
                     with: ["minecraft:water_bucket", "minecraft:netherrack"]
+                },
+                {
+                    __comment: "You can also add entries to the ore dictionary; for instance, this will allow you to use glass bottles in place of panes (like in the panes to glass recipe above).",
+                    __result: "Adds glass bottles to the paneGlass list.",
+                    type: "registerOreDictItem",
+                    what: "minecraft:glass_bottle",
+                    oreDict: "paneGlass"
                 }
             ]
         }
