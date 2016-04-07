@@ -23,10 +23,11 @@ public class AddBrew extends BaseAddOperation {
      */
     private transient ItemStack inputItem;
     private transient ItemStack ingredientItem;
-    private transient ItemStack outputItemStack;
 
     @Override
     public void Init() throws ItemMissingException {
+        super.Init();
+
         if(with != null && with.length >= 2) {
             input = with[0];
             ingredient = with[1];
@@ -40,9 +41,6 @@ public class AddBrew extends BaseAddOperation {
 
         ingredientItem = ItemRegistry.TranslateToItemStack(ingredient);
         if(ingredientItem == null) throw new RuntimeException("Unable to find requested ingredient item '" + ingredient + "'.");
-
-        outputItemStack = ItemRegistry.TranslateToItemStack(output, quantity);
-        if(outputItemStack == null) throw new RuntimeException("Unable to find requested output item '" + output + "'.");
     }
 
     @Override

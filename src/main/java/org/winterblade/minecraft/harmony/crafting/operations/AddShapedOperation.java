@@ -30,11 +30,11 @@ public class AddShapedOperation extends BaseAddOperation {
      */
     private transient ItemStack[] input;
     private transient Object[] inputOreDict;
-    private transient ItemStack outputItemStack;
     private transient boolean isOreDict;
 
     @Override
     public void Init() throws ItemMissingException {
+        super.Init();
         if(with.length > 0) shape = with;
 
         String[] filler = new String[1];
@@ -85,15 +85,11 @@ public class AddShapedOperation extends BaseAddOperation {
                 break;
         }
 
-        outputItemStack = ItemRegistry.TranslateToItemStack(output, quantity);
-        if (outputItemStack == null)
-            throw new RuntimeException("Unable to find requested output item '" + output + "'.");
-
         input = new ItemStack[shape.length];
         inputOreDict = new Object[shape.length];
 
         for(int i = 0; i < shape.length; i++) {
-            if(shape[i] == "") {
+            if(shape[i].equals("")) {
                 inputOreDict[i] = input[i] = null;
             }
             else if(ItemRegistry.IsOreDictionaryEntry(shape[i])) {

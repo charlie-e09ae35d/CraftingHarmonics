@@ -47,7 +47,8 @@
                     output: "minecraft:lever",
                     width: 1,
                     height: 3,
-                    with: ["minecraft:stick","minecraft:stick","<logWood>"]
+                    with: ["minecraft:stick","minecraft:stick","<logWood>"],
+                    displayName: "Tall Lever"
                 },
                 {
                     __comment: "You can also add shapeless recipes.",
@@ -62,7 +63,8 @@
                     __result: "Turns three glass panes into a piece of glass.",
                     type: "addShapeless",
                     output: "minecraft:glass",
-                    with: ["<paneGlass>","<paneGlass>","<paneGlass>"]
+                    with: ["<paneGlass>","<paneGlass>","<paneGlass>"],
+                    displayName: "Recovered Glass"
                 },
                 {
                     __comment: "Furnace recipes will also be removed with remove; this actually removes 2 separate recipes.",
@@ -91,7 +93,8 @@
                     type: "addFurnace",
                     output: "minecraft:stick",
                     with: "minecraft:coal:0",
-                    experience: 0.2
+                    experience: 0.2,
+                    displayName: "Sticky Coal"
                 },
                 {
                     __comment: "Furnace fuels can be added as well, though not removed; you can only add new fuels or increase pre-existing fuels at the moment.",
@@ -113,7 +116,8 @@
                     __result: "Brews water buckets, plus netherrack to make soul sand; you also won't get the bucket back.",
                     type: "addBrew",
                     output: "minecraft:soul_sand",
-                    with: ["minecraft:water_bucket", "minecraft:netherrack"]
+                    with: ["minecraft:water_bucket", "minecraft:netherrack"],
+                    displayName: "Wet Netherrack"
                 },
                 {
                     __comment: "You can also add entries to the ore dictionary; for instance, this will allow you to use glass bottles in place of panes (like in the panes to glass recipe above).",
