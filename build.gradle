@@ -85,7 +85,7 @@ processResources
     }
 }
 
-task printTCVersionInfo << {
+task getTCVersionInfo << {
     def branch = System.getProperty("teamcity.build.branch", "")
     def counter = System.getProperty("build.counter", "")
     def hash = System.getProperty("build.vcs.number", "")
@@ -93,16 +93,21 @@ task printTCVersionInfo << {
     if(!hash.equals("")) hash = "-" + hash[0..7]
     if(!counter.equals("")) counter = "-" + counter
 
-    println("##teamcity[setParameter name='ProjectVersion' value='${version}']")
-    println("##teamcity[buildNumber '${version}${branch}${hash}${counter}']")
+    version = "${version}${branch}${hash}${counter}"
 }
 
+task printTCVersionInfo(dependsOn: getTCVersionInfo) << {
+    println("##teamcity[setParameter name='ProjectVersion' value='${version}']")
+    println("##teamcity[buildNumber '${version}']")
+}
 
-task artifactDeobf(type: Copy, dependsOn: jar) {
+task artifactDeobf(type: Copy, dependsOn: ['jar']) {
     outputs.upToDateWhen { false }
-    from 'build/libs/' + project.property("archivesBaseName") + '-' + project.property("version") + '.jar'
+    from 'build/libs/'
     into 'build/libs/'
     rename { String fileName ->
-        fileName.replace('.jar','-deobf.jar')
+        if(!fileName.endsWith('sources.jar')) fileName.replace('.jar','-deobf.jar')
     }
 }
+
+task buildArtifacts(dependsOn: ['build','artifactDeobf','reobfJar'])
