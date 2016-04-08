@@ -2,9 +2,11 @@ package org.winterblade.minecraft.harmony.crafting;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
@@ -13,6 +15,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -205,6 +208,114 @@ public class ItemRegistry {
      */
     public static String GetOreDictionaryName(String entry) {
         return entry.substring(1,entry.length()-1);
+    }
+
+    /**
+     * Checks to see if the NBT on the first item stack matches the second
+     * @param source    The source to check
+     * @param dest      The destination to check
+     * @return          True if they are the same (or similar if it's a fuzzy match)
+     */
+    public static boolean CheckIfNbtMatches(ItemStack source, ItemStack dest) {
+        // If one or the other is null or doesn't have a tag compound, bail
+        if(source == null || dest == null || source.hasTagCompound() != dest.hasTagCompound()) return false;
+
+        // Also, if we're checking two items that don't have a compound, then it's 'true'-ish
+        if(!source.hasTagCompound()) return true;
+
+        NBTTagCompound compound = new NBTTagCompound();
+        NBTTagCompound orig = source.getTagCompound();
+        boolean isFuzzy = orig.getBoolean("CraftingHarmonicsIsFuzzyMatch");
+        for (String s : orig.getKeySet()) {
+            // Skip our tag...
+            if (s.equals("CraftingHarmonicsIsFuzzyMatch")) continue;
+            compound.setTag(s, orig.getTag(s).copy());
+        }
+
+        // If we're not fuzzy, then...
+        if (!isFuzzy) {
+            // We need to check if the NBT matches exactly...
+            return compound.toString().equals(dest.getTagCompound().toString());
+        }
+
+        return CheckIfAtLeastAllTagsArePresent(compound, dest.getTagCompound());
+    }
+
+    /**
+     * Checks if at least all tags in the first parameter are in the second
+     * @param source    The source to check
+     * @param dest      The destination to confirm there are at least the same tags in
+     * @return          True if they are present in the second.
+     */
+    private static boolean CheckIfAtLeastAllTagsArePresent(NBTTagCompound source, NBTTagCompound dest) {
+        for(String s : source.getKeySet()) {
+            // If we don't have it, bail...
+            if(!dest.hasKey(s)) return false;
+
+            NBTBase sourceTag = source.getTag(s);
+            NBTBase destTag = dest.getTag(s);
+
+            // If our tags aren't the same type
+            if(sourceTag.getId() != destTag.getId()) return false;
+
+            // If we have an NBTTagCompound
+            if(sourceTag instanceof NBTTagCompound) {
+                // Go deeper...
+                if(!CheckIfAtLeastAllTagsArePresent((NBTTagCompound)sourceTag, (NBTTagCompound)destTag)) return false;
+            } else if(!sourceTag.equals(destTag)) return false; // Non-compound tag, so, we're fine.
+        }
+
+        return true;
+    }
+
+    /**
+     * Turns an inventory grid into a List
+     * @param inv   The inventory grid to convert
+     * @return      The grid as a List, skipping nulls
+     */
+    public static List<ItemStack> GetInventoryGridAsList(InventoryCrafting inv) {
+        List<ItemStack> grid = new ArrayList<>();
+
+        // Get a better list of grid inputs...
+        for (int i = 0; i <= 3; ++i) {
+            for (int j = 0; j <= 3; ++j) {
+                // Get the item in that spot...
+                ItemStack slot = inv.getStackInRowAndColumn(i, j);
+                if (slot == null) continue;
+
+                grid.add(slot);
+            }
+        }
+
+        return grid;
+    }
+
+    /**
+     * Checks to see if the provided recipe list matches what's provided in the inventory crafting grid.
+     * @param input The input recipe
+     * @param inv   The inventory grid to check
+     * @return      If they match
+     */
+    public static boolean CompareRecipeListToCraftingInventory(Object[] input, InventoryCrafting inv) {
+        // Now check more specific things...
+        List<ItemStack> grid = GetInventoryGridAsList(inv);
+
+        int offset = 0;
+
+        // How did this even happen?
+        if(input.length > grid.size()) return false;
+
+        for(Object recipeItem : input) {
+            // Get the current offset item and then increase the offset...
+            ItemStack gridItem = grid.get(offset++);
+
+            if(!(recipeItem instanceof ItemStack)) continue;
+
+            // Lastly, check if they match
+            if(!CheckIfNbtMatches((ItemStack) recipeItem, gridItem)) return false;
+        }
+
+        return true;
     }
 
     private enum ItemType {
