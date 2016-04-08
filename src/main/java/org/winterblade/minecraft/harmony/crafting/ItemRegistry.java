@@ -111,8 +111,10 @@ public class ItemRegistry {
         String[] parts = item.split(":");
 
         // Check if we're reading in NBT data...
-        if(parts.length >= 5 && parts[4].startsWith("=")) {
-            translatedType = ItemType.ExactNbt;
+        if(parts.length >= 5) {
+            if(parts[4].startsWith("=")) translatedType = ItemType.ExactNbt;
+            else if(parts[4].startsWith("~")) translatedType = ItemType.FuzzyNbt;
+
             parts[4] = parts[4].substring(1);
 
             // Now recombine the NBT; if only I hadn't used : as a separator...
