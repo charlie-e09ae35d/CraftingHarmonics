@@ -9,7 +9,7 @@ import java.util.*;
  * Created by Matt on 4/5/2016.
  */
 public class CraftingSet {
-    private final SortedSet<IRecipeOperation> operations = new TreeSet<>();
+    private final Collection<IRecipeOperation> operations = new PriorityQueue<>();
 
     /**
      * Creates a crafting set using the given set of operations
