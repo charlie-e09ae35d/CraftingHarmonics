@@ -125,6 +125,17 @@
                     type: "registerOreDictItem",
                     what: "minecraft:glass_bottle",
                     oreDict: "paneGlass"
+                },
+                {
+                    __comment: "For more advanced usage, you can set NBT data on any of the added items (shaped, shapeless, furnace, and brew); use the /ch getHeldNBT command in game to log the NBT of the item in your main hand.",
+                    __result: "Creates a spawn egg; can't use an Ender Dragon, so, cat's the next best thing.",
+                    __extra: "I spent more time figuring out the tags than I did coding this feature, and more time deciding on the recipe than either one...",
+                    __warning: "Make sure you properly escape quotes in the NBT, or parsing the file will fail.  Also... make sure you really know what you're doing here.",
+                    type: "addShapeless",
+                    output: "minecraft:spawn_egg",
+                    with: ["minecraft:fish","minecraft:book","minecraft:iron_helmet"],
+                    nbt: "{EntityTag:{id:\"Ozelot\",Invulnerable:1,CustomName:\"Toothless\",Visible:1,CatType:1,ActiveEffects:[{Id:11,Amplifier:5,Duration:10000000}]}}",
+                    displayName: "Summon Useless Feline"
                 }
             ]
         }
