@@ -10,6 +10,7 @@ import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
+import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
 
 import java.util.*;
 
@@ -101,7 +102,7 @@ public class AddShapedOperation extends BaseAddOperation {
                 inputOreDict[i] = input[i] = ItemRegistry.TranslateToItemStack(shape[i]);
 
                 // See if we need to do NBT matching...
-                if(input[i].hasTagCompound()) isNbt = true;
+                if(!isNbt && input[i].hasTagCompound()) isNbt = true;
             }
         }
 
@@ -162,6 +163,8 @@ public class AddShapedOperation extends BaseAddOperation {
         }
 
         // The args will get automatically expanded
-        return new ShapedOreRecipe(outputItemStack, args.toArray());
+        return isNbt
+                ? new ShapedOreRecipe(outputItemStack, args.toArray())
+                : new ShapedOreNbtMatchingRecipe(outputItemStack, args.toArray());
     }
 }
