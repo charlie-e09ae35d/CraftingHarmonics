@@ -39,6 +39,8 @@ public class AddFurnaceOperation extends BaseAddOperation {
                     + " is already registered as a furnace output. Due to how Minecraft handles smelting XP, this will"
                     + " always give you '" + curXp + "' XP per item instead of the '" + experience + "' you set.");
         }
+
+        // TODO: Check to see if this needs to be an NBT recipe
         FurnaceRecipes.instance().addSmeltingRecipe(inputItem, outputItemStack, experience);
     }
 

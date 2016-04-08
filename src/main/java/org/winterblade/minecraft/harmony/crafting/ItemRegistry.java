@@ -4,6 +4,9 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraftforge.oredict.OreDictionary;
@@ -103,12 +106,25 @@ public class ItemRegistry {
     public static ItemStack TranslateToItemStack(String item, int quantity) throws ItemMissingException {
         if(item == null || item.equals("")) return null;
 
+        ItemType translatedType = ItemType.Regular;
+
         String[] parts = item.split(":");
+
+        // Check if we're reading in NBT data...
+        if(parts.length >= 5 && parts[4].startsWith("=")) {
+            translatedType = ItemType.ExactNbt;
+            parts[4] = parts[4].substring(1);
+
+            // Now recombine the NBT; if only I hadn't used : as a separator...
+            for(int i = 5; i < parts.length; i++) {
+                parts[4] += ":" + parts[i];
+            }
+        }
 
         ItemStack itemStack = null;
 
         if(parts.length == 1) {
-            itemStack = GetItem("minecraft:" + parts[1], 1);
+            itemStack = GetItem("minecraft:" + parts[0], 1);
         } else if(parts.length == 2) {
             itemStack = GetItem(parts[0] + ":" + parts[1], 1);
         } else if (parts.length == 3 && parts[2].equals("*")) {
@@ -126,6 +142,22 @@ public class ItemRegistry {
         // Set our stack size if a valid quantity was specified (and larger than one):
         if(1 < quantity && quantity <= itemStack.getMaxStackSize()) {
             itemStack.stackSize = quantity;
+        }
+
+        // Check to see if we're doing anything special here...
+        if(translatedType != ItemType.Regular) {
+            NBTTagCompound compound;
+
+            // Get the compound...
+            try {
+                compound = JsonToNBT.getTagFromJson(parts[4]);
+            } catch (NBTException e) {
+                throw new ItemMissingException("Unable to convert input NBT into something readable by Minecraft; got response '" + e.getMessage() + "'.");
+            }
+
+            // Update it with our values:
+            compound.setBoolean("CraftingHarmonicsIsFuzzyMatch", translatedType == ItemType.FuzzyNbt);
+            itemStack.setTagCompound(compound);
         }
 
         return itemStack;
@@ -171,5 +203,9 @@ public class ItemRegistry {
      */
     public static String GetOreDictionaryName(String entry) {
         return entry.substring(1,entry.length()-1);
+    }
+
+    private enum ItemType {
+        Regular, ExactNbt, FuzzyNbt
     }
 }
