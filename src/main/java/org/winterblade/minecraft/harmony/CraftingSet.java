@@ -16,7 +16,13 @@ public class CraftingSet {
      * @param recipeOperations  The operations to add to this set.
      */
     public CraftingSet(IRecipeOperation[] recipeOperations) {
-        Collections.addAll(operations, recipeOperations);
+        try {
+            Collections.addAll(operations, recipeOperations);
+        }
+        catch(Exception ex) {
+            // TODO: Better logging here.
+            System.err.println("Error processing operations in set.");
+        }
     }
 
     /**

@@ -36,6 +36,10 @@ public class AddBrew extends BaseAddOperation {
         if(input.equals("") || ingredient.equals("")) throw new ItemMissingException("Brewing recipe is missing input or ingredient.");
 
         inputItem = ItemRegistry.TranslateToItemStack(input);
+        if(inputItem.hasTagCompound()) {
+            System.out.println("NBT support for brews isn't done yet because it's considered an edge case - NBT + " +
+                    "stack size 1? - if you need this, please let me know!");
+        }
         if(inputItem == null) throw new RuntimeException("Unable to find requested input item '" + input + "'.");
         if(inputItem.getMaxStackSize() > 1) throw new RuntimeException("Inputs for brewing cannot be stackable.");
 
