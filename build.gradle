@@ -13,6 +13,7 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven'
 
 /*
 // for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
@@ -20,7 +21,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.0.0-beta"
+version = "1.0.1"
 group= "org.winterblade.minecraft.craftingharmonics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "craftingharmonics"
 
@@ -29,7 +30,7 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 minecraft {
-    version = "1.9-12.16.0.1845-1.9"
+    version = "1.9-12.16.0.1858-1.9"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -82,5 +83,84 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+task getTCVersionInfo << {
+    def branch = System.getProperty("teamcity.build.branch", "")
+    def counter = System.getProperty("build.counter", "")
+    def hash = System.getProperty("build.vcs.number", "")
+    if(!branch.equals("")) branch = branch.equals("<default>") ? branch = "-develop" : "-" + branch
+    if(!hash.equals("")) hash = "-" + hash[0..7]
+    if(!counter.equals("")) counter = "-" + counter
+
+    version = "${version}${branch}${hash}${counter}"
+}
+
+//noinspection GroovyAssignabilityCheck
+task printTCVersionInfo(dependsOn: 'getTCVersionInfo') << {
+    println("##teamcity[setParameter name='ProjectVersion' value='${version}']")
+    println("##teamcity[buildNumber '${version}']")
+}
+
+task artifactDeobf(type: Copy, dependsOn: ['jar']) {
+    outputs.upToDateWhen { false }
+    from 'build/libs/'
+    into 'build/libs/'
+    rename { String fileName ->
+        if(!fileName.endsWith('sources.jar')) fileName.replace('.jar','-deobf.jar')
+    }
+}
+
+task buildArtifacts(dependsOn: ['sourceJar','artifactDeobf','reobfJar'])
+
+uploadArchives {
+    repositories.mavenDeployer {
+        dependsOn 'buildArtifacts'
+
+        if(project.hasProperty('mavenPass')) {
+            repository(url: "http://maven.winterblade.org/content/repositories/Crafting_Harmonics") {
+                authentication(userName: "minecraft", password: project.getProperty('mavenPass'))
+            }
+        }
+
+        pom {
+            groupId = project.group
+            version = "${version}" // So it gets processed after it's set from TC if it's a dev build
+            artifactId = project.archivesBaseName
+            project {
+                name project.archivesBaseName
+                packaging 'jar'
+                description 'Crafting Harmonics recipe manager'
+                url 'https://github.com/legendblade/CraftingHarmonics'
+
+                scm {
+                    url 'https://github.com/legendblade/CraftingHarmonics'
+                    connection 'scm:git:git://github.com/legendblade/CraftingHarmonics.git'
+                    developerConnection 'scm:git:git@github.com:legendblade/CraftingHarmonics.git'
+                }
+
+                issueManagement {
+                    system 'github'
+                    url 'https://github.com/legendblade/CraftingHarmonics/issues'
+                }
+
+                licenses {
+                    license {
+                        name 'MIT'
+                        url 'https://raw.githubusercontent.com/legendblade/CraftingHarmonics/master/LICENSE'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'legendblade'
+                        name 'Matt'
+                        roles { role 'developer' }
+                    }
+                }
+            }
+        }
     }
 }

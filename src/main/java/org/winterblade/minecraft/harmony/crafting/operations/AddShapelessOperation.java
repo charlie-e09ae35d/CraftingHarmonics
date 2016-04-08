@@ -25,10 +25,11 @@ public class AddShapelessOperation extends BaseAddOperation {
      * Actual items and whatnot
      */
     private transient List<Object> input;
-    private transient ItemStack outputItemStack;
 
     @Override
     public void Init() throws ItemMissingException {
+        super.Init();
+
         if(with.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
 
         input = new ArrayList<>();
@@ -42,9 +43,6 @@ public class AddShapelessOperation extends BaseAddOperation {
                 input.add(inputItem);
             }
         }
-
-        outputItemStack = ItemRegistry.TranslateToItemStack(output, quantity);
-        if(outputItemStack == null) throw new RuntimeException("Unable to find requested output item '" + output + "'.");
     }
 
     @Override

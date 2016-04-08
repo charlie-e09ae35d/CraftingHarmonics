@@ -21,12 +21,10 @@ public class AddFurnaceOperation extends BaseAddOperation {
      * Actual items and whatnot
      */
     private transient ItemStack inputItem;
-    private transient ItemStack outputItemStack;
 
     @Override
     public void Init() throws ItemMissingException {
-        outputItemStack = ItemRegistry.TranslateToItemStack(output, quantity);
-        if(outputItemStack == null) throw new RuntimeException("Unable to find requested output item '" + output + "'.");
+        super.Init();
 
         inputItem = ItemRegistry.TranslateToItemStack(with);
         if(inputItem == null) throw new RuntimeException("Unable to find requested input item '" + with + "'.");
