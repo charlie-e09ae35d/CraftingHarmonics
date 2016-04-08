@@ -7,8 +7,6 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
 import org.winterblade.minecraft.harmony.config.ConfigOperationDeserializer;
