@@ -32,7 +32,7 @@ public class CraftingSet {
         for(IRecipeOperation op : operations) {
             try {
                 op.Init();
-            } catch (ItemMissingException ex) {
+            } catch (Exception ex) {
                 System.err.println(ex.getMessage());
             }
         }

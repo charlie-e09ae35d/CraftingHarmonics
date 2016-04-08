@@ -6,12 +6,21 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
 import org.winterblade.minecraft.harmony.config.ConfigOperationDeserializer;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
+import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
+import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.utility.AnnotatedInstanceUtil;
+
+import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPED;
+import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
 
 /**
  * Created by Matt on 4/5/2016.
@@ -52,6 +61,14 @@ public class CraftingHarmonicsMod {
             defaultSet.Init();
             defaultSet.Apply();
         }
+
+        // Link in our recipes
+        RecipeSorter.register("craftingharmonics:shaped_nbt",       ShapedNbtMatchingRecipe.class,
+                SHAPED,    "before:minecraft:shaped");
+        RecipeSorter.register("craftingharmonics:shaped_nbt_ore",   ShapedOreNbtMatchingRecipe.class,
+                SHAPED,    "after:minecraft:shaped before:forge:shapedore");
+        RecipeSorter.register("craftingharmonics:shapeless_nbt",    ShapelessNbtMatchingRecipe.class,
+                SHAPELESS, "after:forge:shapedore before:minecraft:shapeless");
     }
 
     @Mod.EventHandler

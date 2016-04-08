@@ -6,9 +6,6 @@ import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.world.World;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Matt on 4/7/2016.
  */

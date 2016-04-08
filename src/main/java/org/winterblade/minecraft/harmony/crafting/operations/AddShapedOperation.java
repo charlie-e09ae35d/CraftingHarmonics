@@ -102,7 +102,7 @@ public class AddShapedOperation extends BaseAddOperation {
                 inputOreDict[i] = input[i] = ItemRegistry.TranslateToItemStack(shape[i]);
 
                 // See if we need to do NBT matching...
-                if(!isNbt && input[i].hasTagCompound()) isNbt = true;
+                if(input[i] != null && !isNbt && input[i].hasTagCompound()) isNbt = true;
             }
         }
 
