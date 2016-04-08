@@ -27,6 +27,9 @@ public class AddFurnaceOperation extends BaseAddOperation {
         super.Init();
 
         inputItem = ItemRegistry.TranslateToItemStack(with);
+        if(inputItem.hasTagCompound()) {
+            throw new RuntimeException("NBT matching is not supported for furnace recipes.");
+        }
         if(inputItem == null) throw new RuntimeException("Unable to find requested input item '" + with + "'.");
     }
 
@@ -40,8 +43,6 @@ public class AddFurnaceOperation extends BaseAddOperation {
                     + " always give you '" + curXp + "' XP per item instead of the '" + experience + "' you set.");
         }
 
-        // TODO: Check to see if this needs to be an NBT recipe
         FurnaceRecipes.instance().addSmeltingRecipe(inputItem, outputItemStack, experience);
     }
-
 }

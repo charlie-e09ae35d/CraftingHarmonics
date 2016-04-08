@@ -146,7 +146,7 @@
                 },
                 {
                     __comment: "It works on shapeless recipes too, and for a fuzzy match, use ~",
-                    __result: "Takes out a few steps turning cows into porkchops.",
+                    __result: "Takes out a few steps turning cows into beef as well.",
                     type: "addShapeless",
                     output: "minecraft:cooked_beef",
                     with: ["minecraft:spawn_egg:0:1:~{EntityTag:{id:\"Cow\"}}"]
