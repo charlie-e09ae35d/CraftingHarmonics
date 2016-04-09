@@ -1,6 +1,5 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;

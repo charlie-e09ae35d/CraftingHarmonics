@@ -1,6 +1,5 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
@@ -36,14 +35,14 @@ public class AddFurnaceOperation extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding furnace recipe for " + outputItemStack.getUnlocalizedName());
-        float curXp = FurnaceRecipes.instance().getSmeltingExperience(outputItemStack);
+        System.out.println("Adding furnace recipe for " + output.getUnlocalizedName());
+        float curXp = FurnaceRecipes.instance().getSmeltingExperience(output);
         if(curXp != 0.0F && curXp != experience) {
-            System.out.println(outputItemStack.getUnlocalizedName()
+            System.out.println(output.getUnlocalizedName()
                     + " is already registered as a furnace output. Due to how Minecraft handles smelting XP, this will"
                     + " always give you '" + curXp + "' XP per item instead of the '" + experience + "' you set.");
         }
 
-        FurnaceRecipes.instance().addSmeltingRecipe(inputItem, outputItemStack, experience);
+        FurnaceRecipes.instance().addSmeltingRecipe(inputItem, output, experience);
     }
 }

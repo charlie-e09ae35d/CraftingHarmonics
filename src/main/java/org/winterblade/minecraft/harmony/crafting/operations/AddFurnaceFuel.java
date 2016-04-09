@@ -1,6 +1,5 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;

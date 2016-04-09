@@ -6,6 +6,8 @@ import com.google.common.io.Resources;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Matt on 4/5/2016.
@@ -13,6 +15,7 @@ import java.io.PrintWriter;
 public class ConfigManager {
 
     private final String configPath;
+    private final List<File> setFiles = new ArrayList<>();
 
     /**
      * Generates a new config manager using the config path
@@ -63,7 +66,12 @@ public class ConfigManager {
 
         for(File config : files) {
             if(!config.getName().endsWith(".json")) continue;
+            setFiles.add(config);
+        }
+    }
 
+    public void processSetFiles() {
+        for(File config : setFiles) {
             System.out.println("Reading set definition " + config.getPath());
             try {
                 NashornConfigProcessor.getInstance().ReadConfigFile(config);

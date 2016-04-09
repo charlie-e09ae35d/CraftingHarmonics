@@ -4,18 +4,13 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import jdk.nashorn.api.scripting.ClassFilter;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
-import jdk.nashorn.internal.objects.NativeArguments;
 import jdk.nashorn.internal.runtime.ConsString;
-import net.minecraftforge.fml.common.FMLLog;
-import org.apache.logging.log4j.Logger;
 
 import javax.script.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Matt on 4/8/2016.

@@ -58,6 +58,9 @@ public class CraftingHarmonicsMod {
     public void postInit(FMLPostInitializationEvent event) {
         ItemRegistry.Init();
 
+        // Now that our item registry is set up, process our set files.
+        configManager.processSetFiles();
+
         // Always apply the default set:
         CraftingSet defaultSet = craftingSets.get("default");
 

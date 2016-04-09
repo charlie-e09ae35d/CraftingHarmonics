@@ -2,7 +2,6 @@ package org.winterblade.minecraft.harmony.crafting;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -144,11 +143,8 @@ public class ItemRegistry {
         }
 
         if(itemStack == null) return null;
+        UpdateStackQuantity(itemStack, quantity);
 
-        // Set our stack size if a valid quantity was specified (and larger than one):
-        if(1 < quantity && quantity <= itemStack.getMaxStackSize()) {
-            itemStack.stackSize = quantity;
-        }
 
         // Check to see if we're doing anything special here...
         if(translatedType != ItemType.Regular) {
@@ -167,6 +163,18 @@ public class ItemRegistry {
         }
 
         return itemStack;
+    }
+
+    /**
+     * Updates the quantity of a stack if the quantity is within acceptable ranges.
+     * @param itemStack The item stack
+     * @param quantity  The quantity to set.
+     */
+    public static void UpdateStackQuantity(ItemStack itemStack, int quantity) {
+        // Set our stack size if a valid quantity was specified (and larger than one):
+        if(1 < quantity && quantity <= itemStack.getMaxStackSize()) {
+            itemStack.stackSize = quantity;
+        }
     }
 
     /**

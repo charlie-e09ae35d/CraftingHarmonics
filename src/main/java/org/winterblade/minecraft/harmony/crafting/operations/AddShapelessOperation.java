@@ -1,6 +1,5 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -50,10 +49,10 @@ public class AddShapelessOperation extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding shapeless recipe for " + outputItemStack.getUnlocalizedName());
+        System.out.println("Adding shapeless recipe for " + output.getUnlocalizedName());
         CraftingManager.getInstance().addRecipe(
                 isNbt
-                    ? new ShapelessNbtMatchingRecipe(outputItemStack, input.toArray())
-                    : new ShapelessOreRecipe(outputItemStack, input.toArray()));
+                    ? new ShapelessNbtMatchingRecipe(output, input.toArray())
+                    : new ShapelessOreRecipe(output, input.toArray()));
     }
 }

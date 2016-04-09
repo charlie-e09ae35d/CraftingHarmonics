@@ -3,7 +3,6 @@ package org.winterblade.minecraft.harmony;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

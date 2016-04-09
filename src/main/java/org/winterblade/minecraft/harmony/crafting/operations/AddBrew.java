@@ -1,6 +1,5 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
@@ -50,7 +49,7 @@ public class AddBrew extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding brewing recipe for " + outputItemStack.getUnlocalizedName());
-        BrewingRecipeRegistry.addRecipe(inputItem, ingredientItem, outputItemStack);
+        System.out.println("Adding brewing recipe for " + output.getUnlocalizedName());
+        BrewingRecipeRegistry.addRecipe(inputItem, ingredientItem, output);
     }
 }

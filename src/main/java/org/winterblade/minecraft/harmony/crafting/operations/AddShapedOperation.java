@@ -1,6 +1,5 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -111,7 +110,7 @@ public class AddShapedOperation extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding shaped recipe for " + outputItemStack.getUnlocalizedName());
+        System.out.println("Adding shaped recipe for " + output.getUnlocalizedName());
         CraftingManager.getInstance().addRecipe(isOreDict ? CreateOreDictRecipe() : CreateStandardRecipe());
     }
 
@@ -120,8 +119,8 @@ public class AddShapedOperation extends BaseAddOperation {
      * @return The IRecipe
      */
     private IRecipe CreateStandardRecipe() {
-        if(!isNbt) return new ShapedRecipes(width, height, input, outputItemStack);
-        return new ShapedNbtMatchingRecipe(width, height, input, outputItemStack);
+        if(!isNbt) return new ShapedRecipes(width, height, input, output);
+        return new ShapedNbtMatchingRecipe(width, height, input, output);
     }
 
     /**
@@ -165,7 +164,7 @@ public class AddShapedOperation extends BaseAddOperation {
 
         // The args will get automatically expanded
         return isNbt
-                ? new ShapedOreRecipe(outputItemStack, args.toArray())
-                : new ShapedOreNbtMatchingRecipe(outputItemStack, args.toArray());
+                ? new ShapedOreRecipe(output, args.toArray())
+                : new ShapedOreNbtMatchingRecipe(output, args.toArray());
     }
 }
