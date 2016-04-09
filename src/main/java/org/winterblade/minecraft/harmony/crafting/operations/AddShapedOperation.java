@@ -8,9 +8,9 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.apache.commons.lang3.ArrayUtils;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
+import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
 
 import java.util.*;
 
@@ -19,11 +19,12 @@ import java.util.*;
  */
 @RecipeOperation(name = "addShaped")
 public class AddShapedOperation extends BaseAddOperation {
+    public static final int CHAR_A = 65;
     /**
      * Serialized properties:
      */
-    private String[] shape; // 0.2 support
-    private String[] with;
+    private OreDictionaryItemStack[] shape; // 0.2 support
+    private OreDictionaryItemStack[] with;
     private int width;
     private int height;
 
@@ -40,8 +41,8 @@ public class AddShapedOperation extends BaseAddOperation {
         super.Init();
         if(with.length > 0) shape = with;
 
-        String[] filler = new String[1];
-        filler[0] = "";
+        OreDictionaryItemStack[] filler = new OreDictionaryItemStack[1];
+        filler[0] = null;
 
         if(shape.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
 
@@ -92,14 +93,14 @@ public class AddShapedOperation extends BaseAddOperation {
         inputOreDict = new Object[shape.length];
 
         for(int i = 0; i < shape.length; i++) {
-            if(shape[i].equals("")) {
+            if(shape[i] == null) {
                 inputOreDict[i] = input[i] = null;
             }
-            else if(ItemRegistry.IsOreDictionaryEntry(shape[i])) {
+            else if(shape[i].isOreDict()) {
                 isOreDict = true;
-                inputOreDict[i] = ItemRegistry.GetOreDictionaryName(shape[i]);
+                inputOreDict[i] = shape[i].getOreDictName();
             } else {
-                inputOreDict[i] = input[i] = ItemRegistry.TranslateToItemStack(shape[i]);
+                inputOreDict[i] = input[i] = shape[i].getItemStack();
 
                 // See if we need to do NBT matching...
                 if(input[i] != null && !isNbt && input[i].hasTagCompound()) isNbt = true;
@@ -142,7 +143,7 @@ public class AddShapedOperation extends BaseAddOperation {
                     lines[y] += " ";
                 } else {
                     // This will produce increasing values of A, B, C, etc
-                    char id = (char)(65+offset);
+                    char id = (char)(CHAR_A +offset);
                     lines[y] += id;
                     charmap.put(id, inputOreDict[offset]);
                 }

@@ -5,6 +5,7 @@ import jdk.nashorn.api.scripting.ScriptUtils;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -68,7 +69,16 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
                     field.setAccessible(true);
 
                     // If we have an item stack, process the inbound data through the registry...
-                    if (ItemStack[].class.isAssignableFrom(field.getType())) {
+                    if (OreDictionaryItemStack[].class.isAssignableFrom(field.getType())) {
+                        Object[] items = (Object[])ScriptUtils.convert(o, Object[].class);
+                        OreDictionaryItemStack[] stacks = new OreDictionaryItemStack[items.length];
+                        for (int i = 0; i < items.length; i++) {
+                            stacks[i] = ItemRegistry.TranslateToOreDictionaryItemStack(items[i]);
+                        }
+                        field.set(this, stacks);
+                    } else if(OreDictionaryItemStack.class.isAssignableFrom(field.getType())) {
+                        field.set(this, ItemRegistry.TranslateToOreDictionaryItemStack(o));
+                    } else if (ItemStack[].class.isAssignableFrom(field.getType())) {
                         Object[] items = (Object[])ScriptUtils.convert(o, Object[].class);
                         ItemStack[] stacks = new ItemStack[items.length];
                         for (int i = 0; i < items.length; i++) {

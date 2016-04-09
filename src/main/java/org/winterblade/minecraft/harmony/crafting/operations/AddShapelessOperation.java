@@ -7,6 +7,7 @@ import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessNbtMatchingRecipe;
+import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class AddShapelessOperation extends BaseAddOperation {
     /**
      * Serialized properties:
      */
-    private String[] with;
+    private OreDictionaryItemStack[] with;
 
     /**
      * Actual items and whatnot
@@ -35,11 +36,11 @@ public class AddShapelessOperation extends BaseAddOperation {
 
         input = new ArrayList<>();
 
-        for(String item : with) {
-            if(ItemRegistry.IsOreDictionaryEntry(item)) {
-                input.add(ItemRegistry.GetOreDictionaryName(item));
+        for(OreDictionaryItemStack item : with) {
+            if(item.isOreDict()) {
+                input.add(item.getOreDictName());
             } else {
-                ItemStack inputItem = ItemRegistry.TranslateToItemStack(item);
+                ItemStack inputItem = item.getItemStack();
                 if (inputItem == null) continue;
                 input.add(inputItem);
                 if(!isNbt && inputItem.hasTagCompound()) isNbt = true;
