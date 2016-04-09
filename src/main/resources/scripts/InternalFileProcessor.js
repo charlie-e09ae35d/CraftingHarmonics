@@ -4,7 +4,8 @@ var module = { exports: {} };
 var __CraftingHarmonicsInternal_Internal = function() {
     var ch = this;
 
-    ch.RecipeOperationRegistry = Java.type('org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry'),
+    ch.RecipeOperationRegistry = Java.type('org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry');
+    ch.ScriptExecutionManager = Java.type('org.winterblade.minecraft.harmony.scripting.ScriptExecutionManager');
 
     // This will run in order to actually get our recipe data into something sensible
     this.FileProcessor = function(filename, exports) {
@@ -46,15 +47,21 @@ var __CraftingHarmonicsInternal_Internal = function() {
                     continue;
                 }
 
-                // TODO: Move me into a higher level and call it there instead of always including it on every op.
-                op.getJson = function(obj) { return JSON.stringify(obj).replace(/\"([^(\")"]+)\":/g,"$1:"); };
-
                 if(!ch.RecipeOperationRegistry.CreateOperationInSet(set.name,op.type, op)) {
                     print("Invalid operation: #" + j + " in set.");
                 }
             }
         }
     };
+
+    /*
+     * Used by our SEM to parse NBT into a Minecraft format.
+     */
+    ch.getJsonString = function(obj) {
+        return JSON.stringify(obj).replace(/\"([^(\")"]+)\":/g,"$1:");
+    }
+
+    ch.ScriptExecutionManager.registerInternal(this);
 }
 
 // Get our internal instance:
@@ -62,7 +69,7 @@ __CraftingHarmonicsInternal = new __CraftingHarmonicsInternal_Internal();
 
 // Override the print functionality to redirect it to our logger...
 print = function() {
-    var logger = Java.type('org.winterblade.minecraft.harmony.config.NashornConfigProcessor');
+    var logger = Java.type('org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor');
     var lineStart = "Script: ";
 
     for(var i in arguments) {

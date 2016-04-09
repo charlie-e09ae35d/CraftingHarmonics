@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.scripting.ScriptExecutionManager;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -46,7 +47,16 @@ public class ScriptObjectReader {
                     field.setAccessible(true);
 
                     // If we have an item stack, process the inbound data through the registry...
-                    if (RecipeComponent[].class.isAssignableFrom(field.getType())) {
+                    if (OreDictionaryItemStack[].class.isAssignableFrom(field.getType())) {
+                        Object[] items = (Object[]) ScriptUtils.convert(o, Object[].class);
+                        OreDictionaryItemStack[] stacks = new OreDictionaryItemStack[items.length];
+                        for (int i = 0; i < items.length; i++) {
+                            stacks[i] = TranslateToOreDictionaryItemStack((String)items[i]);
+                        }
+                        field.set(writeTo, stacks);
+                    } else if(OreDictionaryItemStack.class.isAssignableFrom(field.getType())) {
+                        field.set(writeTo, TranslateToOreDictionaryItemStack((String)o));
+                    } else if (RecipeComponent[].class.isAssignableFrom(field.getType())) {
                         Object[] items = (Object[])ScriptUtils.convert(o, Object[].class);
                         RecipeComponent[] stacks = new RecipeComponent[items.length];
                         for (int i = 0; i < items.length; i++) {
@@ -60,7 +70,7 @@ public class ScriptObjectReader {
                         if(o instanceof String) {
                             json = o.toString();
                         } else if(o instanceof ScriptObjectMirror) {
-                            json = data.callMember("getJson", o).toString();
+                            json = ScriptExecutionManager.getJsonString(o);
                         }
 
                         try {
@@ -100,7 +110,6 @@ public class ScriptObjectReader {
             return component;
         }
 
-        System.out.println(data.getClass());
         ScriptObjectMirror item = ScriptUtils.wrap((ScriptObject) data);
 
         if(!item.hasMember("item")) return null;
@@ -108,5 +117,17 @@ public class ScriptObjectReader {
         ScriptObjectReader.WriteScriptObjectToClass(item,component);
 
         return component;
+    }
+
+    /**
+     * Generate an OreDictionaryItemStack from the given info
+     * @param data  The string to parse
+     * @return      The OreDictionaryItemStack
+     * @throws ItemMissingException If the item couldn't be found.
+     */
+    public static OreDictionaryItemStack TranslateToOreDictionaryItemStack(String data) throws ItemMissingException {
+        return ItemRegistry.IsOreDictionaryEntry(data)
+                ? new OreDictionaryItemStack(ItemRegistry.GetOreDictionaryName(data))
+                : new OreDictionaryItemStack(ItemRegistry.TranslateToItemStack(data));
     }
 }

@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.config;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 import java.io.File;
 import java.io.IOException;

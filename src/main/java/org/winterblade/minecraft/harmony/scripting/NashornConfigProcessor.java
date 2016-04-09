@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.config;
+package org.winterblade.minecraft.harmony.scripting;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;

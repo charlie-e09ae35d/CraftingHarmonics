@@ -2,24 +2,24 @@ package org.winterblade.minecraft.harmony.crafting.components;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
 
 /**
  * Created by Matt on 4/8/2016.
  */
 public class RecipeComponent {
-    protected ItemStack item;
+    protected OreDictionaryItemStack item;
     protected NBTTagCompound nbt;
-    private String oreDict;
     private boolean fuzzyNbt;
     private boolean returnOnCraft;
     private RecipeComponent replace;
 
     public ItemStack getItemStack() {
-        return item;
+        return item.getItemStack();
     }
 
     public void setItem(ItemStack item) {
-        this.item = item;
+        this.item = new OreDictionaryItemStack(item);
     }
 
     public NBTTagCompound getNbt() {
@@ -31,15 +31,15 @@ public class RecipeComponent {
     }
 
     public String getOreDictName() {
-        return oreDict;
+        return item.getOreDictName();
     }
 
     public void setOreDict(String oreDict) {
-        this.oreDict = oreDict;
+        this.item = new OreDictionaryItemStack(oreDict);
     }
 
     public boolean isOreDict() {
-        return oreDict != null;
+        return item.isOreDict();
     }
 
     public boolean hasNbt() {
