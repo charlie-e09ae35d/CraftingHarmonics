@@ -3,6 +3,9 @@ package org.winterblade.minecraft.harmony.api;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.nbt.NBTTagCompound;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
@@ -87,6 +90,19 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
                         field.set(this, stacks);
                     } else if (ItemStack.class.isAssignableFrom(field.getType())) {
                         field.set(this, ItemRegistry.TranslateToItemStack(o));
+                    } else if (NBTTagCompound.class.isAssignableFrom(field.getType())) {
+                        String json = "{}";
+                        if(o instanceof String) {
+                            json = o.toString();
+                        } else if(o instanceof ScriptObjectMirror) {
+                            json = data.callMember("getJson", o).toString();
+                        }
+
+                        try {
+                            field.set(this, JsonToNBT.getTagFromJson(json));
+                        } catch (NBTException e) {
+                            System.out.println("Unable to convert '" + json + "' to NBT tag.");
+                        }
                     } else {
                         field.set(this, ScriptUtils.convert(o, field.getType()));
                     }

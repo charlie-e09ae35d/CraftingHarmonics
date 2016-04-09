@@ -152,12 +152,18 @@
                     with: ["minecraft:spawn_egg:0:1:~{EntityTag:{id:\"Cow\"}}"]
                 },
                 {
-                    __comment: "This is used to test the fuzzy match, above.",
+                    __comment: "You can also set tag compounds as raw JSON now.",
                     __result: "An overused joke.",
                     type: "addShapeless",
                     output: "minecraft:spawn_egg",
                     with: ["minecraft:book"],
-                    nbt: "{EntityTag:{id:\"Cow\",CustomName:\"There Is No Cow Level\",Visible:1}}",
+                    nbt: {
+                        EntityTag: {
+                            id: "Cow",
+                            CustomName: "There Is No Cow Level",
+                            Visible:1
+                        }
+                    },
                     displayName: "Tome of Town Portal"
                 },
                 {

@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.crafting.operations;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
+import net.minecraft.nbt.NBTTagCompound;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
@@ -18,7 +19,7 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
     protected ItemStack output;
     protected int quantity;
     protected String displayName;
-    protected String nbt;
+    protected NBTTagCompound nbt;
 
     @Override
     public void Init() throws ItemMissingException
@@ -28,13 +29,8 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
 
         ItemRegistry.UpdateStackQuantity(output, quantity);
 
-        if(nbt != null && !nbt.equals("")) {
-            try {
-                output.setTagCompound(JsonToNBT.getTagFromJson(nbt));
-            } catch (NBTException e) {
-                // Yeah, we're just passing it on.
-                throw new RuntimeException("Unable to convert input NBT into something readable by Minecraft; got response '" + e.getMessage() + "'.");
-            }
+        if(nbt != null && !nbt.hasNoTags()) {
+            output.setTagCompound(nbt);
         }
 
         // Set the display name afterwards, because setting NBT would overwrite it...

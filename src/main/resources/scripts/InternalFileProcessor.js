@@ -46,6 +46,9 @@ var __CraftingHarmonicsInternal_Internal = function() {
                     continue;
                 }
 
+                // TODO: Move me into a higher level and call it there instead of always including it on every op.
+                op.getJson = function(obj) { return JSON.stringify(obj).replace(/\"([^(\")"]+)\":/g,"$1:"); };
+
                 if(!ch.RecipeOperationRegistry.CreateOperationInSet(set.name,op.type, op)) {
                     print("Invalid operation: #" + j + " in set.");
                 }
