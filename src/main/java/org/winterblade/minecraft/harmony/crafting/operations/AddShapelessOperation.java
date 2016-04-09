@@ -5,7 +5,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessNbtMatchingRecipe;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ public class AddShapelessOperation extends BaseAddOperation {
     /**
      * Serialized properties:
      */
-    private String[] with;
+    private RecipeComponent[] with;
 
     /**
      * Actual items and whatnot
@@ -35,11 +35,12 @@ public class AddShapelessOperation extends BaseAddOperation {
 
         input = new ArrayList<>();
 
-        for(String item : with) {
-            if(ItemRegistry.IsOreDictionaryEntry(item)) {
-                input.add(ItemRegistry.GetOreDictionaryName(item));
+        // Translate this into something the underlying handler can understand
+        for(RecipeComponent item : with) {
+            if(item.isOreDict()) {
+                input.add(item.getOreDictName());
             } else {
-                ItemStack inputItem = ItemRegistry.TranslateToItemStack(item);
+                ItemStack inputItem = item.getItemStack();
                 if (inputItem == null) continue;
                 input.add(inputItem);
                 if(!isNbt && inputItem.hasTagCompound()) isNbt = true;
@@ -49,10 +50,10 @@ public class AddShapelessOperation extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding shapeless recipe for " + outputItemStack.getUnlocalizedName());
+        System.out.println("Adding shapeless recipe for " + output.toString());
         CraftingManager.getInstance().addRecipe(
                 isNbt
-                    ? new ShapelessNbtMatchingRecipe(outputItemStack, input.toArray())
-                    : new ShapelessOreRecipe(outputItemStack, input.toArray()));
+                    ? new ShapelessNbtMatchingRecipe(output.getItemStack(), with, input.toArray())
+                    : new ShapelessOreRecipe(output.getItemStack(), input.toArray()));
     }
 }

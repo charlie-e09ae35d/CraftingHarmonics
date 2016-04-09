@@ -2,29 +2,22 @@ package org.winterblade.minecraft.harmony;
 
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.PriorityQueue;
+import java.util.List;
 
 /**
  * Created by Matt on 4/5/2016.
  */
 public class CraftingSet {
-    private final Collection<IRecipeOperation> operations = new PriorityQueue<>();
+    private final List<IRecipeOperation> operations = new ArrayList<>();
 
     /**
-     * Creates a crafting set using the given set of operations
-     * @param recipeOperations  The operations to add to this set.
+     * Adds an operation to the set.
+     * @param operation The operation.
      */
-    public CraftingSet(IRecipeOperation[] recipeOperations) {
-        try {
-            Collections.addAll(operations, recipeOperations);
-        }
-        catch(Exception ex) {
-            // TODO: Better logging here.
-            System.err.println("Error processing operations in set.");
-        }
+    public void AddOperation(IRecipeOperation operation) {
+        operations.add(operation);
     }
 
     /**
@@ -38,6 +31,9 @@ public class CraftingSet {
                 System.err.println(ex.getMessage());
             }
         }
+
+        // So we're only sorting it once...
+        Collections.sort(operations);
     }
 
     void Apply() {
@@ -46,7 +42,7 @@ public class CraftingSet {
                 op.Apply();
             }
             catch(Exception ex) {
-                System.err.println("Error applying operation.\n" + Arrays.toString(ex.getStackTrace()));
+                System.err.println("Error applying operation.\n" + ex.getMessage());
             }
         }
     }

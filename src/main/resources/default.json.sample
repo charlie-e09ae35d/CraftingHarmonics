@@ -152,20 +152,39 @@
                     with: ["minecraft:spawn_egg:0:1:~{EntityTag:{id:\"Cow\"}}"]
                 },
                 {
-                    __comment: "This is used to test the fuzzy match, above.",
+                    __comment: "You can also set tag compounds as raw JSON now.",
                     __result: "An overused joke.",
                     type: "addShapeless",
                     output: "minecraft:spawn_egg",
                     with: ["minecraft:book"],
-                    nbt: "{EntityTag:{id:\"Cow\",CustomName:\"There Is No Cow Level\",Visible:1}}",
+                    nbt: {
+                        EntityTag: {
+                            id: "Cow",
+                            CustomName: "There Is No Cow Level",
+                            Visible:1
+                        }
+                    },
                     displayName: "Tome of Town Portal"
                 },
                 {
-                    __comment: "As always, you can do ore dictionary as well.",
+                    __comment: "You can also use an expanded format for items, allowing you to specify more properties.",
                     __result: "Just going with it now...",
                     type: "addShaped",
                     output: "minecraft:end_portal_frame",
-                    with: ["minecraft:ender_chest","minecraft:spawn_egg:0:1:~{DisplayName:\"Tome of Town Portal\"}","<logWood>"],
+                    with: [
+                        {
+                            item: "minecraft:ender_chest"
+                        },
+                        {
+                            item: "minecraft:spawn_egg:0:1",
+                            nbt: {
+                                DisplayName: "Tome of Town Portal"
+                            },
+                            fuzzyNbt: true
+                        },
+                        {
+                            item: "<logWood>"
+                        }],
                     displayName: "Oh Whatever",
                     quantity: 12
                 }

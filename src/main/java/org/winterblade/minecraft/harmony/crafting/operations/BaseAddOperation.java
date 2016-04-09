@@ -1,13 +1,11 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
 /**
  * Created by Matt on 4/6/2016.
@@ -16,35 +14,26 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
     /**
      * Serialized properties:
      */
-    protected String output;
+    protected RecipeComponent output;
     protected int quantity;
     protected String displayName;
-    protected String nbt;
-
-    /**
-     * Computed properties
-     */
-    protected transient ItemStack outputItemStack;
+    protected NBTTagCompound nbt;
 
     @Override
     public void Init() throws ItemMissingException
     {
-        outputItemStack = ItemRegistry.TranslateToItemStack(output, quantity);
-        if (outputItemStack == null)
-            throw new RuntimeException("Unable to find requested output item '" + output + "'.");
+        if (output.getItemStack() == null)
+            throw new RuntimeException("Unable to find requested output item " + output.toString());
 
-        if(nbt != null && !nbt.equals("")) {
-            try {
-                outputItemStack.setTagCompound(JsonToNBT.getTagFromJson(nbt));
-            } catch (NBTException e) {
-                // Yeah, we're just passing it on.
-                throw new RuntimeException("Unable to convert input NBT into something readable by Minecraft; got response '" + e.getMessage() + "'.");
-            }
+        ItemRegistry.UpdateStackQuantity(output.getItemStack(), quantity);
+
+        if(nbt != null && !nbt.hasNoTags()) {
+            output.getItemStack().setTagCompound(nbt);
         }
 
         // Set the display name afterwards, because setting NBT would overwrite it...
         if(displayName != null && !displayName.equals("")) {
-            outputItemStack.setStackDisplayName(displayName);
+            output.getItemStack().setStackDisplayName(displayName);
         }
     }
 
@@ -59,6 +48,10 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
             return o.getClass().getSimpleName().compareTo(getClass().getSimpleName());
 
         // Otherwise, sort on name:
-        return output.compareTo(((BaseAddOperation) o).output);
+        BaseAddOperation other = (BaseAddOperation)o;
+        if(output == null) return 1;
+        if(other.output == null) return -1;
+        return output.getItemStack().getUnlocalizedName().compareTo(
+                other.output.getItemStack().getUnlocalizedName());
     }
 }

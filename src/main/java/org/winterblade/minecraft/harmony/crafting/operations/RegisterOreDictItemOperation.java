@@ -1,12 +1,11 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
 /**
  * Created by Matt on 4/6/2016.
@@ -16,25 +15,19 @@ public class RegisterOreDictItemOperation extends BaseRecipeOperation {
     /**
      * Serialized properties
      */
-    String what;
+    RecipeComponent what;
     String oreDict;
-
-    /**
-     * Computed properties
-     */
-    private transient ItemStack outputItemStack;
 
     @Override
     public void Init() throws ItemMissingException {
-        outputItemStack = ItemRegistry.TranslateToItemStack(what);
-        if (outputItemStack == null)
-            throw new RuntimeException("Unable to find item '" + what + "' to add to dictionary '" + oreDict + "'.");
+        if (what == null)
+            throw new RuntimeException("Unable to find item " + what.toString() + " to add to dictionary '" + oreDict + "'.");
     }
 
     @Override
     public void Apply() {
-        System.out.println("Adding '" + outputItemStack.getUnlocalizedName() + "' to the dictionary '" + oreDict + "'.");
-        OreDictionary.registerOre(oreDict, outputItemStack);
+        System.out.println("Adding '" + what.toString() + "' to the dictionary '" + oreDict + "'.");
+        OreDictionary.registerOre(oreDict, what.getItemStack());
     }
 
     @Override
@@ -55,6 +48,6 @@ public class RegisterOreDictItemOperation extends BaseRecipeOperation {
         if(oreDictCompare != 0) return oreDictCompare;
 
         // Otherwise, sort it by item
-        return what.compareTo(other.oreDict);
+        return what.getItemStack().getUnlocalizedName().compareTo(other.what.getItemStack().getUnlocalizedName());
     }
 }

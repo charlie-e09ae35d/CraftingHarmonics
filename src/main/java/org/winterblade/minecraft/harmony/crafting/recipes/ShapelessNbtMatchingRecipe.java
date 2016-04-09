@@ -5,13 +5,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
 /**
  * Created by Matt on 4/7/2016.
  */
 public class ShapelessNbtMatchingRecipe extends ShapelessOreRecipe {
-    public ShapelessNbtMatchingRecipe(ItemStack result, Object... recipe) {
+    private final RecipeComponent[] components;
+
+    public ShapelessNbtMatchingRecipe(ItemStack result, RecipeComponent[] components, Object... recipe) {
         super(result, recipe);
+        this.components = components;
     }
 
     /**
@@ -22,6 +26,6 @@ public class ShapelessNbtMatchingRecipe extends ShapelessOreRecipe {
      */
     @Override
     public boolean matches(InventoryCrafting inv, World world) {
-        return super.matches(inv, world) && ItemRegistry.CompareRecipeListToCraftingInventory(input.toArray(), inv);
+        return super.matches(inv, world) && ItemRegistry.CompareRecipeListToCraftingInventory(components, inv);
     }
 }

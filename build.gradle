@@ -26,8 +26,8 @@ group= "org.winterblade.minecraft.craftingharmonics" // http://maven.apache.org/
 archivesBaseName = "craftingharmonics"
 
 // java version
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 minecraft {
     version = "1.9-12.16.0.1858-1.9"
