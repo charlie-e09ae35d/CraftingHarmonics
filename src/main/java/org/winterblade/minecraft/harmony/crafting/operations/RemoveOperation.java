@@ -20,17 +20,13 @@ import java.util.Map;
 @RecipeOperation(name = "remove")
 public class RemoveOperation extends BaseRecipeOperation {
     /**
-     * Serialized properties
-     */
-    private String what;
-
-    /**
      * Computed properties
      */
-    private transient RemoveMatchType matchType;
-    private transient String modId;
-    private transient String itemName;
-    private transient int metadata;
+    private RemoveMatchType matchType;
+    private String modId;
+    private String itemName;
+    private int metadata;
+    private String what;
 
     public boolean Matches(ItemStack recipeOutput) {
         // If we have a null output... ignore it.

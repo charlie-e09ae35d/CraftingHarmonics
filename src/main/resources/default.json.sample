@@ -136,6 +136,59 @@
                     with: ["minecraft:fish","minecraft:book","minecraft:iron_helmet"],
                     nbt: "{EntityTag:{id:\"Ozelot\",Invulnerable:1,CustomName:\"Toothless\",Visible:1,CatType:1,ActiveEffects:[{Id:11,Amplifier:5,Duration:10000000}]}}",
                     displayName: "Summon Useless Feline"
+                },
+                {
+                    __comment: "You can also do a match on the inputs, just specify the NBT data as your fifth parameter.  For an exact match, use =",
+                    __result: "Takes out a few steps turning pigs into porkchops.",
+                    type: "addShaped",
+                    output: "minecraft:cooked_porkchop",
+                    with: ["minecraft:spawn_egg:0:1:={EntityTag:{id:\"Pig\"}}"]
+                },
+                {
+                    __comment: "It works on shapeless recipes too, and for a fuzzy match, use ~",
+                    __result: "Takes out a few steps turning cows into beef as well.",
+                    type: "addShapeless",
+                    output: "minecraft:cooked_beef",
+                    with: ["minecraft:spawn_egg:0:1:~{EntityTag:{id:\"Cow\"}}"]
+                },
+                {
+                    __comment: "You can also set tag compounds as raw JSON now.",
+                    __result: "An overused joke.",
+                    type: "addShapeless",
+                    output: "minecraft:spawn_egg",
+                    with: ["minecraft:book"],
+                    nbt: {
+                        EntityTag: {
+                            id: "Cow",
+                            CustomName: "There Is No Cow Level",
+                            Visible:1
+                        }
+                    },
+                    displayName: "Tome of Town Portal"
+                },
+                {
+                    __comment: "You can also use an expanded format for items, allowing you to specify more properties.",
+                    __result: "Just going with it now...",
+                    type: "addShaped",
+                    output: "minecraft:end_portal_frame",
+                    with: [
+                        {
+                            item: "minecraft:ender_chest",
+                            returnOnCraft: true
+                        },
+                        {
+                            item: "minecraft:spawn_egg:0:1",
+                            nbt: {
+                                display: {Name: "Tome of Town Portal"}
+                            },
+                            fuzzyNbt: true,
+                            replaceOnCraft: "minecraft:cooked_beef"
+                        },
+                        {
+                            item: "<logWood>"
+                        }],
+                    displayName: "Oh Whatever",
+                    quantity: 12
                 }
             ]
         }

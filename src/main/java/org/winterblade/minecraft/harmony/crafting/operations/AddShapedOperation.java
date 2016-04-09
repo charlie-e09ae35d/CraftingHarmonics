@@ -8,7 +8,9 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.apache.commons.lang3.ArrayUtils;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
+import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
 
 import java.util.*;
 
@@ -17,28 +19,30 @@ import java.util.*;
  */
 @RecipeOperation(name = "addShaped")
 public class AddShapedOperation extends BaseAddOperation {
+    public static final int CHAR_A = 65;
     /**
      * Serialized properties:
      */
-    private String[] shape; // 0.2 support
-    private String[] with;
+    private RecipeComponent[] shape; // 0.2 support
+    private RecipeComponent[] with;
     private int width;
     private int height;
 
     /**
      * Actual items and whatnot
      */
-    private transient ItemStack[] input;
+    private transient RecipeComponent[] input;
     private transient Object[] inputOreDict;
     private transient boolean isOreDict;
+    private transient boolean isNbt;
 
     @Override
     public void Init() throws ItemMissingException {
         super.Init();
         if(with.length > 0) shape = with;
 
-        String[] filler = new String[1];
-        filler[0] = "";
+        RecipeComponent[] filler = new RecipeComponent[1];
+        filler[0] = new RecipeComponent();
 
         if(shape.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
 
@@ -85,18 +89,23 @@ public class AddShapedOperation extends BaseAddOperation {
                 break;
         }
 
-        input = new ItemStack[shape.length];
+        input = new RecipeComponent[shape.length];
         inputOreDict = new Object[shape.length];
 
         for(int i = 0; i < shape.length; i++) {
-            if(shape[i].equals("")) {
-                inputOreDict[i] = input[i] = null;
+            input[i] = shape[i];
+
+            if(shape[i] == null) {
+                inputOreDict[i] = null;
             }
-            else if(ItemRegistry.IsOreDictionaryEntry(shape[i])) {
+            else if(shape[i].isOreDict()) {
                 isOreDict = true;
-                inputOreDict[i] = ItemRegistry.GetOreDictionaryName(shape[i]);
+                inputOreDict[i] = shape[i].getOreDictName();
             } else {
-                inputOreDict[i] = input[i] = ItemRegistry.TranslateToItemStack(shape[i]);
+                inputOreDict[i] = shape[i].getItemStack();
+
+                // See if we need to do NBT matching...
+                if(input[i] != null && !isNbt && input[i].hasNbt()) isNbt = true;
             }
         }
 
@@ -104,10 +113,17 @@ public class AddShapedOperation extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding shaped recipe for " + outputItemStack.getUnlocalizedName());
-        CraftingManager.getInstance().addRecipe(isOreDict
-                ? CreateOreDictRecipe()
-                : new ShapedRecipes(width, height, input, outputItemStack));
+        System.out.println("Adding shaped recipe for " + output.toString());
+        CraftingManager.getInstance().addRecipe(Wrap(isOreDict ? CreateOreDictRecipe() : CreateStandardRecipe(), input));
+    }
+
+    /**
+     * Turns our regular recipe into the proper type of recipe
+     * @return The IRecipe
+     */
+    private IRecipe CreateStandardRecipe() {
+        if(!isNbt) return new ShapedRecipes(width, height, RecipeComponent.getItemStacks(input), output.getItemStack());
+        return new ShapedNbtMatchingRecipe(width, height, input, output.getItemStack());
     }
 
     /**
@@ -129,7 +145,7 @@ public class AddShapedOperation extends BaseAddOperation {
                     lines[y] += " ";
                 } else {
                     // This will produce increasing values of A, B, C, etc
-                    char id = (char)(65+offset);
+                    char id = (char)(CHAR_A +offset);
                     lines[y] += id;
                     charmap.put(id, inputOreDict[offset]);
                 }
@@ -150,6 +166,8 @@ public class AddShapedOperation extends BaseAddOperation {
         }
 
         // The args will get automatically expanded
-        return new ShapedOreRecipe(outputItemStack, args.toArray());
+        return isNbt
+                ? new ShapedOreNbtMatchingRecipe(output.getItemStack(), input, args.toArray())
+                : new ShapedOreRecipe(output.getItemStack(), args.toArray());
     }
 }
