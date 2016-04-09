@@ -57,14 +57,4 @@ public class AddFurnaceFuel extends BaseRecipeOperation {
         // Otherwise, sort on name:
         return what.compareTo(((AddFurnaceFuel) o).what);
     }
-
-    /**
-     * Used to convert the provided operation from the file into the given recipe.
-     *
-     * @param data The operation data
-     */
-    @Override
-    protected void ReadData(ScriptObjectMirror data) {
-        // TODO
-    }
 }

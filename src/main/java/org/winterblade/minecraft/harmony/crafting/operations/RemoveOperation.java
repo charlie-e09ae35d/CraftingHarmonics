@@ -142,16 +142,6 @@ public class RemoveOperation extends BaseRecipeOperation {
                 : what.compareTo(other.what);
     }
 
-    /**
-     * Used to convert the provided operation from the file into the given recipe.
-     *
-     * @param data The operation data
-     */
-    @Override
-    protected void ReadData(ScriptObjectMirror data) {
-        what = (String)data.get("what");
-    }
-
     private enum RemoveMatchType {
         ItemOnly,ModOnly,ItemAndMod,Exact
     }

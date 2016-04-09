@@ -168,14 +168,4 @@ public class AddShapedOperation extends BaseAddOperation {
                 ? new ShapedOreRecipe(outputItemStack, args.toArray())
                 : new ShapedOreNbtMatchingRecipe(outputItemStack, args.toArray());
     }
-
-    /**
-     * Used to convert the provided operation from the file into the given recipe.
-     *
-     * @param data The operation data
-     */
-    @Override
-    protected void ReadData(ScriptObjectMirror data) {
-        // TODO
-    }
 }

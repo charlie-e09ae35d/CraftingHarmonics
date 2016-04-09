@@ -53,14 +53,4 @@ public class AddBrew extends BaseAddOperation {
         System.out.println("Adding brewing recipe for " + outputItemStack.getUnlocalizedName());
         BrewingRecipeRegistry.addRecipe(inputItem, ingredientItem, outputItemStack);
     }
-
-    /**
-     * Used to convert the provided operation from the file into the given recipe.
-     *
-     * @param data The operation data
-     */
-    @Override
-    protected void ReadData(ScriptObjectMirror data) {
-        // TODO
-    }
 }

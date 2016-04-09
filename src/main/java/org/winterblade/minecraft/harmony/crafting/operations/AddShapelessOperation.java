@@ -56,14 +56,4 @@ public class AddShapelessOperation extends BaseAddOperation {
                     ? new ShapelessNbtMatchingRecipe(outputItemStack, input.toArray())
                     : new ShapelessOreRecipe(outputItemStack, input.toArray()));
     }
-
-    /**
-     * Used to convert the provided operation from the file into the given recipe.
-     *
-     * @param data The operation data
-     */
-    @Override
-    protected void ReadData(ScriptObjectMirror data) {
-        // TODO
-    }
 }
