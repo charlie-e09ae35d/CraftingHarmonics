@@ -181,7 +181,8 @@
                             nbt: {
                                 display: {Name: "Tome of Town Portal"}
                             },
-                            fuzzyNbt: true
+                            fuzzyNbt: true,
+                            replaceOnCraft: "minecraft:cooked_beef"
                         },
                         {
                             item: "<logWood>"
