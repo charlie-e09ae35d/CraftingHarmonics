@@ -21,12 +21,12 @@ public class RegisterOreDictItemOperation extends BaseRecipeOperation {
     @Override
     public void Init() throws ItemMissingException {
         if (what == null)
-            throw new RuntimeException("Unable to find item to add to dictionary '" + oreDict + "'.");
+            throw new RuntimeException("Unable to find item " + what.toString() + " to add to dictionary '" + oreDict + "'.");
     }
 
     @Override
     public void Apply() {
-        System.out.println("Adding '" + what.getItemStack().getUnlocalizedName() + "' to the dictionary '" + oreDict + "'.");
+        System.out.println("Adding '" + what.toString() + "' to the dictionary '" + oreDict + "'.");
         OreDictionary.registerOre(oreDict, what.getItemStack());
     }
 

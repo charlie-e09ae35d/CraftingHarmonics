@@ -23,7 +23,7 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
     public void Init() throws ItemMissingException
     {
         if (output.getItemStack() == null)
-            throw new RuntimeException("Unable to find requested output item '" + output + "'.");
+            throw new RuntimeException("Unable to find requested output item " + output.toString());
 
         ItemRegistry.UpdateStackQuantity(output.getItemStack(), quantity);
 

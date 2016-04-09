@@ -50,7 +50,7 @@ public class AddShapelessOperation extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding shapeless recipe for " + output.getItemStack().getUnlocalizedName());
+        System.out.println("Adding shapeless recipe for " + output.toString());
         CraftingManager.getInstance().addRecipe(
                 isNbt
                     ? new ShapelessNbtMatchingRecipe(output.getItemStack(), with, input.toArray())

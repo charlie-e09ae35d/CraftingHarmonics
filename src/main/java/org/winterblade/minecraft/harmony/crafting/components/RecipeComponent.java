@@ -36,8 +36,8 @@ public class RecipeComponent {
         return item == null ? null : item.getItemStack();
     }
 
-    public void setItemStack(ItemStack item) {
-        this.item = new OreDictionaryItemStack(item);
+    public void setItemStack(String resourceLocator, ItemStack item) {
+        this.item = new OreDictionaryItemStack(resourceLocator, item);
     }
 
     public NBTTagCompound getNbt() {
@@ -52,8 +52,8 @@ public class RecipeComponent {
         return item == null ? null : item.getOreDictName();
     }
 
-    public void setOreDictName(String oreDict) {
-        this.item = new OreDictionaryItemStack(oreDict);
+    public void setOreDictName(String resourceLocator, String oreDict) {
+        this.item = new OreDictionaryItemStack(resourceLocator, oreDict);
     }
 
     public boolean isOreDict() {
@@ -70,7 +70,7 @@ public class RecipeComponent {
 
     @Override
     public String toString() {
-        return "RecipeComponent{item=" + item + '}';
+        return item == null ? "null" : item.toString();
     }
 }
 

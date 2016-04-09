@@ -25,19 +25,19 @@ public class AddBrew extends BaseAddOperation {
 
         if(input.equals("") || ingredient.equals("")) throw new ItemMissingException("Brewing recipe is missing input or ingredient.");
 
-        if(input == null) throw new RuntimeException("Unable to find requested input item.");
+        if(input == null) throw new RuntimeException("Unable to find requested input item " + input.toString());
         if(input.hasNbt()) {
             System.out.println("NBT support for brews isn't done yet because it's considered an edge case - NBT + " +
                     "stack size 1? - if you need this, please let me know!");
         }
         if(input.getItemStack().getMaxStackSize() > 1) throw new RuntimeException("Inputs for brewing cannot be stackable.");
 
-        if(ingredient == null) throw new RuntimeException("Unable to find requested ingredient item.");
+        if(ingredient == null) throw new RuntimeException("Unable to find requested ingredient item " + ingredient.toString());
     }
 
     @Override
     public void Apply() {
-        System.out.println("Adding brewing recipe for " + output.getItemStack().getUnlocalizedName());
+        System.out.println("Adding brewing recipe for  " + output.toString());
         BrewingRecipeRegistry.addRecipe(input.getItemStack(), ingredient.getItemStack(), output.getItemStack());
     }
 }

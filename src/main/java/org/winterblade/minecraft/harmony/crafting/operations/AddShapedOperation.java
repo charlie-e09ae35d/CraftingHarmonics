@@ -112,7 +112,7 @@ public class AddShapedOperation extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding shaped recipe for " + output.getItemStack().getUnlocalizedName());
+        System.out.println("Adding shaped recipe for " + output.toString());
         CraftingManager.getInstance().addRecipe(isOreDict ? CreateOreDictRecipe() : CreateStandardRecipe());
     }
 

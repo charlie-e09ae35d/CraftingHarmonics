@@ -92,10 +92,8 @@ public class ScriptObjectReader {
     private static void updateField(Class cls, Field field, Object writeTo, Object value) throws InvocationTargetException, IllegalAccessException {
         // If we have a setter, use that...
         Method m = null;
-        System.out.println(cls.getSimpleName());
         try {
-            String name = getSetterMethodName(field.getName());
-            m = cls.getMethod(name, field.getType());
+            m = cls.getMethod(getSetterMethodName(field.getName()), field.getType());
         } catch (NoSuchMethodException e) {
             // We didn't find the method
         }
@@ -122,9 +120,9 @@ public class ScriptObjectReader {
             String itemString = (String)data;
 
             if(ItemRegistry.IsOreDictionaryEntry(itemString)) {
-                component.setOreDictName(ItemRegistry.GetOreDictionaryName(itemString));
+                component.setOreDictName(itemString, ItemRegistry.GetOreDictionaryName(itemString));
             } else {
-                component.setItemStack(ItemRegistry.TranslateToItemStack(itemString));
+                component.setItemStack(itemString, ItemRegistry.TranslateToItemStack(itemString));
             }
 
             return component;
@@ -147,8 +145,8 @@ public class ScriptObjectReader {
      */
     public static OreDictionaryItemStack TranslateToOreDictionaryItemStack(String data) throws ItemMissingException {
         return ItemRegistry.IsOreDictionaryEntry(data)
-                ? new OreDictionaryItemStack(ItemRegistry.GetOreDictionaryName(data))
-                : new OreDictionaryItemStack(ItemRegistry.TranslateToItemStack(data));
+                ? new OreDictionaryItemStack(data, ItemRegistry.GetOreDictionaryName(data))
+                : new OreDictionaryItemStack(data, ItemRegistry.TranslateToItemStack(data));
     }
 
     /**
