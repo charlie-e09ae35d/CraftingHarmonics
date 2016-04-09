@@ -12,7 +12,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraftforge.oredict.OreDictionary;
-import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,47 +175,6 @@ public class ItemRegistry {
         if(1 < quantity && quantity <= itemStack.getMaxStackSize()) {
             itemStack.stackSize = quantity;
         }
-    }
-
-    /**
-     * Translates script data to an item stack
-     * @param data  The data to translate
-     * @return      The ItemStack requested
-     * @throws ItemMissingException When the item cannot be found in the registry.
-     */
-    public static ItemStack TranslateToItemStack(Object data) throws ItemMissingException {
-        return TranslateToItemStack(data, 1);
-    }
-
-    /**
-     * Translates script data to an item stack
-     * @param data  The data to translate
-     * @param qty   The quantity to generate
-     * @return      The ItemStack requested
-     * @throws ItemMissingException When the item cannot be found in the registry.
-     */
-    public static ItemStack TranslateToItemStack(Object data, int qty) throws ItemMissingException {
-        if(String.class.isAssignableFrom(data.getClass())) return TranslateToItemStack((String)data, qty);
-
-        System.out.println(data.getClass());
-        return null;
-    }
-
-    /**
-     * Translates sciprt data to either an ore dictionary name or an item stack
-     * @param data  The item
-     * @return      The OreDictionaryItemStack
-     */
-    public static OreDictionaryItemStack TranslateToOreDictionaryItemStack(Object data) throws ItemMissingException {
-        if(String.class.isAssignableFrom(data.getClass())) {
-            String itemString = (String)data;
-
-            return IsOreDictionaryEntry(itemString)
-                    ? new OreDictionaryItemStack(GetOreDictionaryName(itemString))
-                    : new OreDictionaryItemStack(TranslateToItemStack((String) data, 1));
-        }
-
-        return new OreDictionaryItemStack(TranslateToItemStack(data,1));
     }
 
     /**
