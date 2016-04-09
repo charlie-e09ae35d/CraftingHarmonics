@@ -12,6 +12,8 @@ import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.scripting.ScriptExecutionManager;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 /**
@@ -43,9 +45,6 @@ public class ScriptObjectReader {
                 Object o = data.get(fieldName);
 
                 try {
-                    // Make sure we can actually write to the field...
-                    field.setAccessible(true);
-
                     // If we have an item stack, process the inbound data through the registry...
                     if (OreDictionaryItemStack[].class.isAssignableFrom(field.getType())) {
                         Object[] items = (Object[]) ScriptUtils.convert(o, Object[].class);
@@ -53,18 +52,18 @@ public class ScriptObjectReader {
                         for (int i = 0; i < items.length; i++) {
                             stacks[i] = TranslateToOreDictionaryItemStack((String)items[i]);
                         }
-                        field.set(writeTo, stacks);
+                        updateField(cls, field, writeTo, stacks);
                     } else if(OreDictionaryItemStack.class.isAssignableFrom(field.getType())) {
-                        field.set(writeTo, TranslateToOreDictionaryItemStack((String)o));
+                        updateField(cls, field, writeTo, TranslateToOreDictionaryItemStack((String)o));
                     } else if (RecipeComponent[].class.isAssignableFrom(field.getType())) {
                         Object[] items = (Object[])ScriptUtils.convert(o, Object[].class);
                         RecipeComponent[] stacks = new RecipeComponent[items.length];
                         for (int i = 0; i < items.length; i++) {
                             stacks[i] = TranslateToItemStack(items[i]);
                         }
-                        field.set(writeTo, stacks);
+                        updateField(cls, field, writeTo, stacks);
                     } else if (RecipeComponent.class.isAssignableFrom(field.getType())) {
-                        field.set(writeTo, TranslateToItemStack(o));
+                        updateField(cls, field, writeTo, TranslateToItemStack(o));
                     } else if (NBTTagCompound.class.isAssignableFrom(field.getType())) {
                         String json = "{}";
                         if(o instanceof String) {
@@ -74,12 +73,12 @@ public class ScriptObjectReader {
                         }
 
                         try {
-                            field.set(writeTo, JsonToNBT.getTagFromJson(json));
+                            updateField(cls, field, writeTo, JsonToNBT.getTagFromJson(json));
                         } catch (NBTException e) {
                             System.out.println("Unable to convert '" + json + "' to NBT tag.");
                         }
                     } else {
-                        field.set(writeTo, ScriptUtils.convert(o, field.getType()));
+                        updateField(cls, field, writeTo, ScriptUtils.convert(o, field.getType()));
                     }
                 } catch (Exception e) {
                     System.err.println("Unable to deserialize '" + fieldName + "' from the provided data: " + e.getMessage());
@@ -89,6 +88,27 @@ public class ScriptObjectReader {
             cls = cls.getSuperclass();
         } while(cls != null);
     }
+
+    private static void updateField(Class cls, Field field, Object writeTo, Object value) throws InvocationTargetException, IllegalAccessException {
+        // If we have a setter, use that...
+        Method m = null;
+        System.out.println(cls.getSimpleName());
+        try {
+            String name = getSetterMethodName(field.getName());
+            m = cls.getMethod(name, field.getType());
+        } catch (NoSuchMethodException e) {
+            // We didn't find the method
+        }
+
+        // Otherwise, write directly to the field...
+        if(m != null) {
+            m.invoke(writeTo, value);
+        } else {
+            field.setAccessible(true);
+            field.set(writeTo, value);
+        }
+    }
+
     /**
      * Translates script data to an item stack
      * @param data  The data to translate
@@ -102,9 +122,9 @@ public class ScriptObjectReader {
             String itemString = (String)data;
 
             if(ItemRegistry.IsOreDictionaryEntry(itemString)) {
-                component.setOreDict(ItemRegistry.GetOreDictionaryName(itemString));
+                component.setOreDictName(ItemRegistry.GetOreDictionaryName(itemString));
             } else {
-                component.setItem(ItemRegistry.TranslateToItemStack(itemString));
+                component.setItemStack(ItemRegistry.TranslateToItemStack(itemString));
             }
 
             return component;
@@ -129,5 +149,14 @@ public class ScriptObjectReader {
         return ItemRegistry.IsOreDictionaryEntry(data)
                 ? new OreDictionaryItemStack(ItemRegistry.GetOreDictionaryName(data))
                 : new OreDictionaryItemStack(ItemRegistry.TranslateToItemStack(data));
+    }
+
+    /**
+     * Quick and dirty implementation of a field-name-to-setter-method
+     * @param name  The field name
+     * @return      The setter method
+     */
+    private static String getSetterMethodName(String name) {
+        return "set" + name.substring(0,1).toUpperCase() + name.substring(1);
     }
 }

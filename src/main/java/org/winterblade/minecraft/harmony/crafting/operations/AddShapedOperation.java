@@ -31,7 +31,7 @@ public class AddShapedOperation extends BaseAddOperation {
     /**
      * Actual items and whatnot
      */
-    private transient ItemStack[] input;
+    private transient RecipeComponent[] input;
     private transient Object[] inputOreDict;
     private transient boolean isOreDict;
     private transient boolean isNbt;
@@ -42,7 +42,7 @@ public class AddShapedOperation extends BaseAddOperation {
         if(with.length > 0) shape = with;
 
         RecipeComponent[] filler = new RecipeComponent[1];
-        filler[0] = null;
+        filler[0] = new RecipeComponent();
 
         if(shape.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
 
@@ -89,7 +89,7 @@ public class AddShapedOperation extends BaseAddOperation {
                 break;
         }
 
-        input = new ItemStack[shape.length];
+        input = new RecipeComponent[shape.length];
         inputOreDict = new Object[shape.length];
 
         for(int i = 0; i < shape.length; i++) {
@@ -100,10 +100,11 @@ public class AddShapedOperation extends BaseAddOperation {
                 isOreDict = true;
                 inputOreDict[i] = shape[i].getOreDictName();
             } else {
-                inputOreDict[i] = input[i] = shape[i].getItemStack();
+                input[i] = shape[i];
+                inputOreDict[i] = shape[i].getItemStack();
 
                 // See if we need to do NBT matching...
-                if(input[i] != null && !isNbt && input[i].hasTagCompound()) isNbt = true;
+                if(input[i] != null && !isNbt && input[i].hasNbt()) isNbt = true;
             }
         }
 
@@ -120,7 +121,7 @@ public class AddShapedOperation extends BaseAddOperation {
      * @return The IRecipe
      */
     private IRecipe CreateStandardRecipe() {
-        if(!isNbt) return new ShapedRecipes(width, height, input, output.getItemStack());
+        if(!isNbt) return new ShapedRecipes(width, height, RecipeComponent.getItemStacks(input), output.getItemStack());
         return new ShapedNbtMatchingRecipe(width, height, input, output.getItemStack());
     }
 
@@ -166,6 +167,6 @@ public class AddShapedOperation extends BaseAddOperation {
         // The args will get automatically expanded
         return isNbt
                 ? new ShapedOreRecipe(output.getItemStack(), args.toArray())
-                : new ShapedOreNbtMatchingRecipe(output.getItemStack(), args.toArray());
+                : new ShapedOreNbtMatchingRecipe(output.getItemStack(), input, args.toArray());
     }
 }

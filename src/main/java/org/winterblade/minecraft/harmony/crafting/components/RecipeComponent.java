@@ -9,41 +9,68 @@ import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
  */
 public class RecipeComponent {
     protected OreDictionaryItemStack item;
-    protected NBTTagCompound nbt;
     private boolean fuzzyNbt;
     private boolean returnOnCraft;
     private RecipeComponent replace;
 
-    public ItemStack getItemStack() {
-        return item.getItemStack();
+    // Used just so that the SOR will pick up that we want to set this...
+    private NBTTagCompound nbt;
+
+    /**
+     * Convenience method to translate an array of RecipeComponents into an array of ItemStacks
+     * @param components    The RecipeComponents to translate
+     * @return              The ItemStack[]
+     */
+    public static ItemStack[] getItemStacks(RecipeComponent[] components) {
+        ItemStack[] items = new ItemStack[components.length];
+        for (int i = 0; i < components.length; i++) {
+            items[i] = components[i].getItemStack();
+        }
+        return items;
     }
 
-    public void setItem(ItemStack item) {
+    /*
+     *  Getters / Setters
+     */
+    public ItemStack getItemStack() {
+        return item == null ? null : item.getItemStack();
+    }
+
+    public void setItemStack(ItemStack item) {
         this.item = new OreDictionaryItemStack(item);
     }
 
     public NBTTagCompound getNbt() {
-        return nbt;
+        return item == null || item.getItemStack() == null ? null : item.getItemStack().getTagCompound();
     }
 
     public void setNbt(NBTTagCompound nbt) {
-        this.nbt = nbt;
+        if(this.item != null && item.getItemStack() != null) item.getItemStack().setTagCompound(nbt);
     }
 
     public String getOreDictName() {
-        return item.getOreDictName();
+        return item == null ? null : item.getOreDictName();
     }
 
-    public void setOreDict(String oreDict) {
+    public void setOreDictName(String oreDict) {
         this.item = new OreDictionaryItemStack(oreDict);
     }
 
     public boolean isOreDict() {
-        return item.isOreDict();
+        return item == null ? false : item.isOreDict();
     }
 
     public boolean hasNbt() {
-        return nbt != null && !nbt.hasNoTags();
+        return item == null || item.getItemStack() == null ? false : item.getItemStack().hasTagCompound();
+    }
+
+    public boolean isFuzzyNbt() {
+        return fuzzyNbt;
+    }
+
+    @Override
+    public String toString() {
+        return "RecipeComponent{item=" + item + '}';
     }
 }
 

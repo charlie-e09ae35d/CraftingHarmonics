@@ -35,6 +35,7 @@ public class AddShapelessOperation extends BaseAddOperation {
 
         input = new ArrayList<>();
 
+        // Translate this into something the underlying handler can understand
         for(RecipeComponent item : with) {
             if(item.isOreDict()) {
                 input.add(item.getOreDictName());
@@ -52,7 +53,7 @@ public class AddShapelessOperation extends BaseAddOperation {
         System.out.println("Adding shapeless recipe for " + output.getItemStack().getUnlocalizedName());
         CraftingManager.getInstance().addRecipe(
                 isNbt
-                    ? new ShapelessNbtMatchingRecipe(output.getItemStack(), input.toArray())
+                    ? new ShapelessNbtMatchingRecipe(output.getItemStack(), with, input.toArray())
                     : new ShapelessOreRecipe(output.getItemStack(), input.toArray()));
     }
 }

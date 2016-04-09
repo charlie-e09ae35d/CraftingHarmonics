@@ -33,4 +33,10 @@ public class OreDictionaryItemStack  {
     public ItemStack getItemStack() {
         return itemStack;
     }
+
+    @Override
+    public String toString() {
+        // TODO: Pass the actual name in here so we can get better logging later.
+        return isOreDict ? "<" + oreDictName + ">" : itemStack.getUnlocalizedName();
+    }
 }

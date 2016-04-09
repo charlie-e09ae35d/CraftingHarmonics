@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraftforge.oredict.OreDictionary;
+import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -223,9 +224,10 @@ public class ItemRegistry {
      * Checks to see if the NBT on the first item stack matches the second
      * @param source    The source to check
      * @param dest      The destination to check
+     * @param isFuzzy   If we should force a fuzzy match
      * @return          True if they are the same (or similar if it's a fuzzy match)
      */
-    public static boolean CheckIfNbtMatches(ItemStack source, ItemStack dest) {
+    public static boolean CheckIfNbtMatches(ItemStack source, ItemStack dest, boolean isFuzzy) {
         // If one or the other is null or doesn't have a tag compound, bail
         if(source == null || dest == null || source.hasTagCompound() != dest.hasTagCompound()) return false;
 
@@ -234,7 +236,10 @@ public class ItemRegistry {
 
         NBTTagCompound compound = new NBTTagCompound();
         NBTTagCompound orig = source.getTagCompound();
-        boolean isFuzzy = orig.getBoolean("CraftingHarmonicsIsFuzzyMatch");
+
+        // Fall back to checking the tag compound...
+        if(!isFuzzy) isFuzzy = orig.getBoolean("CraftingHarmonicsIsFuzzyMatch");
+
         for (String s : orig.getKeySet()) {
             // Skip our tag...
             if (s.equals("CraftingHarmonicsIsFuzzyMatch")) continue;
@@ -305,7 +310,7 @@ public class ItemRegistry {
      * @param inv   The inventory grid to check
      * @return      If they match
      */
-    public static boolean CompareRecipeListToCraftingInventory(Object[] input, InventoryCrafting inv) {
+    public static boolean CompareRecipeListToCraftingInventory(RecipeComponent[] input, InventoryCrafting inv) {
         // Now check more specific things...
         List<ItemStack> grid = GetInventoryGridAsList(inv);
 
@@ -314,14 +319,12 @@ public class ItemRegistry {
         // How did this even happen?
         if(input.length > grid.size()) return false;
 
-        for(Object recipeItem : input) {
+        for(RecipeComponent recipeItem : input) {
             // Get the current offset item and then increase the offset...
             ItemStack gridItem = grid.get(offset++);
 
-            if(!(recipeItem instanceof ItemStack)) continue;
-
             // Lastly, check if they match
-            if(!CheckIfNbtMatches((ItemStack) recipeItem, gridItem)) return false;
+            if(!CheckIfNbtMatches(recipeItem.getItemStack(), gridItem, recipeItem.isFuzzyNbt())) return false;
         }
 
         return true;
