@@ -320,6 +320,9 @@ public class ItemRegistry {
         if(input.length > grid.size()) return false;
 
         for(RecipeComponent recipeItem : input) {
+            // We don't care about ore dict for this part.
+            if(recipeItem.isOreDict()) continue;
+
             // Get the current offset item and then increase the offset...
             ItemStack gridItem = grid.get(offset++);
 

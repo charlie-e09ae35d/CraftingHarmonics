@@ -173,14 +173,16 @@
                     output: "minecraft:end_portal_frame",
                     with: [
                         {
-                            item: "minecraft:ender_chest"
+                            item: "minecraft:ender_chest",
+                            returnOnCraft: true
                         },
                         {
                             item: "minecraft:spawn_egg:0:1",
                             nbt: {
-                                DisplayName: "Tome of Town Portal"
+                                display: {Name: "Tome of Town Portal"}
                             },
-                            fuzzyNbt: true
+                            fuzzyNbt: true,
+                            replaceOnCraft: "minecraft:cooked_beef"
                         },
                         {
                             item: "<logWood>"
