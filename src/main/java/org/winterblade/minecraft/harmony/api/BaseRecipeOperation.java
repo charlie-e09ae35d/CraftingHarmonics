@@ -37,5 +37,21 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
      * Used to convert the provided operation from the file into the given recipe.
      * @param data The operation data
      */
-    protected abstract void ReadData(ScriptObjectMirror data);
+    protected abstract void ReadData(ScriptObjectMirror data) throws ItemMissingException;
+
+    /**
+     * Reads a parameter from the data, if it's the correct type.
+     * @param data  The data
+     * @param name  The name to read in
+     * @param <T>   The type to read in
+     * @return      The data, or null if it's not found.
+     */
+    protected <T> T Read(ScriptObjectMirror data, String name, Class<T> clazz) {
+        if(!data.hasMember(name)) return null;
+
+        Object o = data.get(name);
+        if(!clazz.isAssignableFrom(o.getClass())) return null;
+        return clazz.cast(o);
+    }
+
 }

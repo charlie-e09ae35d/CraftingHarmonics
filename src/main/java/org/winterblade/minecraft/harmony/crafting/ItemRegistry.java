@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.crafting;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -166,6 +167,30 @@ public class ItemRegistry {
         }
 
         return itemStack;
+    }
+
+    /**
+     * Translates script data to an item stack
+     * @param data  The data to translate
+     * @return      The ItemStack requested
+     * @throws ItemMissingException When the item cannot be found in the registry.
+     */
+    public static ItemStack TranslateToItemStack(Object data) throws ItemMissingException {
+        return TranslateToItemStack(data, 1);
+    }
+
+    /**
+     * Translates script data to an item stack
+     * @param data  The data to translate
+     * @param qty   The quantity to generate
+     * @return      The ItemStack requested
+     * @throws ItemMissingException When the item cannot be found in the registry.
+     */
+    public static ItemStack TranslateToItemStack(Object data, int qty) throws ItemMissingException {
+        if(String.class.isAssignableFrom(data.getClass())) return TranslateToItemStack((String)data, qty);
+
+        System.out.println(data.getClass());
+        return null;
     }
 
     /**

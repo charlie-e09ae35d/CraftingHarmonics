@@ -27,7 +27,6 @@ public class RecipeOperationRegistry {
      * @return          True if the operation processed fine; false otherwise.
      */
     public static boolean CreateOperationInSet(String setName, String type, ScriptObjectMirror operation) {
-        System.out.println(type);
         type = type.toLowerCase();
         if(!deserializerMap.containsKey(type)) {
             System.err.println("Unknown recipe operation type '" + type + "' for set '" + setName + "'.  Are you missing an addon?");
