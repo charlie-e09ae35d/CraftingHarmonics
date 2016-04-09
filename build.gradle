@@ -42,6 +42,12 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
+/// /Add "embedded" configuration
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}
+
 dependencies {
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
@@ -64,6 +70,14 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
+    // Include a proper version of nashorn...
+    // TODO: Remove when Curse updates JRE past 8u40
+    embed files('libs/nashorn.jar');
+}
+
+//Add dependencies to the JAR
+jar {
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 processResources
