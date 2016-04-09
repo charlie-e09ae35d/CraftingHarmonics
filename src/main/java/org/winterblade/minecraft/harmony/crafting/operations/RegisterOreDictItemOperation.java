@@ -6,7 +6,6 @@ import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
 /**
  * Created by Matt on 4/6/2016.
@@ -16,25 +15,19 @@ public class RegisterOreDictItemOperation extends BaseRecipeOperation {
     /**
      * Serialized properties
      */
-    String what;
+    ItemStack what;
     String oreDict;
-
-    /**
-     * Computed properties
-     */
-    private transient ItemStack outputItemStack;
 
     @Override
     public void Init() throws ItemMissingException {
-        outputItemStack = ItemRegistry.TranslateToItemStack(what);
-        if (outputItemStack == null)
-            throw new RuntimeException("Unable to find item '" + what + "' to add to dictionary '" + oreDict + "'.");
+        if (what == null)
+            throw new RuntimeException("Unable to find item to add to dictionary '" + oreDict + "'.");
     }
 
     @Override
     public void Apply() {
-        System.out.println("Adding '" + outputItemStack.getUnlocalizedName() + "' to the dictionary '" + oreDict + "'.");
-        OreDictionary.registerOre(oreDict, outputItemStack);
+        System.out.println("Adding '" + what.getUnlocalizedName() + "' to the dictionary '" + oreDict + "'.");
+        OreDictionary.registerOre(oreDict, what);
     }
 
     @Override
@@ -55,6 +48,6 @@ public class RegisterOreDictItemOperation extends BaseRecipeOperation {
         if(oreDictCompare != 0) return oreDictCompare;
 
         // Otherwise, sort it by item
-        return what.compareTo(other.oreDict);
+        return what.getUnlocalizedName().compareTo(other.what.getUnlocalizedName());
     }
 }

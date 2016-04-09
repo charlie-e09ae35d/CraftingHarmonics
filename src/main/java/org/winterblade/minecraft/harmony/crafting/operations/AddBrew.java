@@ -11,18 +11,9 @@ import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
  */
 @RecipeOperation(name = "addBrew")
 public class AddBrew extends BaseAddOperation {
-    /**
-     * Serialized properties:
-     */
-    private String[] with;
-    private String input;
-    private String ingredient;
-
-    /**
-     * Actual items and whatnot
-     */
-    private transient ItemStack inputItem;
-    private transient ItemStack ingredientItem;
+    private ItemStack[] with;
+    private ItemStack input;
+    private ItemStack ingredient;
 
     @Override
     public void Init() throws ItemMissingException {
@@ -35,21 +26,19 @@ public class AddBrew extends BaseAddOperation {
 
         if(input.equals("") || ingredient.equals("")) throw new ItemMissingException("Brewing recipe is missing input or ingredient.");
 
-        inputItem = ItemRegistry.TranslateToItemStack(input);
-        if(inputItem == null) throw new RuntimeException("Unable to find requested input item '" + input + "'.");
-        if(inputItem.hasTagCompound()) {
+        if(input == null) throw new RuntimeException("Unable to find requested input item.");
+        if(input.hasTagCompound()) {
             System.out.println("NBT support for brews isn't done yet because it's considered an edge case - NBT + " +
                     "stack size 1? - if you need this, please let me know!");
         }
-        if(inputItem.getMaxStackSize() > 1) throw new RuntimeException("Inputs for brewing cannot be stackable.");
+        if(input.getMaxStackSize() > 1) throw new RuntimeException("Inputs for brewing cannot be stackable.");
 
-        ingredientItem = ItemRegistry.TranslateToItemStack(ingredient);
-        if(ingredientItem == null) throw new RuntimeException("Unable to find requested ingredient item '" + ingredient + "'.");
+        if(ingredient == null) throw new RuntimeException("Unable to find requested ingredient item.");
     }
 
     @Override
     public void Apply() {
         System.out.println("Adding brewing recipe for " + output.getUnlocalizedName());
-        BrewingRecipeRegistry.addRecipe(inputItem, ingredientItem, output);
+        BrewingRecipeRegistry.addRecipe(input, ingredient, output);
     }
 }

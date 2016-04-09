@@ -7,41 +7,31 @@ import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
 /**
  * Created by Matt on 4/6/2016.
  */
 @RecipeOperation(name = "addFurnaceFuel")
 public class AddFurnaceFuel extends BaseRecipeOperation {
-    /**
-     * Serialized properties
-     */
-    private String what;
+    private ItemStack what;
     private int burnTime;
-
-    /**
-     * Computed properties
-     */
-    private transient ItemStack fuel;
 
     @Override
     public void Init() throws ItemMissingException {
-        fuel = ItemRegistry.TranslateToItemStack(what);
-        if (fuel == null) throw new RuntimeException("Unable to find requested fuel item '" + what + "'.");
+        if (what == null) throw new RuntimeException("Unable to find requested fuel item.");
     }
 
     @Override
     public void Apply() {
-        System.out.println("Registering fuel '" + fuel.getUnlocalizedName() + "' with burn time '" + burnTime + "'.");
-        int curBurnTime = GameRegistry.getFuelValue(fuel);
+        System.out.println("Registering fuel '" + what.getUnlocalizedName() + "' with burn time '" + burnTime + "'.");
+        int curBurnTime = GameRegistry.getFuelValue(what);
         if (curBurnTime > burnTime) {
-            System.out.println("Currently '" + fuel.getUnlocalizedName() + "' is registered at a higher burn time " +
+            System.out.println("Currently '" + what.getUnlocalizedName() + "' is registered at a higher burn time " +
                     "than you've requested; we can't override this at the moment.");
             return;
         }
 
-        FuelRegistry.getInstance().AddFuel(fuel, burnTime);
+        FuelRegistry.getInstance().AddFuel(what, burnTime);
     }
 
     @Override
@@ -54,6 +44,6 @@ public class AddFurnaceFuel extends BaseRecipeOperation {
             return o.getClass().getSimpleName().compareTo(getClass().getSimpleName());
 
         // Otherwise, sort on name:
-        return what.compareTo(((AddFurnaceFuel) o).what);
+        return what.getUnlocalizedName().compareTo(((AddFurnaceFuel) o).what.getUnlocalizedName());
     }
 }

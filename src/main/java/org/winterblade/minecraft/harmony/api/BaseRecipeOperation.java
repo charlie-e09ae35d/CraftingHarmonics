@@ -68,7 +68,14 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
                     field.setAccessible(true);
 
                     // If we have an item stack, process the inbound data through the registry...
-                    if (ItemStack.class.isAssignableFrom(field.getType())) {
+                    if (ItemStack[].class.isAssignableFrom(field.getType())) {
+                        Object[] items = (Object[])ScriptUtils.convert(o, Object[].class);
+                        ItemStack[] stacks = new ItemStack[items.length];
+                        for (int i = 0; i < items.length; i++) {
+                            stacks[i] = ItemRegistry.TranslateToItemStack(items[i]);
+                        }
+                        field.set(this, stacks);
+                    } else if (ItemStack.class.isAssignableFrom(field.getType())) {
                         field.set(this, ItemRegistry.TranslateToItemStack(o));
                     } else {
                         field.set(this, ScriptUtils.convert(o, field.getType()));

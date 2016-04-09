@@ -11,24 +11,15 @@ import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
  */
 @RecipeOperation(name = "addFurnace")
 public class AddFurnaceOperation extends BaseAddOperation {
-    /**
-     * Serialized properties:
-     */
-    private String with;
+    private ItemStack with;
     private float experience;
-
-    /**
-     * Actual items and whatnot
-     */
-    private transient ItemStack inputItem;
 
     @Override
     public void Init() throws ItemMissingException {
         super.Init();
 
-        inputItem = ItemRegistry.TranslateToItemStack(with);
-        if(inputItem == null) throw new RuntimeException("Unable to find requested input item '" + with + "'.");
-        if(inputItem.hasTagCompound()) {
+        if(with == null) throw new RuntimeException("Unable to find requested input item.");
+        if(with.hasTagCompound()) {
             throw new RuntimeException("NBT matching is not supported for furnace recipes.");
         }
     }
@@ -43,6 +34,6 @@ public class AddFurnaceOperation extends BaseAddOperation {
                     + " always give you '" + curXp + "' XP per item instead of the '" + experience + "' you set.");
         }
 
-        FurnaceRecipes.instance().addSmeltingRecipe(inputItem, output, experience);
+        FurnaceRecipes.instance().addSmeltingRecipe(with, output, experience);
     }
 }
