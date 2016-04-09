@@ -173,8 +173,7 @@
                     output: "minecraft:end_portal_frame",
                     with: [
                         {
-                            item: "minecraft:ender_chest",
-                            returnOnCraft: true
+                            item: "minecraft:ender_chest"
                         },
                         {
                             item: "minecraft:spawn_egg:0:1",
@@ -184,8 +183,7 @@
                             fuzzyNbt: true
                         },
                         {
-                            item: "<logWood>",
-                            replace: "minecraft:stick"
+                            item: "<logWood>"
                         }],
                     displayName: "Oh Whatever",
                     quantity: 12
