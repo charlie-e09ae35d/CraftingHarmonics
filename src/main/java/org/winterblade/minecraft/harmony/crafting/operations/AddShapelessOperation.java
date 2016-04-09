@@ -5,9 +5,8 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessNbtMatchingRecipe;
-import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,7 @@ public class AddShapelessOperation extends BaseAddOperation {
     /**
      * Serialized properties:
      */
-    private OreDictionaryItemStack[] with;
+    private RecipeComponent[] with;
 
     /**
      * Actual items and whatnot
@@ -36,7 +35,7 @@ public class AddShapelessOperation extends BaseAddOperation {
 
         input = new ArrayList<>();
 
-        for(OreDictionaryItemStack item : with) {
+        for(RecipeComponent item : with) {
             if(item.isOreDict()) {
                 input.add(item.getOreDictName());
             } else {
@@ -50,10 +49,10 @@ public class AddShapelessOperation extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding shapeless recipe for " + output.getUnlocalizedName());
+        System.out.println("Adding shapeless recipe for " + output.getItemStack().getUnlocalizedName());
         CraftingManager.getInstance().addRecipe(
                 isNbt
-                    ? new ShapelessNbtMatchingRecipe(output, input.toArray())
-                    : new ShapelessOreRecipe(output, input.toArray()));
+                    ? new ShapelessNbtMatchingRecipe(output.getItemStack(), input.toArray())
+                    : new ShapelessOreRecipe(output.getItemStack(), input.toArray()));
     }
 }

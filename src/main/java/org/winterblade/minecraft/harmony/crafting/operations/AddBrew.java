@@ -1,19 +1,18 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
 /**
  * Created by Matt on 4/6/2016.
  */
 @RecipeOperation(name = "addBrew")
 public class AddBrew extends BaseAddOperation {
-    private ItemStack[] with;
-    private ItemStack input;
-    private ItemStack ingredient;
+    private RecipeComponent[] with;
+    private RecipeComponent input;
+    private RecipeComponent ingredient;
 
     @Override
     public void Init() throws ItemMissingException {
@@ -27,18 +26,18 @@ public class AddBrew extends BaseAddOperation {
         if(input.equals("") || ingredient.equals("")) throw new ItemMissingException("Brewing recipe is missing input or ingredient.");
 
         if(input == null) throw new RuntimeException("Unable to find requested input item.");
-        if(input.hasTagCompound()) {
+        if(input.hasNbt()) {
             System.out.println("NBT support for brews isn't done yet because it's considered an edge case - NBT + " +
                     "stack size 1? - if you need this, please let me know!");
         }
-        if(input.getMaxStackSize() > 1) throw new RuntimeException("Inputs for brewing cannot be stackable.");
+        if(input.getItemStack().getMaxStackSize() > 1) throw new RuntimeException("Inputs for brewing cannot be stackable.");
 
         if(ingredient == null) throw new RuntimeException("Unable to find requested ingredient item.");
     }
 
     @Override
     public void Apply() {
-        System.out.println("Adding brewing recipe for " + output.getUnlocalizedName());
-        BrewingRecipeRegistry.addRecipe(input, ingredient, output);
+        System.out.println("Adding brewing recipe for " + output.getItemStack().getUnlocalizedName());
+        BrewingRecipeRegistry.addRecipe(input.getItemStack(), ingredient.getItemStack(), output.getItemStack());
     }
 }

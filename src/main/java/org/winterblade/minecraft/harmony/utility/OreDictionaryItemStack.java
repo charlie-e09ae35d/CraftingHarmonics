@@ -1,6 +1,5 @@
 package org.winterblade.minecraft.harmony.utility;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 /**

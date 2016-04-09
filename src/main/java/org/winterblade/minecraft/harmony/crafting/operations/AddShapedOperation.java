@@ -8,9 +8,9 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.apache.commons.lang3.ArrayUtils;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
-import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
 
 import java.util.*;
 
@@ -23,8 +23,8 @@ public class AddShapedOperation extends BaseAddOperation {
     /**
      * Serialized properties:
      */
-    private OreDictionaryItemStack[] shape; // 0.2 support
-    private OreDictionaryItemStack[] with;
+    private RecipeComponent[] shape; // 0.2 support
+    private RecipeComponent[] with;
     private int width;
     private int height;
 
@@ -41,7 +41,7 @@ public class AddShapedOperation extends BaseAddOperation {
         super.Init();
         if(with.length > 0) shape = with;
 
-        OreDictionaryItemStack[] filler = new OreDictionaryItemStack[1];
+        RecipeComponent[] filler = new RecipeComponent[1];
         filler[0] = null;
 
         if(shape.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
@@ -111,7 +111,7 @@ public class AddShapedOperation extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding shaped recipe for " + output.getUnlocalizedName());
+        System.out.println("Adding shaped recipe for " + output.getItemStack().getUnlocalizedName());
         CraftingManager.getInstance().addRecipe(isOreDict ? CreateOreDictRecipe() : CreateStandardRecipe());
     }
 
@@ -120,8 +120,8 @@ public class AddShapedOperation extends BaseAddOperation {
      * @return The IRecipe
      */
     private IRecipe CreateStandardRecipe() {
-        if(!isNbt) return new ShapedRecipes(width, height, input, output);
-        return new ShapedNbtMatchingRecipe(width, height, input, output);
+        if(!isNbt) return new ShapedRecipes(width, height, input, output.getItemStack());
+        return new ShapedNbtMatchingRecipe(width, height, input, output.getItemStack());
     }
 
     /**
@@ -165,7 +165,7 @@ public class AddShapedOperation extends BaseAddOperation {
 
         // The args will get automatically expanded
         return isNbt
-                ? new ShapedOreRecipe(output, args.toArray())
-                : new ShapedOreNbtMatchingRecipe(output, args.toArray());
+                ? new ShapedOreRecipe(output.getItemStack(), args.toArray())
+                : new ShapedOreNbtMatchingRecipe(output.getItemStack(), args.toArray());
     }
 }

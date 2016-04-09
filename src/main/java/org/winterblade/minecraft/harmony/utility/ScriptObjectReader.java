@@ -2,15 +2,13 @@ package org.winterblade.minecraft.harmony.utility;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
-import jdk.nashorn.internal.objects.NativeObject;
 import jdk.nashorn.internal.runtime.ScriptObject;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
-import org.winterblade.minecraft.harmony.crafting.components.BaseRecipeComponent;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -48,23 +46,14 @@ public class ScriptObjectReader {
                     field.setAccessible(true);
 
                     // If we have an item stack, process the inbound data through the registry...
-                    if (OreDictionaryItemStack[].class.isAssignableFrom(field.getType())) {
-                        Object[] items = (Object[]) ScriptUtils.convert(o, Object[].class);
-                        OreDictionaryItemStack[] stacks = new OreDictionaryItemStack[items.length];
-                        for (int i = 0; i < items.length; i++) {
-                            stacks[i] = TranslateToOreDictionaryItemStack(items[i]);
-                        }
-                        field.set(writeTo, stacks);
-                    } else if(OreDictionaryItemStack.class.isAssignableFrom(field.getType())) {
-                        field.set(writeTo, TranslateToOreDictionaryItemStack(o));
-                    } else if (ItemStack[].class.isAssignableFrom(field.getType())) {
+                    if (RecipeComponent[].class.isAssignableFrom(field.getType())) {
                         Object[] items = (Object[])ScriptUtils.convert(o, Object[].class);
-                        ItemStack[] stacks = new ItemStack[items.length];
+                        RecipeComponent[] stacks = new RecipeComponent[items.length];
                         for (int i = 0; i < items.length; i++) {
                             stacks[i] = TranslateToItemStack(items[i]);
                         }
                         field.set(writeTo, stacks);
-                    } else if (ItemStack.class.isAssignableFrom(field.getType())) {
+                    } else if (RecipeComponent.class.isAssignableFrom(field.getType())) {
                         field.set(writeTo, TranslateToItemStack(o));
                     } else if (NBTTagCompound.class.isAssignableFrom(field.getType())) {
                         String json = "{}";
@@ -96,32 +85,28 @@ public class ScriptObjectReader {
      * @return      The ItemStack requested
      * @throws ItemMissingException When the item cannot be found in the registry.
      */
-    public static ItemStack TranslateToItemStack(Object data) throws ItemMissingException {
-        if(data instanceof String) return ItemRegistry.TranslateToItemStack((String)data);
+    public static RecipeComponent TranslateToItemStack(Object data) throws ItemMissingException {
+        RecipeComponent component = new RecipeComponent();
+
+        if(data instanceof String) {
+            String itemString = (String)data;
+
+            if(ItemRegistry.IsOreDictionaryEntry(itemString)) {
+                component.setOreDict(ItemRegistry.GetOreDictionaryName(itemString));
+            } else {
+                component.setItem(ItemRegistry.TranslateToItemStack(itemString));
+            }
+
+            return component;
+        }
+
         System.out.println(data.getClass());
         ScriptObjectMirror item = ScriptUtils.wrap((ScriptObject) data);
 
         if(!item.hasMember("item")) return null;
 
-        BaseRecipeComponent component = new BaseRecipeComponent();
         ScriptObjectReader.WriteScriptObjectToClass(item,component);
 
-        return component.getItemStack();
-    }
-    /**
-     * Translates script data to either an ore dictionary name or an item stack
-     * @param data  The item
-     * @return      The OreDictionaryItemStack
-     */
-    public static OreDictionaryItemStack TranslateToOreDictionaryItemStack(Object data) throws ItemMissingException {
-        if(data instanceof String) {
-            String itemString = (String)data;
-
-            return ItemRegistry.IsOreDictionaryEntry(itemString)
-                    ? new OreDictionaryItemStack(ItemRegistry.GetOreDictionaryName(itemString))
-                    : new OreDictionaryItemStack(ItemRegistry.TranslateToItemStack(itemString));
-        }
-
-        return new OreDictionaryItemStack(TranslateToItemStack(data));
+        return component;
     }
 }
