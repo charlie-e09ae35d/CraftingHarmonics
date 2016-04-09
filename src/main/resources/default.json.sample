@@ -167,11 +167,26 @@
                     displayName: "Tome of Town Portal"
                 },
                 {
-                    __comment: "As always, you can do ore dictionary as well.",
+                    __comment: "You can also use an expanded format for items, allowing you to specify more properties.",
                     __result: "Just going with it now...",
                     type: "addShaped",
                     output: "minecraft:end_portal_frame",
-                    with: ["minecraft:ender_chest","minecraft:spawn_egg:0:1:~{DisplayName:\"Tome of Town Portal\"}","<logWood>"],
+                    with: [
+                        {
+                            item: "minecraft:ender_chest",
+                            returnOnCraft: true
+                        },
+                        {
+                            item: "minecraft:spawn_egg:0:1",
+                            nbt: {
+                                DisplayName: "Tome of Town Portal"
+                            },
+                            fuzzyNbt: true
+                        },
+                        {
+                            item: "<logWood>",
+                            replace: "minecraft:stick"
+                        }],
                     displayName: "Oh Whatever",
                     quantity: 12
                 }
