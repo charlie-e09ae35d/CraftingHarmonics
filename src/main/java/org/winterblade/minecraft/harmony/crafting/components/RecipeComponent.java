@@ -10,6 +10,7 @@ import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
 public class RecipeComponent {
     protected OreDictionaryItemStack item;
     private boolean fuzzyNbt;
+
     private boolean returnOnCraft;
     private RecipeComponent replace;
 
@@ -57,11 +58,11 @@ public class RecipeComponent {
     }
 
     public boolean isOreDict() {
-        return item == null ? false : item.isOreDict();
+        return item != null && item.isOreDict();
     }
 
     public boolean hasNbt() {
-        return item == null || item.getItemStack() == null ? false : item.getItemStack().hasTagCompound();
+        return !(item == null || item.getItemStack() == null) && item.getItemStack().hasTagCompound();
     }
 
     public boolean isFuzzyNbt() {
@@ -71,6 +72,18 @@ public class RecipeComponent {
     @Override
     public String toString() {
         return item == null ? "null" : item.toString();
+    }
+
+    public void setReturnOnCraft(boolean returnOnCraft) {
+        this.returnOnCraft = returnOnCraft;
+
+        if(returnOnCraft && !item.isOreDict()) {
+            item.getItemStack().getItem().setContainerItem(item.getItemStack().getItem());
+        }
+    }
+
+    public boolean isReturnOnCraft() {
+        return returnOnCraft;
     }
 }
 

@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
@@ -53,5 +54,15 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
         if(other.output == null) return -1;
         return output.getItemStack().getUnlocalizedName().compareTo(
                 other.output.getItemStack().getUnlocalizedName());
+    }
+
+    /**
+     * Quick and dirty representation of a recipe wrapper
+     * @param recipe        The recipe to (potentially) wrap
+     * @param components    The components to check
+     * @return              The wrapped recipe; or the original if it didn't need wrapped.
+     */
+    protected IRecipe Wrap(IRecipe recipe, RecipeComponent[] components) {
+        return recipe;
     }
 }

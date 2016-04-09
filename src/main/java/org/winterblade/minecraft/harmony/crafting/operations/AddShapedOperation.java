@@ -93,14 +93,15 @@ public class AddShapedOperation extends BaseAddOperation {
         inputOreDict = new Object[shape.length];
 
         for(int i = 0; i < shape.length; i++) {
+            input[i] = shape[i];
+
             if(shape[i] == null) {
-                inputOreDict[i] = input[i] = null;
+                inputOreDict[i] = null;
             }
             else if(shape[i].isOreDict()) {
                 isOreDict = true;
                 inputOreDict[i] = shape[i].getOreDictName();
             } else {
-                input[i] = shape[i];
                 inputOreDict[i] = shape[i].getItemStack();
 
                 // See if we need to do NBT matching...
@@ -113,7 +114,7 @@ public class AddShapedOperation extends BaseAddOperation {
     @Override
     public void Apply() {
         System.out.println("Adding shaped recipe for " + output.toString());
-        CraftingManager.getInstance().addRecipe(isOreDict ? CreateOreDictRecipe() : CreateStandardRecipe());
+        CraftingManager.getInstance().addRecipe(Wrap(isOreDict ? CreateOreDictRecipe() : CreateStandardRecipe(), input));
     }
 
     /**
