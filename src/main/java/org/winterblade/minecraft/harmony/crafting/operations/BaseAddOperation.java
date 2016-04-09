@@ -59,6 +59,9 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
             return o.getClass().getSimpleName().compareTo(getClass().getSimpleName());
 
         // Otherwise, sort on name:
-        return output.compareTo(((BaseAddOperation) o).output);
+        BaseAddOperation other = (BaseAddOperation)o;
+        if(output == null) return 1;
+        if(other.output == null) return -1;
+        return output.compareTo(other.output);
     }
 }

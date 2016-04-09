@@ -18,15 +18,15 @@ public class AnnotatedInstanceUtil {
 
     }
 
-    public static Map<String, Class> getRecipeOperations(@Nonnull ASMDataTable asmDataTable) {
+    public static Map<String, Class<BaseRecipeOperation>> getRecipeOperations(@Nonnull ASMDataTable asmDataTable) {
         return getInstances(asmDataTable, RecipeOperation.class, BaseRecipeOperation.class);
     }
 
-    private static <T> Map<String, Class> getInstances(@Nonnull ASMDataTable asmDataTable, Class annotationClass, Class<T> instanceClass) {
+    private static <T> Map<String, Class<T>> getInstances(@Nonnull ASMDataTable asmDataTable, Class annotationClass, Class<T> instanceClass) {
         String annotationClassName = annotationClass.getCanonicalName();
         Set<ASMDataTable.ASMData> asmTable = asmDataTable.getAll(annotationClassName);
 
-        Map<String,Class> instances = new HashMap<>();
+        Map<String,Class<T>> instances = new HashMap<>();
         for (ASMDataTable.ASMData asmData : asmTable) {
             try {
                 Class<?> asmClass = Class.forName(asmData.getClassName());
@@ -44,7 +44,7 @@ public class AnnotatedInstanceUtil {
                 }
 
                 System.out.println("Loading '" + asmClass.getSimpleName() + "' for recipe type " + name);
-                instances.put(name.toLowerCase(), asmClass);
+                instances.put(name.toLowerCase(), (Class<T>) asmClass);
             } catch (ClassNotFoundException e) {
                 System.err.println("Failed to load: " + asmData.getClassName() + ".\n" + Arrays.toString(e.getStackTrace()));
             }

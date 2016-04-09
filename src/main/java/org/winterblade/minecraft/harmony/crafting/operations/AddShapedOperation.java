@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -166,5 +167,15 @@ public class AddShapedOperation extends BaseAddOperation {
         return isNbt
                 ? new ShapedOreRecipe(outputItemStack, args.toArray())
                 : new ShapedOreNbtMatchingRecipe(outputItemStack, args.toArray());
+    }
+
+    /**
+     * Used to convert the provided operation from the file into the given recipe.
+     *
+     * @param data The operation data
+     */
+    @Override
+    protected void ReadData(ScriptObjectMirror data) {
+        // TODO
     }
 }

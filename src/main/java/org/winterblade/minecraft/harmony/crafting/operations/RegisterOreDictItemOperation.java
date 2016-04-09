@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
@@ -56,5 +57,15 @@ public class RegisterOreDictItemOperation extends BaseRecipeOperation {
 
         // Otherwise, sort it by item
         return what.compareTo(other.oreDict);
+    }
+
+    /**
+     * Used to convert the provided operation from the file into the given recipe.
+     *
+     * @param data The operation data
+     */
+    @Override
+    protected void ReadData(ScriptObjectMirror data) {
+        // TODO
     }
 }

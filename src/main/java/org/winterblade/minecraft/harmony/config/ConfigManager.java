@@ -2,20 +2,10 @@ package org.winterblade.minecraft.harmony.config;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import net.minecraftforge.common.config.Configuration;
-import org.apache.commons.lang3.ArrayUtils;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
-import org.winterblade.minecraft.harmony.CraftingSet;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Matt on 4/5/2016.
@@ -23,8 +13,6 @@ import java.util.Map;
 public class ConfigManager {
 
     private final String configPath;
-
-    private Map<String, CraftingSet> sets = new HashMap<>();;
 
     /**
      * Generates a new config manager using the config path
@@ -34,11 +22,6 @@ public class ConfigManager {
         this.configPath = configPath;
         setupRecipeSets();
     }
-
-    public CraftingSet GetSet(String set) {
-        return sets.get(set);
-    }
-
 
     private void setupRecipeSets() {
         System.out.println("Reading set definitions from " + configPath + "Sets/");
@@ -78,58 +61,15 @@ public class ConfigManager {
             return;
         }
 
-        List<ConfigFile> setConfigs = new ArrayList<>();
-
         for(File config : files) {
             if(!config.getName().endsWith(".json")) continue;
 
             System.out.println("Reading set definition " + config.getPath());
             try {
-
-                NashornConfigProcessor.ReadConfigFile(config);
-                // There's a lot that could go wrong here...
-//                ConfigFile file = ConfigFile.Deserialize(new String(Files.readAllBytes(Paths.get(config.getPath()))));
-//
-//                // Sanity check to make sure we actually read something useful here...
-//                if(file.sets == null) {
-//                    System.err.println(config.getPath() + " had no sets node inside it.");
-//                    continue;
-//                }
-//
-//                // Now let's actually deal with it...
-//                if(file.name == null) file.name = config.getName();
-//                setConfigs.add(file);
+                NashornConfigProcessor.getInstance().ReadConfigFile(config);
             } catch (Exception e) {
                 System.err.println("Error processing Set file " + config.getPath() + ": " + e.getMessage());
             }
-        }
-
-        // Now that we have the files... register them...
-        Map<String, IRecipeOperation[]> configSets = new HashMap<>();
-
-        for(ConfigFile file : setConfigs) {
-            System.out.println("Registering sets from '" + file.name + "' - " + file.description);
-
-            for (ConfigSet set : file.sets) {
-                if(set.name == null || set.operations == null || set.operations.length <= 0) {
-                    System.err.println("Error reading set definition.");
-                    continue;
-                }
-
-                // Check if we need to merge a list, or if it's a separate set.
-                // This may end up complicating things in the long run as it will depend on load order, but
-                // will still allow users to modify sets across files as long as they don't step on each other.
-                if(configSets.containsKey(set.name)) {
-                    configSets.put(set.name, ArrayUtils.addAll(configSets.get(set.name), set.operations));
-                } else {
-                    configSets.put(set.name, set.operations);
-                }
-            }
-        }
-
-        // Now, process the sets:
-        for(String set : configSets.keySet()) {
-            sets.put(set, new CraftingSet(configSets.get(set)));
         }
     }
 }
