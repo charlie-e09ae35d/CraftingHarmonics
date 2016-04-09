@@ -3,6 +3,8 @@ package org.winterblade.minecraft.harmony.utility;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
@@ -99,6 +101,22 @@ public class ScriptObjectReader {
             }
         }
 
+        if (cls.isAssignableFrom(ItemStack.class)) {
+            try {
+                return (T) ItemRegistry.TranslateToItemStack((String)input);
+            } catch (ItemMissingException e) {
+                return null;
+            }
+        }
+
+        if (cls.isAssignableFrom(Item.class)) {
+            try {
+                return (T) ItemRegistry.TranslateToItemStack((String)input).getItem();
+            } catch (ItemMissingException e) {
+                return null;
+            }
+        }
+
         return (T) ScriptUtils.convert(input, cls);
     }
 
@@ -108,7 +126,7 @@ public class ScriptObjectReader {
 
         if(m != null) {
             // Convert and call
-            Class c = m.getParameterTypes()[0].getClass();
+            Class c = m.getParameterTypes()[0];
             m.invoke(writeTo, convertData(value, c));
             return;
         }
