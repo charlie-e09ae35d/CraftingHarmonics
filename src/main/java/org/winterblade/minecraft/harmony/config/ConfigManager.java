@@ -85,18 +85,20 @@ public class ConfigManager {
 
             System.out.println("Reading set definition " + config.getPath());
             try {
+
+                NashornConfigProcessor.ReadConfigFile(config);
                 // There's a lot that could go wrong here...
-                ConfigFile file = ConfigFile.Deserialize(new String(Files.readAllBytes(Paths.get(config.getPath()))));
-
-                // Sanity check to make sure we actually read something useful here...
-                if(file.sets == null) {
-                    System.err.println(config.getPath() + " had no sets node inside it.");
-                    continue;
-                }
-
-                // Now let's actually deal with it...
-                if(file.name == null) file.name = config.getName();
-                setConfigs.add(file);
+//                ConfigFile file = ConfigFile.Deserialize(new String(Files.readAllBytes(Paths.get(config.getPath()))));
+//
+//                // Sanity check to make sure we actually read something useful here...
+//                if(file.sets == null) {
+//                    System.err.println(config.getPath() + " had no sets node inside it.");
+//                    continue;
+//                }
+//
+//                // Now let's actually deal with it...
+//                if(file.name == null) file.name = config.getName();
+//                setConfigs.add(file);
             } catch (Exception e) {
                 System.err.println("Error processing Set file " + config.getPath() + ": " + e.getMessage());
             }

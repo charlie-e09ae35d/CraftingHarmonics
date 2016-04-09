@@ -53,12 +53,12 @@ public class CraftingHarmonicsMod {
         ItemRegistry.Init();
 
         // Always apply the default set:
-        CraftingSet defaultSet = configManager.GetSet("default");
-
-        if(defaultSet != null) {
-            defaultSet.Init();
-            defaultSet.Apply();
-        }
+//        CraftingSet defaultSet = configManager.GetSet("default");
+//
+//        if(defaultSet != null) {
+//            defaultSet.Init();
+//            defaultSet.Apply();
+//        }
 
         // Link in our recipes
         RecipeSorter.register("craftingharmonics:shaped_nbt",       ShapedNbtMatchingRecipe.class,
