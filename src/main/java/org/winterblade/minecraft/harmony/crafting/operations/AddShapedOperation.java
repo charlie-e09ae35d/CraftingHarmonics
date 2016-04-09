@@ -166,7 +166,7 @@ public class AddShapedOperation extends BaseAddOperation {
 
         // The args will get automatically expanded
         return isNbt
-                ? new ShapedOreRecipe(output.getItemStack(), args.toArray())
-                : new ShapedOreNbtMatchingRecipe(output.getItemStack(), input, args.toArray());
+                ? new ShapedOreNbtMatchingRecipe(output.getItemStack(), input, args.toArray())
+                : new ShapedOreRecipe(output.getItemStack(), args.toArray());
     }
 }
