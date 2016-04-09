@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
@@ -47,44 +46,40 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
     protected void ReadData(ScriptObjectMirror data) throws ItemMissingException {
         // Base implementation just attempts to map properties one-to-one
         Class cls = getClass();
-        Field[] fields = cls.getDeclaredFields();
 
-        for(Field field : fields) {
-            int modifiers = field.getModifiers();
-            String fieldName = field.getName();
+        do {
+            Field[] fields = cls.getDeclaredFields();
 
-            // Don't bother deserializing in these cases:
-            if(Modifier.isFinal(modifiers)
-                || Modifier.isTransient(modifiers)
-                || Modifier.isAbstract(modifiers)
-                || !data.hasMember(fieldName)) continue;
+            for (Field field : fields) {
+                int modifiers = field.getModifiers();
+                String fieldName = field.getName();
 
-            // Get the field from our data...
-            Object o = data.get(fieldName);
+                // Don't bother deserializing in these cases:
+                if (Modifier.isFinal(modifiers)
+                        || Modifier.isTransient(modifiers)
+                        || Modifier.isAbstract(modifiers)
+                        || !data.hasMember(fieldName)) continue;
 
-            try {
-                // Make sure we can actually write to the field...
-                field.setAccessible(true);
+                // Get the field from our data...
+                Object o = data.get(fieldName);
 
-                // If we have an item stack, process the inbound data through the registry...
-                if(ItemStack.class.isAssignableFrom(field.getType())) {
-                    field.set(this, ItemRegistry.TranslateToItemStack(o));
-//                } else if(ScriptObjectMirror.class.isAssignableFrom(o.getClass())) {
-//                    // If we have an object mirror, then this is a complicated type...
-//                    ScriptObjectMirror obj = (ScriptObjectMirror) o;
-//
-//                    if(field.getType().isArray() && obj.isArray()) {
-//                        field.set(this, ScriptUtils.convert(obj, field.getType()));
-//                    } else {
-//                        field.set(this, Array.newInstance(field.getType(),0));
-//                    }
-                } else {
-                    field.set(this, ScriptUtils.convert(o,field.getType()));
+                try {
+                    // Make sure we can actually write to the field...
+                    field.setAccessible(true);
+
+                    // If we have an item stack, process the inbound data through the registry...
+                    if (ItemStack.class.isAssignableFrom(field.getType())) {
+                        field.set(this, ItemRegistry.TranslateToItemStack(o));
+                    } else {
+                        field.set(this, ScriptUtils.convert(o, field.getType()));
+                    }
+                } catch (Exception e) {
+                    System.err.println("Unable to deserialize '" + fieldName + "' from the provided data: " + e.getMessage());
                 }
-            } catch (Exception e) {
-                System.err.println("Unable to deserialize '" + fieldName + "' from the provided data: " + e.getMessage());
             }
-        }
+
+            cls = cls.getSuperclass();
+        } while(cls != null);
     };
 
     /**

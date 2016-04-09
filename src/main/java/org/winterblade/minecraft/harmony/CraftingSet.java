@@ -43,7 +43,7 @@ public class CraftingSet {
                 op.Apply();
             }
             catch(Exception ex) {
-                System.err.println("Error applying operation.\n" + Arrays.toString(ex.getStackTrace()));
+                System.err.println("Error applying operation.\n" + ex.getMessage());
             }
         }
     }

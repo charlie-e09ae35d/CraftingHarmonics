@@ -58,14 +58,4 @@ public class RegisterOreDictItemOperation extends BaseRecipeOperation {
         // Otherwise, sort it by item
         return what.compareTo(other.oreDict);
     }
-
-    /**
-     * Used to convert the provided operation from the file into the given recipe.
-     *
-     * @param data The operation data
-     */
-    @Override
-    protected void ReadData(ScriptObjectMirror data) {
-        // TODO
-    }
 }
