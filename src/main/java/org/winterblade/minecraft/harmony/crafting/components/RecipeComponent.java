@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.crafting.components;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
@@ -12,7 +13,7 @@ public class RecipeComponent {
     private boolean fuzzyNbt;
 
     private boolean returnOnCraft;
-    private RecipeComponent replace;
+    private Item replaceOnCraft;
 
     // Used just so that the SOR will pick up that we want to set this...
     private NBTTagCompound nbt;
@@ -84,6 +85,14 @@ public class RecipeComponent {
 
     public boolean isReturnOnCraft() {
         return returnOnCraft;
+    }
+
+    public void setReplaceOnCraft(Item replacingItem) {
+        this.replaceOnCraft = replacingItem;
+
+        if(replaceOnCraft != null && !item.isOreDict()) {
+            item.getItemStack().getItem().setContainerItem(replacingItem);
+        }
     }
 }
 
