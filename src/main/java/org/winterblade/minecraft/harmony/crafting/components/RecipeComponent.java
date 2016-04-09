@@ -15,9 +15,6 @@ public class RecipeComponent {
     private boolean returnOnCraft;
     private Item replaceOnCraft;
 
-    // Used just so that the SOR will pick up that we want to set this...
-    private NBTTagCompound nbt;
-
     /**
      * Convenience method to translate an array of RecipeComponents into an array of ItemStacks
      * @param components    The RecipeComponents to translate

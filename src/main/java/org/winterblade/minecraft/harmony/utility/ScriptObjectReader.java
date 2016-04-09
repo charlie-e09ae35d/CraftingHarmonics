@@ -28,83 +28,133 @@ public class ScriptObjectReader {
     public static void WriteScriptObjectToClass(ScriptObjectMirror data, Object writeTo) {
         Class cls = writeTo.getClass();
 
-        do {
-            Field[] fields = cls.getDeclaredFields();
+        for(String key : data.keySet()) {
+            try {
+                updateField(cls, key, writeTo, data.get(key));
+            } catch (Exception e) {
+                System.err.println("Unable to deserialize '" + key + "' from the provided data: " + e.getMessage());
+            }
+        }
+    }
 
-            for (Field field : fields) {
-                int modifiers = field.getModifiers();
-                String fieldName = field.getName();
+    @SuppressWarnings("unchecked")
+    private static <T> T convertData(Object input, Class<T> cls) {
+        if (cls.isAssignableFrom(OreDictionaryItemStack[].class)) {
+            Object[] items = (Object[]) ScriptUtils.convert(input, Object[].class);
+            OreDictionaryItemStack[] stacks = new OreDictionaryItemStack[items.length];
 
-                // Don't bother deserializing in these cases:
-                if (Modifier.isFinal(modifiers)
-                        || Modifier.isTransient(modifiers)
-                        || Modifier.isAbstract(modifiers)
-                        || !data.hasMember(fieldName)) continue;
-
-                // Get the field from our data...
-                Object o = data.get(fieldName);
-
+            for (int i = 0; i < items.length; i++) {
                 try {
-                    // If we have an item stack, process the inbound data through the registry...
-                    if (OreDictionaryItemStack[].class.isAssignableFrom(field.getType())) {
-                        Object[] items = (Object[]) ScriptUtils.convert(o, Object[].class);
-                        OreDictionaryItemStack[] stacks = new OreDictionaryItemStack[items.length];
-                        for (int i = 0; i < items.length; i++) {
-                            stacks[i] = TranslateToOreDictionaryItemStack((String)items[i]);
-                        }
-                        updateField(cls, field, writeTo, stacks);
-                    } else if(OreDictionaryItemStack.class.isAssignableFrom(field.getType())) {
-                        updateField(cls, field, writeTo, TranslateToOreDictionaryItemStack((String)o));
-                    } else if (RecipeComponent[].class.isAssignableFrom(field.getType())) {
-                        Object[] items = (Object[])ScriptUtils.convert(o, Object[].class);
-                        RecipeComponent[] stacks = new RecipeComponent[items.length];
-                        for (int i = 0; i < items.length; i++) {
-                            stacks[i] = TranslateToItemStack(items[i]);
-                        }
-                        updateField(cls, field, writeTo, stacks);
-                    } else if (RecipeComponent.class.isAssignableFrom(field.getType())) {
-                        updateField(cls, field, writeTo, TranslateToItemStack(o));
-                    } else if (NBTTagCompound.class.isAssignableFrom(field.getType())) {
-                        String json = "{}";
-                        if(o instanceof String) {
-                            json = o.toString();
-                        } else if(o instanceof ScriptObjectMirror) {
-                            json = ScriptExecutionManager.getJsonString(o);
-                        }
-
-                        try {
-                            updateField(cls, field, writeTo, JsonToNBT.getTagFromJson(json));
-                        } catch (NBTException e) {
-                            System.out.println("Unable to convert '" + json + "' to NBT tag.");
-                        }
-                    } else {
-                        updateField(cls, field, writeTo, ScriptUtils.convert(o, field.getType()));
-                    }
-                } catch (Exception e) {
-                    System.err.println("Unable to deserialize '" + fieldName + "' from the provided data: " + e.getMessage());
+                    stacks[i] = TranslateToOreDictionaryItemStack((String)items[i]);
+                } catch (ItemMissingException e) {
+                    stacks[i] = null;
                 }
             }
 
-            cls = cls.getSuperclass();
-        } while(cls != null);
+            return (T) stacks;
+        }
+
+        if(cls.isAssignableFrom(OreDictionaryItemStack.class)) {
+            try {
+                return (T) TranslateToOreDictionaryItemStack((String)input);
+            } catch (ItemMissingException e) {
+                return null;
+            }
+        }
+
+        if (cls.isAssignableFrom(RecipeComponent[].class)) {
+            Object[] items = (Object[])ScriptUtils.convert(input, Object[].class);
+            RecipeComponent[] stacks = new RecipeComponent[items.length];
+            for (int i = 0; i < items.length; i++) {
+                try {
+                    stacks[i] = TranslateToItemStack(items[i]);
+                } catch (ItemMissingException e) {
+                    stacks[i] = null;
+                }
+            }
+
+            return (T) stacks;
+        }
+
+        if (cls.isAssignableFrom(RecipeComponent.class)) {
+            try {
+                return (T) TranslateToItemStack(input);
+            } catch (ItemMissingException e) {
+                return null;
+            }
+        }
+
+        if (cls.isAssignableFrom(NBTTagCompound.class)) {
+            String json = "{}";
+            if(input instanceof String) {
+                json = input.toString();
+            } else if(input instanceof ScriptObjectMirror) {
+                json = ScriptExecutionManager.getJsonString(input);
+            }
+
+            try {
+                return (T) JsonToNBT.getTagFromJson(json);
+            } catch (NBTException e) {
+                System.out.println("Unable to convert '" + json + "' to NBT tag.");
+            }
+        }
+
+        return (T) ScriptUtils.convert(input, cls);
     }
 
-    private static void updateField(Class cls, Field field, Object writeTo, Object value) throws InvocationTargetException, IllegalAccessException {
+    private static void updateField(Class cls, String field, Object writeTo, Object value) throws InvocationTargetException, IllegalAccessException {
         // If we have a setter, use that...
-        Method m = null;
-        try {
-            m = cls.getMethod(getSetterMethodName(field.getName()), field.getType());
-        } catch (NoSuchMethodException e) {
-            // We didn't find the method
+        Method m = getFirstMethodByName(cls, field);
+
+        if(m != null) {
+            // Convert and call
+            Class c = m.getParameterTypes()[0].getClass();
+            m.invoke(writeTo, convertData(value, c));
+            return;
         }
 
-        // Otherwise, write directly to the field...
-        if(m != null) {
-            m.invoke(writeTo, value);
-        } else {
-            field.setAccessible(true);
-            field.set(writeTo, value);
+        Field f = getFieldByName(cls, field);
+
+        if(f == null) return;
+
+        f.setAccessible(true);
+        f.set(writeTo, convertData(value, f.getType()));
+    }
+
+    private static Method getFirstMethodByName(Class cls, String name) {
+        Method[] methods = cls.getMethods();
+        name = name.toLowerCase();
+
+        for(Method method : methods) {
+            if (method.getName().toLowerCase().equals("set" + name) && method.getParameterCount() == 1) return method;
         }
+
+        return null;
+    }
+
+    private static Field getFieldByName(Class cls, String name) {
+        Field field = null;
+
+        Class cur = cls;
+
+        do {
+            try {
+                field = cur.getDeclaredField(name);
+            } catch (NoSuchFieldException e) {
+                // Ascend.
+            }
+            cur = cur.getSuperclass();
+        } while(field == null && cur != null);
+
+        if(field == null) return null;
+
+        int modifiers = field.getModifiers();
+
+        // Don't bother deserializing in these cases:
+        return Modifier.isFinal(modifiers)
+                || Modifier.isTransient(modifiers)
+                || Modifier.isAbstract(modifiers) ? null : field;
+
     }
 
     /**
@@ -147,14 +197,5 @@ public class ScriptObjectReader {
         return ItemRegistry.IsOreDictionaryEntry(data)
                 ? new OreDictionaryItemStack(data, ItemRegistry.GetOreDictionaryName(data))
                 : new OreDictionaryItemStack(data, ItemRegistry.TranslateToItemStack(data));
-    }
-
-    /**
-     * Quick and dirty implementation of a field-name-to-setter-method
-     * @param name  The field name
-     * @return      The setter method
-     */
-    private static String getSetterMethodName(String name) {
-        return "set" + name.substring(0,1).toUpperCase() + name.substring(1);
     }
 }
