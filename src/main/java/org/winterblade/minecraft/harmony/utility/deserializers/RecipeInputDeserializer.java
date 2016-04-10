@@ -9,6 +9,7 @@ import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
+import org.winterblade.minecraft.harmony.crafting.matchers.NbtMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.OreDictionaryMatcher;
 
 /**
@@ -46,7 +47,12 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             // These will always be hardcoded here.
             output.addMatcher(new ItemMatcher(item.getItem()), Priority.HIGHEST);
             output.addMatcher(new MetadataMatcher(item.getMetadata()), Priority.HIGHEST);
-            // TODO: Add NBT matchers
+
+            if(item.hasTagCompound()) {
+                // If we're deserializing from string, pass false to fuzzy and it'll search it
+                // based on if our custom tag was injected or not.
+                output.addMatcher(new NbtMatcher(item.getTagCompound(), false), Priority.HIGH);
+            }
 
             return output;
         }
