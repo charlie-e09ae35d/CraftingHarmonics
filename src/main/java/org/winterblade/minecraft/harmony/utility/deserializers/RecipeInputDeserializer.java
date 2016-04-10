@@ -23,6 +23,8 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             ItemStack item;
             String itemString = (String)input;
 
+            if(itemString.trim().equals("")) return output;
+
             if(ItemRegistry.IsOreDictionaryEntry(itemString)) {
                 // TODO: Ore-dict matcher
             }
@@ -33,6 +35,8 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
                 System.err.println("Error creating recipe input for '" + input +"'.");
                 return output;
             }
+
+            if(item == null) return output;
 
             // These will always be hardcoded here.
             output.addMatcher(new ItemMatcher(item.getItem()), Priority.HIGHEST);

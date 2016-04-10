@@ -47,6 +47,15 @@ public class RecipeInput {
         return true;
     }
 
+    /**
+     * Checks if the given RecipeInput is null or empty
+     * @param input The RecipeInput to check
+     * @return      True if it's null or empty, false otherwise.
+     */
+    public static boolean isNullOrEmpty(RecipeInput input) {
+        return input == null || input.matchers.size() == 0;
+    }
+
     private class RecipeInputMatcherData implements Comparable<RecipeInputMatcherData> {
         private final IRecipeInputMatcher matcher;
         private final Priority priority;
@@ -66,5 +75,10 @@ public class RecipeInput {
         public IRecipeInputMatcher getMatcher() {
             return matcher;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "RecipeInput{matchers=" + matchers + '}';
     }
 }

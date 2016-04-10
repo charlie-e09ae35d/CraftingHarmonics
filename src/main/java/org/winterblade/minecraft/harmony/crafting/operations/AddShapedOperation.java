@@ -8,7 +8,9 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.apache.commons.lang3.ArrayUtils;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
 
@@ -23,26 +25,18 @@ public class AddShapedOperation extends BaseAddOperation {
     /**
      * Serialized properties:
      */
-    private RecipeComponent[] shape; // 0.2 support
-    private RecipeComponent[] with;
+    private RecipeInput[] shape; // 0.2 support
+    private RecipeInput[] with;
     private int width;
     private int height;
-
-    /**
-     * Actual items and whatnot
-     */
-    private transient RecipeComponent[] input;
-    private transient Object[] inputOreDict;
-    private transient boolean isOreDict;
-    private transient boolean isNbt;
 
     @Override
     public void Init() throws ItemMissingException {
         super.Init();
         if(with.length > 0) shape = with;
 
-        RecipeComponent[] filler = new RecipeComponent[1];
-        filler[0] = new RecipeComponent();
+        RecipeInput[] filler = new RecipeInput[1];
+        filler[0] = new RecipeInput();
 
         if(shape.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
 
@@ -88,86 +82,11 @@ public class AddShapedOperation extends BaseAddOperation {
                 width = height = 3;
                 break;
         }
-
-        input = new RecipeComponent[shape.length];
-        inputOreDict = new Object[shape.length];
-
-        for(int i = 0; i < shape.length; i++) {
-            input[i] = shape[i];
-
-            if(shape[i] == null) {
-                inputOreDict[i] = null;
-            }
-            else if(shape[i].isOreDict()) {
-                isOreDict = true;
-                inputOreDict[i] = shape[i].getOreDictName();
-            } else {
-                inputOreDict[i] = shape[i].getItemStack();
-
-                // See if we need to do NBT matching...
-                if(input[i] != null && !isNbt && input[i].hasNbt()) isNbt = true;
-            }
-        }
-
     }
 
     @Override
     public void Apply() {
         System.out.println("Adding shaped recipe for " + output.toString());
-        CraftingManager.getInstance().addRecipe(Wrap(isOreDict ? CreateOreDictRecipe() : CreateStandardRecipe(), input));
-    }
-
-    /**
-     * Turns our regular recipe into the proper type of recipe
-     * @return The IRecipe
-     */
-    private IRecipe CreateStandardRecipe() {
-        if(!isNbt) return new ShapedRecipes(width, height, RecipeComponent.getItemStacks(input), output.getItemStack());
-        return new ShapedNbtMatchingRecipe(width, height, input, output.getItemStack());
-    }
-
-    /**
-     * Turns our ore dictionary map into the desired format for the ShapedOreRecipe
-     * @return  The ShapedOreRecipe
-     */
-    private IRecipe CreateOreDictRecipe() {
-        String[] lines = new String[height];
-        Map<Character, Object> charmap = new HashMap<>();
-
-        /**
-         * Build out the recipe's pattern
-         */
-        int offset = 0;
-        for(int y = 0; y < height; y++) {
-            lines[y] = "";
-            for(int x = 0; x < width; x++) {
-                if(inputOreDict[offset] == null) {
-                    lines[y] += " ";
-                } else {
-                    // This will produce increasing values of A, B, C, etc
-                    char id = (char)(CHAR_A +offset);
-                    lines[y] += id;
-                    charmap.put(id, inputOreDict[offset]);
-                }
-
-                offset++;
-            }
-        }
-
-        /**
-         * Build out our arguments list...
-         */
-        List<Object> args = new ArrayList<>();
-        args.add(false); // This will turn off mirroring.
-        Collections.addAll(args, lines);
-        for(Map.Entry<Character, Object> kv : charmap.entrySet()) {
-            args.add(kv.getKey());
-            args.add(kv.getValue());
-        }
-
-        // The args will get automatically expanded
-        return isNbt
-                ? new ShapedOreNbtMatchingRecipe(output.getItemStack(), input, args.toArray())
-                : new ShapedOreRecipe(output.getItemStack(), args.toArray());
+        CraftingManager.getInstance().addRecipe(new ShapedComponentRecipe(width, height, shape, output));
     }
 }

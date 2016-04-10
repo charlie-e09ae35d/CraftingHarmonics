@@ -46,32 +46,42 @@ public class ShapedComponentRecipe implements IRecipe {
 
     protected boolean checkMatch(InventoryCrafting inv, int startX, int startY, World world)
     {
+        boolean hasAtLeastOneMatcher = false;
         for (int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++)
         {
             for (int y = 0; y < MAX_CRAFT_GRID_HEIGHT; y++)
             {
                 int subX = x - startX;
                 int subY = y - startY;
+                int pos = subX + subY * width;
                 RecipeInput target = null;
 
                 if (subX >= 0 && subY >= 0 && subX < width && subY < height)
                 {
-                    target = input[width - subX - 1 + subY * width];
+                    target = input[pos];
                 }
 
                 ItemStack slot = inv.getStackInRowAndColumn(x, y);
 
-                if(target == null) {
+                // If we're null...
+                if(RecipeInput.isNullOrEmpty(target)) {
+                    // .. and we need to not be, bail:
                     if(slot != null) return false;
+                    // Otherwise, don't run matchers
                     continue;
                 }
 
+                // If the slot is null, and it's not supposed to be...
+                if(slot == null) return false;
+
                 // Run matchers here...
-                if(!target.matches(slot,inv, x,y,world, width - subX - 1 + subY * width, output.getItemStack())) return false;
+                hasAtLeastOneMatcher = true;
+                if(!target.matches(slot,inv, x,y,world, pos, output.getItemStack())) return false;
             }
         }
 
-        return true;
+        // Prevent bad recipes from being 'default':
+        return hasAtLeastOneMatcher;
     }
 
     @Override
