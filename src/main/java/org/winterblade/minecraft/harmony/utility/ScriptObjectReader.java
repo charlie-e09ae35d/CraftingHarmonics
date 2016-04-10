@@ -2,26 +2,19 @@ package org.winterblade.minecraft.harmony.utility;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
-import jdk.nashorn.internal.runtime.ScriptObject;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
-import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
-import org.winterblade.minecraft.harmony.scripting.ScriptExecutionManager;
+import org.objectweb.asm.Type;
+import org.winterblade.minecraft.harmony.api.IScriptObjectDeserializer;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Matt on 4/8/2016.
  */
 public class ScriptObjectReader {
+    private final static Map<String, IScriptObjectDeserializer> deserializerMap = new HashMap<>();
+
     /**
      * Reflects the Java object passed in and writes relevant data from the script object to fields on the Java object.
      * @param data      The script object
@@ -39,85 +32,47 @@ public class ScriptObjectReader {
         }
     }
 
+    /**
+     * Register the map of deserializers.
+     * @param deserializers A map of deserializers.
+     */
+    public static void RegisterDeserializerClasses(Map<Type, Class<IScriptObjectDeserializer>> deserializers) {
+        for(Map.Entry<Type, Class<IScriptObjectDeserializer>> deserializer : deserializers.entrySet()) {
+            Class<IScriptObjectDeserializer> instClass = deserializer.getValue();
+
+            try {
+                deserializerMap.put(deserializer.getKey().getClassName(), instClass.newInstance());
+            } catch (InstantiationException | IllegalAccessException e) {
+                System.err.println("Unable to register deserializer '" + instClass.getName() + "' " + e.getMessage());
+            }
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private static <T> T convertData(Object input, Class<T> cls) {
-        if (cls.isAssignableFrom(OreDictionaryItemStack[].class)) {
+        // If we have an array, this gets messy...
+        if(cls.isArray()) {
             Object[] items = (Object[]) ScriptUtils.convert(input, Object[].class);
-            OreDictionaryItemStack[] stacks = new OreDictionaryItemStack[items.length];
 
-            for (int i = 0; i < items.length; i++) {
+            Class componentType = cls.getComponentType();
+            Object[] values = (Object[])Array.newInstance(componentType, items.length);
+
+            for(int i = 0; i < items.length; i++) {
                 try {
-                    stacks[i] = TranslateToOreDictionaryItemStack((String)items[i]);
-                } catch (ItemMissingException e) {
-                    stacks[i] = null;
+                    values[i] = convertData(items[i], componentType);
+                } catch (Exception e) {
+                    values[i] = null;
                 }
             }
 
-            return (T) stacks;
+            return (T)values;
         }
 
-        if(cls.isAssignableFrom(OreDictionaryItemStack.class)) {
-            try {
-                return (T) TranslateToOreDictionaryItemStack((String)input);
-            } catch (ItemMissingException e) {
-                return null;
-            }
-        }
+        // If we don't have a deserializer, then try and convert it through the script utils...
+        if(!deserializerMap.containsKey(cls.getName())) return (T) ScriptUtils.convert(input, cls);
 
-        if (cls.isAssignableFrom(RecipeComponent[].class)) {
-            Object[] items = (Object[])ScriptUtils.convert(input, Object[].class);
-            RecipeComponent[] stacks = new RecipeComponent[items.length];
-            for (int i = 0; i < items.length; i++) {
-                try {
-                    stacks[i] = TranslateToItemStack(items[i]);
-                } catch (ItemMissingException e) {
-                    stacks[i] = null;
-                }
-            }
-
-            return (T) stacks;
-        }
-
-        if (cls.isAssignableFrom(RecipeComponent.class)) {
-            try {
-                return (T) TranslateToItemStack(input);
-            } catch (ItemMissingException e) {
-                return null;
-            }
-        }
-
-        if (cls.isAssignableFrom(NBTTagCompound.class)) {
-            String json = "{}";
-            if(input instanceof String) {
-                json = input.toString();
-            } else if(input instanceof ScriptObjectMirror) {
-                json = ScriptExecutionManager.getJsonString(input);
-            }
-
-            try {
-                return (T) JsonToNBT.getTagFromJson(json);
-            } catch (NBTException e) {
-                System.out.println("Unable to convert '" + json + "' to NBT tag.");
-            }
-        }
-
-        if (cls.isAssignableFrom(ItemStack.class)) {
-            try {
-                return (T) ItemRegistry.TranslateToItemStack((String)input);
-            } catch (ItemMissingException e) {
-                return null;
-            }
-        }
-
-        if (cls.isAssignableFrom(Item.class)) {
-            try {
-                return (T) ItemRegistry.TranslateToItemStack((String)input).getItem();
-            } catch (ItemMissingException e) {
-                return null;
-            }
-        }
-
-        return (T) ScriptUtils.convert(input, cls);
+        IScriptObjectDeserializer deserializer = deserializerMap.get(cls.getName());
+        return (T) deserializer.Deserialize(input);
     }
 
     private static void updateField(Class cls, String field, Object writeTo, Object value) throws InvocationTargetException, IllegalAccessException {
@@ -175,45 +130,4 @@ public class ScriptObjectReader {
 
     }
 
-    /**
-     * Translates script data to an item stack
-     * @param data  The data to translate
-     * @return      The ItemStack requested
-     * @throws ItemMissingException When the item cannot be found in the registry.
-     */
-    public static RecipeComponent TranslateToItemStack(Object data) throws ItemMissingException {
-        RecipeComponent component = new RecipeComponent();
-
-        if(data instanceof String) {
-            String itemString = (String)data;
-
-            if(ItemRegistry.IsOreDictionaryEntry(itemString)) {
-                component.setOreDictName(itemString, ItemRegistry.GetOreDictionaryName(itemString));
-            } else {
-                component.setItemStack(itemString, ItemRegistry.TranslateToItemStack(itemString));
-            }
-
-            return component;
-        }
-
-        ScriptObjectMirror item = ScriptUtils.wrap((ScriptObject) data);
-
-        if(!item.hasMember("item")) return null;
-
-        ScriptObjectReader.WriteScriptObjectToClass(item,component);
-
-        return component;
-    }
-
-    /**
-     * Generate an OreDictionaryItemStack from the given info
-     * @param data  The string to parse
-     * @return      The OreDictionaryItemStack
-     * @throws ItemMissingException If the item couldn't be found.
-     */
-    public static OreDictionaryItemStack TranslateToOreDictionaryItemStack(String data) throws ItemMissingException {
-        return ItemRegistry.IsOreDictionaryEntry(data)
-                ? new OreDictionaryItemStack(data, ItemRegistry.GetOreDictionaryName(data))
-                : new OreDictionaryItemStack(data, ItemRegistry.TranslateToItemStack(data));
-    }
 }
