@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.utility.deserializers;
+package org.winterblade.minecraft.harmony.scripting.deserializers;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;

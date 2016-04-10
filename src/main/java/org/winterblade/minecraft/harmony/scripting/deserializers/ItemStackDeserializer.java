@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.utility.deserializers;
+package org.winterblade.minecraft.harmony.scripting.deserializers;
 
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.IScriptObjectDeserializer;
