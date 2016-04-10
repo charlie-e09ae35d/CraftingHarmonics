@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.utility;
+package org.winterblade.minecraft.harmony.scripting;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;

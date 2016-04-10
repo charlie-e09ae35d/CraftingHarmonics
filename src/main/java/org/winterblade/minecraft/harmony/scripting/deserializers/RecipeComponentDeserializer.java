@@ -8,7 +8,7 @@ import org.winterblade.minecraft.harmony.api.ScriptObjectDeserializer;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
-import org.winterblade.minecraft.harmony.utility.ScriptObjectReader;
+import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
 /**
  * Created by Matt on 4/9/2016.

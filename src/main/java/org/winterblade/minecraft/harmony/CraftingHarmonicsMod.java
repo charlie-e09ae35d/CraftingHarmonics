@@ -17,7 +17,7 @@ import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecip
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.utility.AnnotatedInstanceUtil;
-import org.winterblade.minecraft.harmony.utility.ScriptObjectReader;
+import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
 import java.util.HashMap;
 import java.util.Map;
