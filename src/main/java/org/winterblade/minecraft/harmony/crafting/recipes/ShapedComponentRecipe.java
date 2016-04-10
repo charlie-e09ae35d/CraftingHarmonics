@@ -6,6 +6,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
+import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
 /**
@@ -17,10 +18,10 @@ public class ShapedComponentRecipe implements IRecipe {
 
     private final int width;
     private final int height;
-    private final RecipeComponent[] input;
+    private final RecipeInput[] input;
     private final RecipeComponent output;
 
-    public ShapedComponentRecipe(int width, int height, RecipeComponent[] input, RecipeComponent output) {
+    public ShapedComponentRecipe(int width, int height, RecipeInput[] input, RecipeComponent output) {
         this.width = width;
         this.height = height;
         this.input = input;
@@ -51,7 +52,7 @@ public class ShapedComponentRecipe implements IRecipe {
             {
                 int subX = x - startX;
                 int subY = y - startY;
-                RecipeComponent target = null;
+                RecipeInput target = null;
 
                 if (subX >= 0 && subY >= 0 && subX < width && subY < height)
                 {
@@ -65,8 +66,8 @@ public class ShapedComponentRecipe implements IRecipe {
                     continue;
                 }
 
-                // TODO: Run matchers here...
-
+                // Run matchers here...
+                if(!target.matches(slot,inv, x,y,world, width - subX - 1 + subY * width, output.getItemStack())) return false;
             }
         }
 
