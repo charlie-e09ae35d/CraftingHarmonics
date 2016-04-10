@@ -2,16 +2,10 @@ package org.winterblade.minecraft.harmony.utility;
 
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.objectweb.asm.Type;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.IScriptObjectDeserializer;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ScriptObjectDeserializer;
+import org.winterblade.minecraft.harmony.api.*;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Borrowed mostly from mezz's JEI class of the same name; modified to load the name of the operation
@@ -27,6 +21,10 @@ public class AnnotatedInstanceUtil {
 
     public static Map<Type, Class<IScriptObjectDeserializer>> getScriptObjectDeserializers(@Nonnull ASMDataTable asmDataTable) {
         return getClasses(asmDataTable, ScriptObjectDeserializer.class, IScriptObjectDeserializer.class, "deserializes");
+    }
+
+    public static Map<ArrayList, Class<IRecipeInputMatcher>> getRecipeInputMatchers(@Nonnull ASMDataTable asmDataTable) {
+        return getClasses(asmDataTable, RecipeInputMatcher.class, IRecipeInputMatcher.class, "properties");
     }
 
     @SuppressWarnings("unchecked")

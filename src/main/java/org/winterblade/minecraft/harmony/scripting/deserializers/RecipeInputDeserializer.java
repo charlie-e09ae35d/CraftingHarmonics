@@ -6,14 +6,18 @@ import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.harmony.api.Priority;
+import org.winterblade.minecraft.harmony.api.RecipeInputMatcher;
 import org.winterblade.minecraft.harmony.api.ScriptObjectDeserializer;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
+import org.winterblade.minecraft.harmony.crafting.RecipeInputMatcherRegistry;
 import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.NbtMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.OreDictionaryMatcher;
+
+import java.util.List;
 
 /**
  * Created by Matt on 4/9/2016.
@@ -60,12 +64,7 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             return output;
         }
 
-        // TODO: Deal with everything else now...
-        // TODO: Get all the matchers into an array to process
-        // TODO: Deal with the conversions.
-        String[] keys = mirror.getOwnKeys(true);
-
-        // Stuff like NBTTagCompounds will be ScriptObjectMirrors, while other things will be primatives.
+        List<RecipeInputMatcher> matchers = RecipeInputMatcherRegistry.GetMatchersFrom(mirror);
 
         return output;
     }

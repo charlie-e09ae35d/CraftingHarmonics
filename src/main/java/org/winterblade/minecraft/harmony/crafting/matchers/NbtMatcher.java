@@ -17,6 +17,10 @@ public class NbtMatcher implements IRecipeInputMatcher {
     private final NBTTagCompound tag;
     private final boolean fuzzy;
 
+    public NbtMatcher(NBTTagCompound nbt) {
+        this(nbt, false);
+    }
+
     public NbtMatcher(NBTTagCompound nbt, boolean fuzzyNbt) {
         this.tag = nbt;
         this.fuzzy = fuzzyNbt;
