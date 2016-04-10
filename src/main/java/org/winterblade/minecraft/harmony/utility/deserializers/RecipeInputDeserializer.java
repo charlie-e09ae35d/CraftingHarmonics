@@ -9,6 +9,7 @@ import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
+import org.winterblade.minecraft.harmony.crafting.matchers.OreDictionaryMatcher;
 
 /**
  * Created by Matt on 4/9/2016.
@@ -26,7 +27,11 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             if(itemString.trim().equals("")) return output;
 
             if(ItemRegistry.IsOreDictionaryEntry(itemString)) {
-                // TODO: Ore-dict matcher
+                // This will be literally the only matcher on this object.
+                output.addMatcher(
+                    new OreDictionaryMatcher(ItemRegistry.GetOreDictionaryName(itemString)), Priority.MEDIUM
+                );
+                return output;
             }
 
             try {
