@@ -9,6 +9,9 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Matt on 4/9/2016.
  */
@@ -102,6 +105,44 @@ public class ShapedComponentRecipe implements IRecipe {
     @Override
     public ItemStack[] getRemainingItems(InventoryCrafting inv) {
         // TODO: Not this.
-        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
+        ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
+        RecipeInput target;
+
+        // Lower right
+        int left = 2;
+        int top = 2;
+
+        // Find the left/top of our recipe
+        for(int y = 0; y <= inv.getHeight() - height; y++) {
+            // We have to iterate every column, because there might be a null item in the upper left...
+            for(int x = 0; x <= inv.getWidth(); x++) {
+                ItemStack slot = inv.getStackInRowAndColumn(x, y);
+                if(slot == null) continue;
+
+                if(x < left) left = x;
+                if(y < top) {
+                    top = y;
+                    // however, once we find that top item, we can break.
+                    break;
+                }
+            }
+        }
+
+        // Shift
+        int invOffset = left + (top * inv.getWidth());
+
+        for (int i = 0; i < ret.length; i++)
+        {
+            if(i >= input.length) {
+                ret[i] = null;
+                continue;
+            }
+
+            target = input[i];
+            ItemStack slot = inv.getStackInSlot(i+invOffset);
+            ret[i] = ForgeHooks.getContainerItem(inv.getStackInSlot(i));
+        }
+
+        return ret;
     }
 }
