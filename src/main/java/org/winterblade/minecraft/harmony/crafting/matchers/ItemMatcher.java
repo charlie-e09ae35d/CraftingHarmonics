@@ -12,7 +12,7 @@ import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 /**
  * Created by Matt on 4/9/2016.
  */
-@RecipeInputMatcher(properties = {"item"}, aliases = {}, priority = Priority.HIGHEST)
+@RecipeInputMatcher(properties = {}, aliases = {}, priority = Priority.HIGHEST)
 public class ItemMatcher implements IRecipeInputMatcher {
     private final Item item;
 

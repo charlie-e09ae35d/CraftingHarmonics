@@ -17,7 +17,7 @@ import static net.minecraftforge.oredict.OreDictionary.WILDCARD_VALUE;
  *
  * Created by Matt on 4/9/2016.
  */
-@RecipeInputMatcher(properties = {"oredict"}, priority = Priority.LOWER)
+@RecipeInputMatcher(properties = {}, priority = Priority.LOWER)
 public class OreDictionaryMatcher implements IRecipeInputMatcher {
     private final String oreDictName;
 
