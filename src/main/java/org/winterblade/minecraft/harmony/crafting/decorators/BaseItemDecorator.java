@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.decorators;
+package org.winterblade.minecraft.harmony.crafting.decorators;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
