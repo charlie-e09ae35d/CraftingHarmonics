@@ -1,5 +1,8 @@
 package org.winterblade.minecraft.harmony.utility.deserializers;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import jdk.nashorn.api.scripting.ScriptUtils;
+import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.harmony.api.Priority;
@@ -22,11 +25,47 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
         RecipeInput output = new RecipeInput();
 
         if(input instanceof String) {
-            return getStringBasedRecipeInput((String)input);
+            addItemStringBasedMatchers(output, (String)input);
+            return output;
         }
 
-        // TODO: Add conversion for a real object here.
+        // Make sure we can continue:
+        if(!ScriptObjectMirror.class.isAssignableFrom(input.getClass()) &&
+                !ScriptObject.class.isAssignableFrom(input.getClass())) return output;
 
+        ScriptObjectMirror mirror;
+
+        // The first case will probably not happen, but, just in case...
+        if(ScriptObjectMirror.class.isAssignableFrom(input.getClass())) {
+            mirror = (ScriptObjectMirror) input;
+        } else {
+            mirror = ScriptUtils.wrap((ScriptObject) input);
+        }
+
+        // If we don't have an item... /sigh
+        if (!mirror.containsKey("item")) return output;
+        Object item = mirror.get("item");
+
+        // Make sure we have a string and somebody's not trying to be clever..
+        if(!(item instanceof String)) {
+            System.err.println("Couldn't convert '" + item.toString() + "' to a valid item string.");
+            return output;
+        }
+
+        addItemStringBasedMatchers(output, (String)item);
+
+        // And if we still don't have anything, means we still had a bad input string...
+        if(RecipeInput.isNullOrEmpty(output)) {
+            System.err.println("Couldn't convert '" + item.toString() + "' to a valid item string.");
+            return output;
+        }
+
+        // TODO: Deal with everything else now...
+        // TODO: Get all the matchers into an array to process
+        // TODO: Deal with the conversions.
+        String[] keys = mirror.getOwnKeys(true);
+
+        // Stuff like NBTTagCompounds will be ScriptObjectMirrors, while other things will be primatives.
 
         return output;
     }
@@ -36,17 +75,15 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
      * @param itemString    The item string to translate
      * @return              The RecipeInput that matches the string.
      */
-    private RecipeInput getStringBasedRecipeInput(String itemString) {
-        RecipeInput output = new RecipeInput();
-
-        if(itemString.trim().equals("")) return output;
+    private void addItemStringBasedMatchers(RecipeInput output, String itemString) {
+        if(itemString.trim().equals("")) return;
 
         if(ItemRegistry.IsOreDictionaryEntry(itemString)) {
             // This will be literally the only matcher on this object.
             output.addMatcher(
                 new OreDictionaryMatcher(ItemRegistry.GetOreDictionaryName(itemString)), Priority.MEDIUM
             );
-            return output;
+            return;
         }
 
         ItemStack item;
@@ -54,11 +91,11 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
         try {
             item = ItemRegistry.TranslateToItemStack(itemString);
         } catch (ItemMissingException e) {
-            System.err.println("Error creating recipe input for '" + itemString +"'.");
-            return output;
+            System.err.println("Couldn't convert '" + itemString + "' to a valid item string.");
+            return;
         }
 
-        if(item == null) return output;
+        if(item == null) return;
 
         // These will always be hardcoded here.
         output.addMatcher(new ItemMatcher(item.getItem()), Priority.HIGHEST);
@@ -69,7 +106,5 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             // based on if our custom tag was injected or not.
             output.addMatcher(new NbtMatcher(item.getTagCompound(), false), Priority.HIGH);
         }
-
-        return output;
     }
 }
