@@ -17,11 +17,15 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Matt on 4/8/2016.
  */
 public class ScriptObjectReader {
+    private final static Map<Class, Class> deserializers = new HashMap<>();
+
     /**
      * Reflects the Java object passed in and writes relevant data from the script object to fields on the Java object.
      * @param data      The script object
@@ -37,6 +41,15 @@ public class ScriptObjectReader {
                 System.err.println("Unable to deserialize '" + key + "' from the provided data: " + e.getMessage());
             }
         }
+    }
+
+    /**
+     * Register that a given class will deserialize a given other class.
+     * @param clz           The class that will be passed information.
+     * @param deserializes  The class it deserializes.
+     */
+    public static void RegisterDeserializerClass(Class<?> clz, Class<?> deserializes) {
+        deserializers.put(deserializes, clz);
     }
 
     @SuppressWarnings("unchecked")

@@ -19,14 +19,14 @@ public class AnnotatedInstanceUtil {
     }
 
     public static Map<String, Class<BaseRecipeOperation>> getRecipeOperations(@Nonnull ASMDataTable asmDataTable) {
-        return getInstances(asmDataTable, RecipeOperation.class, BaseRecipeOperation.class);
+        return getInstances(asmDataTable, RecipeOperation.class, BaseRecipeOperation.class, "name");
     }
 
-    private static <T> Map<String, Class<T>> getInstances(@Nonnull ASMDataTable asmDataTable, Class annotationClass, Class<T> instanceClass) {
+    private static <T,Tk> Map<Tk, Class<T>> getInstances(@Nonnull ASMDataTable asmDataTable, Class annotationClass, Class<T> instanceClass, String idParam) {
         String annotationClassName = annotationClass.getCanonicalName();
         Set<ASMDataTable.ASMData> asmTable = asmDataTable.getAll(annotationClassName);
 
-        Map<String,Class<T>> instances = new HashMap<>();
+        Map<Tk,Class<T>> instances = new HashMap<>();
         for (ASMDataTable.ASMData asmData : asmTable) {
             try {
                 Class<?> asmClass = Class.forName(asmData.getClassName());
@@ -37,14 +37,19 @@ public class AnnotatedInstanceUtil {
                 }
 
                 // Fall back to name
-                String name = asmData.getClassName();
+                Object name = null;
 
-                if(asmData.getAnnotationInfo().containsKey("name")) {
-                    name = asmData.getAnnotationInfo().get("name").toString();
+                if(asmData.getAnnotationInfo().containsKey(idParam)) {
+                    name = asmData.getAnnotationInfo().get(idParam);
+                }
+
+                if(name == null) {
+                    System.err.println("Attempted to load '" + asmClass.getSimpleName() + "', couldn't find the ID parameter '" + idParam + "' on it.");
+                    continue;
                 }
 
                 System.out.println("Loading '" + asmClass.getSimpleName() + "' for recipe type " + name);
-                instances.put(name.toLowerCase(), (Class<T>) asmClass);
+                instances.put((Tk) name, (Class<T>) asmClass);
             } catch (ClassNotFoundException e) {
                 System.err.println("Failed to load: " + asmData.getClassName() + ".\n" + Arrays.toString(e.getStackTrace()));
             }
