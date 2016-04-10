@@ -15,6 +15,7 @@ import org.winterblade.minecraft.harmony.crafting.matchers.NbtMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.OreDictionaryMatcher;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Matt on 4/9/2016.
@@ -61,7 +62,11 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             return output;
         }
 
-        List<IRecipeInputMatcher> matchers = RecipeInputMatcherRegistry.GetMatchersFrom(mirror);
+        Map<IRecipeInputMatcher, Priority> matchers = RecipeInputMatcherRegistry.GetMatchersFrom(mirror);
+
+        for(Map.Entry<IRecipeInputMatcher, Priority> kv : matchers.entrySet()) {
+            output.addMatcher(kv.getKey(), kv.getValue());
+        }
 
         return output;
     }

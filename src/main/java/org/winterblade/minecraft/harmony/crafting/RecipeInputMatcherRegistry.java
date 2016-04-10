@@ -110,9 +110,9 @@ public class RecipeInputMatcherRegistry {
      * @param mirror    The object to check
      * @return          The matchers that could be created.
      */
-    public static List<IRecipeInputMatcher> GetMatchersFrom(ScriptObjectMirror mirror) {
+    public static Map<IRecipeInputMatcher, Priority> GetMatchersFrom(ScriptObjectMirror mirror) {
         List<String> keys = Arrays.asList(mirror.getOwnKeys(true));
-        List<IRecipeInputMatcher> matchers = new ArrayList<>();
+        Map<IRecipeInputMatcher, Priority> matchers = new HashMap<>();
 
         for(RecipeInputMatcherRegistration reg : inputMatcherRegistrations) {
             RegistrationCheckResultData resultData = reg.checkKeys(keys);
@@ -154,9 +154,8 @@ public class RecipeInputMatcherRegistry {
                 continue;
             }
 
-            matchers.add(matcher);
+            matchers.put(matcher, reg.getPriority());
         }
-        // Stuff like NBTTagCompounds will be ScriptObjectMirrors, while other things will be primatives.
 
         return matchers;
     }
@@ -228,6 +227,10 @@ public class RecipeInputMatcherRegistry {
 
         public Class getMatcherClass() {
             return matcherClass;
+        }
+
+        public Priority getPriority() {
+            return priority;
         }
     }
 
