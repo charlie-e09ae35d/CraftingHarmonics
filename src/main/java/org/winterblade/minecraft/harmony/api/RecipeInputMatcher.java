@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface RecipeInputMatcher {
-    String property();
+    String[] properties();
 
     String[] aliases() default {};
 

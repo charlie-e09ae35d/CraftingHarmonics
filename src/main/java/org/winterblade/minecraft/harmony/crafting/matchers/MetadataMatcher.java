@@ -11,7 +11,7 @@ import org.winterblade.minecraft.harmony.api.RecipeInputMatcher;
 /**
  * Created by Matt on 4/9/2016.
  */
-@RecipeInputMatcher(property = "metadata", priority = Priority.HIGHEST)
+@RecipeInputMatcher(properties = {"metadata"}, priority = Priority.HIGHEST)
 public class MetadataMatcher implements IRecipeInputMatcher {
     private final int metadata;
 
