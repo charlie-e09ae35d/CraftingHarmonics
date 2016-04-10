@@ -15,7 +15,7 @@ public class RecipeOperationRegistry {
 
     public static void CreateDeserializers(Map<String, Class<BaseRecipeOperation>> deserializers) {
         for(Map.Entry<String, Class<BaseRecipeOperation>> deserializer : deserializers.entrySet()) {
-            deserializerMap.put(deserializer.getKey(), deserializer.getValue());
+            deserializerMap.put(deserializer.getKey().toLowerCase(), deserializer.getValue());
         }
     }
 
