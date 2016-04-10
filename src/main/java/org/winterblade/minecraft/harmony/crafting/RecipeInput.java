@@ -3,16 +3,20 @@ package org.winterblade.minecraft.harmony.crafting;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
 import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
 import org.winterblade.minecraft.harmony.api.Priority;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
  * Created by Matt on 4/9/2016.
  */
 public class RecipeInput {
-    private PriorityQueue<RecipeInputMatcherData> matchers = new PriorityQueue<>();
+    private final PriorityQueue<RecipeInputMatcherData> matchers = new PriorityQueue<>();
+    private final List<IItemStackTransformer> transformerList = new ArrayList<>();
 
     /**
      * Add a matcher to this RecipeInput
@@ -21,6 +25,14 @@ public class RecipeInput {
      */
     public void addMatcher(IRecipeInputMatcher matcher, Priority priority) {
         matchers.add(new RecipeInputMatcherData(matcher, priority));
+    }
+
+    /**
+     * Adds a transformer to the transformer list.
+     * @param transformer   The transformer to add.
+     */
+    public void addTransformer(IItemStackTransformer transformer) {
+        transformerList.add(transformer);
     }
 
     /**
@@ -45,6 +57,19 @@ public class RecipeInput {
 
         // Wow, we got here?
         return true;
+    }
+
+    /**
+     * Apply any transformers and return the item stack.
+     * @param input  The item stack to transform.
+     * @return       The transformed item stack
+     */
+    public ItemStack applyTransformers(ItemStack input) {
+        for(IItemStackTransformer transformer : transformerList) {
+            input = transformer.transform(input);
+        }
+
+        return input;
     }
 
     /**

@@ -140,6 +140,9 @@ public class ShapedComponentRecipe implements IRecipe {
 
             target = input[i];
             ItemStack slot = inv.getStackInSlot(i+invOffset);
+
+            inv.setInventorySlotContents(i+invOffset, target.applyTransformers(slot));
+
             ret[i] = ForgeHooks.getContainerItem(inv.getStackInSlot(i));
         }
 

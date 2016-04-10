@@ -13,6 +13,7 @@ import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.NbtMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.OreDictionaryMatcher;
+import org.winterblade.minecraft.harmony.crafting.transformers.ReturnOnCraftTransformer;
 
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,11 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
 
         for(Map.Entry<IRecipeInputMatcher, Priority> kv : matchers.entrySet()) {
             output.addMatcher(kv.getKey(), kv.getValue());
+        }
+
+        // Add the transformers hardcoded here.
+        if(mirror.containsKey("returnOnCraft")) {
+            output.addTransformer(new ReturnOnCraftTransformer());
         }
 
         return output;
