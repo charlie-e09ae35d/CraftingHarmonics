@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * This annotation is used to define a custom ScriptObject deserializer.
+ * You must implement IScriptObjectDeserializer and have a parameterless constructor.
  * Created by Matt on 4/9/2016.
  */
 @Retention(RetentionPolicy.RUNTIME)

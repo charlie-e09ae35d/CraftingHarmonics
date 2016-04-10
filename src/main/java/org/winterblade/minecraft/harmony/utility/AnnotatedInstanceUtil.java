@@ -1,8 +1,11 @@
 package org.winterblade.minecraft.harmony.utility;
 
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
+import org.objectweb.asm.Type;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
+import org.winterblade.minecraft.harmony.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
+import org.winterblade.minecraft.harmony.api.ScriptObjectDeserializer;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -19,10 +22,18 @@ public class AnnotatedInstanceUtil {
     }
 
     public static Map<String, Class<BaseRecipeOperation>> getRecipeOperations(@Nonnull ASMDataTable asmDataTable) {
-        return getInstances(asmDataTable, RecipeOperation.class, BaseRecipeOperation.class, "name");
+        return getClasses(asmDataTable, RecipeOperation.class, BaseRecipeOperation.class, "name");
     }
 
-    private static <T,Tk> Map<Tk, Class<T>> getInstances(@Nonnull ASMDataTable asmDataTable, Class annotationClass, Class<T> instanceClass, String idParam) {
+    public static Map<Type, Class<IScriptObjectDeserializer>> getScriptObjectDeserializers(@Nonnull ASMDataTable asmDataTable) {
+        return getClasses(asmDataTable, ScriptObjectDeserializer.class, IScriptObjectDeserializer.class, "deserializes");
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T,Tk> Map<Tk, Class<T>> getClasses(@Nonnull ASMDataTable asmDataTable,
+                                                       Class<?> annotationClass,
+                                                       Class<T> instanceClass,
+                                                       String idParam) {
         String annotationClassName = annotationClass.getCanonicalName();
         Set<ASMDataTable.ASMData> asmTable = asmDataTable.getAll(annotationClassName);
 
@@ -32,7 +43,8 @@ public class AnnotatedInstanceUtil {
                 Class<?> asmClass = Class.forName(asmData.getClassName());
 
                 if(!instanceClass.isAssignableFrom(asmClass)) {
-                    System.err.println("Attempted to load '" + asmClass.getSimpleName() + "', but it doesn't implement '" + instanceClass.getSimpleName() + "'.");
+                    System.err.println("Attempted to load '" + asmClass.getSimpleName() +
+                            "', but it doesn't implement '" + instanceClass.getSimpleName() + "'.");
                     continue;
                 }
 
@@ -44,7 +56,8 @@ public class AnnotatedInstanceUtil {
                 }
 
                 if(name == null) {
-                    System.err.println("Attempted to load '" + asmClass.getSimpleName() + "', couldn't find the ID parameter '" + idParam + "' on it.");
+                    System.err.println("Attempted to load '" + asmClass.getSimpleName() +
+                            "', couldn't find the ID parameter '" + idParam + "' on it.");
                     continue;
                 }
 
