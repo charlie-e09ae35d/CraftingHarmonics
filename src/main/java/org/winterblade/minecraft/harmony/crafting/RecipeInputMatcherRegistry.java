@@ -5,8 +5,10 @@ import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.RecipeInputMatcher;
 import org.winterblade.minecraft.harmony.api.RecipeInputMatcherParameter;
+import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.*;
 
@@ -18,8 +20,8 @@ public class RecipeInputMatcherRegistry {
 
     private RecipeInputMatcherRegistry() {}
 
-    public static void RegisterRecipeInputMatchers(Map<ArrayList, Class<IRecipeInputMatcher>> matchers) {
-        for(Map.Entry<ArrayList, Class<IRecipeInputMatcher>> matcher : matchers.entrySet()) {
+    public static void RegisterRecipeInputMatchers(Map<ArrayList<String>, Class<IRecipeInputMatcher>> matchers) {
+        for(Map.Entry<ArrayList<String>, Class<IRecipeInputMatcher>> matcher : matchers.entrySet()) {
             // If we haven't defined properties, then we don't need to register it.
             if(matcher.getKey().size() <= 0) continue;
 
@@ -40,36 +42,17 @@ public class RecipeInputMatcherRegistry {
 
             Map<String, Integer> propertyConstructorCount = new HashMap<>();
             Map<String, Class<?>> propertyTypes = new HashMap<>();
+            Map<Constructor, List<String>> constructorMap = new HashMap<>();
 
             // Time to do a bunch of stuff to figure out how to make the object...
             for(Constructor constructor : constructors) {
-                Parameter[] parameters = constructor.getParameters();
+                List<String> props
+                        = readParameters(matcher.getKey(), propertyConstructorCount, propertyTypes, constructor);
 
-                for (int i = 0; i < parameters.length; i++) {
-                    Parameter parameter = parameters[i];
-                    String name;
+                // We couldn't accept this constructor...
+                if(props == null || props.size() <= 0) continue;
 
-                    // Check for annotations...
-                    RecipeInputMatcherParameter paramAnnotation = parameter.getAnnotation(RecipeInputMatcherParameter.class);
-
-                    // Figure out our name...
-                    if (paramAnnotation != null) {
-                        // If we have the annotation, use that..
-                        name = paramAnnotation.property();
-                    } else if (i < matcher.getKey().size()) {
-                        // Assume that the constructor params match the order of properties
-                        name = matcher.getKey().get(i).toString();
-                    } else {
-                        // Otherwise... nope
-                        continue;
-                    }
-                    propertyTypes.put(name, parameter.getType());
-                    if (!propertyConstructorCount.containsKey(name)) {
-                        propertyConstructorCount.put(name, 1);
-                    } else {
-                        propertyConstructorCount.put(name, propertyConstructorCount.get(name) + 1);
-                    }
-                }
+                constructorMap.put(constructor, props);
             }
 
             // Now that we have all that dealt with...
@@ -81,8 +64,45 @@ public class RecipeInputMatcherRegistry {
                             propertyConstructorCount.get(prop.getKey()) >= constructors.length));
             }
 
-            inputMatcherRegistrations.add(new RecipeInputMatcherRegistration(matcherClass, priority, propertyMap));
+            inputMatcherRegistrations.add(new RecipeInputMatcherRegistration(matcherClass, priority, propertyMap, constructorMap));
         }
+    }
+
+    private static List<String> readParameters(List<String> properties,
+                                               Map<String, Integer> propertyConstructorCount,
+                                               Map<String, Class<?>> propertyTypes,
+                                               Constructor constructor) {
+        List<String> props = new ArrayList<>();
+        Parameter[] parameters = constructor.getParameters();
+
+        for (int i = 0; i < parameters.length; i++) {
+            Parameter parameter = parameters[i];
+            String name;
+
+            // Check for annotations...
+            RecipeInputMatcherParameter paramAnnotation = parameter.getAnnotation(RecipeInputMatcherParameter.class);
+
+            // Figure out our name...
+            if (paramAnnotation != null) {
+                // If we have the annotation, use that..
+                name = paramAnnotation.property();
+            } else if (i < properties.size()) {
+                // Assume that the constructor params match the order of properties
+                name = properties.get(i);
+            } else {
+                // Otherwise... nope
+                return null;
+            }
+            props.add(name);
+            propertyTypes.put(name, parameter.getType());
+            if (!propertyConstructorCount.containsKey(name)) {
+                propertyConstructorCount.put(name, 1);
+            } else {
+                propertyConstructorCount.put(name, propertyConstructorCount.get(name) + 1);
+            }
+        }
+
+        return props;
     }
 
     /**
@@ -90,16 +110,18 @@ public class RecipeInputMatcherRegistry {
      * @param mirror    The object to check
      * @return          The matchers that could be created.
      */
-    public static List<RecipeInputMatcher> GetMatchersFrom(ScriptObjectMirror mirror) {
+    public static List<IRecipeInputMatcher> GetMatchersFrom(ScriptObjectMirror mirror) {
         List<String> keys = Arrays.asList(mirror.getOwnKeys(true));
-        List<RecipeInputMatcher> matchers = new ArrayList<>();
+        List<IRecipeInputMatcher> matchers = new ArrayList<>();
 
         for(RecipeInputMatcherRegistration reg : inputMatcherRegistrations) {
             RegistrationCheckResultData resultData = reg.checkKeys(keys);
 
             if(resultData.result == RegistrationCheckResult.NO_KEYS) continue;
+
+            Class matcherClass = reg.getMatcherClass();
             if(resultData.result == RegistrationCheckResult.MISSING_REQUIRED_KEYS) {
-                System.err.println("The '" + reg.getMatcherClass().getSimpleName() + "' matcher was missing the following: ");
+                System.err.println("The '" + matcherClass.getSimpleName() + "' matcher was missing the following: ");
                 for(String s : resultData.keys) {
                     System.err.println(" - " + s);
                 }
@@ -107,6 +129,32 @@ public class RecipeInputMatcherRegistry {
             }
 
             // Do the thing.
+            Map.Entry<Constructor, List<String>> constructorEntry = reg.getConstructorFor(resultData.keys);
+
+            if(constructorEntry == null) {
+                System.err.println("No matching constructor could be found for the arguments given.");
+                continue;
+            }
+
+            Constructor constuctor = constructorEntry.getKey();
+            List<String> paramList = constructorEntry.getValue();
+            Parameter[] params = constuctor.getParameters();
+
+            Object[] values = new Object[paramList.size()];
+
+            for(int i = 0; i < paramList.size(); i++) {
+                values[i] = ScriptObjectReader.convertData(mirror.get(paramList.get(i)), params[i].getType());
+            }
+
+            IRecipeInputMatcher matcher;
+            try {
+                matcher = (IRecipeInputMatcher) constuctor.newInstance(values);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                System.err.println("Error calling constructor for '" + matcherClass.getSimpleName() + "': " + e.getMessage());
+                continue;
+            }
+
+            matchers.add(matcher);
         }
         // Stuff like NBTTagCompounds will be ScriptObjectMirrors, while other things will be primatives.
 
@@ -120,12 +168,15 @@ public class RecipeInputMatcherRegistry {
         private final Class matcherClass;
         private final Priority priority;
         private final Map<String, RecipeInputMatcherProperty> propertyMap;
+        private final Map<Constructor, List<String>> constructorMap;
 
         public RecipeInputMatcherRegistration(Class matcherClass, Priority priority,
-                                              Map<String, RecipeInputMatcherProperty> propertyMap) {
+                                              Map<String, RecipeInputMatcherProperty> propertyMap,
+                                              Map<Constructor, List<String>> constructorMap) {
             this.matcherClass = matcherClass;
             this.priority = priority;
             this.propertyMap = propertyMap;
+            this.constructorMap = constructorMap;
         }
 
         /**
@@ -150,6 +201,29 @@ public class RecipeInputMatcherRegistry {
             return missingReqKeys.size() > 0
                     ? new RegistrationCheckResultData(RegistrationCheckResult.MISSING_REQUIRED_KEYS, missingReqKeys)
                     : new RegistrationCheckResultData(RegistrationCheckResult.SUCCESS, foundKeys);
+        }
+
+        public Map.Entry<Constructor, List<String>> getConstructorFor(List<String> keys) {
+            for(Map.Entry<Constructor, List<String>> ckv : constructorMap.entrySet()) {
+                if(doesConstructorMatch(keys, ckv.getValue())) return ckv;
+            }
+
+            return null;
+        }
+
+        /**
+         * Checks if the two lists contain the same elements
+         * @param props     The keys to check against
+         * @param params    The parameters to check against
+         * @return          True if the lists match
+         */
+        private boolean doesConstructorMatch(List<String> props, List<String> params) {
+            if(props == null || params.size() != props.size()) return false;
+
+            // Copy and sort them...
+            SortedSet<String> keySet = new TreeSet<>(props);
+            SortedSet<String> paramSet = new TreeSet<>(params);
+            return keySet.equals(paramSet);
         }
 
         public Class getMatcherClass() {

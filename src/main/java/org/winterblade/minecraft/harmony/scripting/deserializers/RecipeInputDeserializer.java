@@ -4,10 +4,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.IScriptObjectDeserializer;
-import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.RecipeInputMatcher;
-import org.winterblade.minecraft.harmony.api.ScriptObjectDeserializer;
+import org.winterblade.minecraft.harmony.api.*;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
@@ -64,7 +61,7 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             return output;
         }
 
-        List<RecipeInputMatcher> matchers = RecipeInputMatcherRegistry.GetMatchersFrom(mirror);
+        List<IRecipeInputMatcher> matchers = RecipeInputMatcherRegistry.GetMatchersFrom(mirror);
 
         return output;
     }

@@ -23,7 +23,7 @@ public class AnnotatedInstanceUtil {
         return getClasses(asmDataTable, ScriptObjectDeserializer.class, IScriptObjectDeserializer.class, "deserializes");
     }
 
-    public static Map<ArrayList, Class<IRecipeInputMatcher>> getRecipeInputMatchers(@Nonnull ASMDataTable asmDataTable) {
+    public static Map<ArrayList<String>, Class<IRecipeInputMatcher>> getRecipeInputMatchers(@Nonnull ASMDataTable asmDataTable) {
         return getClasses(asmDataTable, RecipeInputMatcher.class, IRecipeInputMatcher.class, "properties");
     }
 
@@ -59,7 +59,6 @@ public class AnnotatedInstanceUtil {
                     continue;
                 }
 
-                System.out.println("Loading '" + asmClass.getSimpleName() + "' for recipe type " + name);
                 instances.put((Tk) name, (Class<T>) asmClass);
             } catch (ClassNotFoundException e) {
                 System.err.println("Failed to load: " + asmData.getClassName() + ".\n" + Arrays.toString(e.getStackTrace()));
