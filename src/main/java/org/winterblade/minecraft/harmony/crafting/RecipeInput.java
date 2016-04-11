@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.crafting;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -17,6 +18,7 @@ import java.util.PriorityQueue;
 public class RecipeInput {
     private final PriorityQueue<RecipeInputMatcherData> matchers = new PriorityQueue<>();
     private final List<IItemStackTransformer> transformerList = new ArrayList<>();
+    private Object facimileItem;
 
     /**
      * Add a matcher to this RecipeInput
@@ -62,11 +64,13 @@ public class RecipeInput {
     /**
      * Apply any transformers and return the item stack.
      * @param input  The item stack to transform.
+     * @param craftingPlayer
      * @return       The transformed item stack
      */
-    public ItemStack applyTransformers(ItemStack input) {
+    public ItemStack applyTransformers(ItemStack input, EntityPlayer craftingPlayer) {
         for(IItemStackTransformer transformer : transformerList) {
-            input = transformer.transform(input);
+            input = transformer.transform(input, craftingPlayer);
+            if(input == null) return null;
         }
 
         return input;
@@ -79,6 +83,28 @@ public class RecipeInput {
      */
     public static boolean isNullOrEmpty(RecipeInput input) {
         return input == null || input.matchers.size() == 0;
+    }
+
+    public static Object[] getFacimileItems(RecipeInput[] recipeInputs) {
+        Object[] output = new Object[recipeInputs.length];
+
+        for (int i = 0; i < recipeInputs.length; i++) {
+            output[i]  = recipeInputs[i].getFacimileItem();
+        }
+
+        return output;
+    }
+
+    public Object getFacimileItem() {
+        return facimileItem;
+    }
+
+    public void setFacimileItem(ItemStack item) {
+        this.facimileItem = item;
+    }
+
+    public void setFacimileItem(String oreDictName) {
+        this.facimileItem = oreDictName;
     }
 
     private class RecipeInputMatcherData implements Comparable<RecipeInputMatcherData> {
@@ -100,10 +126,19 @@ public class RecipeInput {
         public IRecipeInputMatcher getMatcher() {
             return matcher;
         }
+
+        @Override
+        public String toString() {
+            return "[" + priority + ": " + matcher + "]";
+        }
     }
 
     @Override
     public String toString() {
-        return "RecipeInput{matchers=" + matchers + '}';
+        return "RecipeInput{" +
+                "matchers=" + matchers +
+                ", transformerList=" + transformerList +
+                ", facimileItem=" + facimileItem +
+                '}';
     }
 }

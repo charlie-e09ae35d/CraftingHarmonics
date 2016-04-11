@@ -4,6 +4,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.api.*;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
@@ -13,6 +14,7 @@ import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.NbtMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.OreDictionaryMatcher;
+import org.winterblade.minecraft.harmony.crafting.transformers.DamageOnCraft;
 import org.winterblade.minecraft.harmony.crafting.transformers.ReplaceOnCraftTransformer;
 import org.winterblade.minecraft.harmony.crafting.transformers.ReturnOnCraftTransformer;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
@@ -84,6 +86,12 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             }
         }
 
+        if(mirror.containsKey("damageOnCraft")) {
+            int by = (int)mirror.get("damageOnCraft");
+            output.addTransformer(new DamageOnCraft(by));
+            output.addTransformer(new ReturnOnCraftTransformer());
+        }
+
         return output;
     }
 
@@ -97,9 +105,11 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
 
         if(ItemRegistry.IsOreDictionaryEntry(itemString)) {
             // This will be literally the only matcher on this object.
+            String oreDictName = ItemRegistry.GetOreDictionaryName(itemString);
             output.addMatcher(
-                new OreDictionaryMatcher(ItemRegistry.GetOreDictionaryName(itemString)), Priority.MEDIUM
+                new OreDictionaryMatcher(oreDictName), Priority.MEDIUM
             );
+            output.setFacimileItem(oreDictName);
             return;
         }
 
@@ -113,6 +123,7 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
         }
 
         if(item == null) return;
+        output.setFacimileItem(item);
 
         // These will always be hardcoded here.
         output.addMatcher(new ItemMatcher(item.getItem()), Priority.HIGHEST);

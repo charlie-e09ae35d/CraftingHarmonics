@@ -12,6 +12,11 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
+
+repositories {
+    maven { url "http://dvs1.progwml6.com/files/maven" }
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
@@ -21,7 +26,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.1.1"
+version = "1.9.0-1.1.2"
 group= "org.winterblade.minecraft.craftingharmonics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "craftingharmonics"
 
@@ -34,7 +39,7 @@ ext {
 }
 
 minecraft {
-    version = "1.9-12.16.0.1858-1.9"
+    version = "1.9-12.16.0.1863-1.9"
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.
@@ -73,6 +78,8 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    deobfCompile "mezz.jei:jei_1.9:3.2.8.182"
 
     // Include a proper version of nashorn...
     // TODO: Remove when Curse updates JRE past 8u40
