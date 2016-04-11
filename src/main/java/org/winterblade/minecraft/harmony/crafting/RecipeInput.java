@@ -70,6 +70,7 @@ public class RecipeInput {
     public ItemStack applyTransformers(ItemStack input, EntityPlayer craftingPlayer) {
         for(IItemStackTransformer transformer : transformerList) {
             input = transformer.transform(input, craftingPlayer);
+            if(input == null) return null;
         }
 
         return input;
