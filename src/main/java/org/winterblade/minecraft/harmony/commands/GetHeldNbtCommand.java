@@ -55,6 +55,11 @@ public class GetHeldNbtCommand implements ICommand {
             return;
         }
 
+        if(!mainHand.hasTagCompound()) {
+            sender.addChatMessage(new TextComponentString("This item doesn't have an NBT tag."));
+            return;
+        }
+
         String nbtText = mainHand.getTagCompound().toString();
         System.out.println(nbtText);
         sender.addChatMessage(new TextComponentString("NBT (also logged): " + nbtText));
