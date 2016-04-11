@@ -12,11 +12,14 @@ import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.crafting.RecipeInputMatcherRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
+import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.utility.AnnotatedInstanceUtil;
+import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +33,7 @@ import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
 @Mod(modid = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.MODID, version = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.VERSION)
 public class CraftingHarmonicsMod {
     public static final String MODID = "craftingharmonics";
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "1.1.1";
 
     private String configPath;
     private ConfigManager configManager;
@@ -44,6 +47,8 @@ public class CraftingHarmonicsMod {
     public void preInit(FMLPreInitializationEvent event) {
         // Load all recipe operations (thanks mezz, who thanks cpw... so also thanks cpw)
         RecipeOperationRegistry.CreateDeserializers(AnnotatedInstanceUtil.getRecipeOperations(event.getAsmData()));
+        ScriptObjectReader.RegisterDeserializerClasses(AnnotatedInstanceUtil.getScriptObjectDeserializers(event.getAsmData()));
+        RecipeInputMatcherRegistry.RegisterRecipeInputMatchers(AnnotatedInstanceUtil.getRecipeInputMatchers(event.getAsmData()));
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
@@ -70,8 +75,10 @@ public class CraftingHarmonicsMod {
         }
 
         // Link in our recipes
+        RecipeSorter.register("craftingharmonics:shaped_component",       ShapedComponentRecipe.class,
+                SHAPED,    "before:craftingharmonics:shaped_nbt");
         RecipeSorter.register("craftingharmonics:shaped_nbt",       ShapedNbtMatchingRecipe.class,
-                SHAPED,    "before:minecraft:shaped");
+                SHAPED,    "after:craftingharmonics:shaped_component before:minecraft:shaped");
         RecipeSorter.register("craftingharmonics:shaped_nbt_ore",   ShapedOreNbtMatchingRecipe.class,
                 SHAPED,    "after:minecraft:shaped before:forge:shapedore");
         RecipeSorter.register("craftingharmonics:shapeless_nbt",    ShapelessNbtMatchingRecipe.class,

@@ -228,14 +228,26 @@ public class ItemRegistry {
      * @return          True if they are the same (or similar if it's a fuzzy match)
      */
     public static boolean CheckIfNbtMatches(ItemStack source, ItemStack dest, boolean isFuzzy) {
-        // If one or the other is null or doesn't have a tag compound, bail
-        if(source == null || dest == null || source.hasTagCompound() != dest.hasTagCompound()) return false;
+        return source != null && dest != null
+                && source.hasTagCompound() == dest.hasTagCompound()
+                && CheckIfNbtMatches(source.getTagCompound(), dest.getTagCompound(), isFuzzy);
+    }
+
+    /**
+     * Checks to see if the NBT on the first item stack matches the second
+     * @param orig      The source to check
+     * @param dest      The destination to check
+     * @param isFuzzy   If we should force a fuzzy match
+     * @return          True if they are the same (or similar if it's a fuzzy match)
+     */
+    public static boolean CheckIfNbtMatches(NBTTagCompound orig, NBTTagCompound dest, boolean isFuzzy) {
+        // If one or the other is null, and they both aren't, bail
+        if(dest == null && orig != null) return false;
 
         // Also, if we're checking two items that don't have a compound, then it's 'true'-ish
-        if(!source.hasTagCompound()) return true;
+        if(orig == null) return true;
 
         NBTTagCompound compound = new NBTTagCompound();
-        NBTTagCompound orig = source.getTagCompound();
 
         // Fall back to checking the tag compound...
         if(!isFuzzy) isFuzzy = orig.getBoolean("CraftingHarmonicsIsFuzzyMatch");
@@ -249,10 +261,10 @@ public class ItemRegistry {
         // If we're not fuzzy, then...
         if (!isFuzzy) {
             // We need to check if the NBT matches exactly...
-            return compound.toString().equals(dest.getTagCompound().toString());
+            return compound.toString().equals(dest.toString());
         }
 
-        return CheckIfAtLeastAllTagsArePresent(compound, dest.getTagCompound());
+        return CheckIfAtLeastAllTagsArePresent(compound, dest);
     }
 
     /**

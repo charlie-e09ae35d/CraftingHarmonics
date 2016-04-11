@@ -21,7 +21,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.1.0"
+version = "1.1.1"
 group= "org.winterblade.minecraft.craftingharmonics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "craftingharmonics"
 
@@ -29,10 +29,14 @@ archivesBaseName = "craftingharmonics"
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+ext {
+    repo = "http://maven.winterblade.org/content/repositories/CraftingHarmonicsDev"
+}
+
 minecraft {
     version = "1.9-12.16.0.1858-1.9"
     runDir = "run"
-    
+
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
     // stable_#            stables are built at the discretion of the MCP team.
@@ -53,7 +57,7 @@ dependencies {
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"
     //compile "some.group:artifact:version"
-      
+
     // real examples
     //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
     //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
@@ -89,11 +93,11 @@ processResources
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
+
         // replace version and mcversion
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-        
+
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
@@ -129,11 +133,15 @@ task artifactDeobf(type: Copy, dependsOn: ['jar']) {
 task buildArtifacts(dependsOn: ['sourceJar','artifactDeobf','reobfJar'])
 
 uploadArchives {
+    if(project.hasProperty("release")) {
+        repo = "http://maven.winterblade.org/content/repositories/CraftingHarmonics"
+    }
+
     repositories.mavenDeployer {
-        dependsOn 'buildArtifacts'
+        dependsOn 'reobfJar'
 
         if(project.hasProperty('mavenPass')) {
-            repository(url: "http://maven.winterblade.org/content/repositories/Crafting_Harmonics") {
+            repository(url: repo) {
                 authentication(userName: "minecraft", password: project.getProperty('mavenPass'))
             }
         }
