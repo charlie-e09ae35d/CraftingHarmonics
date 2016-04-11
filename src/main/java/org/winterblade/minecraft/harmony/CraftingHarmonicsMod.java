@@ -75,8 +75,8 @@ public class CraftingHarmonicsMod {
         }
 
         // Link in our recipes
-        RecipeSorter.register("craftingharmonics:shaped_nbt",       ShapedComponentRecipe.class,
-                SHAPED,    "before:craftingharmonics:shaped_component");
+        RecipeSorter.register("craftingharmonics:shaped_component",       ShapedComponentRecipe.class,
+                SHAPED,    "before:craftingharmonics:shaped_nbt");
         RecipeSorter.register("craftingharmonics:shaped_nbt",       ShapedNbtMatchingRecipe.class,
                 SHAPED,    "after:craftingharmonics:shaped_component before:minecraft:shaped");
         RecipeSorter.register("craftingharmonics:shaped_nbt_ore",   ShapedOreNbtMatchingRecipe.class,
