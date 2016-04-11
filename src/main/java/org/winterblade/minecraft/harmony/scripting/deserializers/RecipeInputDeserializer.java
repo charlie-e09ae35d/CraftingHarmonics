@@ -13,7 +13,9 @@ import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.NbtMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.OreDictionaryMatcher;
+import org.winterblade.minecraft.harmony.crafting.transformers.ReplaceOnCraftTransformer;
 import org.winterblade.minecraft.harmony.crafting.transformers.ReturnOnCraftTransformer;
+import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
 import java.util.List;
 import java.util.Map;
@@ -70,8 +72,16 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
         }
 
         // Add the transformers hardcoded here.
-        if(mirror.containsKey("returnOnCraft")) {
+        if(mirror.containsKey("returnOnCraft") && (Boolean)mirror.get("returnOnCraft")) {
             output.addTransformer(new ReturnOnCraftTransformer());
+        }
+
+        if(mirror.containsKey("replaceOnCraft")) {
+            ItemStack stack = ScriptObjectReader.convertData(mirror.get("replaceOnCraft"), ItemStack.class);
+
+            if(stack != null) {
+                output.addTransformer(new ReplaceOnCraftTransformer(stack));
+            }
         }
 
         return output;
