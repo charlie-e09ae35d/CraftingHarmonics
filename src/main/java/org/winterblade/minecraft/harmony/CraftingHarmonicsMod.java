@@ -33,7 +33,7 @@ import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
 @Mod(modid = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.MODID, version = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.VERSION)
 public class CraftingHarmonicsMod {
     public static final String MODID = "craftingharmonics";
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "1.1.1";
 
     private String configPath;
     private ConfigManager configManager;
