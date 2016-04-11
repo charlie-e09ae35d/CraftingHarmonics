@@ -181,7 +181,7 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
             target = input[i];
             ItemStack slot = inv.getStackInSlot(i+invOffset);
 
-            inv.setInventorySlotContents(i+invOffset, target.applyTransformers(slot));
+            inv.setInventorySlotContents(i+invOffset, target.applyTransformers(slot, ForgeHooks.getCraftingPlayer()));
 
             ret[i] = ForgeHooks.getContainerItem(inv.getStackInSlot(i));
         }

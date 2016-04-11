@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.crafting.transformers;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
 
@@ -8,7 +9,7 @@ import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
  */
 public class ReturnOnCraftTransformer implements IItemStackTransformer {
     @Override
-    public ItemStack transform(ItemStack input) {
+    public ItemStack transform(ItemStack input, EntityPlayer craftingPlayer) {
         input.stackSize = input.stackSize + 1;
         return input;
     }
