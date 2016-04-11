@@ -4,6 +4,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.api.*;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
@@ -97,9 +98,11 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
 
         if(ItemRegistry.IsOreDictionaryEntry(itemString)) {
             // This will be literally the only matcher on this object.
+            String oreDictName = ItemRegistry.GetOreDictionaryName(itemString);
             output.addMatcher(
-                new OreDictionaryMatcher(ItemRegistry.GetOreDictionaryName(itemString)), Priority.MEDIUM
+                new OreDictionaryMatcher(oreDictName), Priority.MEDIUM
             );
+            output.setFacimileItem(oreDictName);
             return;
         }
 
@@ -113,6 +116,7 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
         }
 
         if(item == null) return;
+        output.setFacimileItem(item);
 
         // These will always be hardcoded here.
         output.addMatcher(new ItemMatcher(item.getItem()), Priority.HIGHEST);

@@ -6,16 +6,17 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 
 /**
  * Created by Matt on 4/9/2016.
  */
-public class ShapedComponentRecipe implements IRecipe {
+public class ShapedComponentRecipe extends ShapedOreRecipe {
     public static final int MAX_CRAFT_GRID_WIDTH = 3;
     public static final int MAX_CRAFT_GRID_HEIGHT = 3;
 
@@ -23,12 +24,51 @@ public class ShapedComponentRecipe implements IRecipe {
     private final int height;
     private final RecipeInput[] input;
     private final RecipeComponent output;
+    private static final int CHAR_A = 65;
 
     public ShapedComponentRecipe(int width, int height, RecipeInput[] input, RecipeComponent output) {
+        super(output.getItemStack(), itemStacksToOreRecipe(RecipeInput.getFacimileItems(input), width, height));
         this.width = width;
         this.height = height;
         this.input = input;
         this.output = output;
+    }
+
+    private static Object[] itemStacksToOreRecipe(Object[] facimileItems, int width, int height) {
+        String[] lines = new String[height];
+        Map<Character, Object> charmap = new HashMap<>();
+
+        /**
+         * Build out the recipe's pattern
+         */
+        int offset = 0;
+        for(int y = 0; y < height; y++) {
+            lines[y] = "";
+            for(int x = 0; x < width; x++) {
+                if(facimileItems[offset] == null) {
+                    lines[y] += " ";
+                } else {
+                    // This will produce increasing values of A, B, C, etc
+                    char id = (char)(CHAR_A +offset);
+                    lines[y] += id;
+                    charmap.put(id, facimileItems[offset]);
+                }
+
+                offset++;
+            }
+        }
+
+        /**
+         * Build out our arguments list...
+         */
+        List<Object> args = new ArrayList<>();
+        args.add(false); // This will turn off mirroring.
+        Collections.addAll(args, lines);
+        for(Map.Entry<Character, Object> kv : charmap.entrySet()) {
+            args.add(kv.getKey());
+            args.add(kv.getValue());
+        }
+        return args.toArray();
     }
 
     @Override

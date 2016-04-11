@@ -21,7 +21,6 @@ import java.util.*;
  */
 @RecipeOperation(name = "addShaped")
 public class AddShapedOperation extends BaseAddOperation {
-    public static final int CHAR_A = 65;
     /**
      * Serialized properties:
      */
