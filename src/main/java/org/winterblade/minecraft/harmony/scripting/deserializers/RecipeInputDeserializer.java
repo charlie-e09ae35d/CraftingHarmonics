@@ -14,6 +14,7 @@ import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.NbtMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.OreDictionaryMatcher;
+import org.winterblade.minecraft.harmony.crafting.transformers.DamageOnCraft;
 import org.winterblade.minecraft.harmony.crafting.transformers.ReplaceOnCraftTransformer;
 import org.winterblade.minecraft.harmony.crafting.transformers.ReturnOnCraftTransformer;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
@@ -83,6 +84,12 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             if(stack != null) {
                 output.addTransformer(new ReplaceOnCraftTransformer(stack));
             }
+        }
+
+        if(mirror.containsKey("damageOnCraft")) {
+            int by = (int)mirror.get("damageOnCraft");
+            output.addTransformer(new DamageOnCraft(by));
+            output.addTransformer(new ReturnOnCraftTransformer());
         }
 
         return output;

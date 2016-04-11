@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.crafting;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -63,11 +64,13 @@ public class RecipeInput {
     /**
      * Apply any transformers and return the item stack.
      * @param input  The item stack to transform.
+     * @param craftingPlayer
      * @return       The transformed item stack
      */
-    public ItemStack applyTransformers(ItemStack input) {
+    public ItemStack applyTransformers(ItemStack input, EntityPlayer craftingPlayer) {
         for(IItemStackTransformer transformer : transformerList) {
-            input = transformer.transform(input);
+            input = transformer.transform(input, craftingPlayer);
+            if(input == null) return null;
         }
 
         return input;
