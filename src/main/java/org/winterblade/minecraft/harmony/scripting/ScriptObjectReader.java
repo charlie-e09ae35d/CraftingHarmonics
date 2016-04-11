@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.utility;
+package org.winterblade.minecraft.harmony.scripting;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
@@ -48,8 +48,15 @@ public class ScriptObjectReader {
         }
     }
 
+    /**
+     * Uses the deserializer map to convert an object into the given class.
+     * @param input The input to translate.
+     * @param cls   The class to convert to.
+     * @param <T>   The type to return
+     * @return      The converted object.
+     */
     @SuppressWarnings("unchecked")
-    private static <T> T convertData(Object input, Class<T> cls) {
+    public static <T> T convertData(Object input, Class<T> cls) {
         // If we have an array, this gets messy...
         if(cls.isArray()) {
             Object[] items = (Object[]) ScriptUtils.convert(input, Object[].class);

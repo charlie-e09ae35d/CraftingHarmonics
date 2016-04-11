@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.utility.deserializers;
+package org.winterblade.minecraft.harmony.scripting.deserializers;
 
 import org.winterblade.minecraft.harmony.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.harmony.api.ScriptObjectDeserializer;

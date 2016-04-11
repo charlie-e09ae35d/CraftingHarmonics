@@ -12,12 +12,14 @@ import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.crafting.RecipeInputMatcherRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
+import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.utility.AnnotatedInstanceUtil;
-import org.winterblade.minecraft.harmony.utility.ScriptObjectReader;
+import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +48,7 @@ public class CraftingHarmonicsMod {
         // Load all recipe operations (thanks mezz, who thanks cpw... so also thanks cpw)
         RecipeOperationRegistry.CreateDeserializers(AnnotatedInstanceUtil.getRecipeOperations(event.getAsmData()));
         ScriptObjectReader.RegisterDeserializerClasses(AnnotatedInstanceUtil.getScriptObjectDeserializers(event.getAsmData()));
+        RecipeInputMatcherRegistry.RegisterRecipeInputMatchers(AnnotatedInstanceUtil.getRecipeInputMatchers(event.getAsmData()));
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
@@ -72,8 +75,10 @@ public class CraftingHarmonicsMod {
         }
 
         // Link in our recipes
+        RecipeSorter.register("craftingharmonics:shaped_nbt",       ShapedComponentRecipe.class,
+                SHAPED,    "before:craftingharmonics:shaped_component");
         RecipeSorter.register("craftingharmonics:shaped_nbt",       ShapedNbtMatchingRecipe.class,
-                SHAPED,    "before:minecraft:shaped");
+                SHAPED,    "after:craftingharmonics:shaped_component before:minecraft:shaped");
         RecipeSorter.register("craftingharmonics:shaped_nbt_ore",   ShapedOreNbtMatchingRecipe.class,
                 SHAPED,    "after:minecraft:shaped before:forge:shapedore");
         RecipeSorter.register("craftingharmonics:shapeless_nbt",    ShapelessNbtMatchingRecipe.class,

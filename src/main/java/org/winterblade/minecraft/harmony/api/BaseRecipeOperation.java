@@ -2,7 +2,7 @@ package org.winterblade.minecraft.harmony.api;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.utility.ScriptObjectReader;
+import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
 /**
  * Created by Matt on 4/6/2016.
