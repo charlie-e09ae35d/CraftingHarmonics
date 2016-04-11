@@ -126,10 +126,19 @@ public class RecipeInput {
         public IRecipeInputMatcher getMatcher() {
             return matcher;
         }
+
+        @Override
+        public String toString() {
+            return "[" + priority + ": " + matcher + "]";
+        }
     }
 
     @Override
     public String toString() {
-        return "RecipeInput{matchers=" + matchers + '}';
+        return "RecipeInput{" +
+                "matchers=" + matchers +
+                ", transformerList=" + transformerList +
+                ", facimileItem=" + facimileItem +
+                '}';
     }
 }
