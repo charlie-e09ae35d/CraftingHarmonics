@@ -68,6 +68,9 @@ public class RecipeInput {
      * @return       The transformed item stack
      */
     public ItemStack applyTransformers(ItemStack input, EntityPlayer craftingPlayer) {
+        // Make sure that we get proper counts:
+        input.stackSize = 0;
+
         for(IItemStackTransformer transformer : transformerList) {
             input = transformer.transform(input, craftingPlayer);
             if(input == null) return null;

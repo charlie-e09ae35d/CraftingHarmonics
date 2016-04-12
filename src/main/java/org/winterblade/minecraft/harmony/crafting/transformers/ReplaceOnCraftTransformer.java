@@ -23,13 +23,7 @@ public class ReplaceOnCraftTransformer implements IItemStackTransformer {
     @Override
     public ItemStack transform(ItemStack input, EntityPlayer craftingPlayer) {
         ItemStack output = ItemRegistry.duplicate(replacement);
-        if(input.stackSize > 1) {
-            ItemHandlerHelper.giveItemToPlayer(craftingPlayer, output);
-            return input;
-        } else {
-            output.stackSize++;
-            return output;
-        }
+        return output;
     }
 
     @Nonnull
