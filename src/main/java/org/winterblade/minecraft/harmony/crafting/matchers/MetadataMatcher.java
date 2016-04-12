@@ -5,13 +5,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
+import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.RecipeInputMatcher;
+import org.winterblade.minecraft.harmony.api.Component;
 
 /**
  * Created by Matt on 4/9/2016.
  */
-@RecipeInputMatcher(properties = {"metadata"}, priority = Priority.HIGHEST)
+@Component(properties = {"metadata"})
+@PrioritizedObject(priority = Priority.HIGHEST)
 public class MetadataMatcher implements IRecipeInputMatcher {
     private final int metadata;
 

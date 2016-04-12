@@ -5,19 +5,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
+import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.RecipeInputMatcher;
 
 import java.util.List;
-
-import static net.minecraftforge.oredict.OreDictionary.WILDCARD_VALUE;
 
 /**
  * Calling this lower due to the loop iteration.  Man that's painful.
  *
  * Created by Matt on 4/9/2016.
  */
-@RecipeInputMatcher(properties = {}, priority = Priority.LOWER)
+@PrioritizedObject(priority = Priority.LOWER)
 public class OreDictionaryMatcher implements IRecipeInputMatcher {
     private final String oreDictName;
 

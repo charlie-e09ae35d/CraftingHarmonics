@@ -5,14 +5,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
+import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.RecipeInputMatcher;
+import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
 /**
  * Created by Matt on 4/9/2016.
  */
-@RecipeInputMatcher(properties = {"nbt", "fuzzyNbt"}, priority = Priority.HIGHER)
+@Component(properties = {"nbt", "fuzzyNbt"})
+@PrioritizedObject(priority = Priority.HIGHER)
 public class NbtMatcher implements IRecipeInputMatcher {
     private final NBTTagCompound tag;
     private final boolean fuzzy;

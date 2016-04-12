@@ -12,7 +12,7 @@ import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
-import org.winterblade.minecraft.harmony.crafting.RecipeInputMatcherRegistry;
+import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
@@ -48,7 +48,8 @@ public class CraftingHarmonicsMod {
         // Load all recipe operations (thanks mezz, who thanks cpw... so also thanks cpw)
         RecipeOperationRegistry.CreateDeserializers(AnnotatedInstanceUtil.getRecipeOperations(event.getAsmData()));
         ScriptObjectReader.RegisterDeserializerClasses(AnnotatedInstanceUtil.getScriptObjectDeserializers(event.getAsmData()));
-        RecipeInputMatcherRegistry.RegisterRecipeInputMatchers(AnnotatedInstanceUtil.getRecipeInputMatchers(event.getAsmData()));
+        ComponentRegistry.registerComponents(AnnotatedInstanceUtil.getComponentClasses(event.getAsmData()));
+
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");

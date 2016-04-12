@@ -23,8 +23,8 @@ public class AnnotatedInstanceUtil {
         return getClasses(asmDataTable, ScriptObjectDeserializer.class, IScriptObjectDeserializer.class, "deserializes");
     }
 
-    public static Map<ArrayList<String>, Class<IRecipeInputMatcher>> getRecipeInputMatchers(@Nonnull ASMDataTable asmDataTable) {
-        return getClasses(asmDataTable, RecipeInputMatcher.class, IRecipeInputMatcher.class, "properties");
+    public static Map<ArrayList<String>, Class<Object>> getComponentClasses(@Nonnull ASMDataTable asmDataTable) {
+        return getClasses(asmDataTable, Component.class, Object.class, "properties");
     }
 
     @SuppressWarnings("unchecked")
