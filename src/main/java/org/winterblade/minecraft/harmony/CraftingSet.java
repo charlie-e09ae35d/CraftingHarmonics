@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony;
 
+import net.minecraftforge.fml.common.ProgressManager;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 
 import java.util.ArrayList;
@@ -24,7 +25,10 @@ public class CraftingSet {
      * Initializes the operations
      */
     void Init() {
+        ProgressManager.ProgressBar setProgress = ProgressManager.push("Initializing", operations.size());
+
         for(IRecipeOperation op : operations) {
+            setProgress.step(op.toString());
             try {
                 op.Init();
             } catch (Exception ex) {
@@ -32,12 +36,17 @@ public class CraftingSet {
             }
         }
 
+        ProgressManager.pop(setProgress);
+
         // So we're only sorting it once...
         Collections.sort(operations);
     }
 
     void Apply() {
+        ProgressManager.ProgressBar setProgress = ProgressManager.push("Applying", operations.size());
+
         for(IRecipeOperation op : operations) {
+            setProgress.step(op.toString());
             try {
                 op.Apply();
             }
@@ -45,5 +54,7 @@ public class CraftingSet {
                 System.err.println("Error applying operation.\n" + ex.getMessage());
             }
         }
+
+        ProgressManager.pop(setProgress);
     }
 }
