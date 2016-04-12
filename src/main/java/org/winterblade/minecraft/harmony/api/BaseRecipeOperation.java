@@ -10,6 +10,11 @@ import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 public abstract class BaseRecipeOperation implements IRecipeOperation {
     private int priority;
 
+    // Add some properties for metadata:
+    protected String __comment;
+    protected String __result;
+    protected String __name;
+
     @Override
     public int compareTo(IRecipeOperation o) {
         // Don't try and sort:
@@ -41,5 +46,13 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
     protected void ReadData(ScriptObjectMirror data) throws ItemMissingException {
         // Base implementation just attempts to map properties one-to-one
         ScriptObjectReader.WriteScriptObjectToClass(data, this);
+    }
+
+    @Override
+    public String toString() {
+        if(__name != null) return __name;
+        if(__result != null) return  __result;
+        if(__comment != null) return __comment;
+        return getClass().getSimpleName();
     }
 }
