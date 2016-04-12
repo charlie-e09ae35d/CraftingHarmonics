@@ -2,11 +2,10 @@ package org.winterblade.minecraft.harmony.crafting.recipes;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
@@ -19,8 +18,8 @@ import java.util.*;
  * Created by Matt on 4/9/2016.
  */
 public class ShapedComponentRecipe extends ShapedOreRecipe {
-    public static final int MAX_CRAFT_GRID_WIDTH = 3;
-    public static final int MAX_CRAFT_GRID_HEIGHT = 3;
+    private static final int MAX_CRAFT_GRID_WIDTH = 3;
+    private static final int MAX_CRAFT_GRID_HEIGHT = 3;
 
     private final int width;
     private final int height;
@@ -89,7 +88,7 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
         return false;
     }
 
-    protected boolean checkMatch(InventoryCrafting inv, int startX, int startY, World world)
+    private boolean checkMatch(InventoryCrafting inv, int startX, int startY, World world)
     {
         boolean hasAtLeastOneMatcher = false;
         for (int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++)
@@ -146,7 +145,6 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
 
     @Override
     public ItemStack[] getRemainingItems(InventoryCrafting inv) {
-        // TODO: Not this.
         ItemStack[] ret = new ItemStack[inv.getSizeInventory()];
         RecipeInput target;
 
@@ -182,13 +180,26 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
             ItemStack slot = inv.getStackInSlot(i+invOffset);
             ItemStack transformed = target.applyTransformers(ItemRegistry.duplicate(slot), ForgeHooks.getCraftingPlayer());
 
-//            inv.setInventorySlotContents(i+invOffset, transformed);
             // We're bypassing setInventorySlotContents so as to not fire off the crafting update event
             // This doesn't prevent counts from still being wrong, but it at least does prevent Minecraft
             // matching the entire recipe list, again...
             stackList[i+invOffset] = transformed;
 
-            ret[i] = ForgeHooks.getContainerItem(transformed);
+            ItemStack containerItem = ForgeHooks.getContainerItem(transformed);
+
+            if(slot.getItem() == transformed.getItem() && slot.stackSize != transformed.stackSize) {
+                // Haaaaack.  Terrible, terrible haaaack.
+                // So, how this works: we can't return out of this function with a modified stack size of the same item
+                // otherwise the game client gets updated to an incorrect count, so we need to get how many more/less
+                // we're trying to give/take from the player and use the ret value to invoke SlotCrafting's code which
+                // will later modify the counts by the appropriate amount.
+                int modifiedBy = transformed.stackSize - slot.stackSize;
+                slot.stackSize = modifiedBy;
+                transformed.stackSize -= modifiedBy;
+                ret[i+invOffset] = slot;
+            } else {
+                ret[i+invOffset] = containerItem;
+            }
         }
 
         return ret;
