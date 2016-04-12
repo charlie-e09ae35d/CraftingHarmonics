@@ -3,7 +3,6 @@ package org.winterblade.minecraft.harmony.crafting;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
 import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
 import org.winterblade.minecraft.harmony.api.Priority;
@@ -42,19 +41,15 @@ public class RecipeInput {
      *
      * @param input     The input from the crafting grid.
      * @param inventory The inventory performing the craft.
-     * @param posX      The X position of the input in the inventory
-     * @param posY      The Y position of the input in the inventory
-     * @param world     The world the crafting is happening in.
-     * @param targetPos The position of the target in the target list
      * @param output    The output item of the recipe
      * @return          True if the given input matches the target.
      */
-    public boolean matches(ItemStack input, InventoryCrafting inventory, int posX, int posY,
-                           World world, int targetPos, ItemStack output) {
+    public boolean matches(ItemStack input, InventoryCrafting inventory,
+                           ItemStack output) {
 
         // Iterate our matchers, finding the first one that fails.
         for(RecipeInputMatcherData matcher : matchers) {
-            if(!matcher.getMatcher().matches(input, inventory, posX, posY, world, targetPos, output)) return false;
+            if(!matcher.getMatcher().matches(input, inventory, output)) return false;
         }
 
         // Wow, we got here?

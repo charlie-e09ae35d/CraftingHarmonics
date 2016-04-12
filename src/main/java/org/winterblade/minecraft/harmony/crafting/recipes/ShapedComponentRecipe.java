@@ -76,7 +76,7 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
         {
             for (int y = 0; y <= MAX_CRAFT_GRID_HEIGHT - height; ++y)
             {
-                if (checkMatch(inv, x, y, worldIn))
+                if (checkMatch(inv, x, y))
                 {
                     return true;
                 }
@@ -86,7 +86,7 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
         return false;
     }
 
-    private boolean checkMatch(InventoryCrafting inv, int startX, int startY, World world)
+    private boolean checkMatch(InventoryCrafting inv, int startX, int startY)
     {
         boolean hasAtLeastOneMatcher = false;
         for (int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++)
@@ -118,7 +118,7 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
 
                 // Run matchers here...
                 hasAtLeastOneMatcher = true;
-                if(!target.matches(slot,inv, x,y,world, pos, output.getItemStack())) return false;
+                if(!target.matches(slot, inv, output.getItemStack())) return false;
             }
         }
 
