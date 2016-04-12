@@ -5,14 +5,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
+import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.RecipeInputMatcher;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
 /**
  * Created by Matt on 4/9/2016.
  */
-@RecipeInputMatcher(properties = {}, aliases = {}, priority = Priority.HIGHEST)
+@PrioritizedObject(priority = Priority.HIGHEST)
 public class ItemMatcher implements IRecipeInputMatcher {
     private final Item item;
 

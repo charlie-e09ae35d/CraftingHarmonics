@@ -4,12 +4,11 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.api.*;
+import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
-import org.winterblade.minecraft.harmony.crafting.RecipeInputMatcherRegistry;
 import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.NbtMatcher;
@@ -20,7 +19,6 @@ import org.winterblade.minecraft.harmony.crafting.transformers.ReturnOnCraftTran
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Matt on 4/9/2016.
@@ -67,10 +65,15 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             return output;
         }
 
-        Map<IRecipeInputMatcher, Priority> matchers = RecipeInputMatcherRegistry.GetMatchersFrom(mirror);
+        ComponentRegistry registry = ComponentRegistry.compileRegistryFor(new Class[]{IRecipeInputMatcher.class}, mirror);
+        List<IRecipeInputMatcher> matchers = registry.getComponentsOf(IRecipeInputMatcher.class);
 
-        for(Map.Entry<IRecipeInputMatcher, Priority> kv : matchers.entrySet()) {
-            output.addMatcher(kv.getKey(), kv.getValue());
+        if(matchers != null) {
+            for (IRecipeInputMatcher matcher : matchers) {
+                // Quick hack; should do a global registration of this later for faster lookup...
+                PrioritizedObject priority = matcher.getClass().getAnnotation(PrioritizedObject.class);
+                output.addMatcher(matcher, priority.priority());
+            }
         }
 
         // Add the transformers hardcoded here.
@@ -98,7 +101,6 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
     /**
      * Translates the string into the appropriate set of matchers.
      * @param itemString    The item string to translate
-     * @return              The RecipeInput that matches the string.
      */
     private void addItemStringBasedMatchers(RecipeInput output, String itemString) {
         if(itemString.trim().equals("")) return;
