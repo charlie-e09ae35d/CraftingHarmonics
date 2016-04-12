@@ -177,7 +177,12 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
         for (int i = 0; i < ret.length && i < input.length; i++)
         {
             target = input[i];
+
+            // Make sure we have an item to work with...
             ItemStack slot = inv.getStackInSlot(i+invOffset);
+            if(slot == null) continue;
+
+            // Transform it and roll out.
             ItemStack transformed = target.applyTransformers(ItemRegistry.duplicate(slot), ForgeHooks.getCraftingPlayer());
 
             // We're bypassing setInventorySlotContents so as to not fire off the crafting update event
@@ -187,7 +192,8 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
 
             ItemStack containerItem = ForgeHooks.getContainerItem(transformed);
 
-            if(slot.getItem() == transformed.getItem() && slot.stackSize != transformed.stackSize) {
+            // If we're going to run into the GUI bug...
+            if(slot.stackSize > 1 && ItemStack.areItemsEqual(slot, transformed) && slot.stackSize != transformed.stackSize) {
                 // Haaaaack.  Terrible, terrible haaaack.
                 // So, how this works: we can't return out of this function with a modified stack size of the same item
                 // otherwise the game client gets updated to an incorrect count, so we need to get how many more/less
@@ -195,6 +201,9 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
                 // will later modify the counts by the appropriate amount.
                 int modifiedBy = transformed.stackSize - slot.stackSize;
                 slot.stackSize = modifiedBy;
+
+                // Make sure we copy our damage, just in case:
+                slot.setItemDamage(transformed.getItemDamage());
                 transformed.stackSize -= modifiedBy;
                 ret[i+invOffset] = slot;
             } else {
