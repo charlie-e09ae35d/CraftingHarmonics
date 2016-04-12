@@ -117,9 +117,9 @@ task getTCVersionInfo << {
     def hash = System.getProperty("build.vcs.number", "")
     if(!branch.equals("")) branch = branch.equals("<default>") ? branch = "-develop" : "-" + branch
     if(!hash.equals("")) hash = "-" + hash[0..7]
-    if(!counter.equals("")) counter = "-" + counter
+    if(!counter.equals("")) counter = "." + counter
 
-    version = "${version}${branch}${hash}${counter}"
+    version = "${version}${counter}${branch}${hash}"
 }
 
 //noinspection GroovyAssignabilityCheck
