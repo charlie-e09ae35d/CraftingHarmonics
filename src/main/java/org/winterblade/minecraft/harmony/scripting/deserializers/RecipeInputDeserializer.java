@@ -65,9 +65,15 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             return output;
         }
 
-        ComponentRegistry registry = ComponentRegistry.compileRegistryFor(new Class[]{IRecipeInputMatcher.class}, mirror);
-        List<IRecipeInputMatcher> matchers = registry.getComponentsOf(IRecipeInputMatcher.class);
+        // Get our registry data...
+        ComponentRegistry registry = ComponentRegistry.compileRegistryFor(new Class[]{
+                IRecipeInputMatcher.class,
+                IItemStackTransformer.class}, mirror);
 
+        List<IRecipeInputMatcher> matchers = registry.getComponentsOf(IRecipeInputMatcher.class);
+        List<IItemStackTransformer> transformers = registry.getComponentsOf(IItemStackTransformer.class);
+
+        // Deal with matchers
         if(matchers != null) {
             for (IRecipeInputMatcher matcher : matchers) {
                 // Quick hack; should do a global registration of this later for faster lookup...
@@ -76,23 +82,16 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             }
         }
 
-        // Add the transformers hardcoded here.
-        if(mirror.containsKey("returnOnCraft") && (Boolean)mirror.get("returnOnCraft")) {
-            output.addTransformer(new ReturnOnCraftTransformer());
-        }
+        if(transformers != null) {
+            for(IItemStackTransformer transformer : transformers) {
+                output.addTransformer(transformer);
 
-        if(mirror.containsKey("replaceOnCraft")) {
-            ItemStack stack = ScriptObjectReader.convertData(mirror.get("replaceOnCraft"), ItemStack.class);
-
-            if(stack != null) {
-                output.addTransformer(new ReplaceOnCraftTransformer(stack));
+                // Also deal with any implied transformers we have (if any)
+                IItemStackTransformer[] impliedTransformers = transformer.getImpliedTransformers();
+                for(IItemStackTransformer implied : impliedTransformers) {
+                    output.addTransformer(implied);
+                }
             }
-        }
-
-        if(mirror.containsKey("damageOnCraft")) {
-            int by = (int)mirror.get("damageOnCraft");
-            output.addTransformer(new DamageOnCraft(by));
-            output.addTransformer(new ReturnOnCraftTransformer());
         }
 
         return output;

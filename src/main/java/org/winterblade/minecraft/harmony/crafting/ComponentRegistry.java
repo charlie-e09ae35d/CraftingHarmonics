@@ -124,7 +124,11 @@ public class ComponentRegistry {
 
         // Collect all the components we're trying to match for...
         for(String name : matchingClasses) {
-            searchDataList.addAll(components.get(name).stream()
+            List<ComponentRegistration> componentRegistrations = components.get(name);
+            if(componentRegistrations == null) continue;
+
+            // Do a Java 8... thing...
+            searchDataList.addAll(componentRegistrations.stream()
                     .map(c -> new ComponentSearchData(name, c)).collect(Collectors.toList()));
         }
 
