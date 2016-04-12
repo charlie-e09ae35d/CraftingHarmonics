@@ -18,7 +18,7 @@ import java.util.PriorityQueue;
 public class RecipeInput {
     private final PriorityQueue<RecipeInputMatcherData> matchers = new PriorityQueue<>();
     private final List<IItemStackTransformer> transformerList = new ArrayList<>();
-    private Object facimileItem;
+    private Object facsimileItem;
 
     /**
      * Add a matcher to this RecipeInput
@@ -88,26 +88,26 @@ public class RecipeInput {
         return input == null || input.matchers.size() == 0;
     }
 
-    public static Object[] getFacimileItems(RecipeInput[] recipeInputs) {
+    public static Object[] getFacsimileItems(RecipeInput[] recipeInputs) {
         Object[] output = new Object[recipeInputs.length];
 
         for (int i = 0; i < recipeInputs.length; i++) {
-            output[i]  = recipeInputs[i].getFacimileItem();
+            output[i]  = recipeInputs[i].getFacsimileItem();
         }
 
         return output;
     }
 
-    public Object getFacimileItem() {
-        return facimileItem;
+    public Object getFacsimileItem() {
+        return facsimileItem;
     }
 
-    public void setFacimileItem(ItemStack item) {
-        this.facimileItem = item;
+    public void setFacsimileItem(ItemStack item) {
+        this.facsimileItem = item;
     }
 
     public void setFacimileItem(String oreDictName) {
-        this.facimileItem = oreDictName;
+        this.facsimileItem = oreDictName;
     }
 
     private class RecipeInputMatcherData implements Comparable<RecipeInputMatcherData> {
@@ -141,7 +141,7 @@ public class RecipeInput {
         return "RecipeInput{" +
                 "matchers=" + matchers +
                 ", transformerList=" + transformerList +
-                ", facimileItem=" + facimileItem +
+                ", facsimileItem=" + facsimileItem +
                 '}';
     }
 }

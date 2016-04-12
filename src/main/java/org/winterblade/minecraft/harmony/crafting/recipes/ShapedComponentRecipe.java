@@ -26,14 +26,14 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
     private static final int CHAR_A = 65;
 
     public ShapedComponentRecipe(int width, int height, RecipeInput[] input, RecipeComponent output) {
-        super(output.getItemStack(), itemStacksToOreRecipe(RecipeInput.getFacimileItems(input), width, height));
+        super(output.getItemStack(), itemStacksToOreRecipe(RecipeInput.getFacsimileItems(input), width, height));
         this.width = width;
         this.height = height;
         this.input = input;
         this.output = output;
     }
 
-    private static Object[] itemStacksToOreRecipe(Object[] facimileItems, int width, int height) {
+    private static Object[] itemStacksToOreRecipe(Object[] facsimileItems, int width, int height) {
         String[] lines = new String[height];
         Map<Character, Object> charmap = new HashMap<>();
 
@@ -44,13 +44,13 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
         for(int y = 0; y < height; y++) {
             lines[y] = "";
             for(int x = 0; x < width; x++) {
-                if(facimileItems[offset] == null) {
+                if(facsimileItems[offset] == null) {
                     lines[y] += " ";
                 } else {
                     // This will produce increasing values of A, B, C, etc
                     char id = (char)(CHAR_A +offset);
                     lines[y] += id;
-                    charmap.put(id, facimileItems[offset]);
+                    charmap.put(id, facsimileItems[offset]);
                 }
 
                 offset++;
