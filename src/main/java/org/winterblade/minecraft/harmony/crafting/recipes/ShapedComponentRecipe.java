@@ -5,8 +5,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
@@ -171,19 +173,22 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
         // Shift
         int invOffset = left + (top * inv.getWidth());
 
-        for (int i = 0; i < ret.length; i++)
-        {
-            if(i >= input.length) {
-                ret[i] = null;
-                continue;
-            }
+        // Grab our stack list...
+        ItemStack[] stackList = ObfuscationReflectionHelper.getPrivateValue(InventoryCrafting.class, inv, 0);
 
+        for (int i = 0; i < ret.length && i < input.length; i++)
+        {
             target = input[i];
             ItemStack slot = inv.getStackInSlot(i+invOffset);
+            ItemStack transformed = target.applyTransformers(ItemRegistry.duplicate(slot), ForgeHooks.getCraftingPlayer());
 
-            inv.setInventorySlotContents(i+invOffset, target.applyTransformers(slot, ForgeHooks.getCraftingPlayer()));
+//            inv.setInventorySlotContents(i+invOffset, transformed);
+            // We're bypassing setInventorySlotContents so as to not fire off the crafting update event
+            // This doesn't prevent counts from still being wrong, but it at least does prevent Minecraft
+            // matching the entire recipe list, again...
+            stackList[i+invOffset] = transformed;
 
-            ret[i] = ForgeHooks.getContainerItem(inv.getStackInSlot(i));
+            ret[i] = ForgeHooks.getContainerItem(transformed);
         }
 
         return ret;
