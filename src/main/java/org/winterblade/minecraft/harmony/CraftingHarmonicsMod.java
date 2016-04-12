@@ -12,13 +12,13 @@ import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
-import org.winterblade.minecraft.harmony.crafting.RecipeInputMatcherRegistry;
+import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessNbtMatchingRecipe;
-import org.winterblade.minecraft.harmony.utility.AnnotatedInstanceUtil;
+import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
 import java.util.HashMap;
@@ -33,7 +33,7 @@ import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
 @Mod(modid = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.MODID, version = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.VERSION)
 public class CraftingHarmonicsMod {
     public static final String MODID = "craftingharmonics";
-    public static final String VERSION = "1.9.0-1.1.2";
+    public static final String VERSION = "1.9.0-1.1.3";
 
     private String configPath;
     private ConfigManager configManager;
@@ -46,9 +46,10 @@ public class CraftingHarmonicsMod {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         // Load all recipe operations (thanks mezz, who thanks cpw... so also thanks cpw)
-        RecipeOperationRegistry.CreateDeserializers(AnnotatedInstanceUtil.getRecipeOperations(event.getAsmData()));
-        ScriptObjectReader.RegisterDeserializerClasses(AnnotatedInstanceUtil.getScriptObjectDeserializers(event.getAsmData()));
-        RecipeInputMatcherRegistry.RegisterRecipeInputMatchers(AnnotatedInstanceUtil.getRecipeInputMatchers(event.getAsmData()));
+        RecipeOperationRegistry.CreateDeserializers(AnnotationUtil.getRecipeOperations(event.getAsmData()));
+        ScriptObjectReader.RegisterDeserializerClasses(AnnotationUtil.getScriptObjectDeserializers(event.getAsmData()));
+        ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
+
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");

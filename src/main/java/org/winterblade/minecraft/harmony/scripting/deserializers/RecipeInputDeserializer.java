@@ -4,12 +4,11 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.api.*;
+import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
-import org.winterblade.minecraft.harmony.crafting.RecipeInputMatcherRegistry;
 import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.NbtMatcher;
@@ -20,7 +19,6 @@ import org.winterblade.minecraft.harmony.crafting.transformers.ReturnOnCraftTran
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Matt on 4/9/2016.
@@ -67,29 +65,33 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
             return output;
         }
 
-        Map<IRecipeInputMatcher, Priority> matchers = RecipeInputMatcherRegistry.GetMatchersFrom(mirror);
+        // Get our registry data...
+        ComponentRegistry registry = ComponentRegistry.compileRegistryFor(new Class[]{
+                IRecipeInputMatcher.class,
+                IItemStackTransformer.class}, mirror);
 
-        for(Map.Entry<IRecipeInputMatcher, Priority> kv : matchers.entrySet()) {
-            output.addMatcher(kv.getKey(), kv.getValue());
-        }
+        List<IRecipeInputMatcher> matchers = registry.getComponentsOf(IRecipeInputMatcher.class);
+        List<IItemStackTransformer> transformers = registry.getComponentsOf(IItemStackTransformer.class);
 
-        // Add the transformers hardcoded here.
-        if(mirror.containsKey("returnOnCraft") && (Boolean)mirror.get("returnOnCraft")) {
-            output.addTransformer(new ReturnOnCraftTransformer());
-        }
-
-        if(mirror.containsKey("replaceOnCraft")) {
-            ItemStack stack = ScriptObjectReader.convertData(mirror.get("replaceOnCraft"), ItemStack.class);
-
-            if(stack != null) {
-                output.addTransformer(new ReplaceOnCraftTransformer(stack));
+        // Deal with matchers
+        if(matchers != null) {
+            for (IRecipeInputMatcher matcher : matchers) {
+                // Quick hack; should do a global registration of this later for faster lookup...
+                PrioritizedObject priority = matcher.getClass().getAnnotation(PrioritizedObject.class);
+                output.addMatcher(matcher, priority.priority());
             }
         }
 
-        if(mirror.containsKey("damageOnCraft")) {
-            int by = (int)mirror.get("damageOnCraft");
-            output.addTransformer(new DamageOnCraft(by));
-            output.addTransformer(new ReturnOnCraftTransformer());
+        if(transformers != null) {
+            for(IItemStackTransformer transformer : transformers) {
+                output.addTransformer(transformer);
+
+                // Also deal with any implied transformers we have (if any)
+                IItemStackTransformer[] impliedTransformers = transformer.getImpliedTransformers();
+                for(IItemStackTransformer implied : impliedTransformers) {
+                    output.addTransformer(implied);
+                }
+            }
         }
 
         return output;
@@ -98,7 +100,6 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
     /**
      * Translates the string into the appropriate set of matchers.
      * @param itemString    The item string to translate
-     * @return              The RecipeInput that matches the string.
      */
     private void addItemStringBasedMatchers(RecipeInput output, String itemString) {
         if(itemString.trim().equals("")) return;
