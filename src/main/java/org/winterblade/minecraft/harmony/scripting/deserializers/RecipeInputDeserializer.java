@@ -4,10 +4,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
-import org.winterblade.minecraft.harmony.api.IScriptObjectDeserializer;
-import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.ScriptObjectDeserializer;
+import org.winterblade.minecraft.harmony.api.*;
 import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
@@ -73,8 +70,9 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
 
         if(matchers != null) {
             for (IRecipeInputMatcher matcher : matchers) {
-                // Just handwaving the priority for the moment...
-                output.addMatcher(matcher, Priority.MEDIUM);
+                // Quick hack; should do a global registration of this later for faster lookup...
+                PrioritizedObject priority = matcher.getClass().getAnnotation(PrioritizedObject.class);
+                output.addMatcher(matcher, priority.priority());
             }
         }
 
