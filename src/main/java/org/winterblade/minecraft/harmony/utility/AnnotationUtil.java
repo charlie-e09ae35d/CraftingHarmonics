@@ -10,28 +10,28 @@ import java.util.*;
 /**
  * Borrowed mostly from mezz's JEI class of the same name; modified to load the name of the operation
  */
-public class AnnotatedInstanceUtil {
-    private AnnotatedInstanceUtil() {
+public class AnnotationUtil {
+    private AnnotationUtil() {
 
     }
 
     public static Map<String, Class<BaseRecipeOperation>> getRecipeOperations(@Nonnull ASMDataTable asmDataTable) {
-        return getClasses(asmDataTable, RecipeOperation.class, BaseRecipeOperation.class, "name");
+        return getClassMap(asmDataTable, RecipeOperation.class, BaseRecipeOperation.class, "name");
     }
 
     public static Map<Type, Class<IScriptObjectDeserializer>> getScriptObjectDeserializers(@Nonnull ASMDataTable asmDataTable) {
-        return getClasses(asmDataTable, ScriptObjectDeserializer.class, IScriptObjectDeserializer.class, "deserializes");
+        return getClassMap(asmDataTable, ScriptObjectDeserializer.class, IScriptObjectDeserializer.class, "deserializes");
     }
 
     public static Map<ArrayList<String>, Class<Object>> getComponentClasses(@Nonnull ASMDataTable asmDataTable) {
-        return getClasses(asmDataTable, Component.class, Object.class, "properties");
+        return getClassMap(asmDataTable, Component.class, Object.class, "properties");
     }
 
     @SuppressWarnings("unchecked")
-    private static <T,Tk> Map<Tk, Class<T>> getClasses(@Nonnull ASMDataTable asmDataTable,
-                                                       Class<?> annotationClass,
-                                                       Class<T> instanceClass,
-                                                       String idParam) {
+    private static <T,Tk> Map<Tk, Class<T>> getClassMap(@Nonnull ASMDataTable asmDataTable,
+                                                        Class<?> annotationClass,
+                                                        Class<T> outputClass,
+                                                        String idParam) {
         String annotationClassName = annotationClass.getCanonicalName();
         Set<ASMDataTable.ASMData> asmTable = asmDataTable.getAll(annotationClassName);
 
@@ -40,9 +40,9 @@ public class AnnotatedInstanceUtil {
             try {
                 Class<?> asmClass = Class.forName(asmData.getClassName());
 
-                if(!instanceClass.isAssignableFrom(asmClass)) {
+                if(!outputClass.isAssignableFrom(asmClass)) {
                     System.err.println("Attempted to load '" + asmClass.getSimpleName() +
-                            "', but it doesn't implement '" + instanceClass.getSimpleName() + "'.");
+                            "', but it doesn't implement '" + outputClass.getSimpleName() + "'.");
                     continue;
                 }
 

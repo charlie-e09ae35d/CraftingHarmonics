@@ -18,7 +18,7 @@ import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessNbtMatchingRecipe;
-import org.winterblade.minecraft.harmony.utility.AnnotatedInstanceUtil;
+import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
 import java.util.HashMap;
@@ -46,9 +46,9 @@ public class CraftingHarmonicsMod {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         // Load all recipe operations (thanks mezz, who thanks cpw... so also thanks cpw)
-        RecipeOperationRegistry.CreateDeserializers(AnnotatedInstanceUtil.getRecipeOperations(event.getAsmData()));
-        ScriptObjectReader.RegisterDeserializerClasses(AnnotatedInstanceUtil.getScriptObjectDeserializers(event.getAsmData()));
-        ComponentRegistry.registerComponents(AnnotatedInstanceUtil.getComponentClasses(event.getAsmData()));
+        RecipeOperationRegistry.CreateDeserializers(AnnotationUtil.getRecipeOperations(event.getAsmData()));
+        ScriptObjectReader.RegisterDeserializerClasses(AnnotationUtil.getScriptObjectDeserializers(event.getAsmData()));
+        ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
 
 
         // Handle config
