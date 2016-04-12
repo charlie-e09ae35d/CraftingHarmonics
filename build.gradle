@@ -35,7 +35,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 ext {
-    repo = "http://maven.winterblade.org/content/repositories/CraftingHarmonicsDev"
+    repo = "http://maven.winterblade.org/content/repositories/MinecraftDev/"
 }
 
 minecraft {
@@ -141,7 +141,7 @@ task buildArtifacts(dependsOn: ['sourceJar','artifactDeobf','reobfJar'])
 
 uploadArchives {
     if(project.hasProperty("release")) {
-        repo = "http://maven.winterblade.org/content/repositories/CraftingHarmonics"
+        repo = "http://maven.winterblade.org/content/repositories/minecraft/"
     }
 
     repositories.mavenDeployer {
