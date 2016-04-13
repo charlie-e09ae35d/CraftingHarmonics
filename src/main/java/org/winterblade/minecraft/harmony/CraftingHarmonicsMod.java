@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -14,9 +15,11 @@ import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
+import org.winterblade.minecraft.harmony.crafting.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.crafting.recipes.*;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
+import org.winterblade.minecraft.harmony.utility.EventHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +33,7 @@ import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
 @Mod(modid = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.MODID, version = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.VERSION)
 public class CraftingHarmonicsMod {
     public static final String MODID = "craftingharmonics";
-    public static final String VERSION = "1.9.0-1.2.0";
+    public static final String VERSION = "1.9.0-1.2.1";
 
     private String configPath;
     private ConfigManager configManager;
@@ -50,6 +53,10 @@ public class CraftingHarmonicsMod {
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
+
+        // Register event bus
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
+        PacketHandler.registerMessages();
     }
 
     @Mod.EventHandler
