@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -17,6 +18,7 @@ import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
 import org.winterblade.minecraft.harmony.crafting.recipes.*;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
+import org.winterblade.minecraft.harmony.utility.EventHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +52,9 @@ public class CraftingHarmonicsMod {
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
+
+        // Register event bus
+        MinecraftForge.EVENT_BUS.register(new EventHandler());
     }
 
     @Mod.EventHandler
