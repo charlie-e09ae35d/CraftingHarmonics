@@ -14,10 +14,7 @@ import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessNbtMatchingRecipe;
+import org.winterblade.minecraft.harmony.crafting.recipes.*;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
@@ -82,6 +79,8 @@ public class CraftingHarmonicsMod {
                 SHAPED,    "after:craftingharmonics:shaped_component before:minecraft:shaped");
         RecipeSorter.register("craftingharmonics:shaped_nbt_ore",   ShapedOreNbtMatchingRecipe.class,
                 SHAPED,    "after:minecraft:shaped before:forge:shapedore");
+        RecipeSorter.register("craftingharmonics:shapeless_component",    ShapelessComponentRecipe.class,
+                SHAPELESS, "after:forge:shapedore before:minecraft:shapeless");
         RecipeSorter.register("craftingharmonics:shapeless_nbt",    ShapelessNbtMatchingRecipe.class,
                 SHAPELESS, "after:forge:shapedore before:minecraft:shapeless");
     }
