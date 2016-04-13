@@ -51,7 +51,7 @@ public class RandomSynchronizerMessage implements IMessage {
         @Override
         public IMessage onMessage(RandomSynchronizerMessage message, MessageContext ctx) {
             System.out.println(message.seed);
-            SynchronizedRandom.generateNewRandom(ctx.getClientHandler().getGameProfile().getId().toString(), message.seed);
+            SynchronizedRandom.setMyRandom(message.seed);
             System.out.println("Received random seed from server: " + message.seed);
             return null;
         }

@@ -14,6 +14,7 @@ import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.events.ItemOnCraftedCallback;
 import org.winterblade.minecraft.harmony.crafting.events.ItemOnCraftedEvent;
 import org.winterblade.minecraft.harmony.crafting.events.wrappers.ItemStackWrapper;
+import org.winterblade.minecraft.harmony.utility.SynchronizedRandom;
 
 import javax.annotation.Nonnull;
 import javax.script.Invocable;
@@ -34,9 +35,13 @@ public class FunctionCallbackOnCraft implements IItemStackTransformer {
 
     @Override
     public ItemStack transform(ItemStack input, EntityPlayer craftingPlayer) {
+        Random random = craftingPlayer.getEntityWorld().isRemote
+                ? SynchronizedRandom.getRandomFor(craftingPlayer)
+                : SynchronizedRandom.getMyRandom();
+
         ItemStackWrapper wrapper = new ItemStackWrapper(input);
         try {
-            fn.apply(new ItemOnCraftedEvent(wrapper));
+            fn.apply(new ItemOnCraftedEvent(random, wrapper));
         } catch(Exception ex) {
             System.err.println("Error with onCraft callback function: " + ex.getMessage());
         }
