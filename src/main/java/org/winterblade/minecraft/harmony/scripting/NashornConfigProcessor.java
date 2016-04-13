@@ -37,7 +37,7 @@ public class NashornConfigProcessor {
                 "scripts.");
 
         factory = new NashornScriptEngineFactory();
-        nashorn = factory.getScriptEngine();
+        nashorn = factory.getScriptEngine(new ScriptExecutionSandbox());
         final Bindings bindings = nashorn.getBindings(ScriptContext.ENGINE_SCOPE);
 
         // Actually try and load our script header into Nashorn.
