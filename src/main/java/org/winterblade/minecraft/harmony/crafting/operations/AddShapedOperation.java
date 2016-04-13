@@ -1,20 +1,11 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.apache.commons.lang3.ArrayUtils;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
-import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
-
-import java.util.*;
 
 /**
  * Created by Matt on 4/5/2016.
