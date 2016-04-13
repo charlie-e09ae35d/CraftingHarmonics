@@ -193,12 +193,35 @@
                 {
                     __comment: "If you'd like to damage an input, that's possible as well; also, you can combine the text inputs with JSON inputs",
                     __result: "Creates sticks when combined with an axe.",
-                    type: "addShaped",
+                    type: "addShapeless",
                     output: "minecraft:stick:0:10",
                     with: ["<plankWood>",
                         {
                             item: "minecraft:stone_axe:*",
                             damageOnCraft: 25
+                        }
+                    ]
+                },
+                {
+                    __comment: "For even more advanced functionality, you can implement a JavaScript function in onCraft to modify your output",
+                    __result: "Adds a recipe to turn logs into 6 planks, with an axe, and gives a stick as a byproduct.",
+                    type: "addShapeless",
+                    output: "minecraft:stick",
+                    with: [
+                        {
+                            item: "<logWood>",
+                            onCraft: function(event) {
+                                // Note, we're just assuming that the metadata for a log matches the metadata for its plank
+                                // This is something of a contrived example. :)
+                                // Also note: event will always be 'undefined' if you try to print it; this cost me 1+ hour of time
+                                // debugging it before I realized I could still call methods on it...
+                                var metadata = event.item.getMetadata();
+                                event.item.replaceItem("minecraft:planks:"+metadata+":6");
+                            }
+                        },
+                        {
+                            item: "minecraft:stone_axe:*",
+                            damageOnCraft: 15
                         }
                     ]
                 }
