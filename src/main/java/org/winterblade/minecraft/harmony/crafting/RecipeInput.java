@@ -3,7 +3,6 @@ package org.winterblade.minecraft.harmony.crafting;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
 import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
 import org.winterblade.minecraft.harmony.api.Priority;
@@ -18,7 +17,7 @@ import java.util.PriorityQueue;
 public class RecipeInput {
     private final PriorityQueue<RecipeInputMatcherData> matchers = new PriorityQueue<>();
     private final List<IItemStackTransformer> transformerList = new ArrayList<>();
-    private Object facimileItem;
+    private Object facsimileItem;
 
     /**
      * Add a matcher to this RecipeInput
@@ -42,19 +41,15 @@ public class RecipeInput {
      *
      * @param input     The input from the crafting grid.
      * @param inventory The inventory performing the craft.
-     * @param posX      The X position of the input in the inventory
-     * @param posY      The Y position of the input in the inventory
-     * @param world     The world the crafting is happening in.
-     * @param targetPos The position of the target in the target list
      * @param output    The output item of the recipe
      * @return          True if the given input matches the target.
      */
-    public boolean matches(ItemStack input, InventoryCrafting inventory, int posX, int posY,
-                           World world, int targetPos, ItemStack output) {
+    public boolean matches(ItemStack input, InventoryCrafting inventory,
+                           ItemStack output) {
 
         // Iterate our matchers, finding the first one that fails.
         for(RecipeInputMatcherData matcher : matchers) {
-            if(!matcher.getMatcher().matches(input, inventory, posX, posY, world, targetPos, output)) return false;
+            if(!matcher.getMatcher().matches(input, inventory, output)) return false;
         }
 
         // Wow, we got here?
@@ -68,6 +63,9 @@ public class RecipeInput {
      * @return       The transformed item stack
      */
     public ItemStack applyTransformers(ItemStack input, EntityPlayer craftingPlayer) {
+        // Make sure that we get proper counts:
+        input.stackSize = 0;
+
         for(IItemStackTransformer transformer : transformerList) {
             input = transformer.transform(input, craftingPlayer);
             if(input == null) return null;
@@ -85,26 +83,26 @@ public class RecipeInput {
         return input == null || input.matchers.size() == 0;
     }
 
-    public static Object[] getFacimileItems(RecipeInput[] recipeInputs) {
+    public static Object[] getFacsimileItems(RecipeInput[] recipeInputs) {
         Object[] output = new Object[recipeInputs.length];
 
         for (int i = 0; i < recipeInputs.length; i++) {
-            output[i]  = recipeInputs[i].getFacimileItem();
+            output[i]  = recipeInputs[i].getFacsimileItem();
         }
 
         return output;
     }
 
-    public Object getFacimileItem() {
-        return facimileItem;
+    public Object getFacsimileItem() {
+        return facsimileItem;
     }
 
-    public void setFacimileItem(ItemStack item) {
-        this.facimileItem = item;
+    public void setFacsimileItem(ItemStack item) {
+        this.facsimileItem = item;
     }
 
     public void setFacimileItem(String oreDictName) {
-        this.facimileItem = oreDictName;
+        this.facsimileItem = oreDictName;
     }
 
     private class RecipeInputMatcherData implements Comparable<RecipeInputMatcherData> {
@@ -138,7 +136,7 @@ public class RecipeInput {
         return "RecipeInput{" +
                 "matchers=" + matchers +
                 ", transformerList=" + transformerList +
-                ", facimileItem=" + facimileItem +
+                ", facsimileItem=" + facsimileItem +
                 '}';
     }
 }

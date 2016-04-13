@@ -24,8 +24,7 @@ public class ReturnOnCraftTransformer implements IItemStackTransformer {
     public ItemStack transform(ItemStack input, EntityPlayer craftingPlayer) {
         if(!shouldReturn) return input;
 
-        // TODO: Update inventory somehow.
-        input.stackSize = input.stackSize + 1;
+        input.stackSize = 1;
         return input;
     }
 

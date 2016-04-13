@@ -14,10 +14,7 @@ import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapedNbtMatchingRecipe;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapedOreNbtMatchingRecipe;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessNbtMatchingRecipe;
+import org.winterblade.minecraft.harmony.crafting.recipes.*;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
@@ -33,7 +30,7 @@ import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
 @Mod(modid = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.MODID, version = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.VERSION)
 public class CraftingHarmonicsMod {
     public static final String MODID = "craftingharmonics";
-    public static final String VERSION = "1.9.0-1.1.3";
+    public static final String VERSION = "1.9.0-1.2.0";
 
     private String configPath;
     private ConfigManager configManager;
@@ -77,13 +74,10 @@ public class CraftingHarmonicsMod {
 
         // Link in our recipes
         RecipeSorter.register("craftingharmonics:shaped_component",       ShapedComponentRecipe.class,
-                SHAPED,    "before:craftingharmonics:shaped_nbt");
-        RecipeSorter.register("craftingharmonics:shaped_nbt",       ShapedNbtMatchingRecipe.class,
-                SHAPED,    "after:craftingharmonics:shaped_component before:minecraft:shaped");
-        RecipeSorter.register("craftingharmonics:shaped_nbt_ore",   ShapedOreNbtMatchingRecipe.class,
-                SHAPED,    "after:minecraft:shaped before:forge:shapedore");
-        RecipeSorter.register("craftingharmonics:shapeless_nbt",    ShapelessNbtMatchingRecipe.class,
+                SHAPED,    "before:minecraft:shaped");
+        RecipeSorter.register("craftingharmonics:shapeless_component",    ShapelessComponentRecipe.class,
                 SHAPELESS, "after:forge:shapedore before:minecraft:shapeless");
+
     }
 
     @Mod.EventHandler

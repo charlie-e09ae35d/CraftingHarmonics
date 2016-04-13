@@ -2,6 +2,8 @@ package org.winterblade.minecraft.harmony.config;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import net.minecraftforge.fml.common.ProgressManager;
+import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 import java.io.File;
@@ -72,7 +74,13 @@ public class ConfigManager {
     }
 
     public void processSetFiles() {
+        if(setFiles.size() <= 0) return;
+
+        // > Be fancy.
+        ProgressBar setProgress = ProgressManager.push("Processing", setFiles.size());
+
         for(File config : setFiles) {
+            setProgress.step(config.getName());
             System.out.println("Reading set definition " + config.getPath());
             try {
                 NashornConfigProcessor.getInstance().ReadConfigFile(config);
@@ -80,5 +88,8 @@ public class ConfigManager {
                 System.err.println("Error processing Set file " + config.getPath() + ": " + e.getMessage());
             }
         }
+
+        // > Stop being fancy
+        ProgressManager.pop(setProgress);
     }
 }

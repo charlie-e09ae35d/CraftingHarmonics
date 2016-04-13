@@ -4,8 +4,6 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
@@ -28,14 +26,14 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
     private static final int CHAR_A = 65;
 
     public ShapedComponentRecipe(int width, int height, RecipeInput[] input, RecipeComponent output) {
-        super(output.getItemStack(), itemStacksToOreRecipe(RecipeInput.getFacimileItems(input), width, height));
+        super(output.getItemStack(), itemStacksToOreRecipe(RecipeInput.getFacsimileItems(input), width, height));
         this.width = width;
         this.height = height;
         this.input = input;
         this.output = output;
     }
 
-    private static Object[] itemStacksToOreRecipe(Object[] facimileItems, int width, int height) {
+    private static Object[] itemStacksToOreRecipe(Object[] facsimileItems, int width, int height) {
         String[] lines = new String[height];
         Map<Character, Object> charmap = new HashMap<>();
 
@@ -46,13 +44,13 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
         for(int y = 0; y < height; y++) {
             lines[y] = "";
             for(int x = 0; x < width; x++) {
-                if(facimileItems[offset] == null) {
+                if(facsimileItems[offset] == null) {
                     lines[y] += " ";
                 } else {
                     // This will produce increasing values of A, B, C, etc
                     char id = (char)(CHAR_A +offset);
                     lines[y] += id;
-                    charmap.put(id, facimileItems[offset]);
+                    charmap.put(id, facsimileItems[offset]);
                 }
 
                 offset++;
@@ -78,7 +76,7 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
         {
             for (int y = 0; y <= MAX_CRAFT_GRID_HEIGHT - height; ++y)
             {
-                if (checkMatch(inv, x, y, worldIn))
+                if (checkMatch(inv, x, y))
                 {
                     return true;
                 }
@@ -88,7 +86,7 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
         return false;
     }
 
-    private boolean checkMatch(InventoryCrafting inv, int startX, int startY, World world)
+    private boolean checkMatch(InventoryCrafting inv, int startX, int startY)
     {
         boolean hasAtLeastOneMatcher = false;
         for (int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++)
@@ -120,7 +118,7 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
 
                 // Run matchers here...
                 hasAtLeastOneMatcher = true;
-                if(!target.matches(slot,inv, x,y,world, pos, output.getItemStack())) return false;
+                if(!target.matches(slot, inv, output.getItemStack())) return false;
             }
         }
 
@@ -168,9 +166,6 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
             }
         }
 
-        // Grab our stack list...
-        ItemStack[] stackList = ObfuscationReflectionHelper.getPrivateValue(InventoryCrafting.class, inv, 0);
-
         int y2 = Math.min(inv.getHeight(), top+height);
         int x2 = Math.min(inv.getWidth(), left+width);
 
@@ -187,30 +182,10 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
                 // Transform it and roll out.
                 ItemStack transformed = target.applyTransformers(ItemRegistry.duplicate(slot), ForgeHooks.getCraftingPlayer());
 
-                // We're bypassing setInventorySlotContents so as to not fire off the crafting update event
-                // This doesn't prevent counts from still being wrong, but it at least does prevent Minecraft
-                // matching the entire recipe list, again...
-                stackList[invPos] = transformed;
-
-                ItemStack containerItem = ForgeHooks.getContainerItem(transformed);
-
-                // If we're going to run into the GUI bug...
-                if (slot.stackSize > 1 && ItemStack.areItemsEqual(slot, transformed) && slot.stackSize != transformed.stackSize) {
-                    // Haaaaack.  Terrible, terrible haaaack.
-                    // So, how this works: we can't return out of this function with a modified stack size of the same item
-                    // otherwise the game client gets updated to an incorrect count, so we need to get how many more/less
-                    // we're trying to give/take from the player and use the ret value to invoke SlotCrafting's code which
-                    // will later modify the counts by the appropriate amount.
-                    int modifiedBy = transformed.stackSize - slot.stackSize;
-                    slot.stackSize = modifiedBy;
-
-                    // Make sure we copy our damage, just in case:
-                    slot.setItemDamage(transformed.getItemDamage());
-                    transformed.stackSize -= modifiedBy;
-                    ret[invPos] = slot;
-                } else {
-                    ret[invPos] = containerItem;
-                }
+                // Check if we're destroying the item or not...
+                ret[invPos] = transformed != null && transformed.stackSize != 0
+                        ? transformed
+                        : ForgeHooks.getContainerItem(transformed);
             }
         }
 

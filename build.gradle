@@ -26,7 +26,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.9.0-1.1.3"
+version = "1.9.0-1.2.0"
 group= "org.winterblade.minecraft.craftingharmonics" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "craftingharmonics"
 
@@ -35,7 +35,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 ext {
-    repo = "http://maven.winterblade.org/content/repositories/CraftingHarmonicsDev"
+    repo = "http://maven.winterblade.org/content/repositories/MinecraftDev/"
 }
 
 minecraft {
@@ -117,9 +117,9 @@ task getTCVersionInfo << {
     def hash = System.getProperty("build.vcs.number", "")
     if(!branch.equals("")) branch = branch.equals("<default>") ? branch = "-develop" : "-" + branch
     if(!hash.equals("")) hash = "-" + hash[0..7]
-    if(!counter.equals("")) counter = "-" + counter
+    if(!counter.equals("")) counter = "." + counter
 
-    version = "${version}${branch}${hash}${counter}"
+    version = "${version}${counter}${branch}${hash}"
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -141,7 +141,7 @@ task buildArtifacts(dependsOn: ['sourceJar','artifactDeobf','reobfJar'])
 
 uploadArchives {
     if(project.hasProperty("release")) {
-        repo = "http://maven.winterblade.org/content/repositories/CraftingHarmonics"
+        repo = "http://maven.winterblade.org/content/repositories/minecraft/"
     }
 
     repositories.mavenDeployer {
