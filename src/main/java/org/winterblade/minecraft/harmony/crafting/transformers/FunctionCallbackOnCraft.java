@@ -27,8 +27,8 @@ public class FunctionCallbackOnCraft implements IItemStackTransformer {
     @Override
     public ItemStack transform(ItemStack input, EntityPlayer craftingPlayer) {
         Random random = craftingPlayer.getEntityWorld().isRemote
-                ? SynchronizedRandom.getRandomFor(craftingPlayer)
-                : SynchronizedRandom.getMyRandom();
+                ? SynchronizedRandom.getMyRandom()
+                : SynchronizedRandom.getRandomFor(craftingPlayer);
 
         ItemStackWrapper wrapper = new ItemStackWrapper(input);
         try {
