@@ -224,6 +224,27 @@
                             damageOnCraft: 15
                         }
                     ]
+                },
+                {
+                    __comment: "We also provide a synchronized random; the slightly less contrived example",
+                    __result: "Duplicates diamonds, with a nether star that has a chance of breaking.",
+                    type: "addShapeless",
+                    output: "minecraft:diamond:0:2",
+                    with: [
+                        "minecraft:diamond",
+                        {
+                            item: "minecraft:nether_star",
+                            onCraft: function(event) {
+                                // Make sure you use this one instead of JavaScript's Math.random; its random seed
+                                // is synchronized between client and server.  If this wasn't the case, you would get
+                                // a different result on the client and the server, and bad things would happen.
+
+                                if(event.random.nextFloat() > 0.1) {
+                                    event.item.returnItem();
+                                }
+                            }
+                        }
+                    ]
                 }
             ]
         }

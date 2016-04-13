@@ -1,26 +1,17 @@
 package org.winterblade.minecraft.harmony.crafting.transformers;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.ForgeModContainer;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.events.ItemOnCraftedCallback;
 import org.winterblade.minecraft.harmony.crafting.events.ItemOnCraftedEvent;
 import org.winterblade.minecraft.harmony.crafting.events.wrappers.ItemStackWrapper;
 import org.winterblade.minecraft.harmony.utility.SynchronizedRandom;
 
 import javax.annotation.Nonnull;
-import javax.script.Invocable;
-import java.util.HashMap;
 import java.util.Random;
-import java.util.function.Function;
 
 /**
  * Created by Matt on 4/13/2016.
