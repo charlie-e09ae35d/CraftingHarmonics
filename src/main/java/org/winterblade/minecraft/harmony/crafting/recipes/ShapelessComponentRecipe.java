@@ -7,7 +7,6 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
-import scala.actors.threadpool.Arrays;
 
 import java.util.*;
 
