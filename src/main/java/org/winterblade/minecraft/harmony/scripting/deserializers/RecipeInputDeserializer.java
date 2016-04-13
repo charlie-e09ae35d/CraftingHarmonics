@@ -13,10 +13,6 @@ import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.NbtMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.OreDictionaryMatcher;
-import org.winterblade.minecraft.harmony.crafting.transformers.DamageOnCraft;
-import org.winterblade.minecraft.harmony.crafting.transformers.ReplaceOnCraftTransformer;
-import org.winterblade.minecraft.harmony.crafting.transformers.ReturnOnCraftTransformer;
-import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 
 import java.util.List;
 
@@ -124,7 +120,7 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
         }
 
         if(item == null) return;
-        output.setFacimileItem(item);
+        output.setFacsimileItem(item);
 
         // These will always be hardcoded here.
         output.addMatcher(new ItemMatcher(item.getItem()), Priority.HIGHEST);
