@@ -14,7 +14,7 @@ import org.winterblade.minecraft.harmony.crafting.messaging.server.RandomSynchro
 public class PacketHandler {
     public static final SimpleNetworkWrapper wrapper = NetworkRegistry.INSTANCE.newSimpleChannel(CraftingHarmonicsMod.MODID);
 
-    static {
+    public static void registerMessages() {
         int id = 0;
 
         // Register our messages:

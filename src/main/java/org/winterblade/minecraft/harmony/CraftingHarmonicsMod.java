@@ -15,6 +15,7 @@ import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
+import org.winterblade.minecraft.harmony.crafting.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.crafting.recipes.*;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
@@ -55,6 +56,7 @@ public class CraftingHarmonicsMod {
 
         // Register event bus
         MinecraftForge.EVENT_BUS.register(new EventHandler());
+        PacketHandler.registerMessages();
     }
 
     @Mod.EventHandler
