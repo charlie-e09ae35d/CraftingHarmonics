@@ -23,7 +23,17 @@ public class SynchronizedRandom {
     }
 
     public static Random getRandomFor(String playerId) {
-        return randomMap.get(playerId);
+        Random r = randomMap.get(playerId);
+
+        if(r == null) {
+            // This means we probably have a player that isn't logged in / is fake, etc
+            // And we're probably safe to just generate a new random for them.
+            System.err.println("Tried to get a stored random that didn't exist for '" + playerId + "'.");
+            r = new Random();
+            randomMap.put(playerId, r);
+        }
+
+        return r;
     }
 
     public static Random getRandomFor(EntityPlayer craftingPlayer) {
