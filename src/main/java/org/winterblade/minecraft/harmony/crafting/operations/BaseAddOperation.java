@@ -6,6 +6,7 @@ import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.crafting.RecipeOutput;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
 /**
@@ -15,7 +16,7 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
     /**
      * Serialized properties:
      */
-    protected RecipeComponent output;
+    protected RecipeOutput output;
     protected int quantity;
     protected String displayName;
     protected NBTTagCompound nbt;
@@ -23,18 +24,18 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
     @Override
     public void Init() throws ItemMissingException
     {
-        if (output.getItemStack() == null)
+        if (output.getOutputItem() == null)
             throw new RuntimeException("Unable to find requested output item " + output.toString());
 
-        ItemRegistry.UpdateStackQuantity(output.getItemStack(), quantity);
+        ItemRegistry.UpdateStackQuantity(output.getOutputItem(), quantity);
 
         if(nbt != null && !nbt.hasNoTags()) {
-            output.getItemStack().setTagCompound(nbt);
+            output.getOutputItem().setTagCompound(nbt);
         }
 
         // Set the display name afterwards, because setting NBT would overwrite it...
         if(displayName != null && !displayName.equals("")) {
-            output.getItemStack().setStackDisplayName(displayName);
+            output.getOutputItem().setStackDisplayName(displayName);
         }
     }
 
@@ -52,8 +53,8 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
         BaseAddOperation other = (BaseAddOperation)o;
         if(output == null) return 1;
         if(other.output == null) return -1;
-        return output.getItemStack().getUnlocalizedName().compareTo(
-                other.output.getItemStack().getUnlocalizedName());
+        return output.getOutputItem().getUnlocalizedName().compareTo(
+                other.output.getOutputItem().getUnlocalizedName());
     }
 
     /**

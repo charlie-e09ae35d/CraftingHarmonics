@@ -26,13 +26,13 @@ public class AddFurnaceOperation extends BaseAddOperation {
     @Override
     public void Apply() {
         System.out.println("Adding furnace recipe for " + output.toString());
-        float curXp = FurnaceRecipes.instance().getSmeltingExperience(output.getItemStack());
+        float curXp = FurnaceRecipes.instance().getSmeltingExperience(output.getOutputItem());
         if(curXp != 0.0F && curXp != experience) {
             System.out.println(output.toString()
                     + " is already registered as a furnace output. Due to how Minecraft handles smelting XP, this will"
                     + " always give you '" + curXp + "' XP per item instead of the '" + experience + "' you set.");
         }
 
-        FurnaceRecipes.instance().addSmeltingRecipe(with.getItemStack(), output.getItemStack(), experience);
+        FurnaceRecipes.instance().addSmeltingRecipe(with.getItemStack(), output.getOutputItem(), experience);
     }
 }

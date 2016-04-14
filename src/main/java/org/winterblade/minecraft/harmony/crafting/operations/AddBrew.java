@@ -38,6 +38,6 @@ public class AddBrew extends BaseAddOperation {
     @Override
     public void Apply() {
         System.out.println("Adding brewing recipe for  " + output.toString());
-        BrewingRecipeRegistry.addRecipe(input.getItemStack(), ingredient.getItemStack(), output.getItemStack());
+        BrewingRecipeRegistry.addRecipe(input.getItemStack(), ingredient.getItemStack(), output.getOutputItem());
     }
 }

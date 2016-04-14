@@ -7,7 +7,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
-import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.crafting.RecipeOutput;
 
 import java.util.*;
 
@@ -22,11 +22,11 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
     private final int width;
     private final int height;
     private final RecipeInput[] input;
-    private final RecipeComponent output;
+    private final RecipeOutput output;
     private static final int CHAR_A = 65;
 
-    public ShapedComponentRecipe(int width, int height, RecipeInput[] input, RecipeComponent output) {
-        super(output.getItemStack(), itemStacksToOreRecipe(RecipeInput.getFacsimileItems(input), width, height));
+    public ShapedComponentRecipe(int width, int height, RecipeInput[] input, RecipeOutput output) {
+        super(output.getOutputItem(), itemStacksToOreRecipe(RecipeInput.getFacsimileItems(input), width, height));
         this.width = width;
         this.height = height;
         this.input = input;
@@ -118,7 +118,7 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
 
                 // Run matchers here...
                 hasAtLeastOneMatcher = true;
-                if(!target.matches(slot, inv, output.getItemStack())) return false;
+                if(!target.matches(slot, inv, output.getOutputItem())) return false;
             }
         }
 
@@ -128,7 +128,7 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv) {
-        return output.getItemStack().copy();
+        return output.getDeferredTransformOutput();
     }
 
     @Override
@@ -138,7 +138,7 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
 
     @Override
     public ItemStack getRecipeOutput() {
-        return output.getItemStack();
+        return output.getOutputItem();
     }
 
     @Override

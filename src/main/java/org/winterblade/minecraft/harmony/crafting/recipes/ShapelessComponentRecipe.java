@@ -7,6 +7,7 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
+import org.winterblade.minecraft.harmony.crafting.RecipeOutput;
 
 import java.util.*;
 
@@ -16,8 +17,8 @@ import java.util.*;
 public class ShapelessComponentRecipe extends ShapelessOreRecipe {
     private final RecipeInput[] recipe;
 
-    public ShapelessComponentRecipe(ItemStack result, RecipeInput[] recipe) {
-        super(result, RecipeInput.getFacsimileItems(recipe));
+    public ShapelessComponentRecipe(RecipeOutput result, RecipeInput[] recipe) {
+        super(result.getOutputItem(), RecipeInput.getFacsimileItems(recipe));
         this.recipe = recipe;
     }
 
