@@ -49,7 +49,7 @@ public class ShapelessComponentRecipe extends ShapelessOreRecipe {
             // Duplicate and transform.  Makes me think Replicators...
             ItemStack transformed = input.getValue()
                     .applyTransformers(
-                            ItemRegistry.duplicate(slot),
+                            slot.copy(),
                             ForgeHooks.getCraftingPlayer());
 
             // Check if we're destroying the item or not...

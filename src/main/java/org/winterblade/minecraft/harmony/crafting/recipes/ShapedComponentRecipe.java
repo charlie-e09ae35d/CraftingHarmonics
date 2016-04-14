@@ -180,7 +180,7 @@ public class ShapedComponentRecipe extends ShapedOreRecipe {
                 if (slot == null) continue;
 
                 // Transform it and roll out.
-                ItemStack transformed = target.applyTransformers(ItemRegistry.duplicate(slot), ForgeHooks.getCraftingPlayer());
+                ItemStack transformed = target.applyTransformers(slot.copy(), ForgeHooks.getCraftingPlayer());
 
                 // Check if we're destroying the item or not...
                 ret[invPos] = transformed != null && transformed.stackSize != 0
