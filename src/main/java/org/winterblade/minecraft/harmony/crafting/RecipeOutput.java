@@ -19,6 +19,7 @@ public class RecipeOutput {
     private ItemStack outputItem;
     private final List<IItemStackTransformer> transformerList = new ArrayList<>();
     private final String deferredId = UUID.randomUUID().toString();
+    private boolean hasTransforms = false;
 
     public RecipeOutput() {
         // When we get created, make sure we register our deferred ID:
@@ -38,6 +39,7 @@ public class RecipeOutput {
      * @param transformer   The transformer to add.
      */
     public void addTransformer(IItemStackTransformer transformer) {
+        hasTransforms = true;
         transformerList.add(transformer);
     }
 
@@ -67,6 +69,9 @@ public class RecipeOutput {
 
     public ItemStack getDeferredTransformOutput() {
         ItemStack output = outputItem.copy();
+
+        // Make sure we only go to the trouble of all this if we need deferred transforms:
+        if(!hasTransforms) return output;
 
         if(!output.hasTagCompound()) {
             output.setTagCompound(new NBTTagCompound());
