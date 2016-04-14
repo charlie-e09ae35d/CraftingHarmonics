@@ -22,7 +22,7 @@ public class ReplaceOnCraftTransformer implements IItemStackTransformer {
 
     @Override
     public ItemStack transform(ItemStack input, EntityPlayer craftingPlayer) {
-        ItemStack output = ItemRegistry.duplicate(replacement);
+        ItemStack output = replacement.copy();
         return output;
     }
 
