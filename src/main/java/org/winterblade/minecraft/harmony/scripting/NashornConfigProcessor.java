@@ -2,11 +2,12 @@ package org.winterblade.minecraft.harmony.scripting;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import jdk.nashorn.api.scripting.ClassFilter;
-import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
-import jdk.nashorn.internal.runtime.ConsString;
+import org.apache.logging.log4j.Logger;
+import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
+import org.winterblade.minecraft.scripting.api.INashornMod;
+import org.winterblade.minecraft.scripting.api.IScriptContext;
+import org.winterblade.minecraft.scripting.api.NashornMod;
 
-import javax.script.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,43 +16,24 @@ import java.nio.file.Paths;
 /**
  * Created by Matt on 4/8/2016.
  */
-public class NashornConfigProcessor {
+@NashornMod
+public class NashornConfigProcessor implements INashornMod {
     private final static NashornConfigProcessor instance = new NashornConfigProcessor();
 
-    private final NashornScriptEngineFactory factory;
-    private final ScriptEngine nashorn;
+    private final String header;
+    private IScriptContext nashorn;
 
-    private NashornConfigProcessor() {
+    public NashornConfigProcessor() {
         // Assign out our script header file...
-        String header;
+        String tempHeader;
         try {
-            header = Resources.toString(Resources.getResource("scripts/InternalFileProcessor.js"), Charsets.UTF_8);
+            tempHeader = Resources.toString(Resources.getResource("scripts/InternalFileProcessor.js"), Charsets.UTF_8);
         } catch (IOException e) {
             System.err.println("Unable to load file processing header; things will go badly from here out...");
-            header = "";
+            tempHeader = "";
         }
 
-        // Warn users they're about to see an error reported by FML... FML.
-        System.out.println("The below warning regarding System.exit() is perfectly normal; this is unfortunately an " +
-                "internal part of the Nashorn engine that I can't suppress, however, it is not callable from within " +
-                "scripts.");
-
-        factory = new NashornScriptEngineFactory();
-        nashorn = factory.getScriptEngine(new ScriptExecutionSandbox());
-        final Bindings bindings = nashorn.getBindings(ScriptContext.ENGINE_SCOPE);
-
-        // Actually try and load our script header into Nashorn.
-        try {
-            nashorn.eval(header);
-        } catch (ScriptException e) {
-            System.err.println("Error processing script header file; please report this issue: " + e.getMessage());
-        }
-
-        // Remove most of our bindings
-        bindings.remove("load");
-        bindings.remove("loadWithNewGlobal");
-        bindings.remove("exit");
-        bindings.remove("quit");
+        header = tempHeader;
     }
 
     /**
@@ -62,8 +44,19 @@ public class NashornConfigProcessor {
         return instance;
     }
 
+    public void init(IScriptContext nashorn) {
+        this.nashorn = nashorn;
+
+        // Actually try and load our script header into Nashorn.
+        nashorn.eval(header);
+    }
+
 
     public void ReadConfigFile(File file) {
+        if(nashorn == null) {
+            CraftingHarmonicsMod.logger.fatal("Nashorn library isn't loaded; please make sure you have NashornLib in your mods folder.");
+        }
+
         String fileContent = getJsonFileContent(file);
         if (fileContent == null) return;
 
@@ -92,21 +85,18 @@ public class NashornConfigProcessor {
         return fileContent;
     }
 
-    private static class ScriptExecutionSandbox implements ClassFilter {
-
-        @Override
-        public boolean exposeToScripts(String cls) {
-            // TODO: Potentially allow mods to add on to this.
-            return cls.startsWith("org.winterblade.minecraft")
-                    || cls.startsWith("net.minecraft")
-                    || cls.startsWith("net.minecraftforge");
-        }
+    @Override
+    public Logger getLogger() {
+        return CraftingHarmonicsMod.logger;
     }
 
-    public static void log(ConsString args) {
-//        for(Object o : args.getArray().asObjectArray()) {
-//            System.out.println("Script: " + o.toString());
-//        }
-        System.out.println(args.toString());
+    @Override
+    public String[] getAllowedPackageRoots() {
+        return new String[] { "org.winterblade.minecraft.harmony"};
+    }
+
+    @Override
+    public void onScriptContextCreated(IScriptContext iScriptContext) {
+        NashornConfigProcessor.getInstance().init(iScriptContext);
     }
 }

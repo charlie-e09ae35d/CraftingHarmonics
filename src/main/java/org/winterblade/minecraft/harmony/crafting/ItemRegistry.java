@@ -345,12 +345,6 @@ public class ItemRegistry {
         return true;
     }
 
-    public static ItemStack duplicate(ItemStack input) {
-        ItemStack result = new ItemStack(input.getItem(), input.stackSize, input.getItemDamage());
-        result.setTagCompound(input.getTagCompound());
-        return result;
-    }
-
     private enum ItemType {
         Regular, ExactNbt, FuzzyNbt
     }
