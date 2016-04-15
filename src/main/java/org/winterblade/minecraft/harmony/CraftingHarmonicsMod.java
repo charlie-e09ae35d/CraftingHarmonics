@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
+import org.apache.logging.log4j.Logger;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
@@ -17,6 +18,7 @@ import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
 import org.winterblade.minecraft.harmony.crafting.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.crafting.recipes.*;
+import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
@@ -40,6 +42,8 @@ public class CraftingHarmonicsMod {
 
     private final static Map<String, CraftingSet> craftingSets = new HashMap<>();
 
+    public static Logger logger;
+
     public CraftingHarmonicsMod() {
     }
 
@@ -50,6 +54,9 @@ public class CraftingHarmonicsMod {
         ScriptObjectReader.RegisterDeserializerClasses(AnnotationUtil.getScriptObjectDeserializers(event.getAsmData()));
         ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
 
+        // Setup Nashorn.
+        logger = event.getModLog();
+        NashornConfigProcessor.getInstance().init(logger);
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");

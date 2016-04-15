@@ -11,6 +11,6 @@
   "credits": "Forge/FML, @voxcpw for his tutorial on setting this up, and MineTweaker for doing this in the past.",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": []
+  "dependencies": ["NashornLib"]
 }
 ]

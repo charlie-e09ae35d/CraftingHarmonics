@@ -6,7 +6,7 @@ import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import org.winterblade.minecraft.harmony.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.harmony.api.ScriptObjectDeserializer;
-import org.winterblade.minecraft.harmony.scripting.ScriptExecutionManager;
+import org.winterblade.minecraft.harmony.scripting.JsonHelper;
 
 /**
  * Created by Matt on 4/9/2016.
@@ -19,7 +19,7 @@ public class NbtTagCompoundDeserializer implements IScriptObjectDeserializer {
         if(input instanceof String) {
             json = input.toString();
         } else if(input instanceof ScriptObjectMirror) {
-            json = ScriptExecutionManager.getJsonString(input);
+            json = JsonHelper.getJsonString(input);
         }
 
         try {

@@ -5,7 +5,7 @@ var __CraftingHarmonicsInternal_Internal = function() {
     var ch = this;
 
     ch.RecipeOperationRegistry = Java.type('org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry');
-    ch.ScriptExecutionManager = Java.type('org.winterblade.minecraft.harmony.scripting.ScriptExecutionManager');
+    ch.JsonHelper = Java.type('org.winterblade.minecraft.harmony.scripting.JsonHelper');
 
     // This will run in order to actually get our recipe data into something sensible
     this.FileProcessor = function(filename, exports) {
@@ -61,27 +61,8 @@ var __CraftingHarmonicsInternal_Internal = function() {
         return JSON.stringify(obj).replace(/\"([^(\")"]+)\":/g,"$1:");
     }
 
-    ch.ScriptExecutionManager.registerInternal(this);
+    ch.JsonHelper.registerInternal(this);
 }
 
 // Get our internal instance:
 __CraftingHarmonicsInternal = new __CraftingHarmonicsInternal_Internal();
-
-// Override the print functionality to redirect it to our logger...
-print = function() {
-    var logger = Java.type('org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor');
-    var lineStart = "Script: ";
-
-    for(var i in arguments) {
-        if(arguments[i] === null || arguments[i] === undefined) {
-            logger.log(lineStart + "null");
-            return;
-        }
-
-        if(typeof arguments[i] === 'object' || arguments[i] instanceof Array) {
-            logger.log(lineStart + JSON.stringify(arguments[i]));
-        } else {
-            logger.log(lineStart + arguments[i]);
-        }
-    }
-};
