@@ -207,6 +207,6 @@ curseforge {
         id = '243728'
         changelog = file('changelog.html')
         changelogType = 'html'
-        releaseType = '${releaseType}'
+        releaseType = project.hasProperty('releaseType') ? project.releaseType : 'alpha'
     }
 }
