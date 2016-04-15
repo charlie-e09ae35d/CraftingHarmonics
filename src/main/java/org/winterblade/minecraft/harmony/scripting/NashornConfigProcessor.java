@@ -5,6 +5,8 @@ import com.google.common.io.Resources;
 import jdk.nashorn.api.scripting.ClassFilter;
 import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import jdk.nashorn.internal.runtime.ConsString;
+import org.apache.logging.log4j.Logger;
+import org.winterblade.minecraft.scripting.ScriptExecutionManager;
 
 import javax.script.*;
 import java.io.File;
@@ -18,40 +20,25 @@ import java.nio.file.Paths;
 public class NashornConfigProcessor {
     private final static NashornConfigProcessor instance = new NashornConfigProcessor();
 
-    private final NashornScriptEngineFactory factory;
-    private final ScriptEngine nashorn;
+    private final String header;
+    private ScriptEngine nashorn;
 
     private NashornConfigProcessor() {
         // Assign out our script header file...
-        String header;
+        String tempHeader;
         try {
-            header = Resources.toString(Resources.getResource("scripts/InternalFileProcessor.js"), Charsets.UTF_8);
+            tempHeader = Resources.toString(Resources.getResource("scripts/InternalFileProcessor.js"), Charsets.UTF_8);
         } catch (IOException e) {
             System.err.println("Unable to load file processing header; things will go badly from here out...");
-            header = "";
+            tempHeader = "";
         }
+
+        header = tempHeader;
 
         // Warn users they're about to see an error reported by FML... FML.
         System.out.println("The below warning regarding System.exit() is perfectly normal; this is unfortunately an " +
                 "internal part of the Nashorn engine that I can't suppress, however, it is not callable from within " +
                 "scripts.");
-
-        factory = new NashornScriptEngineFactory();
-        nashorn = factory.getScriptEngine(new ScriptExecutionSandbox());
-        final Bindings bindings = nashorn.getBindings(ScriptContext.ENGINE_SCOPE);
-
-        // Actually try and load our script header into Nashorn.
-        try {
-            nashorn.eval(header);
-        } catch (ScriptException e) {
-            System.err.println("Error processing script header file; please report this issue: " + e.getMessage());
-        }
-
-        // Remove most of our bindings
-        bindings.remove("load");
-        bindings.remove("loadWithNewGlobal");
-        bindings.remove("exit");
-        bindings.remove("quit");
     }
 
     /**
@@ -60,6 +47,17 @@ public class NashornConfigProcessor {
      */
     public static NashornConfigProcessor getInstance() {
         return instance;
+    }
+
+    public void init(Logger logger) {
+        nashorn = ScriptExecutionManager.getNewContext(logger, new String[]{"org.winterblade.minecraft.harmony"});
+
+        // Actually try and load our script header into Nashorn.
+        try {
+            nashorn.eval(header);
+        } catch (ScriptException e) {
+            System.err.println("Error processing script header file; please report this issue: " + e.getMessage());
+        }
     }
 
 
@@ -90,23 +88,5 @@ public class NashornConfigProcessor {
         }
         fileContent += "; __CraftingHarmonicsInternal.FileProcessor('" + file.getName() + "',module.exports);";
         return fileContent;
-    }
-
-    private static class ScriptExecutionSandbox implements ClassFilter {
-
-        @Override
-        public boolean exposeToScripts(String cls) {
-            // TODO: Potentially allow mods to add on to this.
-            return cls.startsWith("org.winterblade.minecraft")
-                    || cls.startsWith("net.minecraft")
-                    || cls.startsWith("net.minecraftforge");
-        }
-    }
-
-    public static void log(ConsString args) {
-//        for(Object o : args.getArray().asObjectArray()) {
-//            System.out.println("Script: " + o.toString());
-//        }
-        System.out.println(args.toString());
     }
 }

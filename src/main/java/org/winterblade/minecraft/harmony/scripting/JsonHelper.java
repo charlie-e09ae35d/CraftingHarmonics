@@ -5,10 +5,10 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 /**
  * Created by Matt on 4/9/2016.
  */
-public class ScriptExecutionManager {
+public class JsonHelper {
     private static ScriptObjectMirror internalObj;
 
-    private ScriptExecutionManager() {}
+    private JsonHelper() {}
 
     /**
      * Callback from our script in order to allow us to register the internal object from Nashorn.
