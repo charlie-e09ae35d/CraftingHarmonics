@@ -14,6 +14,7 @@ buildscript {
 }
 
 repositories {
+    maven { url "http://maven.winterblade.org/content/repositories/minecraft/" }
     maven { url "http://dvs1.progwml6.com/files/maven" }
 }
 
@@ -80,10 +81,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     deobfCompile "mezz.jei:jei_1.9:3.2.8.182"
-
-    // Include a proper version of nashorn...
-    // TODO: Remove when Curse updates JRE past 8u40
-    embed files('libs/nashorn.jar');
+    deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.0.0.1"
 }
 
 //Add dependencies to the JAR
