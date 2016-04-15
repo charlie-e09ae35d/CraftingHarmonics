@@ -12,15 +12,15 @@ import org.apache.logging.log4j.Logger;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
+import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
-import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
 import org.winterblade.minecraft.harmony.crafting.messaging.PacketHandler;
-import org.winterblade.minecraft.harmony.crafting.recipes.*;
-import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
-import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
+import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
+import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessComponentRecipe;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
+import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
 
 import java.util.HashMap;
@@ -35,7 +35,7 @@ import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
 @Mod(modid = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.MODID, version = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.VERSION)
 public class CraftingHarmonicsMod {
     public static final String MODID = "craftingharmonics";
-    public static final String VERSION = "1.9.0-1.2.1";
+    public static final String VERSION = "@VERSION@";
 
     private String configPath;
     private ConfigManager configManager;
@@ -56,7 +56,6 @@ public class CraftingHarmonicsMod {
 
         // Setup Nashorn.
         logger = event.getModLog();
-        NashornConfigProcessor.getInstance().init(logger);
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
@@ -109,4 +108,5 @@ public class CraftingHarmonicsMod {
 
         craftingSets.get(setName).AddOperation(operation);
     }
+
 }

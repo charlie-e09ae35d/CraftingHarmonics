@@ -27,7 +27,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.9.0-1.2.1"
+version = "1.9.0-1.2.2"
 group= "org.winterblade.minecraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "craftingharmonics"
 
@@ -50,6 +50,7 @@ minecraft {
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "snapshot_20160312"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    replace '@VERSION@', project.version
 }
 
 /// /Add "embedded" configuration
@@ -81,7 +82,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     deobfCompile "mezz.jei:jei_1.9:3.2.8.182"
-    deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.0.0.1"
+    deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.1.0.3"
 }
 
 //Add dependencies to the JAR
