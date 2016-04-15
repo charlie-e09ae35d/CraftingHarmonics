@@ -2,10 +2,7 @@ package org.winterblade.minecraft.harmony;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import org.apache.logging.log4j.Logger;
@@ -82,7 +79,6 @@ public class CraftingHarmonicsMod {
 
         if(defaultSet != null) {
             defaultSet.Init();
-            defaultSet.Apply();
         }
 
         // Link in our recipes
@@ -96,6 +92,16 @@ public class CraftingHarmonicsMod {
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new CommandHandler());
+    }
+
+    @Mod.EventHandler
+    public void loadComplete(FMLLoadCompleteEvent evt) {
+        CraftingSet defaultSet = craftingSets.get("default");
+
+        // Apply the default set once the game has finished loading
+        if(defaultSet != null) {
+            defaultSet.Apply();
+        }
     }
 
     /**
