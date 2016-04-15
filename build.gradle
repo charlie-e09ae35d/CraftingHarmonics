@@ -82,7 +82,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     deobfCompile "mezz.jei:jei_1.9:3.2.8.182"
-    deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.0.0.1"
+    deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.1.0.3"
 }
 
 //Add dependencies to the JAR

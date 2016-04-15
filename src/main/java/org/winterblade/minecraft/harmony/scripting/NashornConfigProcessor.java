@@ -2,13 +2,12 @@ package org.winterblade.minecraft.harmony.scripting;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import jdk.nashorn.api.scripting.ClassFilter;
-import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
-import jdk.nashorn.internal.runtime.ConsString;
 import org.apache.logging.log4j.Logger;
-import org.winterblade.minecraft.scripting.ScriptExecutionManager;
+import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
+import org.winterblade.minecraft.scripting.api.INashornMod;
+import org.winterblade.minecraft.scripting.api.IScriptContext;
+import org.winterblade.minecraft.scripting.api.NashornMod;
 
-import javax.script.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,13 +16,14 @@ import java.nio.file.Paths;
 /**
  * Created by Matt on 4/8/2016.
  */
-public class NashornConfigProcessor {
+@NashornMod
+public class NashornConfigProcessor implements INashornMod {
     private final static NashornConfigProcessor instance = new NashornConfigProcessor();
 
     private final String header;
-    private ScriptEngine nashorn;
+    private IScriptContext nashorn;
 
-    private NashornConfigProcessor() {
+    public NashornConfigProcessor() {
         // Assign out our script header file...
         String tempHeader;
         try {
@@ -34,11 +34,6 @@ public class NashornConfigProcessor {
         }
 
         header = tempHeader;
-
-        // Warn users they're about to see an error reported by FML... FML.
-        System.out.println("The below warning regarding System.exit() is perfectly normal; this is unfortunately an " +
-                "internal part of the Nashorn engine that I can't suppress, however, it is not callable from within " +
-                "scripts.");
     }
 
     /**
@@ -49,19 +44,19 @@ public class NashornConfigProcessor {
         return instance;
     }
 
-    public void init(Logger logger) {
-        nashorn = ScriptExecutionManager.getNewContext(logger, new String[]{"org.winterblade.minecraft.harmony"});
+    public void init(IScriptContext nashorn) {
+        this.nashorn = nashorn;
 
         // Actually try and load our script header into Nashorn.
-        try {
-            nashorn.eval(header);
-        } catch (ScriptException e) {
-            System.err.println("Error processing script header file; please report this issue: " + e.getMessage());
-        }
+        nashorn.eval(header);
     }
 
 
     public void ReadConfigFile(File file) {
+        if(nashorn == null) {
+            CraftingHarmonicsMod.logger.fatal("Nashorn library isn't loaded; please make sure you have NashornLib in your mods folder.");
+        }
+
         String fileContent = getJsonFileContent(file);
         if (fileContent == null) return;
 
@@ -88,5 +83,20 @@ public class NashornConfigProcessor {
         }
         fileContent += "; __CraftingHarmonicsInternal.FileProcessor('" + file.getName() + "',module.exports);";
         return fileContent;
+    }
+
+    @Override
+    public Logger getLogger() {
+        return CraftingHarmonicsMod.logger;
+    }
+
+    @Override
+    public String[] getAllowedPackageRoots() {
+        return new String[] { "org.winterblade.minecraft.harmony"};
+    }
+
+    @Override
+    public void onScriptContextCreated(IScriptContext iScriptContext) {
+        NashornConfigProcessor.getInstance().init(iScriptContext);
     }
 }
