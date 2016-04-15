@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
@@ -99,7 +100,7 @@ public class RemoveOperation extends BaseRecipeOperation {
             if(!Matches(recipe.getValue())) continue;
 
             // We matched something:
-            System.out.println("Removing " + recipe.getValue().getUnlocalizedName() + " from the furnace.");
+            CraftingHarmonicsMod.logger.info("Removing " + recipe.getValue().getUnlocalizedName() + " from the furnace.");
             furnaceIterator.remove();
         }
     }
@@ -110,12 +111,14 @@ public class RemoveOperation extends BaseRecipeOperation {
     private void RemoveCraftingRecpies() {
         List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 
+        CraftingHarmonicsMod.logger.info("Searching for recipes to remove for " + modId + ":" + itemName + ":" + metadata + "...");
+
         for(Iterator<IRecipe> recipeIterator = recipeList.iterator(); recipeIterator.hasNext(); ) {
             IRecipe recipe = recipeIterator.next();
             if(!Matches(recipe.getRecipeOutput())) continue;
 
             // We matched something:
-            System.out.println("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
+            CraftingHarmonicsMod.logger.info("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
             recipeIterator.remove();
         }
     }
