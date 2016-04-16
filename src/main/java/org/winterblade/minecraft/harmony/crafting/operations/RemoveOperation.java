@@ -1,16 +1,23 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerWorkbench;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
-import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 
 import java.util.Iterator;
 import java.util.List;
@@ -26,9 +33,7 @@ public class RemoveOperation extends BaseRecipeOperation {
      */
     private String what;
     private String[] from;
-    private RecipeInput[] with;
-    private RecipeInput[] withAnyOf;
-    private RecipeInput[] withAtLeast;
+    private ItemStack[] with;
 
     /**
      * Computed properties
@@ -62,6 +67,7 @@ public class RemoveOperation extends BaseRecipeOperation {
                 return false;
         }
     }
+
 
     @Override
     public void Init() throws ItemMissingException {
@@ -123,6 +129,7 @@ public class RemoveOperation extends BaseRecipeOperation {
         for(Iterator<Map.Entry<ItemStack, ItemStack>> furnaceIterator = smeltingList.entrySet().iterator(); furnaceIterator.hasNext(); ) {
             Map.Entry<ItemStack, ItemStack> recipe = furnaceIterator.next();
             if(!MatchesName(recipe.getValue())) continue;
+            if(with != null && with.length > 0 && !ItemStack.areItemStacksEqual(with[0], recipe.getKey())) continue;
 
             // We matched something:
             CraftingHarmonicsMod.logger.info("Removing " + recipe.getValue().getUnlocalizedName() + " from the furnace.");
@@ -136,16 +143,44 @@ public class RemoveOperation extends BaseRecipeOperation {
     private void RemoveCraftingRecpies() {
         List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 
+        InventoryCrafting inv = simulateInventoryOf(with);
+
         CraftingHarmonicsMod.logger.info("Searching for recipes to remove for " + modId + ":" + itemName + ":" + metadata + "...");
 
         for(Iterator<IRecipe> recipeIterator = recipeList.iterator(); recipeIterator.hasNext(); ) {
             IRecipe recipe = recipeIterator.next();
             if(!MatchesName(recipe.getRecipeOutput())) continue;
 
+            // Simulate the entire crafting operation on the recipe:
+            if(with != null && with.length > 0 && !recipe.matches(inv, DimensionManager.getWorld(0))) continue;
+
             // We matched something:
             CraftingHarmonicsMod.logger.info("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
             recipeIterator.remove();
         }
+    }
+
+    /**
+     * Simulates an inventory with the given inputs as
+     * @param inputs    The inputs
+     * @return          The crafting inventory
+     */
+    private InventoryCrafting simulateInventoryOf(ItemStack[] inputs) {
+        if(inputs == null) return null;
+        // Get the overworld:
+        WorldServer world = DimensionManager.getWorld(0);
+        // Make a contianer...
+        Container c = new ContainerWorkbench(new InventoryPlayer(FakePlayerFactory.getMinecraft(world)),
+                world, BlockPos.ORIGIN);
+
+        InventoryCrafting inv =  inputs.length > 4 ? new InventoryCrafting(c, 3, 3) : new InventoryCrafting(c, 2, 2);
+
+        for (int i = 0; i < inputs.length; i++) {
+            inv.setInventorySlotContents(i, inputs[i]);
+        }
+
+        // And pretend we're crafting:
+        return inv;
     }
 
     @Override

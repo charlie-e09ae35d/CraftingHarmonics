@@ -95,7 +95,7 @@ public class CraftingHarmonicsMod {
     }
 
     @Mod.EventHandler
-    public void loadComplete(FMLLoadCompleteEvent evt) {
+    public void serverStarted(FMLServerStartedEvent evt) {
         CraftingSet defaultSet = craftingSets.get("default");
 
         // Apply the default set once the game has finished loading
