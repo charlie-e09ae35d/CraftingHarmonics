@@ -40,4 +40,8 @@ public class FuelRegistry implements IFuelHandler {
 
         return 0;
     }
+
+    public void RemoveFuel(ItemStack itemStack) {
+        burnTimes.remove(itemStack);
+    }
 }

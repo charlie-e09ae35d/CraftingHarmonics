@@ -36,7 +36,7 @@ public class AddFurnaceFuel extends BaseRecipeOperation {
 
     @Override
     public void Undo() {
-
+        FuelRegistry.getInstance().RemoveFuel(what.getItemStack());
     }
 
     @Override
