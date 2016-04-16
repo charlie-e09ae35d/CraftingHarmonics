@@ -19,6 +19,7 @@ public class AddShapedOperation extends BaseAddOperation {
     private RecipeInput[] with;
     private int width;
     private int height;
+    private ShapedComponentRecipe recipe;
 
     @Override
     public void Init() throws ItemMissingException {
@@ -72,16 +73,18 @@ public class AddShapedOperation extends BaseAddOperation {
                 width = height = 3;
                 break;
         }
+
+        recipe = new ShapedComponentRecipe(width, height, shape, output);
     }
 
     @Override
     public void Apply() {
         System.out.println("Adding shaped recipe for " + output.toString());
-        CraftingManager.getInstance().addRecipe(new ShapedComponentRecipe(width, height, shape, output));
+        CraftingManager.getInstance().addRecipe(recipe);
     }
 
     @Override
     public void Undo() {
-
+        CraftingManager.getInstance().getRecipeList().remove(recipe);
     }
 }
