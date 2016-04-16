@@ -123,6 +123,7 @@ public class CraftingHarmonicsMod {
             if(initializedSets.contains(set.getKey())) continue;
 
             set.getValue().Init();
+            initializedSets.add(set.getKey());
         }
     }
 
@@ -136,6 +137,7 @@ public class CraftingHarmonicsMod {
             if(appliedSets.contains(set) || !craftingSets.containsKey(set)) continue;
 
             craftingSets.get(set).Apply();
+            appliedSets.add(set);
         }
     }
 
@@ -143,7 +145,15 @@ public class CraftingHarmonicsMod {
      * Clears sets, such as when you're joining a server.
      */
     public static void clearSets() {
-        // TODO: Restore original crafting behavior first.
+        // Restore original crafting behavior first.
+        for(String set : appliedSets) {
+            if(!craftingSets.containsKey(set)) continue;
+            craftingSets.get(set).Undo();
+        }
+
+        // Clear all the things!
+        appliedSets.clear();
+        initializedSets.clear();
         craftingSets.clear();
     }
 }
