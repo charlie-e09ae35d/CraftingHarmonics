@@ -69,6 +69,8 @@ public class ConfigSyncMessage implements IMessage {
         public IMessage onMessage(ConfigSyncMessage message, MessageContext ctx) {
             CraftingHarmonicsMod.logger.info("Received configuration from the server.");
 
+            CraftingHarmonicsMod.clearSets();
+
             boolean badConfig = false;
             for(String file : message.config) {
                 try {

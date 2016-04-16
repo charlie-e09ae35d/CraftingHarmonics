@@ -138,4 +138,12 @@ public class CraftingHarmonicsMod {
             craftingSets.get(set).Apply();
         }
     }
+
+    /**
+     * Clears sets, such as when you're joining a server.
+     */
+    public static void clearSets() {
+        // TODO: Restore original crafting behavior first.
+        craftingSets.clear();
+    }
 }
