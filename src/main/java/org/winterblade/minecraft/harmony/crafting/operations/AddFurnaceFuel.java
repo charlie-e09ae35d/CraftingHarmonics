@@ -35,6 +35,11 @@ public class AddFurnaceFuel extends BaseRecipeOperation {
     }
 
     @Override
+    public void Undo() {
+        FuelRegistry.getInstance().RemoveFuel(what.getItemStack());
+    }
+
+    @Override
     public int compareTo(IRecipeOperation o) {
         int baseCompare = super.compareTo(o);
         if(baseCompare != 0) return baseCompare;

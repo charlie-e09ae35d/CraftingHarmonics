@@ -57,4 +57,15 @@ public class CraftingSet {
 
         ProgressManager.pop(setProgress);
     }
+
+    public void Undo() {
+        for(IRecipeOperation op : operations) {
+            try {
+                op.Undo();
+            }
+            catch(Exception ex) {
+                CraftingHarmonicsMod.logger.error("Error undoing operation.", ex);
+            }
+        }
+    }
 }

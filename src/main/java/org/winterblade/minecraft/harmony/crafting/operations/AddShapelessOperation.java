@@ -15,17 +15,24 @@ public class AddShapelessOperation extends BaseAddOperation {
      * Serialized properties:
      */
     private RecipeInput[] with;
+    private ShapelessComponentRecipe recipe;
 
     @Override
     public void Init() throws ItemMissingException {
         super.Init();
 
         if(with.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
+        recipe = new ShapelessComponentRecipe(output.getItemStack(), with);
     }
 
     @Override
     public void Apply() {
         System.out.println("Adding shapeless recipe for " + output.toString());
-        CraftingManager.getInstance().addRecipe(new ShapelessComponentRecipe(output.getItemStack(), with));
+        CraftingManager.getInstance().addRecipe(recipe);
+    }
+
+    @Override
+    public void Undo() {
+        CraftingManager.getInstance().getRecipeList().remove(recipe);
     }
 }
