@@ -84,6 +84,7 @@
                     __result: "Removes the super OP recipe we just added.",
                     type: "remove",
                     what: "minecraft:coal:1",
+                    from: ["furnace"],
                     priority: 10
                 },
                 {
@@ -245,7 +246,24 @@
                             }
                         }
                     ]
-                }
+                },
+                {
+                    __comment: "You can specify that a craft should be removed only when it's a given recipe",
+                    __result: "Removes the ability to craft torches with charcoal",
+                    __notes: "You must use item strings here; ore dictionary and more advanced matching won't work.",
+                    type: "remove",
+                    what: "minecraft:torch",
+                    with: [ "minecraft:coal:1","",
+                            "minecraft:stick"]
+                },
+                {
+                    __comment: "More specification for testing purposes; for this recipe, since it only has 3 inputs, you have to specify at least width or height",
+                    __result: "Removes paper from being craftable",
+                    type: "remove",
+                    what: "minecraft:paper",
+                    with: [ "minecraft:reeds","minecraft:reeds","minecraft:reeds" ],
+                    width: 3
+                },
             ]
         }
     ]
