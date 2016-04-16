@@ -32,7 +32,8 @@ public class RegisterOreDictItemOperation extends BaseRecipeOperation {
 
     @Override
     public void Undo() {
-
+        // Nope.
+        // I mean, I could, but, it'd probably be a bad idea.
     }
 
     @Override
