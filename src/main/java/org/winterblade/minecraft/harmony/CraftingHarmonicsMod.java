@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
@@ -16,12 +17,16 @@ import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
 import org.winterblade.minecraft.harmony.crafting.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessComponentRecipe;
+import org.winterblade.minecraft.harmony.proxies.ClientProxy;
+import org.winterblade.minecraft.harmony.proxies.CommonProxy;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPED;
 import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
@@ -37,7 +42,13 @@ public class CraftingHarmonicsMod {
     private String configPath;
     private ConfigManager configManager;
 
+    @SidedProxy(clientSide = "org.winterblade.minecraft.harmony.proxies.ClientProxy",
+            serverSide = "org.winterblade.minecraft.harmony.proxies.ServerProxy")
+    private static CommonProxy proxy;
+
     private final static Map<String, CraftingSet> craftingSets = new HashMap<>();
+    private final static Set<String> initializedSets = new HashSet<>();
+    private final static Set<String> appliedSets = new HashSet<>();
 
     public static Logger logger;
 
@@ -74,13 +85,6 @@ public class CraftingHarmonicsMod {
         // Now that our item registry is set up, process our set files.
         configManager.processSetFiles();
 
-        // Always apply the default set:
-        CraftingSet defaultSet = craftingSets.get("default");
-
-        if(defaultSet != null) {
-            defaultSet.Init();
-        }
-
         // Link in our recipes
         RecipeSorter.register("craftingharmonics:shaped_component",       ShapedComponentRecipe.class,
                 SHAPED,    "before:minecraft:shaped");
@@ -96,12 +100,7 @@ public class CraftingHarmonicsMod {
 
     @Mod.EventHandler
     public void serverStarted(FMLServerStartedEvent evt) {
-        CraftingSet defaultSet = craftingSets.get("default");
-
-        // Apply the default set once the game has finished loading
-        if(defaultSet != null) {
-            defaultSet.Apply();
-        }
+        proxy.onStarted(evt);
     }
 
     /**
@@ -115,4 +114,36 @@ public class CraftingHarmonicsMod {
         craftingSets.get(setName).AddOperation(operation);
     }
 
+    /**
+     * Initialize all the sets we have now; is idempotent
+     */
+    public static void initSets() {
+        for(Map.Entry<String, CraftingSet> set : craftingSets.entrySet()) {
+            // Init sets once:
+            if(initializedSets.contains(set.getKey())) continue;
+
+            set.getValue().Init();
+        }
+    }
+
+    /**
+     * Apply the given list of sets; is idempotent
+     * @param sets   The sets to apply
+     */
+    public static void applySets(String[] sets) {
+        for(String set : sets) {
+            // Apply a set once and only once. Still need a way to remove them:
+            if(appliedSets.contains(set) || !craftingSets.containsKey(set)) continue;
+
+            craftingSets.get(set).Apply();
+        }
+    }
+
+    /**
+     * Clears sets, such as when you're joining a server.
+     */
+    public static void clearSets() {
+        // TODO: Restore original crafting behavior first.
+        craftingSets.clear();
+    }
 }
