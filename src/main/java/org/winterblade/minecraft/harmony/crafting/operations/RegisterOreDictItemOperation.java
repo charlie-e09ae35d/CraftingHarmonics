@@ -31,6 +31,11 @@ public class RegisterOreDictItemOperation extends BaseRecipeOperation {
     }
 
     @Override
+    public void Undo() {
+
+    }
+
+    @Override
     public int compareTo(IRecipeOperation o) {
         int baseCompare = super.compareTo(o);
         if (baseCompare != 0) return baseCompare;

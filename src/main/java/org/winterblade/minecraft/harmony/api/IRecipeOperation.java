@@ -9,4 +9,6 @@ public interface IRecipeOperation extends Comparable<IRecipeOperation> {
     void Init() throws ItemMissingException;
 
     void Apply();
+
+    void Undo();
 }

@@ -35,4 +35,9 @@ public class AddFurnaceOperation extends BaseAddOperation {
 
         FurnaceRecipes.instance().addSmeltingRecipe(with.getItemStack(), output.getItemStack(), experience);
     }
+
+    @Override
+    public void Undo() {
+
+    }
 }

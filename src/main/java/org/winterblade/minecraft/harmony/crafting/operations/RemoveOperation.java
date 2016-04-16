@@ -120,6 +120,11 @@ public class RemoveOperation extends BaseRecipeOperation {
         if(FromFlags.hasFlag(fromFlag, FromFlags.FURNACE)) RemoveFurnaceRecpies();
     }
 
+    @Override
+    public void Undo() {
+
+    }
+
     /**
      * Removes recipes from the furnace, if it matches.
      */

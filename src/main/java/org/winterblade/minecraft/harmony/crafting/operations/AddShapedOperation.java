@@ -79,4 +79,9 @@ public class AddShapedOperation extends BaseAddOperation {
         System.out.println("Adding shaped recipe for " + output.toString());
         CraftingManager.getInstance().addRecipe(new ShapedComponentRecipe(width, height, shape, output));
     }
+
+    @Override
+    public void Undo() {
+
+    }
 }

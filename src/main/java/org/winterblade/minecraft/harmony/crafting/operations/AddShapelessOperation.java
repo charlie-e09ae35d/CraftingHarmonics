@@ -28,4 +28,9 @@ public class AddShapelessOperation extends BaseAddOperation {
         System.out.println("Adding shapeless recipe for " + output.toString());
         CraftingManager.getInstance().addRecipe(new ShapelessComponentRecipe(output.getItemStack(), with));
     }
+
+    @Override
+    public void Undo() {
+
+    }
 }
