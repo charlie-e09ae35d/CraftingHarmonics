@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.scripting;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 import org.apache.logging.log4j.Logger;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
@@ -12,6 +13,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Matt on 4/8/2016.
@@ -22,6 +25,7 @@ public class NashornConfigProcessor implements INashornMod {
 
     private final String header;
     private IScriptContext nashorn;
+    private final Map<String, String> cache = new HashMap<>();
 
     public NashornConfigProcessor() {
         // Assign out our script header file...
@@ -58,13 +62,28 @@ public class NashornConfigProcessor implements INashornMod {
         }
 
         String fileContent = getJsonFileContent(file);
-        if (fileContent == null) return;
 
         try {
-            nashorn.eval(fileContent);
+            processConfig(fileContent);
+
+            // Only put valid configs in the cache:
+            cache.put(file.getName(), fileContent);
         } catch (Exception e) {
             System.err.println("Error processing Set file " + file.getPath() + ": " + e.getMessage());
         }
+    }
+
+    public void processConfig(String config) throws Exception {
+        if (config == null) return;
+        nashorn.eval(config);
+    }
+
+    /**
+     * Gets the config cache
+     * @return  The config cache
+     */
+    public ImmutableMap<String,String> getCache() {
+        return ImmutableMap.copyOf(cache);
     }
 
     /**
