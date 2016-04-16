@@ -93,6 +93,7 @@ public class ShapelessComponentRecipe extends ShapelessOreRecipe {
                 inRecipe = true;
                 openIterator.remove();
                 inputMap.put(x, recipeInput);
+                break;
             }
 
             if (!inRecipe) return null;
