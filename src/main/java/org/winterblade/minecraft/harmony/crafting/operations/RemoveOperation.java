@@ -9,9 +9,6 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.util.FakePlayerFactory;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
@@ -34,6 +31,8 @@ public class RemoveOperation extends BaseRecipeOperation {
     private String what;
     private String[] from;
     private ItemStack[] with;
+    private int width;
+    private int height;
 
     /**
      * Computed properties
@@ -152,7 +151,7 @@ public class RemoveOperation extends BaseRecipeOperation {
             if(!MatchesName(recipe.getRecipeOutput())) continue;
 
             // Simulate the entire crafting operation on the recipe:
-            if(with != null && with.length > 0 && !recipe.matches(inv, DimensionManager.getWorld(0))) continue;
+            if(with != null && with.length > 0 && !recipe.matches(inv, null)) continue;
 
             // We matched something:
             CraftingHarmonicsMod.logger.info("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
@@ -167,13 +166,24 @@ public class RemoveOperation extends BaseRecipeOperation {
      */
     private InventoryCrafting simulateInventoryOf(ItemStack[] inputs) {
         if(inputs == null) return null;
-        // Get the overworld:
-        WorldServer world = DimensionManager.getWorld(0);
-        // Make a contianer...
-        Container c = new ContainerWorkbench(new InventoryPlayer(FakePlayerFactory.getMinecraft(world)),
-                world, BlockPos.ORIGIN);
 
-        InventoryCrafting inv =  inputs.length > 4 ? new InventoryCrafting(c, 3, 3) : new InventoryCrafting(c, 2, 2);
+        // Make a contianer...
+        Container c = new ContainerWorkbench(new InventoryPlayer(null), null, BlockPos.ORIGIN);
+
+        // Figure out our sizes:
+        if(width <= 0 && height <= 0) {
+            width = height = inputs.length > 4 ? 3 : 2;
+        }
+
+        if(width <= 0) {
+            width = (int)Math.ceil((double)inputs.length / height);
+        }
+
+        if(height <= 0) {
+            height = (int)Math.ceil((double)inputs.length / width);
+        }
+
+        InventoryCrafting inv = new InventoryCrafting(c, width, height);
 
         for (int i = 0; i < inputs.length; i++) {
             inv.setInventorySlotContents(i, inputs[i]);
