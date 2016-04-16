@@ -1,9 +1,14 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerWorkbench;
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.math.BlockPos;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
@@ -21,15 +26,24 @@ import java.util.Map;
 @RecipeOperation(name = "remove")
 public class RemoveOperation extends BaseRecipeOperation {
     /**
+     * Serialized properties
+     */
+    private String what;
+    private String[] from;
+    private ItemStack[] with;
+    private int width;
+    private int height;
+
+    /**
      * Computed properties
      */
     private RemoveMatchType matchType;
     private String modId;
     private String itemName;
     private int metadata;
-    private String what;
+    private long fromFlag;
 
-    public boolean Matches(ItemStack recipeOutput) {
+    public boolean MatchesName(ItemStack recipeOutput) {
         // If we have a null output... ignore it.
         if(recipeOutput == null) return false;
 
@@ -52,6 +66,7 @@ public class RemoveOperation extends BaseRecipeOperation {
                 return false;
         }
     }
+
 
     @Override
     public void Init() throws ItemMissingException {
@@ -82,12 +97,27 @@ public class RemoveOperation extends BaseRecipeOperation {
             itemName = parts[1];
             matchType = RemoveMatchType.ItemAndMod;
         }
+
+        // Default from all:
+        if(from == null || from.length <= 0) {
+            fromFlag = FromFlags.CRAFTING.getFlag() | FromFlags.FURNACE.getFlag();
+        } else {
+            fromFlag = 0;
+            for(String s: from) {
+                try {
+                    FromFlags flag = Enum.valueOf(FromFlags.class, s.toUpperCase());
+                    fromFlag |= flag.getFlag();
+                } catch(Exception ex) {
+                    CraftingHarmonicsMod.logger.warn("Removed recipe type '" + s + "' is not valid.");
+                }
+            }
+        }
     }
 
     @Override
     public void Apply() {
-        RemoveCraftingRecpies();
-        RemoveFurnaceRecpies();
+        if(FromFlags.hasFlag(fromFlag, FromFlags.CRAFTING)) RemoveCraftingRecpies();
+        if(FromFlags.hasFlag(fromFlag, FromFlags.FURNACE)) RemoveFurnaceRecpies();
     }
 
     /**
@@ -97,7 +127,8 @@ public class RemoveOperation extends BaseRecipeOperation {
         Map<ItemStack, ItemStack> smeltingList = FurnaceRecipes.instance().getSmeltingList();
         for(Iterator<Map.Entry<ItemStack, ItemStack>> furnaceIterator = smeltingList.entrySet().iterator(); furnaceIterator.hasNext(); ) {
             Map.Entry<ItemStack, ItemStack> recipe = furnaceIterator.next();
-            if(!Matches(recipe.getValue())) continue;
+            if(!MatchesName(recipe.getValue())) continue;
+            if(with != null && with.length > 0 && !ItemStack.areItemStacksEqual(with[0], recipe.getKey())) continue;
 
             // We matched something:
             CraftingHarmonicsMod.logger.info("Removing " + recipe.getValue().getUnlocalizedName() + " from the furnace.");
@@ -111,16 +142,55 @@ public class RemoveOperation extends BaseRecipeOperation {
     private void RemoveCraftingRecpies() {
         List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 
+        InventoryCrafting inv = simulateInventoryOf(with);
+
         CraftingHarmonicsMod.logger.info("Searching for recipes to remove for " + modId + ":" + itemName + ":" + metadata + "...");
 
         for(Iterator<IRecipe> recipeIterator = recipeList.iterator(); recipeIterator.hasNext(); ) {
             IRecipe recipe = recipeIterator.next();
-            if(!Matches(recipe.getRecipeOutput())) continue;
+            if(!MatchesName(recipe.getRecipeOutput())) continue;
+
+            // Simulate the entire crafting operation on the recipe:
+            if(with != null && with.length > 0 && !recipe.matches(inv, null)) continue;
 
             // We matched something:
             CraftingHarmonicsMod.logger.info("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
             recipeIterator.remove();
         }
+    }
+
+    /**
+     * Simulates an inventory with the given inputs as
+     * @param inputs    The inputs
+     * @return          The crafting inventory
+     */
+    private InventoryCrafting simulateInventoryOf(ItemStack[] inputs) {
+        if(inputs == null) return null;
+
+        // Make a contianer...
+        Container c = new ContainerWorkbench(new InventoryPlayer(null), null, BlockPos.ORIGIN);
+
+        // Figure out our sizes:
+        if(width <= 0 && height <= 0) {
+            width = height = inputs.length > 4 ? 3 : 2;
+        }
+
+        if(width <= 0) {
+            width = (int)Math.ceil((double)inputs.length / height);
+        }
+
+        if(height <= 0) {
+            height = (int)Math.ceil((double)inputs.length / width);
+        }
+
+        InventoryCrafting inv = new InventoryCrafting(c, width, height);
+
+        for (int i = 0; i < inputs.length; i++) {
+            inv.setInventorySlotContents(i, inputs[i]);
+        }
+
+        // And pretend we're crafting:
+        return inv;
     }
 
     @Override
@@ -132,6 +202,12 @@ public class RemoveOperation extends BaseRecipeOperation {
         if(!(o instanceof RemoveOperation)) return -1;
 
         RemoveOperation other = (RemoveOperation) o;
+
+        // Next, sort by from:
+        long compareFroms = fromFlag - other.fromFlag;
+        if(compareFroms != 0) {
+            return (int)compareFroms;
+        }
 
         // Make sure we're initialized first...
         if(matchType == null) return 1;
@@ -146,5 +222,19 @@ public class RemoveOperation extends BaseRecipeOperation {
 
     private enum RemoveMatchType {
         ItemOnly,ModOnly,ItemAndMod,Exact
+    }
+
+    private enum FromFlags {
+        CRAFTING, FURNACE;
+
+        // This will be fine to use as this is computed every time at runtime
+        // If we wanted to serialize it, using the ordinal would be a lot more fragile
+        public long getFlag() {
+            return 1 << this.ordinal();
+        }
+
+        public static boolean hasFlag(long check, FromFlags flag) {
+            return (check & flag.getFlag()) != 0;
+        }
     }
 }
