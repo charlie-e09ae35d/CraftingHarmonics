@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
-import org.winterblade.minecraft.harmony.CraftingSet;
+import org.winterblade.minecraft.harmony.crafting.integration.jei.Jei;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 import java.util.*;
@@ -89,6 +89,7 @@ public class ConfigSyncMessage implements IMessage {
 
             CraftingHarmonicsMod.initSets();
             CraftingHarmonicsMod.applySets(new String[] {"default"});
+            Jei.reloadJEI();
 
             return null;
         }
