@@ -59,7 +59,12 @@ public class CraftingSet {
     }
 
     public void Undo() {
-        for(IRecipeOperation op : operations) {
+        // Reverse the sort order... badly.
+        List<IRecipeOperation> revserseOps = new ArrayList<>(operations);
+        Collections.reverse(revserseOps);
+
+        // Undo the operations in the opposite way we applied them:
+        for(IRecipeOperation op : revserseOps) {
             try {
                 op.Undo();
             }
