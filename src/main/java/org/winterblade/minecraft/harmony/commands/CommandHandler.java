@@ -20,6 +20,7 @@ public class CommandHandler implements ICommand {
     static {
         aliases.add("ch");
         subcommands.put("getHeldNBT", new GetHeldNbtCommand());
+        subcommands.put("reload", new ReloadCommand());
     }
 
     @Override

@@ -31,6 +31,7 @@ public class ConfigManager {
 
     private void setupRecipeSets() {
         System.out.println("Reading set definitions from " + configPath + "Sets/");
+        setFiles.clear();
         File setsDir = new File(configPath + "Sets/");
 
         // Make sure we have a set directory before trying to iterate it...
@@ -91,5 +92,14 @@ public class ConfigManager {
 
         // > Stop being fancy
         ProgressManager.pop(setProgress);
+    }
+
+    /**
+     * Reloads the config set
+     */
+    public void reload() {
+        setupRecipeSets();
+        NashornConfigProcessor.getInstance().reloadConfigs();
+        processSetFiles();
     }
 }

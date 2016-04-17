@@ -1,5 +1,7 @@
 package org.winterblade.minecraft.harmony;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -19,14 +21,12 @@ import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessComponentRecipe;
 import org.winterblade.minecraft.harmony.proxies.ClientProxy;
 import org.winterblade.minecraft.harmony.proxies.CommonProxy;
+import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPED;
 import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
@@ -40,7 +40,7 @@ public class CraftingHarmonicsMod {
     public static final String VERSION = "@VERSION@";
 
     private String configPath;
-    private ConfigManager configManager;
+    private static ConfigManager configManager;
 
     @SidedProxy(clientSide = "org.winterblade.minecraft.harmony.proxies.ClientProxy",
             serverSide = "org.winterblade.minecraft.harmony.proxies.ServerProxy")
@@ -155,5 +155,20 @@ public class CraftingHarmonicsMod {
         appliedSets.clear();
         initializedSets.clear();
         craftingSets.clear();
+    }
+
+    public static void reloadConfigs(MinecraftServer server) {
+        // Reload the configs:
+        String[] sets = appliedSets.toArray(new String[appliedSets.size()]);
+        clearSets();
+        configManager.reload();
+        initSets();
+        applySets(sets);
+
+        // Sync out our new configs
+        List<EntityPlayerMP> playerList = server.getPlayerList().getPlayerList();
+        for(EntityPlayerMP player : playerList) {
+            PacketHandler.synchronizeConfig(NashornConfigProcessor.getInstance().getCache(), player);
+        }
     }
 }

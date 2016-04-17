@@ -118,4 +118,11 @@ public class NashornConfigProcessor implements INashornMod {
     public void onScriptContextCreated(IScriptContext iScriptContext) {
         NashornConfigProcessor.getInstance().init(iScriptContext);
     }
+
+    /**
+     * Reloads the configuration files
+     */
+    public void reloadConfigs() {
+        cache.clear();
+    }
 }
