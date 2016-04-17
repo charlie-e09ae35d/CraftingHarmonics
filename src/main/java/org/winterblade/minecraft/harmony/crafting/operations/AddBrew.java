@@ -24,7 +24,7 @@ public class AddBrew extends BaseAddOperation {
 
     static {
         // Get our brewing registry...
-        recipes = ObfuscationReflectionHelper.getPrivateValue(BrewingRecipeRegistry.class, null, "recipes");
+        recipes = ObfuscationReflectionHelper.getPrivateValue(BrewingRecipeRegistry.class, null, 0);
     }
 
     @Override

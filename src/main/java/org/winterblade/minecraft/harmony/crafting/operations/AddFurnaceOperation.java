@@ -23,7 +23,7 @@ public class AddFurnaceOperation extends BaseAddOperation {
     private boolean setXp = false;
 
     static {
-        experienceList = ObfuscationReflectionHelper.getPrivateValue(FurnaceRecipes.class, FurnaceRecipes.instance(), "experienceList");
+        experienceList = ObfuscationReflectionHelper.getPrivateValue(FurnaceRecipes.class, FurnaceRecipes.instance(), 2);
     }
 
     @Override
