@@ -16,6 +16,7 @@ import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,7 @@ public class RemoveOperation extends BaseRecipeOperation {
     private String itemName;
     private int metadata;
     private long fromFlag;
+    private List<IRemovedRecipe> removedRecipes;
 
     public boolean MatchesName(ItemStack recipeOutput) {
         // If we have a null output... ignore it.
@@ -112,12 +114,21 @@ public class RemoveOperation extends BaseRecipeOperation {
                 }
             }
         }
+
+        removedRecipes = new ArrayList<>();
     }
 
     @Override
     public void Apply() {
         if(FromFlags.hasFlag(fromFlag, FromFlags.CRAFTING)) RemoveCraftingRecpies();
         if(FromFlags.hasFlag(fromFlag, FromFlags.FURNACE)) RemoveFurnaceRecpies();
+    }
+
+    @Override
+    public void Undo() {
+        for(IRemovedRecipe removedRecipe : removedRecipes) {
+            removedRecipe.Undo();
+        }
     }
 
     /**
@@ -132,6 +143,7 @@ public class RemoveOperation extends BaseRecipeOperation {
 
             // We matched something:
             CraftingHarmonicsMod.logger.info("Removing " + recipe.getValue().getUnlocalizedName() + " from the furnace.");
+            removedRecipes.add(new RemovedFurnaceRecipe(recipe));
             furnaceIterator.remove();
         }
     }
@@ -155,6 +167,7 @@ public class RemoveOperation extends BaseRecipeOperation {
 
             // We matched something:
             CraftingHarmonicsMod.logger.info("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
+            removedRecipes.add(new RemovedCraftingRecipe(recipe));
             recipeIterator.remove();
         }
     }
@@ -235,6 +248,38 @@ public class RemoveOperation extends BaseRecipeOperation {
 
         public static boolean hasFlag(long check, FromFlags flag) {
             return (check & flag.getFlag()) != 0;
+        }
+    }
+
+    private interface IRemovedRecipe {
+        void Undo();
+    }
+
+    private class RemovedFurnaceRecipe implements IRemovedRecipe {
+        private final ItemStack input;
+        private final ItemStack output;
+        private final float xp;
+
+        public RemovedFurnaceRecipe(Map.Entry<ItemStack, ItemStack> recipe) {
+            input = recipe.getKey();
+            output = recipe.getValue();
+            xp = FurnaceRecipes.instance().getSmeltingExperience(output);
+        }
+
+        public void Undo() {
+            FurnaceRecipes.instance().addSmeltingRecipe(input, output, xp);
+        }
+    }
+
+    private class RemovedCraftingRecipe implements IRemovedRecipe {
+        private final IRecipe recipe;
+
+        public RemovedCraftingRecipe(IRecipe recipe) {
+            this.recipe = recipe;
+        }
+
+        public void Undo() {
+            CraftingManager.getInstance().addRecipe(recipe);
         }
     }
 }

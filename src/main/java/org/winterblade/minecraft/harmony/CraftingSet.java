@@ -57,4 +57,20 @@ public class CraftingSet {
 
         ProgressManager.pop(setProgress);
     }
+
+    public void Undo() {
+        // Reverse the sort order... badly.
+        List<IRecipeOperation> revserseOps = new ArrayList<>(operations);
+        Collections.reverse(revserseOps);
+
+        // Undo the operations in the opposite way we applied them:
+        for(IRecipeOperation op : revserseOps) {
+            try {
+                op.Undo();
+            }
+            catch(Exception ex) {
+                CraftingHarmonicsMod.logger.error("Error undoing operation.", ex);
+            }
+        }
+    }
 }
