@@ -1,7 +1,6 @@
 package org.winterblade.minecraft.harmony.utility;
 
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import org.objectweb.asm.Type;
 import org.winterblade.minecraft.harmony.api.*;
 
 import javax.annotation.Nonnull;
@@ -17,10 +16,6 @@ public class AnnotationUtil {
 
     public static Map<String, Class<BaseRecipeOperation>> getRecipeOperations(@Nonnull ASMDataTable asmDataTable) {
         return getClassMap(asmDataTable, RecipeOperation.class, BaseRecipeOperation.class, "name");
-    }
-
-    public static Map<Type, Class<IScriptObjectDeserializer>> getScriptObjectDeserializers(@Nonnull ASMDataTable asmDataTable) {
-        return getClassMap(asmDataTable, ScriptObjectDeserializer.class, IScriptObjectDeserializer.class, "deserializes");
     }
 
     public static Map<ArrayList<String>, Class<Object>> getComponentClasses(@Nonnull ASMDataTable asmDataTable) {

@@ -8,7 +8,6 @@ import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 /**

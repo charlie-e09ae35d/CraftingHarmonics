@@ -2,7 +2,7 @@ package org.winterblade.minecraft.harmony.api;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
+import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 /**
  * Created by Matt on 4/6/2016.
@@ -45,7 +45,7 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
      */
     protected void ReadData(ScriptObjectMirror data) throws ItemMissingException {
         // Base implementation just attempts to map properties one-to-one
-        ScriptObjectReader.WriteScriptObjectToClass(data, this);
+        NashornConfigProcessor.getInstance().nashorn.parseScriptObject(data, this);
     }
 
     @Override

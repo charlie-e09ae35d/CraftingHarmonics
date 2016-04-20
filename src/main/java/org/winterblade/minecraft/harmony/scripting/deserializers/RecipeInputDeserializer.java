@@ -4,7 +4,10 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.*;
+import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
+import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
+import org.winterblade.minecraft.harmony.api.PrioritizedObject;
+import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
@@ -13,6 +16,8 @@ import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.NbtMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.OreDictionaryMatcher;
+import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
+import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
 import java.util.List;
 
