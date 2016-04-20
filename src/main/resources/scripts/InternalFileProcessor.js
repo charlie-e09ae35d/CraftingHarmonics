@@ -5,7 +5,6 @@ var __CraftingHarmonicsInternal_Internal = function() {
     var ch = this;
 
     ch.RecipeOperationRegistry = Java.type('org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry');
-    ch.JsonHelper = Java.type('org.winterblade.minecraft.harmony.scripting.JsonHelper');
 
     // This will run in order to actually get our recipe data into something sensible
     this.FileProcessor = function(filename, exports) {
@@ -53,15 +52,6 @@ var __CraftingHarmonicsInternal_Internal = function() {
             }
         }
     };
-
-    /*
-     * Used by our SEM to parse NBT into a Minecraft format.
-     */
-    ch.getJsonString = function(obj) {
-        return JSON.stringify(obj).replace(/\"([^(\")"]+)\":/g,"$1:");
-    }
-
-    ch.JsonHelper.registerInternal(this);
 }
 
 // Get our internal instance:

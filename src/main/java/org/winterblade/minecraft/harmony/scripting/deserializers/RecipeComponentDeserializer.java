@@ -3,12 +3,12 @@ package org.winterblade.minecraft.harmony.scripting.deserializers;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
-import org.winterblade.minecraft.harmony.api.IScriptObjectDeserializer;
-import org.winterblade.minecraft.harmony.api.ScriptObjectDeserializer;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
-import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
+import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
+import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
+import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
 /**
  * Created by Matt on 4/9/2016.
@@ -49,7 +49,7 @@ public class RecipeComponentDeserializer implements IScriptObjectDeserializer {
 
         if(!item.hasMember("item")) return null;
 
-        ScriptObjectReader.WriteScriptObjectToClass(item,component);
+        NashornConfigProcessor.getInstance().nashorn.parseScriptObject(item,component);
 
         return component;
     }

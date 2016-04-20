@@ -2,7 +2,7 @@ package org.winterblade.minecraft.harmony.crafting;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.winterblade.minecraft.harmony.api.*;
-import org.winterblade.minecraft.harmony.scripting.ScriptObjectReader;
+import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -162,7 +162,7 @@ public class ComponentRegistry {
             Object[] values = new Object[paramList.size()];
 
             for(int i = 0; i < paramList.size(); i++) {
-                values[i] = ScriptObjectReader.convertData(mirror.get(paramList.get(i)), params[i].getType());
+                values[i] = NashornConfigProcessor.getInstance().nashorn.convertData(mirror.get(paramList.get(i)), params[i].getType());
             }
 
             Object component;

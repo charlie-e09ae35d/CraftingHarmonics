@@ -13,6 +13,6 @@
   "screenshots": [],
   "requiredMods": ["NashornLib"],
   "useDependencyInformation": true,
-  "dependencies": []
+  "dependencies": ["NashornLib"]
 }
 ]
