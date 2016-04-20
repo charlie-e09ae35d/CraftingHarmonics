@@ -5,7 +5,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 

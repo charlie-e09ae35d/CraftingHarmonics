@@ -2,10 +2,8 @@ package org.winterblade.minecraft.harmony.crafting.transformers;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
 import javax.annotation.Nonnull;
 
