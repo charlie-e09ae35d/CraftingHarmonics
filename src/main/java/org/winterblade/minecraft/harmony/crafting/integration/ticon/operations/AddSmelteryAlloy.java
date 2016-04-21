@@ -1,15 +1,12 @@
 package org.winterblade.minecraft.harmony.crafting.integration.ticon.operations;
 
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import slimeknights.tconstruct.library.TinkerRegistry;
+import org.winterblade.minecraft.harmony.crafting.integration.ticon.ReflectedTinkerRegistry;
 import slimeknights.tconstruct.library.smeltery.AlloyRecipe;
-
-import java.util.List;
 
 /**
  * Operation for adding an alloy for the smeltery.
@@ -27,14 +24,6 @@ public class AddSmelteryAlloy extends BaseRecipeOperation {
      */
     private AlloyRecipe recipe;
 
-    private static List<AlloyRecipe> alloyRegistry;
-
-    static {
-        // Hook directly into this because we can't remove an alloy after it's been added:
-        alloyRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "alloyRegistry");
-    }
-
-
     @Override
     public void Init() throws ItemMissingException {
         if(with == null || with.length < 2) {
@@ -47,11 +36,11 @@ public class AddSmelteryAlloy extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        alloyRegistry.add(recipe);
+        ReflectedTinkerRegistry.addAlloy(recipe);
     }
 
     @Override
     public void Undo() {
-        alloyRegistry.remove(recipe);
+        ReflectedTinkerRegistry.removeAlloy(recipe);
     }
 }
