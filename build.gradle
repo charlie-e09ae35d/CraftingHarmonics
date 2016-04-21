@@ -88,6 +88,10 @@ dependencies {
     deobfCompile "mezz.jei:jei_1.9:3.2.8.182"
     deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.2.0.4"
     // compile files('libs/NashornLib-1.9.0-1.8.77-1.2.0')
+
+    // TiCon integration; done badly.
+    deobfCompile "slimeknights.mantle:Mantle:1.9-0.9.4.jenkins126"
+    compile files("libs/TConstruct-1.9-2.2.2.DEV.adc860a.jar")    
 }
 
 //Add dependencies to the JAR

@@ -15,4 +15,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface RecipeOperation {
     String name();
+
+    String dependsOn() default "";
 }
