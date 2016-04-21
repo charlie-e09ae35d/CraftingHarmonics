@@ -70,7 +70,7 @@ public class ItemStackWrapper {
      * @return  The item's resource locator
      */
     public String getId() {
-        return Item.itemRegistry.getNameForObject(itemStack.getItem()).toString();
+        return Item.REGISTRY.getNameForObject(itemStack.getItem()).toString();
     }
 
     /**

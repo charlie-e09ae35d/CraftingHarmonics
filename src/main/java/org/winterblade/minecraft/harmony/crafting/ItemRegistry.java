@@ -30,13 +30,13 @@ public class ItemRegistry {
         // Get the item's location
         System.out.println("Initializing item registry...");
 
-        RegistryNamespaced<ResourceLocation, Item> itemRegistry = Item.itemRegistry;
+        RegistryNamespaced<ResourceLocation, Item> itemRegistry = Item.REGISTRY;
 
         for (ResourceLocation itemResource : itemRegistry.getKeys()) {
             String mod = itemResource.getResourceDomain();
             String itemName = itemResource.getResourcePath();
             String name = mod + ":" + itemName;
-            Item item = Item.itemRegistry.getObject(itemResource);
+            Item item = Item.REGISTRY.getObject(itemResource);
 
             // Store it by its full name:
 //            System.out.println("Registering '" + name + "' in item registry.");
