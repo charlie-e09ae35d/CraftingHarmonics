@@ -1,8 +1,10 @@
 package org.winterblade.minecraft.harmony.crafting;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import net.minecraftforge.fml.common.Loader;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
+import org.winterblade.minecraft.harmony.api.RecipeOperation;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -15,6 +17,16 @@ public class RecipeOperationRegistry {
 
     public static void CreateDeserializers(Map<String, Class<BaseRecipeOperation>> deserializers) {
         for(Map.Entry<String, Class<BaseRecipeOperation>> deserializer : deserializers.entrySet()) {
+            RecipeOperation anno = deserializer.getValue().getAnnotation(RecipeOperation.class);
+
+            // Check if we have the specified mod loaded:
+            if(!anno.dependsOn().equals("") && !Loader.isModLoaded(anno.dependsOn())) {
+                // TODO: Logger update, but, we don't actually have our logger at this point.
+                System.err.println(anno.name() + " depends on '" + anno.dependsOn() + "', which is not loaded.");
+            } else {
+                System.out.println("Registering operation '" + anno.name() + "'.");
+            }
+
             deserializerMap.put(deserializer.getKey().toLowerCase(), deserializer.getValue());
         }
     }
