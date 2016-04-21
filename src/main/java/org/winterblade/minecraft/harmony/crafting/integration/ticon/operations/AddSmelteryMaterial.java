@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.crafting.integration.ticon.operations;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
@@ -13,7 +14,7 @@ import slimeknights.tconstruct.library.smeltery.MeltingRecipe;
 /**
  * Operation for adding and removing a material from the smeltery.
  */
-@RecipeOperation(name = "addSmelteryMaterial", dependsOn = "tconstruct")
+@RecipeOperation(name = "addSmelteryMelt", dependsOn = "tconstruct")
 public class AddSmelteryMaterial extends BaseRecipeOperation {
     /*
      * Serialized properties
@@ -40,6 +41,8 @@ public class AddSmelteryMaterial extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
+        CraftingHarmonicsMod.logger.info("Adding Tinker's smeltery melt to turn '"
+                + Item.REGISTRY.getNameForObject(with.getItem()) + "' into '" + what + "'.");
         TinkerRegistry.registerMelting(recipe);
     }
 
