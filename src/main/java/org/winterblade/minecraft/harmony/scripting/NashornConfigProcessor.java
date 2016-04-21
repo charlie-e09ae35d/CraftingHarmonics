@@ -24,7 +24,7 @@ public class NashornConfigProcessor implements INashornMod {
     private final static NashornConfigProcessor instance = new NashornConfigProcessor();
 
     private final String header;
-    private IScriptContext nashorn;
+    public IScriptContext nashorn;
     private final Map<String, String> cache = new HashMap<>();
 
     public NashornConfigProcessor() {

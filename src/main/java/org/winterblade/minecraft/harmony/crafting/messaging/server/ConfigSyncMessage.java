@@ -11,6 +11,7 @@ import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.crafting.integration.jei.Jei;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -37,7 +38,10 @@ public class ConfigSyncMessage implements IMessage {
 
         // Read the contents of the buffer until we've gotten all the configs...
         for(int i = 0; i < size; i++) {
-            config.add(ByteBufUtils.readUTF8String(buf));
+            int len = buf.readInt();
+            byte[] configBuf = new byte[len];
+            buf.readBytes(configBuf);
+            config.add(new String(configBuf));
         }
     }
 
@@ -51,7 +55,13 @@ public class ConfigSyncMessage implements IMessage {
         buf.writeInt(config.size());
 
         for(String entry : config) {
-            ByteBufUtils.writeUTF8String(buf, entry);
+            try {
+                buf.writeInt(entry.length());
+                buf.writeBytes(entry.getBytes("utf-8"));
+            } catch (UnsupportedEncodingException e) {
+                // TODO: Handle this better.
+                e.printStackTrace();
+            }
         }
     }
 

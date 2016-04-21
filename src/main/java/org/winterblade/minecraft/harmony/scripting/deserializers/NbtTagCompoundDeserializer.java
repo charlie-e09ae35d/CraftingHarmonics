@@ -1,12 +1,13 @@
 package org.winterblade.minecraft.harmony.scripting.deserializers;
 
+import jdk.nashorn.api.scripting.JSObject;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
-import org.winterblade.minecraft.harmony.api.IScriptObjectDeserializer;
-import org.winterblade.minecraft.harmony.api.ScriptObjectDeserializer;
-import org.winterblade.minecraft.harmony.scripting.JsonHelper;
+import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
+import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
+import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
 /**
  * Created by Matt on 4/9/2016.
@@ -19,7 +20,7 @@ public class NbtTagCompoundDeserializer implements IScriptObjectDeserializer {
         if(input instanceof String) {
             json = input.toString();
         } else if(input instanceof ScriptObjectMirror) {
-            json = JsonHelper.getJsonString(input);
+            json = NashornConfigProcessor.getInstance().nashorn.stringifyJsonObject((JSObject) input);
         }
 
         try {
