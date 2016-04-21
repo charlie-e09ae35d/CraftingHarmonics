@@ -17,7 +17,9 @@ public class FluidStackDeserializer implements IScriptObjectDeserializer {
         try {
             String[] parts = input.toString().split(":");
 
-            return FluidRegistry.getFluidStack(parts[0], Integer.parseInt(parts[1]));
+            return parts.length <= 1
+                    ? FluidRegistry.getFluidStack(parts[0], 1)
+                    : FluidRegistry.getFluidStack(parts[0], Integer.parseInt(parts[1]));
         } catch (Exception e) {
             return null;
         }
