@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.crafting.integration.ticon.operations;
 
+import net.minecraft.item.Item;
 import net.minecraftforge.fluids.FluidStack;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
@@ -36,6 +37,7 @@ public class AddSmelteryAlloy extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
+        CraftingHarmonicsMod.logger.info("Adding Tinker's smeltery alloy for '" + what.getFluid().getName() + "'.");
         ReflectedTinkerRegistry.addAlloy(recipe);
     }
 

@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.crafting.integration.ticon.operations;
 
 import net.minecraftforge.fluids.FluidStack;
+import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
@@ -30,6 +31,7 @@ public class RemoveSmelteryAlloy extends BaseRecipeOperation {
     public void Apply() {
         recipes.clear();
 
+        CraftingHarmonicsMod.logger.info("Removing '" + what.getFluid().getName() + "' alloys from the smeltery.");
         for(AlloyRecipe recipe : TinkerRegistry.getAlloys()) {
             if(!matches(recipe)) continue;
             ReflectedTinkerRegistry.removeAlloy(recipe);
