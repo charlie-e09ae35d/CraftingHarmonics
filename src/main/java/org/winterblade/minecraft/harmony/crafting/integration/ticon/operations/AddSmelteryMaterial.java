@@ -36,7 +36,7 @@ public class AddSmelteryMaterial extends BaseRecipeOperation {
             throw new ItemMissingException(what + " is not a valid fluid.");
         }
 
-        recipe = new MeltingRecipe(new RecipeMatch.Item(with, 1, amount), FluidRegistry.getFluid(what));
+        recipe = new MeltingRecipe(new RecipeMatch.Item(with, with.stackSize, amount), FluidRegistry.getFluid(what));
     }
 
     @Override
