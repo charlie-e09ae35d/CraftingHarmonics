@@ -319,12 +319,19 @@
                 },
                 {
                     __comment: "Same with Hellfire (Tartaric) Forge recipes (these accept Ore Dict though)...",
-                    __result: "",
+                    __result: "Makes a nether star out of an end portal frame and some wood",
                     type: "addHellfireForgeRecipe",
                     output: "minecraft:nether_star",
                     with: ["minecraft:end_portal_frame","<logWood>"],
                     minSouls: 300,
                     drain: 200
+                },
+                {
+                    __comment: "... and remove them.",
+                    __result: "Makes the Sentient Sword go away.",
+                    type: "removeHellfireForgeRecipe",
+                    what: "bloodmagic:ItemSentientSword"
+                    // Could specify with: [], but too lazy. :)
                 }
             ]
         }
