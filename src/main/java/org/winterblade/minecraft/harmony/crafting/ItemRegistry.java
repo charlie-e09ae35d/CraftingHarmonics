@@ -345,6 +345,13 @@ public class ItemRegistry {
         return true;
     }
 
+    public static String outputItemName(ItemStack itemStack) {
+        if(itemStack == null) return "null";
+        int meta = itemStack.getMetadata();
+        return Item.REGISTRY.getNameForObject(itemStack.getItem()).toString() + ":" +
+                ((meta == OreDictionary.WILDCARD_VALUE) ? "*" : meta);
+    }
+
     private enum ItemType {
         Regular, ExactNbt, FuzzyNbt
     }
