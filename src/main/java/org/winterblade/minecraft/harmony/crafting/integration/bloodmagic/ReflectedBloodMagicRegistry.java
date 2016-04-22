@@ -15,9 +15,9 @@ import java.util.List;
  * Created by Matt on 4/21/2016.
  */
 public class ReflectedBloodMagicRegistry {
-    private static BiMap<ItemStack, AltarRecipeRegistry.AltarRecipe> altarRecipes;
+    private static BiMap<List<ItemStack>, AltarRecipeRegistry.AltarRecipe> altarRecipes;
     private static List<TartaricForgeRecipe> tartaricForgeRecipes;
-    private static BiMap<ItemStackWrapper, AlchemyArrayRecipeRegistry.AlchemyArrayRecipe> alchemyArrayRecipes;
+    private static BiMap<List<ItemStack>, AlchemyArrayRecipeRegistry.AlchemyArrayRecipe> alchemyArrayRecipes;
 
     static {
         // I really wish mod authors would better support removing recipes from their mods...
