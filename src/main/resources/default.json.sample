@@ -303,8 +303,8 @@
                     __comment: "You can add Blood Magic altar recipes...",
                     __result: "Turns a cooked chicken into an egg",
                     type: "addBloodAltarRecipe",
-                    what: "minecraft:egg",
-                    with: ["minecraft:cooked_chicken"], // Yes, this is an array.  Spoilers?
+                    output: "minecraft:egg",
+                    with: ["minecraft:cooked_chicken"],
                     minTier: 1,
                     lpCost: 10, // Your tier 1 orb has this as 200...
                     consumeRate: 1, // ... this as 2 ...
@@ -315,7 +315,16 @@
                     __result: "Removes the dagger of sacrifice",
                     type: "removeBloodAltarRecipe",
                     what: "bloodmagic:ItemDaggerOfSacrifice",
-                    with: ["minecraft:iron_sword"]
+                    with: ["minecraft:iron_sword"]  // Optional, as always
+                },
+                {
+                    __comment: "Same with Hellfire (Tartaric) Forge recipes (these accept Ore Dict though)...",
+                    __result: "",
+                    type: "addHellfireForgeRecipe",
+                    output: "minecraft:nether_star",
+                    with: ["minecraft:end_portal_frame","<logWood>"],
+                    minSouls: 300,
+                    drain: 200
                 }
             ]
         }

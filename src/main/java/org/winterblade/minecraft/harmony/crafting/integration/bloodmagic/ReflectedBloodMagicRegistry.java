@@ -35,4 +35,12 @@ public class ReflectedBloodMagicRegistry {
     public static void removeAltarRecipe(AltarRecipeRegistry.AltarRecipe recipe) {
         altarRecipes.remove(recipe.getInput());
     }
+
+    public static void addHellfireForgeRecipe(TartaricForgeRecipe recipe) {
+        TartaricForgeRecipeRegistry.registerRecipe(recipe);
+    }
+
+    public static void removeHellfireForgeRecipe(TartaricForgeRecipe recipe) {
+        tartaricForgeRecipes.remove(recipe);
+    }
 }

@@ -22,7 +22,7 @@ public class AddAltarRecipe extends BaseRecipeOperation {
     /*
      * Serialized properties
      */
-    private ItemStack what;
+    private ItemStack output;
     private ItemStack[] with;
     private int minTier;
     private int lpCost;
@@ -36,12 +36,12 @@ public class AddAltarRecipe extends BaseRecipeOperation {
 
     @Override
     public void Init() throws ItemMissingException {
-        recipe = new AltarRecipeRegistry.AltarRecipe(Arrays.asList(with), what, EnumAltarTier.values()[minTier-1], lpCost, consumeRate, drainRate, false);
+        recipe = new AltarRecipeRegistry.AltarRecipe(Arrays.asList(with), output, EnumAltarTier.values()[minTier-1], lpCost, consumeRate, drainRate, false);
     }
 
     @Override
     public void Apply() {
-        CraftingHarmonicsMod.logger.info("Adding blood altar recipe for '" + ItemRegistry.outputItemName(what) + "'.");
+        CraftingHarmonicsMod.logger.info("Adding blood altar recipe for '" + ItemRegistry.outputItemName(output) + "'.");
         ReflectedBloodMagicRegistry.addAltarRecipe(recipe);
     }
 
