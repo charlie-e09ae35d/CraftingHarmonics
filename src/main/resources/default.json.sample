@@ -298,6 +298,24 @@
                     __notes: "You can be specific about it too, just supply 'with', like normal; you should probably be more specific unless you really intend to add them back in later",
                     type: "removeSmelteryMelt",
                     what: "iron"
+                },
+                {
+                    __comment: "You can add Blood Magic altar recipes...",
+                    __result: "Turns a cooked chicken into an egg",
+                    type: "addBloodAltarRecipe",
+                    what: "minecraft:egg",
+                    with: ["minecraft:cooked_chicken"], // Yes, this is an array.  Spoilers?
+                    minTier: 1,
+                    lpCost: 10, // Your tier 1 orb has this as 200...
+                    consumeRate: 1, // ... this as 2 ...
+                    drainRate: 1 // .. and this as 1.
+                },
+                {
+                    __comment: "... and remove them",
+                    __result: "Removes the dagger of sacrifice",
+                    type: "removeBloodAltarRecipe",
+                    what: "bloodmagic:ItemDaggerOfSacrifice",
+                    with: ["minecraft:iron_sword"]
                 }
             ]
         }
