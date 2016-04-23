@@ -21,6 +21,7 @@ public class CommandHandler implements ICommand {
         aliases.add("ch");
         subcommands.put("getHeldNBT", new GetHeldNbtCommand());
         subcommands.put("reload", new ReloadCommand());
+        subcommands.put("getResourceLocator", new GetResourceLocatorCommand());
     }
 
     @Override
