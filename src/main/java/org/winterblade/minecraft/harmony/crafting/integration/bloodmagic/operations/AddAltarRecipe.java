@@ -9,7 +9,8 @@ import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.ReflectedBloodMagicRegistry;
-import scala.actors.threadpool.Arrays;
+
+import java.util.Arrays;
 
 /**
  * Created by Matt on 4/21/2016.
