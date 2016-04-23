@@ -1,7 +1,6 @@
 package org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.operations;
 
 import WayofTime.bloodmagic.api.recipe.TartaricForgeRecipe;
-import WayofTime.bloodmagic.api.registry.AltarRecipeRegistry;
 import WayofTime.bloodmagic.api.registry.TartaricForgeRecipeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;

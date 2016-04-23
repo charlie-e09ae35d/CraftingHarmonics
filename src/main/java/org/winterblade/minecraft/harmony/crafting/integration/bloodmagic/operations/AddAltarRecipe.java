@@ -2,7 +2,6 @@ package org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.operat
 
 import WayofTime.bloodmagic.api.altar.EnumAltarTier;
 import WayofTime.bloodmagic.api.registry.AltarRecipeRegistry;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
@@ -11,8 +10,6 @@ import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.ReflectedBloodMagicRegistry;
 import scala.actors.threadpool.Arrays;
-
-import java.util.ArrayList;
 
 /**
  * Created by Matt on 4/21/2016.
