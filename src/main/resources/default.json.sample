@@ -332,6 +332,24 @@
                     type: "removeHellfireForgeRecipe",
                     what: "bloodmagic:ItemSentientSword"
                     // Could specify with: [], but too lazy. :)
+                },
+                {
+                    __comment: "Also, add alchemy array recipes",
+                    __result: "Makes a cooked chicken from an egg and a stick",
+                    type: "addAlchemyArray",
+                    output: "minecraft:cooked_chicken",
+                    with: "minecraft:egg", // This can be an oreDict as well
+                    catalyst: "minecraft:stick",
+                    circle: "minecraft:textures/items/feather.png", // This is a resource location, leave out for the default circle
+                    isBinding: false, // Adds 100% more lightning if true
+                    time: 100 // Time in ticks; ignored with isBinding: true
+                },
+                {
+                    __comment: "You can remove them as well, but only with the input/catalyst combo used to register them.",
+                    __result: "Removes the bound shovel",
+                    type: "removeAlchemyArray",
+                    with: "bloodmagic:ItemComponent:8", // Binding component
+                    catalyst: "minecraft:diamond_shovel"
                 }
             ]
         }
