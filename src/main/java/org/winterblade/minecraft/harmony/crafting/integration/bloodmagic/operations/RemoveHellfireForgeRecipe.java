@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Created by Matt on 4/21/2016.
  */
-@RecipeOperation(name = "removeHellfireForgeRecipe", dependsOn = "bloodmagic")
+@RecipeOperation(name = "removeHellfireForgeRecipe", dependsOn = "BloodMagic")
 public class RemoveHellfireForgeRecipe extends BaseRecipeOperation {
     /*
      * Serialized properties

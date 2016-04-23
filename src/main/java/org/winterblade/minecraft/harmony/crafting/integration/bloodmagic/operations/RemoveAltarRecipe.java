@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * Created by Matt on 4/21/2016.
  */
-@RecipeOperation(name = "removeBloodAltarRecipe", dependsOn = "bloodmagic")
+@RecipeOperation(name = "removeBloodAltarRecipe", dependsOn = "BloodMagic")
 public class RemoveAltarRecipe extends BaseRecipeOperation {
     /*
      * Serialized properties
