@@ -300,6 +300,20 @@
                     what: "iron"
                 },
                 {
+                    __comment: "You can also add fuels from the smeltery",
+                    __result: "Adds molten iron as a fuel.",
+                    __sideEffect: "Incidentally, removes it from being able to be melted down.",
+                    type: "addSmelteryFuel",
+                    what: "iron:10", // The fluid and how much of it to consume per use
+                    duration: 200 // How many ticks one use of fuel will last
+                },
+                {
+                    __comment: "And remove them...",
+                    __result: "Makes it pretty much impossible to do anything",
+                    type: "removeSmelteryFuel",
+                    what: "lava"
+                },
+                {
                     __comment: "You can add Blood Magic altar recipes...",
                     __result: "Turns a cooked chicken into an egg",
                     type: "addBloodAltarRecipe",
