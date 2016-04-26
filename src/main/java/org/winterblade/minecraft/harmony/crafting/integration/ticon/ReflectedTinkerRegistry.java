@@ -4,6 +4,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.smeltery.AlloyRecipe;
+import slimeknights.tconstruct.library.smeltery.CastingRecipe;
 
 import java.util.Iterator;
 import java.util.List;
@@ -52,5 +53,21 @@ public class ReflectedTinkerRegistry {
         }
 
         return null;
+    }
+
+    /**
+     * Add a recipe to the casting table
+     * @param recipe    The recipe to add
+     */
+    public static void addTableCast(CastingRecipe recipe) {
+        TinkerRegistry.registerTableCasting(recipe);
+    }
+
+    /**
+     * Remove a recipe from the casting table
+     * @param recipe    The recipe to remove
+     */
+    public static void removeTableCast(CastingRecipe recipe) {
+        TinkerRegistry.getAllTableCastingRecipes().remove(recipe);
     }
 }
