@@ -70,4 +70,20 @@ public class ReflectedTinkerRegistry {
     public static void removeTableCast(CastingRecipe recipe) {
         TinkerRegistry.getAllTableCastingRecipes().remove(recipe);
     }
+
+    /**
+     * Add a recipe to the casting basin
+     * @param recipe    The recipe to add
+     */
+    public static void addBasinCast(CastingRecipe recipe) {
+        TinkerRegistry.registerBasinCasting(recipe);
+    }
+
+    /**
+     * Remove a recipe from the casting basin
+     * @param recipe    The recipe to remove
+     */
+    public static void removeBasinCast(CastingRecipe recipe) {
+        TinkerRegistry.getAllBasinCastingRecipes().remove(recipe);
+    }
 }
