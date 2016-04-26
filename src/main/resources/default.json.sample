@@ -300,6 +300,44 @@
                     what: "iron"
                 },
                 {
+                    __comment: "You can also add fuels from the smeltery",
+                    __result: "Adds molten iron as a fuel.",
+                    __sideEffect: "Incidentally, removes it from being able to be melted down.",
+                    type: "addSmelteryFuel",
+                    what: "iron:10", // The fluid and how much of it to consume per use
+                    duration: 200 // How many ticks one use of fuel will last
+                },
+                {
+                    __comment: "And remove them...",
+                    __result: "Makes it pretty much impossible to do anything",
+                    type: "removeSmelteryFuel",
+                    what: "lava"
+                },
+                {
+                    __comment: "You can add casting table recipes...",
+                    __result: "Pour gold over a stick and get a sword; worst tasting popsicle ever.",
+                    type: "addSmelteryTableCast",
+                    what: "minecraft:golden_sword",
+                    with: "gold:288",
+                    cast: "minecraft:stick",
+                    consumeCast: true
+                },
+                {
+                    __comment: "And casting basin recipes...",
+                    __result: "Pour water out into a basin and get an ice block...",
+                    __notes: "That's... that's not how melting things down works...",
+                    type: "addSmelteryBasinCast",
+                    what: "minecraft:ice",
+                    with: "water:1000",
+                    // Note, we're leaving out the 'cast' here, and consumeCast defaults to false
+                },
+                {
+                    __comment: "You can also remove both of them...",
+                    type: "removeSmelteryBasinCast",
+                    what: "minecraft:gold_block"
+                    // We could be more specific here, but, we don't need to be
+                },
+                {
                     __comment: "You can add Blood Magic altar recipes...",
                     __result: "Turns a cooked chicken into an egg",
                     type: "addBloodAltarRecipe",

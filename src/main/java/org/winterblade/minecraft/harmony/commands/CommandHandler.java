@@ -22,6 +22,7 @@ public class CommandHandler implements ICommand {
         subcommands.put("getHeldNBT", new GetHeldNbtCommand());
         subcommands.put("reload", new ReloadCommand());
         subcommands.put("getResourceLocator", new GetResourceLocatorCommand());
+        subcommands.put("listFluids", new ListFluidsCommand());
     }
 
     @Override
