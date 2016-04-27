@@ -55,7 +55,9 @@ public class AnnotationUtil {
                 }
 
                 instances.put((Tk) name, (Class<T>) asmClass);
-            } catch (ClassNotFoundException e) {
+            } catch (NoClassDefFoundError e) {
+                System.err.println("Failed to load: " + asmData.getClassName() + " due to a missing dependency.");
+            } catch(Exception e) {
                 System.err.println("Failed to load: " + asmData.getClassName() + ".\n" + Arrays.toString(e.getStackTrace()));
             }
         }
