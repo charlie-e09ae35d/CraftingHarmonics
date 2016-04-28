@@ -1,0 +1,23 @@
+package org.winterblade.minecraft.harmony.crafting.integration.techreborn;
+
+import reborncore.api.recipe.IBaseRecipeType;
+import reborncore.api.recipe.RecipeHandler;
+
+/**
+ * Created by Matt on 4/28/2016.
+ */
+//
+public class RebornRecipeUtils {
+    private RebornRecipeUtils() { }
+
+    public static void addRecipe(IBaseRecipeType recipe) {
+        RecipeHandler.addRecipe(recipe);
+    }
+
+
+
+    public static void removeRecipe(IBaseRecipeType recipe) {
+        RecipeHandler.recipeList.remove(recipe);
+        RecipeHandler.stackMap.remove(recipe);
+    }
+}
