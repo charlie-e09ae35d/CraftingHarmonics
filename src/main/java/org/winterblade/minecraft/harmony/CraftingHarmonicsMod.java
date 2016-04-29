@@ -135,23 +135,34 @@ public class CraftingHarmonicsMod {
     /**
      * Apply the given list of sets; is idempotent
      * @param sets   The sets to apply
+     * @return       If at least one set was added.
      */
-    public static void applySets(String[] sets) {
+    public static boolean applySets(String[] sets) {
+        boolean appliedNewSet = false;
         for(String set : sets) {
             // Apply a set once and only once. Still need a way to remove them:
             if(appliedSets.contains(set) || !craftingSets.containsKey(set)) continue;
 
             craftingSets.get(set).Apply();
             appliedSets.add(set);
+            appliedNewSet = true;
         }
+
+        return appliedNewSet;
     }
 
-    public static void undoSet(String set) {
+    /**
+     * Undo a given set
+     * @param set   The set to undo
+     * @return      True if a set was undone, false otherwise
+     */
+    public static boolean undoSet(String set) {
         // Only undo an applied set:
-        if(!appliedSets.contains(set) || !craftingSets.containsKey(set)) return;
+        if(!appliedSets.contains(set) || !craftingSets.containsKey(set)) return false;
 
         craftingSets.get(set).Undo();
         appliedSets.remove(set);
+        return true;
     }
 
     /**
@@ -170,6 +181,10 @@ public class CraftingHarmonicsMod {
         craftingSets.clear();
     }
 
+    /**
+     * Reload all configs for the server
+     * @param server    The server to reload it on
+     */
     public static void reloadConfigs(MinecraftServer server) {
         // Reload the configs:
         String[] sets = appliedSets.toArray(new String[appliedSets.size()]);
@@ -207,16 +222,20 @@ public class CraftingHarmonicsMod {
         EnumDifficulty curDifficulty = getDifficulty();
         if(curDifficulty == prevDifficulty) return;
 
+        boolean removedConfigs = false;
+
         // Unload the previous difficulty, if we had one loaded:
         if(prevDifficulty != null) {
-            undoSet(getDifficultyName(prevDifficulty));
+            removedConfigs = undoSet(getDifficultyName(prevDifficulty));
         }
 
         prevDifficulty = curDifficulty;
-        applySets(new String[] { getDifficultyName(curDifficulty)});
+        if(applySets(new String[] { getDifficultyName(curDifficulty)}) || removedConfigs) {
+            logger.info("Difficulty set; reloading configs...");
 
-        // Re-sync the applied configs.
-        syncAllConfigs(FMLCommonHandler.instance().getMinecraftServerInstance());
+            // Re-sync the applied configs.
+            syncAllConfigs(FMLCommonHandler.instance().getMinecraftServerInstance());
+        }
     }
 
     /**
