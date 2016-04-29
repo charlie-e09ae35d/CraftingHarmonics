@@ -19,11 +19,13 @@ import java.util.*;
  */
 public class ConfigSyncMessage implements IMessage {
     private Collection<String> config;
+    private Set<String> appliedSets;
 
     public ConfigSyncMessage() {}
 
-    public ConfigSyncMessage(Map<String, String> config) {
+    public ConfigSyncMessage(Map<String, String> config, Set<String> appliedSets) {
         this.config = config.values();
+        this.appliedSets = appliedSets;
     }
     /**
      * Convert from the supplied buffer into your specific message type
@@ -42,6 +44,14 @@ public class ConfigSyncMessage implements IMessage {
             byte[] configBuf = new byte[len];
             buf.readBytes(configBuf);
             config.add(new String(configBuf));
+        }
+
+        appliedSets = new HashSet<>();
+
+        // Read in what sets we have applied:
+        int setSize = buf.readInt();
+        for(int i = 0; i < setSize; i++) {
+            appliedSets.add(ByteBufUtils.readUTF8String(buf));
         }
     }
 
@@ -62,6 +72,13 @@ public class ConfigSyncMessage implements IMessage {
                 // TODO: Handle this better.
                 e.printStackTrace();
             }
+        }
+
+        // Write out the applied sets
+        buf.writeInt(appliedSets.size());
+
+        for(String set : appliedSets) {
+            ByteBufUtils.writeUTF8String(buf, set);
         }
     }
 
@@ -98,7 +115,7 @@ public class ConfigSyncMessage implements IMessage {
             }
 
             CraftingHarmonicsMod.initSets();
-            CraftingHarmonicsMod.applySets(new String[] {"default"});
+            CraftingHarmonicsMod.applySets(message.appliedSets.toArray(new String[message.appliedSets.size()]));
             Jei.reloadJEI();
 
             return null;

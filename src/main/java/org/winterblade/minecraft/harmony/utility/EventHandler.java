@@ -4,6 +4,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.crafting.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
@@ -24,5 +26,13 @@ public class EventHandler {
         SynchronizedRandom.generateNewRandom(player.getUniqueID().toString(), seed);
         PacketHandler.synchronizeRandomToPlayer(seed, (EntityPlayerMP)player);
         PacketHandler.synchronizeConfig(NashornConfigProcessor.getInstance().getCache(), (EntityPlayerMP)player);
+    }
+
+
+    @SubscribeEvent
+    public void onServerTick(TickEvent.ServerTickEvent evt) {
+        if(evt.phase != TickEvent.Phase.END) return;
+
+        CraftingHarmonicsMod.checkDifficultyChanged();
     }
 }

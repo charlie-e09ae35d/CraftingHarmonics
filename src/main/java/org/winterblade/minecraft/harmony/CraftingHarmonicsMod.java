@@ -1,12 +1,17 @@
 package org.winterblade.minecraft.harmony;
 
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.server.FMLServerHandler;
 import net.minecraftforge.oredict.RecipeSorter;
 import org.apache.logging.log4j.Logger;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
@@ -48,6 +53,8 @@ public class CraftingHarmonicsMod {
     private final static Map<String, CraftingSet> craftingSets = new HashMap<>();
     private final static Set<String> initializedSets = new HashSet<>();
     private final static Set<String> appliedSets = new HashSet<>();
+
+    private static EnumDifficulty prevDifficulty = null;
 
     public static Logger logger;
 
@@ -139,6 +146,14 @@ public class CraftingHarmonicsMod {
         }
     }
 
+    public static void undoSet(String set) {
+        // Only undo an applied set:
+        if(!appliedSets.contains(set) || !craftingSets.containsKey(set)) return;
+
+        craftingSets.get(set).Undo();
+        appliedSets.remove(set);
+    }
+
     /**
      * Clears sets, such as when you're joining a server.
      */
@@ -162,11 +177,54 @@ public class CraftingHarmonicsMod {
         configManager.reload();
         initSets();
         applySets(sets);
+        syncAllConfigs(server);
+    }
 
+    /**
+     * Re-sync all configs
+     * @param server    The server to sync them on.
+     */
+    public static void syncAllConfigs(MinecraftServer server) {
         // Sync out our new configs
         List<EntityPlayerMP> playerList = server.getPlayerList().getPlayerList();
         for(EntityPlayerMP player : playerList) {
             PacketHandler.synchronizeConfig(NashornConfigProcessor.getInstance().getCache(), player);
         }
+    }
+
+    public static String getDifficultyName(EnumDifficulty difficulty) {
+        return difficulty.name().toLowerCase();
+    }
+
+    public static EnumDifficulty getDifficulty() {
+        return DimensionManager.getWorld(0).getDifficulty();
+    }
+
+    /**
+     * Checks to see if the difficulty has changed, and reload the configs if so
+     */
+    public static void checkDifficultyChanged() {
+        EnumDifficulty curDifficulty = getDifficulty();
+        if(curDifficulty == prevDifficulty) return;
+
+        // Unload the previous difficulty, if we had one loaded:
+        if(prevDifficulty != null) {
+            undoSet(getDifficultyName(prevDifficulty));
+        }
+
+        prevDifficulty = curDifficulty;
+        applySets(new String[] { getDifficultyName(curDifficulty)});
+
+        // Re-sync the applied configs.
+        syncAllConfigs(FMLCommonHandler.instance().getMinecraftServerInstance());
+    }
+
+    /**
+     * Get the list of applied sets.
+     * @return  The applied sets.
+     */
+    public static Set<String> getAppliedSets() {
+        // Yes, returning an immutable set is hypocritical...
+        return ImmutableSet.copyOf(appliedSets);
     }
 }
