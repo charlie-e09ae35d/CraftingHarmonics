@@ -1,12 +1,17 @@
 package org.winterblade.minecraft.harmony;
 
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.server.FMLServerHandler;
 import net.minecraftforge.oredict.RecipeSorter;
 import org.apache.logging.log4j.Logger;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
@@ -48,6 +53,8 @@ public class CraftingHarmonicsMod {
     private final static Map<String, CraftingSet> craftingSets = new HashMap<>();
     private final static Set<String> initializedSets = new HashSet<>();
     private final static Set<String> appliedSets = new HashSet<>();
+
+    private static EnumDifficulty prevDifficulty = null;
 
     public static Logger logger;
 
@@ -128,15 +135,34 @@ public class CraftingHarmonicsMod {
     /**
      * Apply the given list of sets; is idempotent
      * @param sets   The sets to apply
+     * @return       If at least one set was added.
      */
-    public static void applySets(String[] sets) {
+    public static boolean applySets(String[] sets) {
+        boolean appliedNewSet = false;
         for(String set : sets) {
             // Apply a set once and only once. Still need a way to remove them:
             if(appliedSets.contains(set) || !craftingSets.containsKey(set)) continue;
 
             craftingSets.get(set).Apply();
             appliedSets.add(set);
+            appliedNewSet = true;
         }
+
+        return appliedNewSet;
+    }
+
+    /**
+     * Undo a given set
+     * @param set   The set to undo
+     * @return      True if a set was undone, false otherwise
+     */
+    public static boolean undoSet(String set) {
+        // Only undo an applied set:
+        if(!appliedSets.contains(set) || !craftingSets.containsKey(set)) return false;
+
+        craftingSets.get(set).Undo();
+        appliedSets.remove(set);
+        return true;
     }
 
     /**
@@ -155,6 +181,10 @@ public class CraftingHarmonicsMod {
         craftingSets.clear();
     }
 
+    /**
+     * Reload all configs for the server
+     * @param server    The server to reload it on
+     */
     public static void reloadConfigs(MinecraftServer server) {
         // Reload the configs:
         String[] sets = appliedSets.toArray(new String[appliedSets.size()]);
@@ -162,11 +192,67 @@ public class CraftingHarmonicsMod {
         configManager.reload();
         initSets();
         applySets(sets);
+        syncAllConfigs(server);
+    }
 
+    /**
+     * Re-sync all configs
+     * @param server    The server to sync them on.
+     */
+    public static void syncAllConfigs(MinecraftServer server) {
         // Sync out our new configs
         List<EntityPlayerMP> playerList = server.getPlayerList().getPlayerList();
         for(EntityPlayerMP player : playerList) {
             PacketHandler.synchronizeConfig(NashornConfigProcessor.getInstance().getCache(), player);
         }
+    }
+
+    public static String getDifficultyName(EnumDifficulty difficulty) {
+        return difficulty.name().toLowerCase();
+    }
+
+    public static EnumDifficulty getDifficulty() {
+        return DimensionManager.getWorld(0).getDifficulty();
+    }
+
+    /**
+     * Checks to see if the difficulty has changed, and reload the configs if so
+     */
+    public static void checkDifficultyChanged() {
+        EnumDifficulty curDifficulty = getDifficulty();
+        if(curDifficulty == prevDifficulty) return;
+
+        boolean removedConfigs = false;
+
+        // Unload the previous difficulty, if we had one loaded:
+        if(prevDifficulty != null) {
+            removedConfigs = undoSet(getDifficultyName(prevDifficulty));
+        }
+
+        prevDifficulty = curDifficulty;
+        if(applySets(new String[] { getDifficultyName(curDifficulty)}) || removedConfigs) {
+            logger.info("Difficulty set; reloading configs...");
+
+            // Re-sync the applied configs.
+            syncAllConfigs(FMLCommonHandler.instance().getMinecraftServerInstance());
+        }
+    }
+
+    /**
+     * Get the list of applied sets.
+     * @return  The applied sets.
+     */
+    public static Set<String> getAppliedSets() {
+        // Yes, returning an immutable set is hypocritical...
+        return ImmutableSet.copyOf(appliedSets);
+    }
+
+    /**
+     * Used to apply the base sets
+     */
+    public static void applyBaseSets() {
+        CraftingHarmonicsMod.initSets();
+        CraftingHarmonicsMod.applySets(new String[]{"default",
+                CraftingHarmonicsMod.getDifficultyName(CraftingHarmonicsMod.getDifficulty())});
     }
 }

@@ -390,6 +390,27 @@
                     catalyst: "minecraft:diamond_shovel"
                 }
             ]
+        },
+        {
+            name: "peaceful",
+            // valid difficulty options: peaceful, easy, normal, hard
+            // Note: this is a little awkward if you change difficulties on a server while a player is crafting something
+            // The player will still be able to craft the recipe once, but some of the counts will be updated oddly.
+            operations: [
+                {
+                    __comment: "You can also set recipes per difficulty level.",
+                    __result: "Adds a recipe for making nether stars in peaceful",
+                    type: "addShapeless",
+                    output: "minecraft:nether_star",
+                    with: [
+                        "minecraft:diamond_sword",
+                        "minecraft:soul_sand",
+                        "minecraft:soul_sand",
+                        "minecraft:soul_sand",
+                        "minecraft:soul_sand"
+                    ]
+                }
+            ]
         }
     ]
 }
