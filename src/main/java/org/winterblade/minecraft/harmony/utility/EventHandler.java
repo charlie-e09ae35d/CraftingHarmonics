@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.utility;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -14,7 +15,7 @@ import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
  */
 public class EventHandler {
     @SubscribeEvent
-    // This is called on the client.
+    // This is called on the server.
     public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent evt) {
         EntityPlayer player = evt.player;
 
@@ -25,6 +26,12 @@ public class EventHandler {
 
         SynchronizedRandom.generateNewRandom(player.getUniqueID().toString(), seed);
         PacketHandler.synchronizeRandomToPlayer(seed, (EntityPlayerMP)player);
+
+        // If we're doing SP, we need to set up the base sets...
+        if(FMLCommonHandler.instance().getMinecraftServerInstance().isSinglePlayer()) {
+            CraftingHarmonicsMod.applyBaseSets();
+        }
+
         PacketHandler.synchronizeConfig(NashornConfigProcessor.getInstance().getCache(), (EntityPlayerMP)player);
     }
 

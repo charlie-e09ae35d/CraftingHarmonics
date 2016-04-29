@@ -11,8 +11,6 @@ public class ServerProxy extends CommonProxy {
         super.onStarted(evt);
 
         // Only do this on the server, the client will do it when they connect
-        CraftingHarmonicsMod.initSets();
-        CraftingHarmonicsMod.applySets(new String[]{"default",
-                CraftingHarmonicsMod.getDifficultyName(CraftingHarmonicsMod.getDifficulty())});
+        CraftingHarmonicsMod.applyBaseSets();
     }
 }

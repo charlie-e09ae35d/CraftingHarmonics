@@ -227,4 +227,13 @@ public class CraftingHarmonicsMod {
         // Yes, returning an immutable set is hypocritical...
         return ImmutableSet.copyOf(appliedSets);
     }
+
+    /**
+     * Used to apply the base sets
+     */
+    public static void applyBaseSets() {
+        CraftingHarmonicsMod.initSets();
+        CraftingHarmonicsMod.applySets(new String[]{"default",
+                CraftingHarmonicsMod.getDifficultyName(CraftingHarmonicsMod.getDifficulty())});
+    }
 }
