@@ -45,7 +45,7 @@ ext {
 }
 
 minecraft {
-    version = "1.9-12.16.0.1863-1.9"
+    version = "1.9-12.16.0.1865-1.9"
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.
@@ -86,7 +86,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    deobfCompile "mezz.jei:jei_1.9:3.2.8.182"
+    deobfCompile "mezz.jei:jei_1.9:3.3.0.192"
     deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.2.0.4"
     // compile files('libs/NashornLib-1.9.0-1.8.77-1.2.0')
 
