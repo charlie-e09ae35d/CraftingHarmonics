@@ -28,6 +28,7 @@ import org.winterblade.minecraft.harmony.proxies.CommonProxy;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
+import org.winterblade.minecraft.harmony.utility.SavedGameData;
 
 import java.util.*;
 
@@ -55,6 +56,7 @@ public class CraftingHarmonicsMod {
     private final static Set<String> appliedSets = new HashSet<>();
 
     private static EnumDifficulty prevDifficulty = null;
+    private static SavedGameData savedGameData;
 
     public static Logger logger;
 
@@ -105,6 +107,7 @@ public class CraftingHarmonicsMod {
 
     @Mod.EventHandler
     public void serverStarted(FMLServerStartedEvent evt) {
+        savedGameData = SavedGameData.get(DimensionManager.getWorld(0));
         proxy.onStarted(evt);
     }
 
@@ -251,8 +254,13 @@ public class CraftingHarmonicsMod {
      * Used to apply the base sets
      */
     public static void applyBaseSets() {
-        CraftingHarmonicsMod.initSets();
-        CraftingHarmonicsMod.applySets(new String[]{"default",
-                CraftingHarmonicsMod.getDifficultyName(CraftingHarmonicsMod.getDifficulty())});
+        // apply our base data
+        initSets();
+        applySets(new String[]{"default",
+                getDifficultyName(getDifficulty())});
+
+        // Load saved sets:
+        Set<String> loadedSets = savedGameData.getLoadedSets();
+        applySets(loadedSets.toArray(new String[loadedSets.size()]));
     }
 }
