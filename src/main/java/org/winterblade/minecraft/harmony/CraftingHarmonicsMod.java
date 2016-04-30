@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -123,6 +124,14 @@ public class CraftingHarmonicsMod {
     }
 
     /**
+     * Gets a list of all valid set names
+     * @return  The list of valid sets.
+     */
+    public static List<String> getAllSets() {
+        return ImmutableList.copyOf(craftingSets.keySet());
+    }
+
+    /**
      * Initialize all the sets we have now; is idempotent
      */
     public static void initSets() {
@@ -136,6 +145,15 @@ public class CraftingHarmonicsMod {
     }
 
     /**
+     * Checks to see if the given set name is a valid set.
+     * @param set    The set to check
+     * @return       True if the set exists, false otherwise.
+     */
+    public static boolean isValidSet(String set) {
+        return craftingSets.containsKey(set);
+    }
+
+    /**
      * Apply the given list of sets; is idempotent
      * @param sets   The sets to apply
      * @return       If at least one set was added.
@@ -143,16 +161,24 @@ public class CraftingHarmonicsMod {
     public static boolean applySets(String[] sets) {
         boolean appliedNewSet = false;
         for(String set : sets) {
-            // Apply a set once and only once. Still need a way to remove them:
-            if(appliedSets.contains(set) || !craftingSets.containsKey(set)) continue;
-
-            craftingSets.get(set).Apply();
-            appliedSets.add(set);
-            savedGameData.addSet(set);
-            appliedNewSet = true;
+            appliedNewSet = applySet(set) || appliedNewSet;
         }
 
         return appliedNewSet;
+    }
+
+    /**
+     * Applies a single set
+     * @param set    The set to apply
+     * @return      True if the set was applied; false otherwise
+     */
+    public static boolean applySet(String set) {
+        if(appliedSets.contains(set) || !craftingSets.containsKey(set)) return false;
+
+        craftingSets.get(set).Apply();
+        appliedSets.add(set);
+        savedGameData.addSet(set);
+        return true;
     }
 
     /**
@@ -198,6 +224,13 @@ public class CraftingHarmonicsMod {
         initSets();
         applySets(sets);
         syncAllConfigs(server);
+    }
+
+    /**
+     * Resync all configs using the current server instance
+     */
+    public static void syncAllConfigs() {
+        syncAllConfigs(FMLCommonHandler.instance().getMinecraftServerInstance());
     }
 
     /**

@@ -23,6 +23,7 @@ public class CommandHandler implements ICommand {
         subcommands.put("reload", new ReloadCommand());
         subcommands.put("getResourceLocator", new GetResourceLocatorCommand());
         subcommands.put("listFluids", new ListFluidsCommand());
+        subcommands.put("applySet", new ApplySetCommand());
     }
 
     @Override
