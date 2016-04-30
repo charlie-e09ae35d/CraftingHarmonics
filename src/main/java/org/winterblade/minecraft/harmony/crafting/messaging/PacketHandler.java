@@ -40,6 +40,6 @@ public class PacketHandler {
      * @param
      */
     public static void synchronizeConfig(Map<String,String> config, EntityPlayerMP player) {
-        wrapper.sendTo(new ConfigSyncMessage(config), player);
+        wrapper.sendTo(new ConfigSyncMessage(config, CraftingHarmonicsMod.getAppliedSets()), player);
     }
 }
