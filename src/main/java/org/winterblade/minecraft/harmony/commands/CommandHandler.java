@@ -47,7 +47,7 @@ public class CommandHandler implements ICommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if(args.length == 0) {
+        if(args.length == 0 || args[0].equals("")) {
             sender.addChatMessage(new TextComponentString("Needs a subcommand; usage: /" + getCommandUsage(sender)));
             return;
         }
@@ -63,12 +63,12 @@ public class CommandHandler implements ICommand {
 
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
-        if(args.length == 0) {
+        if(args.length == 0 || args[0].equals("")) {
             return new ArrayList<>(subcommands.keySet());
         }
 
         String[] subArgs = Arrays.copyOfRange(args,1,args.length);
-        return getSubCommand(args[1]).getTabCompletionOptions(server, sender, subArgs, pos);
+        return getSubCommand(args[0]).getTabCompletionOptions(server, sender, subArgs, pos);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CommandHandler implements ICommand {
         if(index == 0 || args.length == 0) return false;
 
         String[] subArgs = Arrays.copyOfRange(args,1,args.length);
-        return getSubCommand(args[1]).isUsernameIndex(subArgs, index-1);
+        return getSubCommand(args[0]).isUsernameIndex(subArgs, index-1);
     }
 
     @Override
