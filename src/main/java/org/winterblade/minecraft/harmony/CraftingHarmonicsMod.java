@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -28,6 +29,7 @@ import org.winterblade.minecraft.harmony.proxies.CommonProxy;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
+import org.winterblade.minecraft.harmony.utility.SavedGameData;
 
 import java.util.*;
 
@@ -55,6 +57,7 @@ public class CraftingHarmonicsMod {
     private final static Set<String> appliedSets = new HashSet<>();
 
     private static EnumDifficulty prevDifficulty = null;
+    private static SavedGameData savedGameData;
 
     public static Logger logger;
 
@@ -105,6 +108,7 @@ public class CraftingHarmonicsMod {
 
     @Mod.EventHandler
     public void serverStarted(FMLServerStartedEvent evt) {
+        savedGameData = SavedGameData.get(DimensionManager.getWorld(0));
         proxy.onStarted(evt);
     }
 
@@ -117,6 +121,14 @@ public class CraftingHarmonicsMod {
         if(!craftingSets.containsKey(setName)) craftingSets.put(setName, new CraftingSet());
 
         craftingSets.get(setName).AddOperation(operation);
+    }
+
+    /**
+     * Gets a list of all valid set names
+     * @return  The list of valid sets.
+     */
+    public static List<String> getAllSets() {
+        return ImmutableList.copyOf(craftingSets.keySet());
     }
 
     /**
@@ -133,6 +145,15 @@ public class CraftingHarmonicsMod {
     }
 
     /**
+     * Checks to see if the given set name is a valid set.
+     * @param set    The set to check
+     * @return       True if the set exists, false otherwise.
+     */
+    public static boolean isValidSet(String set) {
+        return craftingSets.containsKey(set);
+    }
+
+    /**
      * Apply the given list of sets; is idempotent
      * @param sets   The sets to apply
      * @return       If at least one set was added.
@@ -140,15 +161,24 @@ public class CraftingHarmonicsMod {
     public static boolean applySets(String[] sets) {
         boolean appliedNewSet = false;
         for(String set : sets) {
-            // Apply a set once and only once. Still need a way to remove them:
-            if(appliedSets.contains(set) || !craftingSets.containsKey(set)) continue;
-
-            craftingSets.get(set).Apply();
-            appliedSets.add(set);
-            appliedNewSet = true;
+            appliedNewSet = applySet(set) || appliedNewSet;
         }
 
         return appliedNewSet;
+    }
+
+    /**
+     * Applies a single set
+     * @param set    The set to apply
+     * @return      True if the set was applied; false otherwise
+     */
+    public static boolean applySet(String set) {
+        if(appliedSets.contains(set) || !craftingSets.containsKey(set)) return false;
+
+        craftingSets.get(set).Apply();
+        appliedSets.add(set);
+        savedGameData.addSet(set);
+        return true;
     }
 
     /**
@@ -162,6 +192,7 @@ public class CraftingHarmonicsMod {
 
         craftingSets.get(set).Undo();
         appliedSets.remove(set);
+        savedGameData.removeSet(set);
         return true;
     }
 
@@ -193,6 +224,13 @@ public class CraftingHarmonicsMod {
         initSets();
         applySets(sets);
         syncAllConfigs(server);
+    }
+
+    /**
+     * Resync all configs using the current server instance
+     */
+    public static void syncAllConfigs() {
+        syncAllConfigs(FMLCommonHandler.instance().getMinecraftServerInstance());
     }
 
     /**
@@ -251,8 +289,13 @@ public class CraftingHarmonicsMod {
      * Used to apply the base sets
      */
     public static void applyBaseSets() {
-        CraftingHarmonicsMod.initSets();
-        CraftingHarmonicsMod.applySets(new String[]{"default",
-                CraftingHarmonicsMod.getDifficultyName(CraftingHarmonicsMod.getDifficulty())});
+        // apply our base data
+        initSets();
+        applySets(new String[]{"default",
+                getDifficultyName(getDifficulty())});
+
+        // Load saved sets:
+        Set<String> loadedSets = savedGameData.getLoadedSets();
+        applySets(loadedSets.toArray(new String[loadedSets.size()]));
     }
 }
