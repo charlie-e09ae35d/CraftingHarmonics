@@ -411,6 +411,23 @@
                     ]
                 }
             ]
+        },
+        {
+            // This can be named whatever you want, as long as it isn't 'default', or one of the difficulty based set names
+            // and is only alphanumeric.
+            name: "custom",
+            operations: [
+                {
+                    __comment: "You can also create custom sets and apply/remove them using the /ch applySet and /ch removeSet commands.",
+                    __result: "Adds a recipe for testing",
+                    type: "addShapeless",
+                    output: "minecraft:golden_apple",
+                    with: [
+                        "minecraft:apple",
+                        "<nuggetGold>"
+                    ]
+                }
+            ]
         }
     ]
 }
