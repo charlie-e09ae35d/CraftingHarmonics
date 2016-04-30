@@ -148,6 +148,7 @@ public class CraftingHarmonicsMod {
 
             craftingSets.get(set).Apply();
             appliedSets.add(set);
+            savedGameData.addSet(set);
             appliedNewSet = true;
         }
 
@@ -165,6 +166,7 @@ public class CraftingHarmonicsMod {
 
         craftingSets.get(set).Undo();
         appliedSets.remove(set);
+        savedGameData.removeSet(set);
         return true;
     }
 
