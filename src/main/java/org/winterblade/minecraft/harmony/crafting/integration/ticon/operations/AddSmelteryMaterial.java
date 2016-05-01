@@ -33,7 +33,7 @@ public class AddSmelteryMaterial extends BaseRecipeOperation {
     @Override
     public void Init() throws ItemMissingException {
         if(!FluidRegistry.isFluidRegistered(what)) {
-            CraftingHarmonicsMod.logger.warn(what + " is not a valid fluid.");
+            LogHelper.warn(what + " is not a valid fluid.");
             throw new ItemMissingException(what + " is not a valid fluid.");
         }
 

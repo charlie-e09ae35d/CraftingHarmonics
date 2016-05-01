@@ -107,7 +107,7 @@ public class NashornConfigProcessor implements INashornMod {
 
     @Override
     public Logger getLogger() {
-        return CraftingHarmonicsMod.logger;
+        return LogHelper.getLogger();
     }
 
     @Override

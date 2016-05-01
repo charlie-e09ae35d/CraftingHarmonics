@@ -60,8 +60,6 @@ public class CraftingHarmonicsMod {
     private static EnumDifficulty prevDifficulty = null;
     private static SavedGameData savedGameData;
 
-    public static Logger logger;
-
     public CraftingHarmonicsMod() {
     }
 
@@ -70,9 +68,6 @@ public class CraftingHarmonicsMod {
         // Load all recipe operations (thanks mezz, who thanks cpw... so also thanks cpw)
         RecipeOperationRegistry.CreateDeserializers(AnnotationUtil.getRecipeOperations(event.getAsmData()));
         ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
-
-        // Setup Nashorn.
-        logger = event.getModLog();
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");

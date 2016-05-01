@@ -12,6 +12,10 @@ public class LogHelper
     public static final Marker MOD_MARKER = MarkerManager.getMarker(CraftingHarmonicsMod.MODID);
     private static Logger logger = LogManager.getLogger(CraftingHarmonicsMod.MODID);
 
+    public static Logger getLogger() {
+        return logger;
+    }
+
     public static void log(Level level, Marker marker, Message message) {
         logger.log(level, marker, message);
     }
