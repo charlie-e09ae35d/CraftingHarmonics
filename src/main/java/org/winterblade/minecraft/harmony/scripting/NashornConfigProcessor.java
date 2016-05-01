@@ -4,7 +4,6 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 import org.apache.logging.log4j.Logger;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.utility.LogHelper;
 import org.winterblade.minecraft.scripting.api.INashornMod;
 import org.winterblade.minecraft.scripting.api.IScriptContext;

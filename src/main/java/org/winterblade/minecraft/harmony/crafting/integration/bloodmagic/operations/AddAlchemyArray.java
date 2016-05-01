@@ -5,7 +5,6 @@ import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyArrayEffect;
 import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyArrayEffectCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;

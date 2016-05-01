@@ -1,7 +1,6 @@
 package org.winterblade.minecraft.harmony.utility;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
