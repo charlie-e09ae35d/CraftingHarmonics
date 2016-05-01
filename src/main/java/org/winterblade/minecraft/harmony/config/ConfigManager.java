@@ -83,7 +83,7 @@ public class ConfigManager {
 
         for(File config : setFiles) {
             setProgress.step(config.getName());
-            LogHelper.error("Reading set definition " + config.getPath());
+            LogHelper.info("Reading set definition " + config.getPath());
             try {
                 NashornConfigProcessor.getInstance().ReadConfigFile(config);
             } catch (Exception e) {
