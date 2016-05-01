@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.crafting.integration.jei.Jei;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -94,7 +95,7 @@ public class ConfigSyncMessage implements IMessage {
          */
         @Override
         public IMessage onMessage(ConfigSyncMessage message, MessageContext ctx) {
-            CraftingHarmonicsMod.logger.info("Received configuration from the server.");
+            LogHelper.info("Received configuration from the server.");
 
             CraftingHarmonicsMod.clearSets();
 
@@ -104,7 +105,7 @@ public class ConfigSyncMessage implements IMessage {
                     NashornConfigProcessor.getInstance().processConfig(file);
                 } catch (Exception e) {
                     badConfig = true;
-                    CraftingHarmonicsMod.logger.error("Error reading config the server sent; some recipes will be wrong." + e);
+                    LogHelper.error("Error reading config the server sent; some recipes will be wrong." + e);
                 }
             }
 

@@ -7,6 +7,7 @@ import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.integration.ticon.ReflectedTinkerRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import slimeknights.tconstruct.library.smeltery.AlloyRecipe;
 
 /**
@@ -28,7 +29,7 @@ public class AddSmelteryAlloy extends BaseRecipeOperation {
     @Override
     public void Init() throws ItemMissingException {
         if(with == null || with.length < 2) {
-            CraftingHarmonicsMod.logger.warn("Alloys must contain at least two inputs.");
+            LogHelper.warn("Alloys must contain at least two inputs.");
             throw new ItemMissingException("Alloys must contain at least two inputs.");
         }
 
@@ -37,7 +38,7 @@ public class AddSmelteryAlloy extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        CraftingHarmonicsMod.logger.info("Adding Tinker's smeltery alloy for '" + what.getFluid().getName() + "'.");
+        LogHelper.info("Adding Tinker's smeltery alloy for '" + what.getFluid().getName() + "'.");
         ReflectedTinkerRegistry.addAlloy(recipe);
     }
 

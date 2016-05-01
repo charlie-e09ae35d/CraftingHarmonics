@@ -8,6 +8,7 @@ import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.integration.ticon.ReflectedTinkerRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import slimeknights.mantle.util.RecipeMatch;
 import slimeknights.tconstruct.library.smeltery.CastingRecipe;
 
@@ -37,7 +38,7 @@ public class AddSmelteryTableCast extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        CraftingHarmonicsMod.logger.info("Adding Tinker's table cast for '" + ItemRegistry.outputItemName(what) + "'.");
+        LogHelper.info("Adding Tinker's table cast for '" + ItemRegistry.outputItemName(what) + "'.");
         ReflectedTinkerRegistry.addTableCast(recipe);
     }
 

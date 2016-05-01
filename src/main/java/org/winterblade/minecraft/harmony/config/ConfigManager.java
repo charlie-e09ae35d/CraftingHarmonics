@@ -5,6 +5,7 @@ import com.google.common.io.Resources;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,14 +31,14 @@ public class ConfigManager {
     }
 
     private void setupRecipeSets() {
-        System.out.println("Reading set definitions from " + configPath + "Sets/");
+        LogHelper.info("Reading set definitions from " + configPath + "Sets/");
         setFiles.clear();
         File setsDir = new File(configPath + "Sets/");
 
         // Make sure we have a set directory before trying to iterate it...
         if(!setsDir.exists()) {
             if(!setsDir.mkdirs()) {
-                System.err.println("Unable to create config/CraftingHarmonics/Sets/ for CraftingHarmonics.");
+                LogHelper.fatal("Unable to create config/CraftingHarmonics/Sets/ for CraftingHarmonics.");
                 return;
             }
 
@@ -49,14 +50,14 @@ public class ConfigManager {
                 out.println(sampleText);
                 out.close();
             } catch (IOException e) {
-                System.err.println("Error writing sample config to config directory.");
+                LogHelper.error("Error writing sample config to config directory.");
                 return;
             }
         }
 
         // Also make sure it's actually a directory
         if(!setsDir.isDirectory()) {
-            System.err.println("config/CraftingHarmonics/Sets exists, but isn't a directory; this is unacceptable.");
+            LogHelper.error("config/CraftingHarmonics/Sets exists, but isn't a directory; this is unacceptable.");
             return;
         }
 
@@ -64,7 +65,7 @@ public class ConfigManager {
 
         // Make sure we read something...
         if(files == null) {
-            System.err.println("config/CraftingHarmonics/Sets existed, but then it didn't, and we couldn't get files from it.");
+            LogHelper.error("config/CraftingHarmonics/Sets existed, but then it didn't, and we couldn't get files from it.");
             return;
         }
 
@@ -82,11 +83,11 @@ public class ConfigManager {
 
         for(File config : setFiles) {
             setProgress.step(config.getName());
-            System.out.println("Reading set definition " + config.getPath());
+            LogHelper.error("Reading set definition " + config.getPath());
             try {
                 NashornConfigProcessor.getInstance().ReadConfigFile(config);
             } catch (Exception e) {
-                System.err.println("Error processing Set file " + config.getPath() + ": " + e.getMessage());
+                LogHelper.error("Error processing Set file " + config.getPath() + ": " + e.getMessage());
             }
         }
 

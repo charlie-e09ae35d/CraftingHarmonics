@@ -8,6 +8,7 @@ import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.ReflectedBloodMagicRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.Set;
 
@@ -42,7 +43,7 @@ public class RemoveAltarRecipe extends BaseRecipeOperation {
     @Override
     public void Apply() {
         if(recipe == null) return;
-        CraftingHarmonicsMod.logger.info("Removing blood altar recipe for '" + ItemRegistry.outputItemName(what) + "'.");
+        LogHelper.info("Removing blood altar recipe for '" + ItemRegistry.outputItemName(what) + "'.");
         ReflectedBloodMagicRegistry.removeAltarRecipe(recipe);
     }
 

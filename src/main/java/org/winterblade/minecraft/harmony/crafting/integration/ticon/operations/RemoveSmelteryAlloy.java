@@ -6,6 +6,7 @@ import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.integration.ticon.ReflectedTinkerRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.smeltery.AlloyRecipe;
 
@@ -31,7 +32,7 @@ public class RemoveSmelteryAlloy extends BaseRecipeOperation {
     public void Apply() {
         recipes.clear();
 
-        CraftingHarmonicsMod.logger.info("Removing '" + what.getFluid().getName() + "' alloys from the smeltery.");
+        LogHelper.info("Removing '" + what.getFluid().getName() + "' alloys from the smeltery.");
         for(AlloyRecipe recipe : TinkerRegistry.getAlloys()) {
             if(!matches(recipe)) continue;
             ReflectedTinkerRegistry.removeAlloy(recipe);

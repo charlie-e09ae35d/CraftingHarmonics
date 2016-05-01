@@ -6,6 +6,7 @@ import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.integration.ticon.ReflectedTinkerRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class RemoveSmelteryFuel extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        CraftingHarmonicsMod.logger.info("Removing Tinker's smeltery fuel using '" + what.getFluid().getName() + "'.");
+        LogHelper.info("Removing Tinker's smeltery fuel using '" + what.getFluid().getName() + "'.");
         removedFuel = ReflectedTinkerRegistry.removeFuel(what);
     }
 
