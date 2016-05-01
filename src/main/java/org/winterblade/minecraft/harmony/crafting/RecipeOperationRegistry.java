@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.Loader;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -22,9 +23,9 @@ public class RecipeOperationRegistry {
             // Check if we have the specified mod loaded:
             if(!anno.dependsOn().equals("") && !Loader.isModLoaded(anno.dependsOn())) {
                 // TODO: Logger update, but, we don't actually have our logger at this point.
-                System.err.println(anno.name() + " depends on '" + anno.dependsOn() + "', which is not loaded.");
+                LogHelper.warn(anno.name() + " depends on '" + anno.dependsOn() + "', which is not loaded.");
             } else {
-                System.out.println("Registering operation '" + anno.name() + "'.");
+                LogHelper.info("Registering operation '" + anno.name() + "'.");
             }
 
             deserializerMap.put(deserializer.getKey().toLowerCase(), deserializer.getValue());
@@ -41,7 +42,7 @@ public class RecipeOperationRegistry {
     public static boolean CreateOperationInSet(String setName, String type, ScriptObjectMirror operation) {
         type = type.toLowerCase();
         if(!deserializerMap.containsKey(type)) {
-            System.err.println("Unknown recipe operation type '" + type + "' for set '" + setName + "'.  Are you missing an addon?");
+            LogHelper.warn("Unknown recipe operation type '" + type + "' for set '" + setName + "'.  Are you missing an addon?");
             return false;
         }
 
@@ -50,7 +51,7 @@ public class RecipeOperationRegistry {
         try {
             inst = (BaseRecipeOperation)source.newInstance();
         } catch (Exception e) {
-            System.out.println("Unable to create instance of " + source.getCanonicalName() + ": " + e.getMessage());
+            LogHelper.error("Unable to create instance of " + source.getCanonicalName(),e);
             return false;
         }
         if(!inst.Convert(operation)) return false;

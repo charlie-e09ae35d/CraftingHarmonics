@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony;
 
 import net.minecraftforge.fml.common.ProgressManager;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +33,7 @@ public class CraftingSet {
             try {
                 op.Init();
             } catch (Exception ex) {
-                System.err.println(ex.getMessage());
+                LogHelper.error("Error initializing operation.", ex);
             }
         }
 
@@ -51,7 +52,7 @@ public class CraftingSet {
                 op.Apply();
             }
             catch(Exception ex) {
-                System.err.println("Error applying operation.\n" + ex.getMessage());
+                LogHelper.error("Error applying operation.", ex);
             }
         }
 
@@ -69,7 +70,7 @@ public class CraftingSet {
                 op.Undo();
             }
             catch(Exception ex) {
-                CraftingHarmonicsMod.logger.error("Error undoing operation.", ex);
+                LogHelper.error("Error undoing operation.", ex);
             }
         }
     }

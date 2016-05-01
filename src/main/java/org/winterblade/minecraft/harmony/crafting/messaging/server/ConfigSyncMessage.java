@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.crafting.messaging.server;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -10,6 +11,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.crafting.integration.jei.Jei;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
@@ -94,29 +96,33 @@ public class ConfigSyncMessage implements IMessage {
          */
         @Override
         public IMessage onMessage(ConfigSyncMessage message, MessageContext ctx) {
-            CraftingHarmonicsMod.logger.info("Received configuration from the server.");
+            LogHelper.info("Received configuration from the server.");
 
-            CraftingHarmonicsMod.clearSets();
+            Minecraft.getMinecraft().addScheduledTask(() -> {
+                CraftingHarmonicsMod.clearSets();
 
-            boolean badConfig = false;
-            for(String file : message.config) {
-                try {
-                    NashornConfigProcessor.getInstance().processConfig(file);
-                } catch (Exception e) {
-                    badConfig = true;
-                    CraftingHarmonicsMod.logger.error("Error reading config the server sent; some recipes will be wrong." + e);
+                boolean badConfig = false;
+                for(String file : message.config) {
+                    try {
+                        NashornConfigProcessor.getInstance().processConfig(file);
+                    } catch (Exception e) {
+                        badConfig = true;
+                        LogHelper.error("Error reading config the server sent; some recipes will be wrong." + e);
+                    }
                 }
-            }
 
-            if(badConfig) {
-                Minecraft.getMinecraft().thePlayer
-                        .addChatMessage(new TextComponentString("Crafting Harmonics: There was an issue processing " +
-                                "some of the configuration the server sent over.  Some of your recipes may not work."));
-            }
+                if(badConfig) {
+                    Minecraft.getMinecraft().thePlayer
+                            .addChatMessage(new TextComponentString("Crafting Harmonics: There was an issue processing " +
+                                    "some of the configuration the server sent over.  Some of your recipes may not work."));
+                }
 
-            CraftingHarmonicsMod.initSets();
-            CraftingHarmonicsMod.applySets(message.appliedSets.toArray(new String[message.appliedSets.size()]));
-            Jei.reloadJEI();
+                CraftingHarmonicsMod.initSets();
+                CraftingHarmonicsMod.applySets(message.appliedSets.toArray(new String[message.appliedSets.size()]));
+
+                // If we have JEI, reload JEI:
+                if(Loader.isModLoaded("JEI")) Jei.reloadJEI();
+            });
 
             return null;
         }

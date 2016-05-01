@@ -22,7 +22,7 @@ public class EventHandler {
         if(!(player instanceof EntityPlayerMP)) return;
 
         long seed = player.getEntityWorld().getTotalWorldTime() + player.getEntityWorld().getSeed();
-        System.out.println("Player logged in, getting them a new random seed for crafting: " + seed);
+        LogHelper.info("Player logged in, getting them a new random seed for crafting: " + seed);
 
         SynchronizedRandom.generateNewRandom(player.getUniqueID().toString(), seed);
         PacketHandler.synchronizeRandomToPlayer(seed, (EntityPlayerMP)player);

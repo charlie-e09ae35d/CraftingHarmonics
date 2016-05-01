@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.crafting;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.winterblade.minecraft.harmony.api.*;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -32,7 +33,7 @@ public class ComponentRegistry {
             Constructor[] constructors = componentClass.getConstructors();
 
             if(constructors.length <= 0) {
-                System.err.println("Unable to find a constructor for '" + componentClass.getSimpleName() +
+                LogHelper.error("Unable to find a constructor for '" + componentClass.getSimpleName() +
                         "'; it will not be registered.");
                 continue;
             }
@@ -140,9 +141,9 @@ public class ComponentRegistry {
 
             Class componentClass = reg.getComponentClass();
             if(resultData.result == RegistrationCheckResult.MISSING_REQUIRED_KEYS) {
-                System.err.println("The '" + componentClass.getSimpleName() + "' matcher was missing the following: ");
+                LogHelper.warn("The '" + componentClass.getSimpleName() + "' matcher was missing the following: ");
                 for(String s : resultData.keys) {
-                    System.err.println(" - " + s);
+                    LogHelper.warn(" - " + s);
                 }
                 continue;
             }
@@ -151,7 +152,7 @@ public class ComponentRegistry {
             Map.Entry<Constructor, List<String>> constructorEntry = reg.getConstructorFor(resultData.keys);
 
             if(constructorEntry == null) {
-                System.err.println("No matching constructor could be found for the arguments given.");
+                LogHelper.error("No matching constructor could be found for the arguments given.");
                 continue;
             }
 
@@ -169,7 +170,7 @@ public class ComponentRegistry {
             try {
                 component = constuctor.newInstance(values);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                System.err.println("Error calling constructor for '" + componentClass.getSimpleName() + "': " + e.getMessage());
+                LogHelper.error("Error calling constructor for '" + componentClass.getSimpleName() + "': " + e.getMessage());
                 continue;
             }
 

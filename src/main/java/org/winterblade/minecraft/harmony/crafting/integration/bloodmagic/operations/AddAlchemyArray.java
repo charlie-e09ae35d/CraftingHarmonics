@@ -5,13 +5,13 @@ import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyArrayEffect;
 import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyArrayEffectCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.ReflectedBloodMagicRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 /**
  * Created by Matt on 4/22/2016.
@@ -53,7 +53,7 @@ public class AddAlchemyArray extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        CraftingHarmonicsMod.logger.info("Adding Alchemy Array recipe for '" + ItemRegistry.outputItemName(output) + "'.");
+        LogHelper.info("Adding Alchemy Array recipe for '" + ItemRegistry.outputItemName(output) + "'.");
         if(input instanceof String) {
             ReflectedBloodMagicRegistry.addAlchemyArray((String)input, catalyst, effect, renderer);
         } else if(input instanceof ItemStack) {

@@ -2,13 +2,11 @@ package org.winterblade.minecraft.harmony.crafting.integration.ticon.operations;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.integration.ticon.ReflectedTinkerRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import slimeknights.tconstruct.library.TinkerRegistry;
-import slimeknights.tconstruct.library.smeltery.AlloyRecipe;
 import slimeknights.tconstruct.library.smeltery.MeltingRecipe;
 
 import java.util.ArrayList;
@@ -40,7 +38,7 @@ public class RemoveSmelteryMelt extends BaseRecipeOperation {
     public void Apply() {
         recipes.clear();
 
-        CraftingHarmonicsMod.logger.info("Removing '" + what.getFluid().getName() + "' melts from the smeltery.");
+        LogHelper.info("Removing '" + what.getFluid().getName() + "' melts from the smeltery.");
         List<MeltingRecipe> meltingRecipies = TinkerRegistry.getAllMeltingRecipies();
 
         for(Iterator<MeltingRecipe> recipeIterator = meltingRecipies.iterator(); recipeIterator.hasNext(); ) {

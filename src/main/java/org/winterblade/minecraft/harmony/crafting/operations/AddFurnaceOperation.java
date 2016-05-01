@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.Map;
 
@@ -30,9 +31,9 @@ public class AddFurnaceOperation extends BaseAddOperation {
     public void Init() throws ItemMissingException {
         super.Init();
 
-        if(with.getItemStack() == null) throw new RuntimeException("Unable to find requested input item " + with.toString());
+        if(with.getItemStack() == null) throw new ItemMissingException("Unable to find requested input item " + with.toString());
         if(with.hasNbt()) {
-            throw new RuntimeException("NBT matching is not supported for furnace recipes.");
+            throw new ItemMissingException("NBT matching is not supported for furnace recipes.");
         }
         inputStack = with.getItemStack();
         outputStack = output.getItemStack();
@@ -40,11 +41,11 @@ public class AddFurnaceOperation extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding furnace recipe for " + output.toString());
+        LogHelper.info("Adding furnace recipe for " + output.toString());
         float curXp = FurnaceRecipes.instance().getSmeltingExperience(output.getItemStack());
         setXp = curXp == 0.0F;
         if(curXp != 0.0F && curXp != experience) {
-            System.out.println(output.toString()
+            LogHelper.warn(output.toString()
                     + " is already registered as a furnace output. Due to how Minecraft handles smelting XP, this will"
                     + " always give you '" + curXp + "' XP per item instead of the '" + experience + "' you set.");
         }

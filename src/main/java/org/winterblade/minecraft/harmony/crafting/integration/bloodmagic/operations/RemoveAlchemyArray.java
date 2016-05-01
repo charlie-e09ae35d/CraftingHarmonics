@@ -1,13 +1,13 @@
 package org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.operations;
 
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.ReflectedBloodMagicRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 /**
  * Created by Matt on 4/22/2016.
@@ -37,10 +37,10 @@ public class RemoveAlchemyArray extends BaseRecipeOperation {
         if(with == null) return;
 
         if(input instanceof String) {
-            CraftingHarmonicsMod.logger.info("Removing Alchemy Array for '" + input.toString() + "'.");
+            LogHelper.info("Removing Alchemy Array for '" + input.toString() + "'.");
             recipe = ReflectedBloodMagicRegistry.removeAlchemyArray(input.toString(), catalyst);
         } else if(input instanceof ItemStack) {
-            CraftingHarmonicsMod.logger.info("Removing Alchemy Array for '" + ItemRegistry.outputItemName((ItemStack)input) + "'.");
+            LogHelper.info("Removing Alchemy Array for '" + ItemRegistry.outputItemName((ItemStack)input) + "'.");
             recipe = ReflectedBloodMagicRegistry.removeAlchemyArray((ItemStack)input, catalyst);
         }
     }

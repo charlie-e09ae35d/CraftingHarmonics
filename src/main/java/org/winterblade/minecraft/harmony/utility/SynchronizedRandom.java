@@ -28,7 +28,7 @@ public class SynchronizedRandom {
         if(r == null) {
             // This means we probably have a player that isn't logged in / is fake, etc
             // And we're probably safe to just generate a new random for them.
-            System.err.println("Tried to get a stored random that didn't exist for '" + playerId + "'.");
+            LogHelper.warn("Tried to get a stored random that didn't exist for '" + playerId + "'.");
             r = new Random();
             randomMap.put(playerId, r);
         }

@@ -12,9 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.server.FMLServerHandler;
 import net.minecraftforge.oredict.RecipeSorter;
-import org.apache.logging.log4j.Logger;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
@@ -29,6 +27,7 @@ import org.winterblade.minecraft.harmony.proxies.CommonProxy;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import org.winterblade.minecraft.harmony.utility.SavedGameData;
 
 import java.util.*;
@@ -59,8 +58,6 @@ public class CraftingHarmonicsMod {
     private static EnumDifficulty prevDifficulty = null;
     private static SavedGameData savedGameData;
 
-    public static Logger logger;
-
     public CraftingHarmonicsMod() {
     }
 
@@ -69,9 +66,6 @@ public class CraftingHarmonicsMod {
         // Load all recipe operations (thanks mezz, who thanks cpw... so also thanks cpw)
         RecipeOperationRegistry.CreateDeserializers(AnnotationUtil.getRecipeOperations(event.getAsmData()));
         ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
-
-        // Setup Nashorn.
-        logger = event.getModLog();
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
@@ -103,6 +97,7 @@ public class CraftingHarmonicsMod {
 
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
+        prevDifficulty = getDifficulty();
         event.registerServerCommand(new CommandHandler());
     }
 
@@ -177,7 +172,7 @@ public class CraftingHarmonicsMod {
 
         craftingSets.get(set).Apply();
         appliedSets.add(set);
-        savedGameData.addSet(set);
+        if(savedGameData != null) savedGameData.addSet(set);
         return true;
     }
 
@@ -192,7 +187,7 @@ public class CraftingHarmonicsMod {
 
         craftingSets.get(set).Undo();
         appliedSets.remove(set);
-        savedGameData.removeSet(set);
+        if(savedGameData != null) savedGameData.removeSet(set);
         return true;
     }
 
@@ -269,7 +264,7 @@ public class CraftingHarmonicsMod {
 
         prevDifficulty = curDifficulty;
         if(applySets(new String[] { getDifficultyName(curDifficulty)}) || removedConfigs) {
-            logger.info("Difficulty set; reloading configs...");
+            LogHelper.info("Difficulty set; reloading configs...");
 
             // Re-sync the applied configs.
             syncAllConfigs(FMLCommonHandler.instance().getMinecraftServerInstance());

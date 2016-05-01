@@ -36,7 +36,7 @@ public class AnnotationUtil {
                 Class<?> asmClass = Class.forName(asmData.getClassName());
 
                 if(!outputClass.isAssignableFrom(asmClass)) {
-                    System.err.println("Attempted to load '" + asmClass.getSimpleName() +
+                    LogHelper.error("Attempted to load '" + asmClass.getSimpleName() +
                             "', but it doesn't implement '" + outputClass.getSimpleName() + "'.");
                     continue;
                 }
@@ -49,16 +49,16 @@ public class AnnotationUtil {
                 }
 
                 if(name == null) {
-                    System.err.println("Attempted to load '" + asmClass.getSimpleName() +
+                    LogHelper.error("Attempted to load '" + asmClass.getSimpleName() +
                             "', couldn't find the ID parameter '" + idParam + "' on it.");
                     continue;
                 }
 
                 instances.put((Tk) name, (Class<T>) asmClass);
             } catch (NoClassDefFoundError e) {
-                System.err.println("Failed to load: " + asmData.getClassName() + " due to a missing dependency.");
+                LogHelper.warn("Failed to load: " + asmData.getClassName() + " due to a missing dependency.");
             } catch(Exception e) {
-                System.err.println("Failed to load: " + asmData.getClassName() + ".\n" + Arrays.toString(e.getStackTrace()));
+                LogHelper.error("Failed to load: " + asmData.getClassName() + ".", e);
             }
         }
         return instances;
