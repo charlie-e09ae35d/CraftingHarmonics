@@ -97,27 +97,29 @@ public class ConfigSyncMessage implements IMessage {
         public IMessage onMessage(ConfigSyncMessage message, MessageContext ctx) {
             LogHelper.info("Received configuration from the server.");
 
-            CraftingHarmonicsMod.clearSets();
+            Minecraft.getMinecraft().addScheduledTask(() -> {
+                CraftingHarmonicsMod.clearSets();
 
-            boolean badConfig = false;
-            for(String file : message.config) {
-                try {
-                    NashornConfigProcessor.getInstance().processConfig(file);
-                } catch (Exception e) {
-                    badConfig = true;
-                    LogHelper.error("Error reading config the server sent; some recipes will be wrong." + e);
+                boolean badConfig = false;
+                for(String file : message.config) {
+                    try {
+                        NashornConfigProcessor.getInstance().processConfig(file);
+                    } catch (Exception e) {
+                        badConfig = true;
+                        LogHelper.error("Error reading config the server sent; some recipes will be wrong." + e);
+                    }
                 }
-            }
 
-            if(badConfig) {
-                Minecraft.getMinecraft().thePlayer
-                        .addChatMessage(new TextComponentString("Crafting Harmonics: There was an issue processing " +
-                                "some of the configuration the server sent over.  Some of your recipes may not work."));
-            }
+                if(badConfig) {
+                    Minecraft.getMinecraft().thePlayer
+                            .addChatMessage(new TextComponentString("Crafting Harmonics: There was an issue processing " +
+                                    "some of the configuration the server sent over.  Some of your recipes may not work."));
+                }
 
-            CraftingHarmonicsMod.initSets();
-            CraftingHarmonicsMod.applySets(message.appliedSets.toArray(new String[message.appliedSets.size()]));
-            Jei.reloadJEI();
+                CraftingHarmonicsMod.initSets();
+                CraftingHarmonicsMod.applySets(message.appliedSets.toArray(new String[message.appliedSets.size()]));
+                Jei.reloadJEI();
+            });
 
             return null;
         }
