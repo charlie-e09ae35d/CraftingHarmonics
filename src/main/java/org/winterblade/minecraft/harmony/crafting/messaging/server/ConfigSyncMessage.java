@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.crafting.messaging.server;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -118,7 +119,9 @@ public class ConfigSyncMessage implements IMessage {
 
                 CraftingHarmonicsMod.initSets();
                 CraftingHarmonicsMod.applySets(message.appliedSets.toArray(new String[message.appliedSets.size()]));
-                Jei.reloadJEI();
+
+                // If we have JEI, reload JEI:
+                if(Loader.isModLoaded("JEI")) Jei.reloadJEI();
             });
 
             return null;
