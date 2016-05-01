@@ -97,6 +97,7 @@ public class CraftingHarmonicsMod {
 
     @Mod.EventHandler
     public void serverStarting(FMLServerStartingEvent event) {
+        prevDifficulty = getDifficulty();
         event.registerServerCommand(new CommandHandler());
     }
 
