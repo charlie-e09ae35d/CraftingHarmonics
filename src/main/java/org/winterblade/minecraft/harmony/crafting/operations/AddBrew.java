@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class AddBrew extends BaseAddOperation {
 
         if(input == null) throw new RuntimeException("Unable to find requested input item " + input.toString());
         if(input.hasNbt()) {
-            System.out.println("NBT support for brews isn't done yet because it's considered an edge case - NBT + " +
+            LogHelper.warn("NBT support for brews isn't done yet because it's considered an edge case - NBT + " +
                     "stack size 1? - if you need this, please let me know!");
         }
         if(input.getItemStack().getMaxStackSize() > 1) throw new RuntimeException("Inputs for brewing cannot be stackable.");
@@ -50,7 +51,7 @@ public class AddBrew extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding brewing recipe for  " + output.toString());
+        LogHelper.info("Adding brewing recipe for  " + output.toString());
         BrewingRecipeRegistry.addRecipe(recipe);
     }
 

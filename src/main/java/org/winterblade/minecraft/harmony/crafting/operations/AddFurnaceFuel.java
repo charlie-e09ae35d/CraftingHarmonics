@@ -7,6 +7,7 @@ import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 /**
  * Created by Matt on 4/6/2016.
@@ -18,15 +19,15 @@ public class AddFurnaceFuel extends BaseRecipeOperation {
 
     @Override
     public void Init() throws ItemMissingException {
-        if (what == null) throw new RuntimeException("Unable to find requested fuel item.");
+        if (what == null) throw new ItemMissingException("Unable to find requested fuel item.");
     }
 
     @Override
     public void Apply() {
-        System.out.println("Registering fuel '" + what.toString() + "' with burn time '" + burnTime + "'.");
+        LogHelper.info("Registering fuel '" + what.toString() + "' with burn time '" + burnTime + "'.");
         int curBurnTime = GameRegistry.getFuelValue(what.getItemStack());
         if (curBurnTime > burnTime) {
-            System.out.println("Currently '" + what.toString() + "' is registered at a higher burn time " +
+            LogHelper.warn("Currently '" + what.toString() + "' is registered at a higher burn time " +
                     "than you've requested; we can't override this at the moment.");
             return;
         }

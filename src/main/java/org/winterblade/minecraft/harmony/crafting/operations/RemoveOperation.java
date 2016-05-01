@@ -15,6 +15,7 @@ import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -110,7 +111,7 @@ public class RemoveOperation extends BaseRecipeOperation {
                     FromFlags flag = Enum.valueOf(FromFlags.class, s.toUpperCase());
                     fromFlag |= flag.getFlag();
                 } catch(Exception ex) {
-                    CraftingHarmonicsMod.logger.warn("Removed recipe type '" + s + "' is not valid.");
+                    LogHelper.warn("Removed recipe type '" + s + "' is not valid.");
                 }
             }
         }
@@ -142,7 +143,7 @@ public class RemoveOperation extends BaseRecipeOperation {
             if(with != null && with.length > 0 && !ItemStack.areItemStacksEqual(with[0], recipe.getKey())) continue;
 
             // We matched something:
-            CraftingHarmonicsMod.logger.info("Removing " + recipe.getValue().getUnlocalizedName() + " from the furnace.");
+            LogHelper.info("Removing " + recipe.getValue().getUnlocalizedName() + " from the furnace.");
             removedRecipes.add(new RemovedFurnaceRecipe(recipe));
             furnaceIterator.remove();
         }
@@ -156,7 +157,7 @@ public class RemoveOperation extends BaseRecipeOperation {
 
         InventoryCrafting inv = simulateInventoryOf(with);
 
-        CraftingHarmonicsMod.logger.info("Searching for recipes to remove for " + modId + ":" + itemName + ":" + metadata + "...");
+        LogHelper.info("Searching for recipes to remove for " + modId + ":" + itemName + ":" + metadata + "...");
 
         for(Iterator<IRecipe> recipeIterator = recipeList.iterator(); recipeIterator.hasNext(); ) {
             IRecipe recipe = recipeIterator.next();
@@ -166,7 +167,7 @@ public class RemoveOperation extends BaseRecipeOperation {
             if(with != null && with.length > 0 && !recipe.matches(inv, null)) continue;
 
             // We matched something:
-            CraftingHarmonicsMod.logger.info("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
+            LogHelper.info("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
             removedRecipes.add(new RemovedCraftingRecipe(recipe));
             recipeIterator.remove();
         }

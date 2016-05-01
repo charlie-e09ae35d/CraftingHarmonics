@@ -7,6 +7,7 @@ import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import slimeknights.mantle.util.RecipeMatch;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.smeltery.MeltingRecipe;
@@ -41,7 +42,7 @@ public class AddSmelteryMaterial extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        CraftingHarmonicsMod.logger.info("Adding Tinker's smeltery melt to turn '"
+        LogHelper.info("Adding Tinker's smeltery melt to turn '"
                 + Item.REGISTRY.getNameForObject(with.getItem()) + "' into '" + what + "'.");
         TinkerRegistry.registerMelting(recipe);
     }

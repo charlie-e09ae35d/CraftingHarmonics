@@ -5,6 +5,7 @@ import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessComponentRecipe;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 /**
  * Created by Matt on 4/5/2016.
@@ -27,7 +28,7 @@ public class AddShapelessOperation extends BaseAddOperation {
 
     @Override
     public void Apply() {
-        System.out.println("Adding shapeless recipe for " + output.toString());
+        LogHelper.info("Adding shapeless recipe for " + output.toString());
         CraftingManager.getInstance().addRecipe(recipe);
     }
 

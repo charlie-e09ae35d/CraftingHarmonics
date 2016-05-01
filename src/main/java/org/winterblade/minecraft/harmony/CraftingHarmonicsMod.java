@@ -29,6 +29,7 @@ import org.winterblade.minecraft.harmony.proxies.CommonProxy;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import org.winterblade.minecraft.harmony.utility.SavedGameData;
 
 import java.util.*;
@@ -269,7 +270,7 @@ public class CraftingHarmonicsMod {
 
         prevDifficulty = curDifficulty;
         if(applySets(new String[] { getDifficultyName(curDifficulty)}) || removedConfigs) {
-            logger.info("Difficulty set; reloading configs...");
+            LogHelper.info("Difficulty set; reloading configs...");
 
             // Re-sync the applied configs.
             syncAllConfigs(FMLCommonHandler.instance().getMinecraftServerInstance());

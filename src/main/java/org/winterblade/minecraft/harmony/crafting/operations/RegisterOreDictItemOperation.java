@@ -6,6 +6,7 @@ import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 /**
  * Created by Matt on 4/6/2016.
@@ -21,12 +22,12 @@ public class RegisterOreDictItemOperation extends BaseRecipeOperation {
     @Override
     public void Init() throws ItemMissingException {
         if (what == null)
-            throw new RuntimeException("Unable to find item " + what.toString() + " to add to dictionary '" + oreDict + "'.");
+            throw new ItemMissingException("Unable to find item " + what.toString() + " to add to dictionary '" + oreDict + "'.");
     }
 
     @Override
     public void Apply() {
-        System.out.println("Adding '" + what.toString() + "' to the dictionary '" + oreDict + "'.");
+        LogHelper.info("Adding '" + what.toString() + "' to the dictionary '" + oreDict + "'.");
         OreDictionary.registerOre(oreDict, what.getItemStack());
     }
 
@@ -42,7 +43,7 @@ public class RegisterOreDictItemOperation extends BaseRecipeOperation {
         if (baseCompare != 0) return baseCompare;
 
         // After removes...
-        if (!(o instanceof RemoveOperation)) return 1;
+        if ((o instanceof RemoveOperation)) return 1;
 
         // Before anything else...
         if (!(o instanceof RegisterOreDictItemOperation)) return -1;

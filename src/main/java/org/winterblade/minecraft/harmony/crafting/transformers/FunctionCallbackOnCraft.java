@@ -8,6 +8,7 @@ import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.events.ItemOnCraftedCallback;
 import org.winterblade.minecraft.harmony.crafting.events.ItemOnCraftedEvent;
 import org.winterblade.minecraft.harmony.crafting.events.wrappers.ItemStackWrapper;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import org.winterblade.minecraft.harmony.utility.SynchronizedRandom;
 
 import javax.annotation.Nonnull;
@@ -34,7 +35,7 @@ public class FunctionCallbackOnCraft implements IItemStackTransformer {
         try {
             fn.apply(new ItemOnCraftedEvent(random, wrapper));
         } catch(Exception ex) {
-            System.err.println("Error with onCraft callback function: " + ex.getMessage());
+            LogHelper.error("Error with onCraft callback function", ex);
         }
 
         // Return the now modified input:

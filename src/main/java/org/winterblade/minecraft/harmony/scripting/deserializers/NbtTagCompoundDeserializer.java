@@ -6,6 +6,7 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
@@ -26,7 +27,7 @@ public class NbtTagCompoundDeserializer implements IScriptObjectDeserializer {
         try {
             return JsonToNBT.getTagFromJson(json);
         } catch (NBTException e) {
-            System.out.println("Unable to convert '" + json + "' to NBT tag.");
+            LogHelper.error("Unable to convert '" + json + "' to NBT tag.", e);
             return new NBTTagCompound();
         }
     }

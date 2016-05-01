@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Resources;
 import org.apache.logging.log4j.Logger;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import org.winterblade.minecraft.scripting.api.INashornMod;
 import org.winterblade.minecraft.scripting.api.IScriptContext;
 import org.winterblade.minecraft.scripting.api.NashornMod;
@@ -33,7 +34,7 @@ public class NashornConfigProcessor implements INashornMod {
         try {
             tempHeader = Resources.toString(Resources.getResource("scripts/InternalFileProcessor.js"), Charsets.UTF_8);
         } catch (IOException e) {
-            System.err.println("Unable to load file processing header; things will go badly from here out...");
+            LogHelper.fatal("Unable to load file processing header; things will go badly from here out...");
             tempHeader = "";
         }
 
@@ -58,7 +59,7 @@ public class NashornConfigProcessor implements INashornMod {
 
     public void ReadConfigFile(File file) {
         if(nashorn == null) {
-            CraftingHarmonicsMod.logger.fatal("Nashorn library isn't loaded; please make sure you have NashornLib in your mods folder.");
+            LogHelper.fatal("Nashorn library isn't loaded; please make sure you have NashornLib in your mods folder.");
         }
 
         String fileContent = getJsonFileContent(file);
@@ -69,7 +70,7 @@ public class NashornConfigProcessor implements INashornMod {
             // Only put valid configs in the cache:
             cache.put(file.getName(), fileContent);
         } catch (Exception e) {
-            System.err.println("Error processing Set file " + file.getPath() + ": " + e.getMessage());
+            LogHelper.error("Error processing Set file " + file.getPath(), e);
         }
     }
 
@@ -97,7 +98,7 @@ public class NashornConfigProcessor implements INashornMod {
         try {
             fileContent += new String(Files.readAllBytes(Paths.get(file.getPath())));
         } catch (Exception e) {
-            System.err.println("Error processing Set file " + file.getPath() + ": " + e.getMessage());
+            LogHelper.error("Error processing Set file " + file.getPath(),e);
             return null;
         }
         fileContent += "; __CraftingHarmonicsInternal.FileProcessor('" + file.getName() + "',module.exports);";

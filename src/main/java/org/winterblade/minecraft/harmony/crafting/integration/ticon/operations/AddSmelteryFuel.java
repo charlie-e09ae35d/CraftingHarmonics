@@ -6,6 +6,7 @@ import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.integration.ticon.ReflectedTinkerRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 /**
  * Created by Matt on 4/24/2016.
@@ -25,7 +26,7 @@ public class AddSmelteryFuel extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        CraftingHarmonicsMod.logger.info("Adding Tinker's smeltery fuel using '" + what.getFluid().getName() + "'.");
+        LogHelper.info("Adding Tinker's smeltery fuel using '" + what.getFluid().getName() + "'.");
         ReflectedTinkerRegistry.addFuel(what, duration);
     }
 

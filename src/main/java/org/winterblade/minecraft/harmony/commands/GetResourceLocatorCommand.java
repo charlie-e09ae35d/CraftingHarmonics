@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.List;
 
@@ -74,7 +75,7 @@ public class GetResourceLocatorCommand implements ICommand {
         }
 
         String resourceLocator = ItemRegistry.outputItemName(mainHand);
-        CraftingHarmonicsMod.logger.info(resourceLocator);
+        LogHelper.info(resourceLocator);
         sender.addChatMessage(new TextComponentString("Locator (also logged): " + resourceLocator));
     }
 
