@@ -389,6 +389,8 @@
                     with: "bloodmagic:ItemComponent:8", // Binding component
                     catalyst: "minecraft:diamond_shovel"
                 },
+
+                // Harvest levels
                 {
                     __comment: "You can remap harvest levels, in case you want to add additional levels between the existing ones.",
                     __result: "Makes it so that blocks which normally require only a stone pick now require a diamond pick",
@@ -409,6 +411,15 @@
                     // - Harvest levels can't be removed, but you can set them to really high numbers, like 9001
                     //   (or anything up to Integer.MAX_VALUE: 2147483647)
                     // - Obsidian and redstone are special cases; just don't bother.
+                },
+                {
+                    __comment: "Finally, you can set the effective harvest level of a given tool; note that this still has to be a tool of some form.",
+                    __result: "Makes wood shovels also count as a diamond pickaxe.",
+                    type: "setToolHarvestLevel",
+                    what: "minecraft:wooden_shovel",
+                    to: 3,
+                    as: "pickaxe"
+                    // Note: this will not work with TiCon tools, as they're handled a bit differently.
                 }
             ]
         },
