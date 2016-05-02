@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.crafting.operations;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ public abstract class BaseHarvestLevelOperation extends BaseRecipeOperation {
         private final int newLevel;
         private final String oldTool;
         private final String newTool;
+        private final String resName;
 
         /**
          * Defines a modification to the block harvestability
@@ -53,12 +55,15 @@ public abstract class BaseHarvestLevelOperation extends BaseRecipeOperation {
             this.newTool = newTool;
             this.oldLevel = block.getHarvestLevel(blockState);
             this.oldTool = block.getHarvestTool(blockState);
+            resName = Block.REGISTRY.getNameForObject(block).toString();
         }
 
         /**
          * Update the block's harvest level.
          */
         void apply() {
+            LogHelper.info("Updating " + resName + "'s harvest level from " + oldTool + ":" + oldLevel
+                    + " to " + newTool + ":" + newLevel);
             block.setHarvestLevel(newTool, newLevel, blockState);
         }
 

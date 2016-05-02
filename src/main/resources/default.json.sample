@@ -388,6 +388,27 @@
                     type: "removeAlchemyArray",
                     with: "bloodmagic:ItemComponent:8", // Binding component
                     catalyst: "minecraft:diamond_shovel"
+                },
+                {
+                    __comment: "You can remap harvest levels, in case you want to add additional levels between the existing ones.",
+                    __result: "Makes it so that blocks which normally require only a stone pick now require a diamond pick",
+                    type: "remapHarvestLevel",
+                    from: 1,
+                    to: 3,
+                    with: "pickaxe" // valid options: pickaxe, axe, shovel
+                },
+                {
+                    __comment: "You can, of course, set the harvest level on a single block as well.",
+                    __result: "Makes it to where iron ore can now be broken with a stone shovel (as well as a stone pick)",
+                    type: "setHarvestLevel",
+                    what: "minecraft:iron_ore",
+                    to: 1,
+                    with: "shovel"
+                    // Some additional notes:
+                    // - Pickaxes are still effective for everything.  Blame Minecraft.
+                    // - Harvest levels can't be removed, but you can set them to really high numbers, like 9001
+                    //   (or anything up to Integer.MAX_VALUE: 2147483647)
+                    // - Obsidian and redstone are special cases; just don't bother.
                 }
             ]
         },
@@ -414,7 +435,6 @@
         },
         {
             // This can be named whatever you want, as long as it isn't 'default', or one of the difficulty based set names
-            // and is only alphanumeric.
             name: "custom",
             operations: [
                 {
