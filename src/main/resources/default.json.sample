@@ -264,6 +264,8 @@
                     with: [ "minecraft:reeds","minecraft:reeds","minecraft:reeds" ],
                     width: 3
                 },
+
+                // Tinker's Construct
                 {
                     __comment: "You can register new smeltery melting recipes",
                     __result: "Adds a recipe to melt down a water bucket into 1000mb of water",
@@ -337,6 +339,45 @@
                     what: "minecraft:gold_block"
                     // We could be more specific here, but, we don't need to be
                 },
+                {
+                    __comment: "You can set material stats.",
+                    __result: "Makes Cobalt much less effective",
+                    type: "setMaterialStats",
+                    material: "cobalt",
+                    // Note: You can leave any of the these out, and it won't modify that aspect of the tool
+                    head: {
+                        durability: 25, // The base durability for the tool; Cobalt is 780 normally
+                        harvestLevel: 5, // above existing materials; Cobalt is 4 normally
+                        attack: 2, // number of half hearts of damage to do; Cobalt is 4.1 normally
+                        miningSpeed: 2 // usually between 1 and 10; Cobalt is 12.0 normally
+                    },
+                    handle: {
+                        modifier: 0.5, // between 0 and 1, the amount of durability using it for modifiers grants; Cobalt is 0.9 normally
+                        durability: 25 // How much durability to add/take away from the tool; Cobalt is 100 normally
+                    },
+                    extra: {
+                        extraDurability: 0 // Added durability to give the tool when used as a binding/etc; Cobalt is 300 normally
+                    }
+                },
+                {
+                    __comment: "You can create new harvest levels",
+                    __result: "Creates a new harvest level 'Manyullyn', at level 5",
+                    type: "setHarvestLevelName",
+                    level: 5,
+                    name: "Manyullyn",
+                    color: "#912CEE" // Color in RGB hex
+                },
+                {
+                    __comment: "Or change existing levels",
+                    __result: "Modifies the Diamond level to be called 'Steel/Diamond'",
+                    type: "setHarvestLevelName",
+                    level: 2,
+                    name: "Steel/Diamond",
+                    color: "#ADEAEA" // Color in RGB hex
+                },
+
+
+                // Blood Magic
                 {
                     __comment: "You can add Blood Magic altar recipes...",
                     __result: "Turns a cooked chicken into an egg",
@@ -419,7 +460,7 @@
                     what: "minecraft:wooden_shovel",
                     to: 3,
                     as: "pickaxe"
-                    // Note: this will not work with TiCon tools, as they're handled a bit differently.
+                    // Note: this will not work with TiCon tools, as they're handled a bit differently; see the Tinker's entry for setMaterialStats instead.
                 }
             ]
         },
