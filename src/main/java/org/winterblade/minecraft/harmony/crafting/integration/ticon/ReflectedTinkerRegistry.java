@@ -2,6 +2,8 @@ package org.winterblade.minecraft.harmony.crafting.integration.ticon;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.common.SidedProxy;
+import org.winterblade.minecraft.harmony.crafting.integration.ticon.proxies.TinkerCommonProxy;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.client.CustomFontColor;
 import slimeknights.tconstruct.library.materials.IMaterialStats;
@@ -26,6 +28,10 @@ public class ReflectedTinkerRegistry {
 
     // Harvest levels:
     public static Map<Integer, String> harvestLevelNames;
+
+    @SidedProxy(clientSide = "org.winterblade.minecraft.harmony.crafting.integration.ticon.proxies.TinkerClientProxy",
+            serverSide = "org.winterblade.minecraft.harmony.crafting.integration.ticon.proxies.TinkerCommonProxy")
+    private static TinkerCommonProxy proxy;
 
     static {
         // Hook directly into this because we can't remove an alloy after it's been added:
@@ -123,7 +129,8 @@ public class ReflectedTinkerRegistry {
         output.setFluid(material.getFluid());
         output.setCraftable(material.isCraftable());
         output.setCastable(material.isCastable());
-        output.setRenderInfo(material.renderInfo);
+
+        proxy.updateRenderInfo(material, output);
 
         material.getDefaultTraits().forEach(output::addTrait);
 
@@ -182,3 +189,4 @@ public class ReflectedTinkerRegistry {
         return CustomFontColor.encodeColor(r, g, b);
     }
 }
+
