@@ -57,6 +57,7 @@ public class SetMaterialStats extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
+        LogHelper.info("Updating stats for material '" + material + "'");
         ReflectedTinkerRegistry.setMaterial(updated);
     }
 

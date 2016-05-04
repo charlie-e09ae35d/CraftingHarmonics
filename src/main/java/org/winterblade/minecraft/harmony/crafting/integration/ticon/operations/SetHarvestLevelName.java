@@ -4,6 +4,7 @@ import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.integration.ticon.ReflectedTinkerRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 /**
  * Created by Matt on 5/4/2016.
@@ -32,6 +33,7 @@ public class SetHarvestLevelName extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
+        LogHelper.info("Updating harvest level #" + level + " to be called " + name);
         ReflectedTinkerRegistry.setHarvestLevelName(level, newLevel);
     }
 
