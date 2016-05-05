@@ -32,4 +32,8 @@ public class MobDrop {
     public String getDamageType() {
         return damageType;
     }
+
+    public float getLootingMultiplier() {
+        return lootingMultiplier;
+    }
 }

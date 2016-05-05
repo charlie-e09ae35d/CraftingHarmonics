@@ -90,7 +90,7 @@ public class MobDropRegistry {
                 ItemStack dropStack = ItemStack.copyItemStack(drop.getWhat());
 
                 // Update the stack size:
-                dropStack.stackSize = qty;
+                dropStack.stackSize = qty + Math.round(evt.getLootingLevel() * drop.getLootingMultiplier());
 
                 evt.getDrops().add(
                         new EntityItem(
