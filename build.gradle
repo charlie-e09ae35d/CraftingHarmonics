@@ -206,10 +206,6 @@ uploadArchives {
     }
 }
 
-def curseRelations = {
-    requiredLibrary 'nashorn-scripting-library'
-}
-
 curseforge {
     apiKey = System.getProperty("CurseForgeKey", "")
     project {
@@ -217,5 +213,8 @@ curseforge {
         changelog = file('changelog.html')
         changelogType = 'html'
         releaseType = project.hasProperty('releaseType') ? project.releaseType : 'alpha'
+        relations {
+            requiredLibrary 'nashorn-scripting-library'
+        }
     }
 }
