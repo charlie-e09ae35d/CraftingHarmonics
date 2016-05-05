@@ -32,7 +32,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.9.0-1.3.6"
+version = "1.9.0-1.3.7"
 group= "org.winterblade.minecraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "craftingharmonics"
 
@@ -87,7 +87,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     deobfCompile "mezz.jei:jei_1.9:3.3.0.192"
-    deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.2.0.4"
+    deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.2.1.5"
     // compile files('libs/NashornLib-1.9.0-1.8.77-1.2.0')
 
     // TiCon integration; done badly.
@@ -206,10 +206,6 @@ uploadArchives {
     }
 }
 
-def curseRelations = {
-    requiredLibrary 'nashorn-scripting-library'
-}
-
 curseforge {
     apiKey = System.getProperty("CurseForgeKey", "")
     project {
@@ -217,5 +213,8 @@ curseforge {
         changelog = file('changelog.html')
         changelogType = 'html'
         releaseType = project.hasProperty('releaseType') ? project.releaseType : 'alpha'
+        relations {
+            requiredLibrary 'nashorn-scripting-library'
+        }
     }
 }
