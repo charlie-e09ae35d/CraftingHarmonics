@@ -2,8 +2,6 @@ package org.winterblade.minecraft.harmony.crafting.integration.ticon;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.SidedProxy;
-import org.winterblade.minecraft.harmony.crafting.integration.ticon.proxies.TinkerCommonProxy;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.materials.IMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
@@ -27,10 +25,6 @@ public class ReflectedTinkerRegistry {
 
     // Harvest levels:
     public static Map<Integer, String> harvestLevelNames;
-
-    @SidedProxy(clientSide = "org.winterblade.minecraft.harmony.crafting.integration.ticon.proxies.TinkerClientProxy",
-            serverSide = "org.winterblade.minecraft.harmony.crafting.integration.ticon.proxies.TinkerCommonProxy")
-    private static TinkerCommonProxy proxy;
 
     static {
         // Hook directly into this because we can't remove an alloy after it's been added:
@@ -129,7 +123,15 @@ public class ReflectedTinkerRegistry {
         output.setCraftable(material.isCraftable());
         output.setCastable(material.isCastable());
 
-        proxy.updateRenderInfo(material, output);
+        try {
+            // I imagine there's probably a faster way to check this, but,
+            // we can't use Sided Proxies, as that just crashes the game.
+            if(Material.class.getDeclaredField("renderInfo") != null) {
+                output.setRenderInfo(material.renderInfo);
+            }
+        } catch (NoSuchFieldException e) {
+            // We're on the server.
+        }
 
         material.getDefaultTraits().forEach(output::addTrait);
 
@@ -188,8 +190,6 @@ public class ReflectedTinkerRegistry {
         return encodeColor(r, g, b);
     }
 
-    private static int MARKER = 0xE700;
-
     private static String encodeColor(int color) {
         int r = ((color >> 16) & 255);
         int g = ((color >>  8) & 255);
@@ -198,6 +198,7 @@ public class ReflectedTinkerRegistry {
     }
 
     private static String encodeColor(int r, int g, int b) {
+        int MARKER = 0xE700;
         return String.format("%c%c%c",
                 ((char)(MARKER + (r&0xFF))),
                 ((char)(MARKER + (g&0xFF))),
