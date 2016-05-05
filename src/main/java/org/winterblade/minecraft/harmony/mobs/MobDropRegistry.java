@@ -48,7 +48,7 @@ public class MobDropRegistry {
 
                         // See if we should exclude it:
                         for(ItemStack excludedItem : handler.getExcludes()) {
-                            if(item.isItemEqualIgnoreDurability(excludedItem)) continue;
+                            if(!item.isItemEqualIgnoreDurability(excludedItem)) continue;
 
                             exclude = true;
                             break;
