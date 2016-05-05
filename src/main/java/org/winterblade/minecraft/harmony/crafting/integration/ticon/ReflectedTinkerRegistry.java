@@ -5,7 +5,6 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.SidedProxy;
 import org.winterblade.minecraft.harmony.crafting.integration.ticon.proxies.TinkerCommonProxy;
 import slimeknights.tconstruct.library.TinkerRegistry;
-import slimeknights.tconstruct.library.client.CustomFontColor;
 import slimeknights.tconstruct.library.materials.IMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
 import slimeknights.tconstruct.library.smeltery.AlloyRecipe;
@@ -180,13 +179,29 @@ public class ReflectedTinkerRegistry {
      * @return         The string representation of the color
      */
     public static String encodeColor(String color) {
-        if(color == null || color.equals("") || color.length() != 7) return CustomFontColor.encodeColor(0xFFFFFF);
+        if(color == null || color.equals("") || color.length() != 7) return encodeColor(0xFFFFFF);
 
         Integer r = Integer.valueOf(color.substring(1, 3), 16);
         Integer g = Integer.valueOf(color.substring(3, 5), 16);
         Integer b = Integer.valueOf(color.substring(5, 7), 16);
 
-        return CustomFontColor.encodeColor(r, g, b);
+        return encodeColor(r, g, b);
+    }
+
+    private static int MARKER = 0xE700;
+
+    private static String encodeColor(int color) {
+        int r = ((color >> 16) & 255);
+        int g = ((color >>  8) & 255);
+        int b = ((color) & 255);
+        return encodeColor(r, g, b);
+    }
+
+    private static String encodeColor(int r, int g, int b) {
+        return String.format("%c%c%c",
+                ((char)(MARKER + (r&0xFF))),
+                ((char)(MARKER + (g&0xFF))),
+                ((char)(MARKER + (b&0xFF))));
     }
 }
 
