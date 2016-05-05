@@ -34,7 +34,7 @@ public class MobDropRegistry {
             // Check if we're replacing drops, and deal with it:
             if(handler.isReplace()) {
                 // If we're not excluding items, just clear it all
-                if(handler.getExcludes() == null || 0 <= handler.getExcludes().length) {
+                if(handler.getExcludes() == null || handler.getExcludes().length <= 0) {
                     evt.getDrops().clear();
                 } else {
                     // Otherwise, sort through it
@@ -60,10 +60,42 @@ public class MobDropRegistry {
             }
 
             // If we're doing player only drops
-            if(handler.playerOnly && !evt.getSource().damageType.equals("player")) continue;
+            if(handler.isPlayerOnly() && !evt.getSource().damageType.equals("player")) continue;
 
             // Now, actually calculate out our drop rates...
-            
+            Random rand = evt.getEntity().getEntityWorld().rand;
+            for(MobDrop drop : handler.getDrops()) {
+                double dr = rand.nextDouble();
+
+                // If we rolled higher than the chance, move on:
+                if(drop.getChance() < dr) continue;
+
+                int min = drop.getMin();
+                int max = drop.getMax();
+
+                // Figure out how many to give:
+                int qty;
+                if(min != max) {
+                    int delta = Math.abs(drop.getMax() - drop.getMin());
+                    qty = rand.nextInt(delta) + min;
+                } else {
+                    qty = min;
+                }
+
+                // Do the drop!
+                ItemStack dropStack = ItemStack.copyItemStack(drop.getWhat());
+
+                // Update the stack size:
+                dropStack.stackSize = qty;
+
+                evt.getDrops().add(
+                        new EntityItem(
+                                evt.getEntity().getEntityWorld(),
+                                evt.getEntity().posX,
+                                evt.getEntity().posY,
+                                evt.getEntity().posZ,
+                                dropStack));
+            }
         }
     }
 

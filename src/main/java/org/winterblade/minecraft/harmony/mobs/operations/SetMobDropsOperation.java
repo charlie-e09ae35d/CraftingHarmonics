@@ -6,6 +6,7 @@ import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
 import org.winterblade.minecraft.harmony.mobs.dto.MobDrop;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.UUID;
 
@@ -35,6 +36,7 @@ public class SetMobDropsOperation extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
+        LogHelper.info("Modifying drops for " + what);
         MobDropRegistry.apply(ticket);
     }
 

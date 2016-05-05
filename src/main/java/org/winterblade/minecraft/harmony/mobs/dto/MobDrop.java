@@ -17,14 +17,14 @@ public class MobDrop {
     }
 
     public int getMin() {
-        return min;
+        return min < 0 ? 0 : min;
     }
 
     public int getMax() {
-        return max;
+        return max < 0 ? 0 : max;
     }
 
     public float getChance() {
-        return chance;
+        return chance < 0 ? 0.0f : chance;
     }
 }
