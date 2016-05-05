@@ -1,5 +1,41 @@
 <div>
-    <h2>Version 1.3.8</h2>
+    <h2>Version 1.3.7</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Adding the ability to change harvest levels on blocks and tools using the following operations:
+            <ul>
+                <li>remapHarvestLevel: Takes all blocks at a given harvest level and set them to another.</li>
+                <li>setHarvestLevel: Sets the harvest level on a given block/with a given tool.</li>
+                <li>setToolHarvestLevel: Changes the effective harvest level of a particular tool.</li>
+            </ul>
+        </li>
+        <li>
+            Adding the ability to change stats on TiCon tools using the following operations:
+            <ul>
+                <li>setMaterialStats: Modifies the stats for a given material.</li>
+            </ul>
+        </li>
+        <li>
+            Adding the ability to set harvest level names for new/existing TiCon harvest levels using the following:
+            <ul>
+                <li>setHarvestLevelName: Adds a new name for a harvest level or modifies an existing one.</li>
+            </ul>
+        </li>
+        <li>
+            Harvest level names can be applied with custom sets as well, so, you could leave a harvest level as
+            "Unknown" until the player reaches a certain point in progression where they should be able to mine it;
+            optionally combine this with setting harvest levels to ensure the player really doesn't mine it until
+            after that point.
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/33">issue #33</a> where
+            the build server wasn't properly linking the Nashorn Scriping Library as a required mod when uploading to CF.
+        </li>
+    </ul>
+</div>
+<div>
+    <h2>Version 1.3.6</h2>
     <h4>Features</h4>
     <ul>
         <li>
