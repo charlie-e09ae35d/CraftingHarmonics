@@ -35,9 +35,9 @@ public class MobDropRegistry {
                     (!handler.isMatch(entityName)) && !handler.isMatch(entityClassName)) continue;
 
             // Check if we're replacing drops, and deal with it:
-            if(handler.isReplace()) {
-                // If we're not excluding items, just clear it all
-                if(handler.getExcludes() == null || handler.getExcludes().length <= 0) {
+            if(handler.isReplace() || 0 < handler.getRemovals().length) {
+                // If we're replacing everything, and not excluding items, just clear it all
+                if(handler.isReplace() && (handler.getExcludes() == null || handler.getExcludes().length <= 0)) {
                     evt.getDrops().clear();
                 } else {
                     // Otherwise, sort through it
@@ -45,19 +45,28 @@ public class MobDropRegistry {
                         EntityItem drop = iterator.next();
                         ItemStack item = drop.getEntityItem();
 
-                        boolean exclude = false;
+                        boolean remove = handler.isReplace();
 
-                        // See if we should exclude it:
-                        for(ItemStack excludedItem : handler.getExcludes()) {
-                            if(!item.isItemEqualIgnoreDurability(excludedItem)) continue;
+                        // See if we should remove it:
+                        for (ItemStack removedItem : handler.getRemovals()) {
+                            if (!item.isItemEqualIgnoreDurability(removedItem)) continue;
 
-                            exclude = true;
+                            remove = true;
                             break;
                         }
 
-                        // If we can exclude this, then do so, otherwise remove it:
-                        if(exclude) continue;
-                        iterator.remove();
+                        // If we're removing, see if we should exclude it:
+                        if(remove) {
+                            for (ItemStack excludedItem : handler.getExcludes()) {
+                                if (!item.isItemEqualIgnoreDurability(excludedItem)) continue;
+
+                                remove = false;
+                                break;
+                            }
+                        }
+
+                        // If we can should remove this, then do so:
+                        if(remove) iterator.remove();
                     }
                 }
             }
@@ -115,9 +124,9 @@ public class MobDropRegistry {
         }
     }
 
-    public static UUID registerHandler(String[] what, MobDrop[] drops, boolean replace, ItemStack[] exclude) {
+    public static UUID registerHandler(String[] what, MobDrop[] drops, boolean replace, ItemStack[] exclude, ItemStack[] remove) {
         UUID id = UUID.randomUUID();
-        handlers.put(id, new DropHandler(what, drops, replace, exclude));
+        handlers.put(id, new DropHandler(what, drops, replace, exclude, remove));
         return id;
     }
 
@@ -131,15 +140,17 @@ public class MobDropRegistry {
 
     private static class DropHandler {
         private final List<String> what;
+        private final ItemStack[] remove;
         private final MobDrop[] drops;
         private final boolean replace;
         private final ItemStack[] exclude;
 
-        DropHandler(String[] what, MobDrop[] drops, boolean replace, ItemStack[] exclude) {
-            this.what = Lists.newArrayList(what);
-            this.drops = drops;
+        DropHandler(String[] what, MobDrop[] drops, boolean replace, ItemStack[] exclude, ItemStack[] remove) {
             this.replace = replace;
-            this.exclude = exclude;
+            this.what = Lists.newArrayList(what);
+            this.drops = drops != null ? drops : new MobDrop[0];
+            this.exclude = exclude != null ? exclude : new ItemStack[0];
+            this.remove = remove != null ? remove : new ItemStack[0];
         }
 
         public boolean isMatch(String entity) {
@@ -156,6 +167,10 @@ public class MobDropRegistry {
 
         public ItemStack[] getExcludes() {
             return exclude;
+        }
+
+        public ItemStack[] getRemovals() {
+            return remove;
         }
     }
 }

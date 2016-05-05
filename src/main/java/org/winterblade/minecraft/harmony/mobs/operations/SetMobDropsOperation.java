@@ -23,6 +23,7 @@ public class SetMobDropsOperation extends BaseRecipeOperation {
     private boolean replace;
     private MobDrop[] drops;
     private ItemStack[] exclude;
+    private ItemStack[] remove;
 
     /*
      * Computed properties
@@ -31,7 +32,7 @@ public class SetMobDropsOperation extends BaseRecipeOperation {
 
     @Override
     public void Init() throws ItemMissingException {
-        ticket = MobDropRegistry.registerHandler(what, drops, replace, exclude);
+        ticket = MobDropRegistry.registerHandler(what, drops, replace, exclude, remove);
     }
 
     @Override
