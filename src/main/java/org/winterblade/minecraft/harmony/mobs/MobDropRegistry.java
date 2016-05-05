@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.mobs;
 
 import com.google.common.collect.Lists;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -69,6 +70,17 @@ public class MobDropRegistry {
                 // If we're checking damage type, and it's not equal:
                 if(damageType != null && !damageType.equals(evt.getSource().getDamageType())) continue;
 
+                if(drop.getKilledWith() != null) {
+                    // If we can't get a base entity off this...
+                    if(!EntityLivingBase.class.isAssignableFrom(evt.getSource().getEntity().getClass())) continue;
+
+                    EntityLivingBase entity = (EntityLivingBase) evt.getSource().getEntity();
+                    ItemStack heldEquipment = entity.getHeldItemMainhand();
+
+                    // Make sure we have held equipment and that it's right:
+                    if(heldEquipment == null || !heldEquipment.isItemEqualIgnoreDurability(drop.getKilledWith())) continue;
+                }
+
                 double dr = rand.nextDouble();
 
                 // If we rolled higher than the chance, move on:
@@ -131,7 +143,7 @@ public class MobDropRegistry {
         }
 
         public boolean isMatch(String entity) {
-            return what.contains(entity);
+            return what == null || what.size() <= 0 || what.contains(entity);
         }
 
         public MobDrop[] getDrops() {

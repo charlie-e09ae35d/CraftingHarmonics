@@ -12,6 +12,7 @@ public class MobDrop {
     private float chance;
     private float lootingMultiplier;
     private String damageType;
+    private ItemStack killedWith;
 
     public ItemStack getWhat() {
         return what;
@@ -35,5 +36,9 @@ public class MobDrop {
 
     public float getLootingMultiplier() {
         return lootingMultiplier;
+    }
+
+    public ItemStack getKilledWith() {
+        return killedWith;
     }
 }
