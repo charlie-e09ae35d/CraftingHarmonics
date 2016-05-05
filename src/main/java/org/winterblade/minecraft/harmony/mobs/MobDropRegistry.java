@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs;
 
+import com.google.common.collect.Lists;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -13,7 +14,7 @@ import java.util.*;
  */
 public class MobDropRegistry {
     private static final Map<UUID, DropHandler> handlers = new HashMap<>();
-    private static final Set<UUID> activeHandlers = new HashSet<>();
+    private static final Set<UUID> activeHandlers = new LinkedHashSet<>();
 
     /**
      * Handles a mob drop event
@@ -22,14 +23,15 @@ public class MobDropRegistry {
     public static void handleDrops(LivingDropsEvent evt) {
         String entityName = evt.getEntity().getName();
         String entityClassName = evt.getEntity().getClass().getSimpleName();
-        LogHelper.debug("Processing drops for '" + entityName + "' ('" + entityClassName + "').");
+        LogHelper.debug("Processing drops for '" + entityName + "' ('" + entityClassName + "') from damageType '"
+                + evt.getSource().getDamageType() + "'.");
 
         for(UUID id : activeHandlers) {
             DropHandler handler = handlers.get(id);
 
             // If we don't have a handler, or the handler doesn't match:
             if(handler == null ||
-                    (!entityName.equals(handler.getWhat()) && !entityClassName.equals(handler.getWhat()))) continue;
+                    (!handler.isMatch(entityName)) && !handler.isMatch(entityClassName)) continue;
 
             // Check if we're replacing drops, and deal with it:
             if(handler.isReplace()) {
@@ -59,12 +61,14 @@ public class MobDropRegistry {
                 }
             }
 
-            // If we're doing player only drops
-            if(handler.isPlayerOnly() && !evt.getSource().damageType.equals("player")) continue;
-
             // Now, actually calculate out our drop rates...
             Random rand = evt.getEntity().getEntityWorld().rand;
             for(MobDrop drop : handler.getDrops()) {
+                String damageType = drop.getDamageType();
+
+                // If we're checking damage type, and it's not equal:
+                if(damageType != null && !damageType.equals(evt.getSource().getDamageType())) continue;
+
                 double dr = rand.nextDouble();
 
                 // If we rolled higher than the chance, move on:
@@ -99,9 +103,9 @@ public class MobDropRegistry {
         }
     }
 
-    public static UUID registerHandler(String what, MobDrop[] drops, boolean replace, ItemStack[] exclude, boolean playerOnly) {
+    public static UUID registerHandler(String[] what, MobDrop[] drops, boolean replace, ItemStack[] exclude) {
         UUID id = UUID.randomUUID();
-        handlers.put(id, new DropHandler(what, drops, replace, exclude, playerOnly));
+        handlers.put(id, new DropHandler(what, drops, replace, exclude));
         return id;
     }
 
@@ -114,22 +118,20 @@ public class MobDropRegistry {
     }
 
     private static class DropHandler {
-        private final String what;
+        private final List<String> what;
         private final MobDrop[] drops;
         private final boolean replace;
         private final ItemStack[] exclude;
-        private final boolean playerOnly;
 
-        DropHandler(String what, MobDrop[] drops, boolean replace, ItemStack[] exclude, boolean playerOnly) {
-            this.what = what;
+        DropHandler(String[] what, MobDrop[] drops, boolean replace, ItemStack[] exclude) {
+            this.what = Lists.newArrayList(what);
             this.drops = drops;
             this.replace = replace;
             this.exclude = exclude;
-            this.playerOnly = playerOnly;
         }
 
-        public String getWhat() {
-            return what;
+        public boolean isMatch(String entity) {
+            return what.contains(entity);
         }
 
         public MobDrop[] getDrops() {
@@ -142,10 +144,6 @@ public class MobDropRegistry {
 
         public ItemStack[] getExcludes() {
             return exclude;
-        }
-
-        public boolean isPlayerOnly() {
-            return playerOnly;
         }
     }
 }

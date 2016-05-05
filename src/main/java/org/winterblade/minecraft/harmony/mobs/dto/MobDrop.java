@@ -11,6 +11,7 @@ public class MobDrop {
     private int max;
     private float chance;
     private float lootingMultiplier;
+    private String damageType;
 
     public ItemStack getWhat() {
         return what;
@@ -26,5 +27,9 @@ public class MobDrop {
 
     public float getChance() {
         return chance < 0 ? 0.0f : chance;
+    }
+
+    public String getDamageType() {
+        return damageType;
     }
 }

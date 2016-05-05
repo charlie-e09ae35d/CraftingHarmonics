@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.operations;
 
+import com.google.common.base.Joiner;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
@@ -18,11 +19,10 @@ public class SetMobDropsOperation extends BaseRecipeOperation {
     /*
      * Serialized properties
      */
-    private String what;
+    private String[] what;
     private boolean replace;
     private MobDrop[] drops;
     private ItemStack[] exclude;
-    private boolean playerOnly;
 
     /*
      * Computed properties
@@ -31,12 +31,12 @@ public class SetMobDropsOperation extends BaseRecipeOperation {
 
     @Override
     public void Init() throws ItemMissingException {
-        ticket = MobDropRegistry.registerHandler(what, drops, replace, exclude, playerOnly);
+        ticket = MobDropRegistry.registerHandler(what, drops, replace, exclude);
     }
 
     @Override
     public void Apply() {
-        LogHelper.info("Modifying drops for " + what);
+        LogHelper.info("Modifying drops for " + Joiner.on(", ").join(what));
         MobDropRegistry.apply(ticket);
     }
 
