@@ -11,8 +11,8 @@
   "credits": "Forge/FML, @voxcpw for his tutorial on setting this up, and MineTweaker for doing this in the past.",
   "logoFile": "",
   "screenshots": [],
-  "requiredMods": ["NashornLib@[1.9.0-1.8.77-1.2.0,)"],
+  "requiredMods": ["NashornLib@[1.9.0-1.8.77-1.2.1,)"],
   "useDependencyInformation": true,
-  "dependencies": ["NashornLib@[1.9.0-1.8.77-1.2.0,)"]
+  "dependencies": ["NashornLib@[1.9.0-1.8.77-1.2.1,)"]
 }
 ]
