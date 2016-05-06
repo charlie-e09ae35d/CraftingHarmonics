@@ -23,7 +23,7 @@ public class MobDropRegistry {
      */
     public static void handleDrops(LivingDropsEvent evt) {
         String entityName = evt.getEntity().getName();
-        String entityClassName = evt.getEntity().getClass().getSimpleName();
+        String entityClassName = evt.getEntity().getClass().getName();
         LogHelper.debug("Processing drops for '" + entityName + "' ('" + entityClassName + "') from damageType '"
                 + evt.getSource().getDamageType() + "'.");
 
