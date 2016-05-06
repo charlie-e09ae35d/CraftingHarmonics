@@ -504,6 +504,16 @@
                         // This also defaults to false; if we mark this true, even players won't drop any rotten flesh they're carrying
                         // Note: depending on if a graves mod is installed, this may override this functionality.
                     remove: [ "minecraft:rotten_flesh" ]
+                },
+
+                // JEI Integration
+                {
+                    __comment: "You can add items to the JEI blacklist to hide them from JEI",
+                    __result: "Hides gold blocks from JEI",
+                    type: "hide", // There's also a 'show' command'
+                    what: "minecraft:gold_block"
+                    // Both this, and the 'show' can be added to custom sets, so you can gradually show new items as the game goes on.
+                    // Keep in mind, though, that recipes that still make the item or use the item can be used to get to it.
                 }
             ]
         },
