@@ -1,4 +1,34 @@
 <div>
+    <h2>Version 1.3.8</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Per <a href="https://github.com/legendblade/CraftingHarmonics/issues/34">request</a> added new setMobDrops
+            operation to control what items mobs drop, will allow for:
+            <ul>
+                <li>Adding or removing a drop to a mob/set of mobs</li>
+                <li>Replacing an entire drop table with your logic</li>
+                <li>Replacements can exclude specific items (like Demonic Will from Blood Magic)</li>
+            </ul><br />
+            Each drop entry can individually specify:
+            <ul>
+                <li>Set chance of each drop entry separately</li>
+                <li>Set quantity of each drop item betwen a min and max range</li>
+                <li>Add a bonus multiplier for looting (can also be negative)</li>
+                <li>Specify the damage source ('player', 'onFire', etc)</li>
+                <li>Specify that the attacker has to be using a specific item to cause the drop</li>
+            </ul><br />
+            Additionally, drop tables can be overlaid on top of one another (ie: specify multiple tables affect a
+            given mob), and can also be applied via custom sets.
+        </li>
+        <li>
+            The return of the Settings.cfg file; you can now set if the mod should log info about mob drop events,
+            so that you can better figure out entity names and damage types.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
     <h2>Version 1.3.7</h2>
     <h4>Features</h4>
     <ul>

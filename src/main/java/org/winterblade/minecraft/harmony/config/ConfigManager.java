@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.config;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
@@ -20,6 +21,7 @@ public class ConfigManager {
 
     private final String configPath;
     private final List<File> setFiles = new ArrayList<>();
+    private boolean debugMobDropEvents;
 
     /**
      * Generates a new config manager using the config path
@@ -27,8 +29,23 @@ public class ConfigManager {
      */
     public ConfigManager(String configPath) {
         this.configPath = configPath;
+        initBaseSettings();
         setupRecipeSets();
     }
+
+    private void initBaseSettings() {
+        Configuration configMain = new Configuration(new File(configPath + "Settings.cfg"));
+
+        configMain.load();
+
+        debugMobDropEvents = configMain.getBoolean("LogMobDropEvents",
+                Configuration.CATEGORY_GENERAL,
+                false,
+                "Should we log entities/damageTypes for mob drops; this will be pretty spammy.");
+
+        configMain.save();
+    }
+
 
     private void setupRecipeSets() {
         LogHelper.info("Reading set definitions from " + configPath + "Sets/");
@@ -102,5 +119,9 @@ public class ConfigManager {
         setupRecipeSets();
         NashornConfigProcessor.getInstance().reloadConfigs();
         processSetFiles();
+    }
+
+    public boolean debugMobDropEvents() {
+        return debugMobDropEvents;
     }
 }

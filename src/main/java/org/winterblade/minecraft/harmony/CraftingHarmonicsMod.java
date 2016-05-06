@@ -293,4 +293,8 @@ public class CraftingHarmonicsMod {
         Set<String> loadedSets = savedGameData.getLoadedSets();
         applySets(loadedSets.toArray(new String[loadedSets.size()]));
     }
+
+    public static ConfigManager getConfigManager() {
+        return configManager;
+    }
 }
