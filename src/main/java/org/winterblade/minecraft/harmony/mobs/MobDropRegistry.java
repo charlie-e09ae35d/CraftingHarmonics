@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.mobs.dto.MobDrop;
 import org.winterblade.minecraft.harmony.utility.LogHelper;
 
@@ -24,8 +25,11 @@ public class MobDropRegistry {
     public static void handleDrops(LivingDropsEvent evt) {
         String entityName = evt.getEntity().getName();
         String entityClassName = evt.getEntity().getClass().getName();
-        LogHelper.debug("Processing drops for '" + entityName + "' ('" + entityClassName + "') from damageType '"
-                + evt.getSource().getDamageType() + "'.");
+
+        if(CraftingHarmonicsMod.getConfigManager().debugMobDropEvents()) {
+            LogHelper.info("Processing drops for '" + entityName + "' ('" + entityClassName + "') from damageType '"
+                    + evt.getSource().getDamageType() + "'.");
+        }
 
         for(UUID id : activeHandlers) {
             DropHandler handler = handlers.get(id);
