@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.mobs;
 
 import com.google.common.collect.Lists;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -85,13 +86,14 @@ public class MobDropRegistry {
 
                 if(drop.getKilledWith() != null) {
                     // If we can't get a base entity off this...
-                    if(!EntityLivingBase.class.isAssignableFrom(evt.getSource().getEntity().getClass())) continue;
+                    Entity entity = evt.getSource().getEntity();
+                    if(entity == null || !EntityLivingBase.class.isAssignableFrom(entity.getClass())) continue;
 
                     // Get our entity and convert it over:
-                    EntityLivingBase entity = (EntityLivingBase) evt.getSource().getEntity();
-                    if(entity == null) continue;
+                    EntityLivingBase entityBase = (EntityLivingBase) evt.getSource().getEntity();
+                    if(entityBase == null) continue;
 
-                    ItemStack heldEquipment = entity.getHeldItemMainhand();
+                    ItemStack heldEquipment = entityBase.getHeldItemMainhand();
 
                     // Make sure we have held equipment and that it's right:
                     if(heldEquipment == null || !heldEquipment.isItemEqualIgnoreDurability(drop.getKilledWith())) continue;
