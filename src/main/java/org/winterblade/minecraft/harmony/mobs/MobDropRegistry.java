@@ -83,7 +83,10 @@ public class MobDropRegistry {
                     // If we can't get a base entity off this...
                     if(!EntityLivingBase.class.isAssignableFrom(evt.getSource().getEntity().getClass())) continue;
 
+                    // Get our entity and convert it over:
                     EntityLivingBase entity = (EntityLivingBase) evt.getSource().getEntity();
+                    if(entity == null) continue;
+
                     ItemStack heldEquipment = entity.getHeldItemMainhand();
 
                     // Make sure we have held equipment and that it's right:

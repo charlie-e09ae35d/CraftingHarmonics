@@ -49,6 +49,11 @@ public class EventHandler {
     public void onMobDrop(LivingDropsEvent evt) {
         if(evt.isCanceled()) return;
 
-        MobDropRegistry.handleDrops(evt);
+        try {
+            MobDropRegistry.handleDrops(evt);
+        } catch(Exception ex) {
+            LogHelper.error("Error handling drop event; please report this along with your config file.", ex);
+            evt.setCanceled(true);
+        }
     }
 }
