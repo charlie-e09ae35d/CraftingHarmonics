@@ -500,6 +500,9 @@
                     replace: false,
                         // Note: 'replace' is false by default, but, note that you want to ensure this is false if you're doing this.
                         // Specifying replace: true, and not providing drops: [] is basically saying "everything should drop nothing."
+                    includePlayerDrops: true,
+                        // This also defaults to false; if we mark this true, even players won't drop any rotten flesh they're carrying
+                        // Note: depending on if a graves mod is installed, this may override this functionality.
                     remove: [ "minecraft:rotten_flesh" ]
                 }
             ]

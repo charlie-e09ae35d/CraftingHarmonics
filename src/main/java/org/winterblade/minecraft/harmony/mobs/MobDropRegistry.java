@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
@@ -38,6 +39,9 @@ public class MobDropRegistry {
             // If we don't have a handler, or the handler doesn't match:
             if(handler == null ||
                     (!handler.isMatch(entityName)) && !handler.isMatch(entityClassName)) continue;
+
+            // If this is a player and we shouldn't be handling player drops...
+            if(!handler.includePlayerDrops() && evt.getEntity() instanceof EntityPlayer) continue;
 
             // Check if we're replacing drops, and deal with it:
             if(handler.isReplace() || 0 < handler.getRemovals().length) {
@@ -133,9 +137,10 @@ public class MobDropRegistry {
         }
     }
 
-    public static UUID registerHandler(String[] what, MobDrop[] drops, boolean replace, ItemStack[] exclude, ItemStack[] remove) {
+    public static UUID registerHandler(String[] what, MobDrop[] drops, boolean replace, ItemStack[] exclude,
+                                       ItemStack[] remove, boolean includePlayerDrops) {
         UUID id = UUID.randomUUID();
-        handlers.put(id, new DropHandler(what, drops, replace, exclude, remove));
+        handlers.put(id, new DropHandler(what, drops, replace, exclude, remove, includePlayerDrops));
         return id;
     }
 
@@ -152,10 +157,12 @@ public class MobDropRegistry {
         private final ItemStack[] remove;
         private final MobDrop[] drops;
         private final boolean replace;
+        private final boolean includePlayerDrops;
         private final ItemStack[] exclude;
 
-        DropHandler(String[] what, MobDrop[] drops, boolean replace, ItemStack[] exclude, ItemStack[] remove) {
+        DropHandler(String[] what, MobDrop[] drops, boolean replace, ItemStack[] exclude, ItemStack[] remove, boolean includePlayerDrops) {
             this.replace = replace;
+            this.includePlayerDrops = includePlayerDrops;
             this.what = Lists.newArrayList(what);
             this.drops = drops != null ? drops : new MobDrop[0];
             this.exclude = exclude != null ? exclude : new ItemStack[0];
@@ -180,6 +187,10 @@ public class MobDropRegistry {
 
         public ItemStack[] getRemovals() {
             return remove;
+        }
+
+        public boolean includePlayerDrops() {
+            return includePlayerDrops;
         }
     }
 }
