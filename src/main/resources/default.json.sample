@@ -461,6 +461,46 @@
                     to: 3,
                     as: "pickaxe"
                     // Note: this will not work with TiCon tools, as they're handled a bit differently; see the Tinker's entry for setMaterialStats instead.
+                },
+
+
+                // Mob drops
+                {
+                    __comment: "You can set custom mob drop tables",
+                    __result: "Replaces the drops from a cow (and a squid)",
+                    type: "setMobDrops",
+                    what: ["Cow", "net.minecraft.entity.passive.EntitySquid"],
+                        // 'what' can be either the entity's simple name ('Cow', 'Squid'), or the full class name ('net.minecraft.entity.passive.EntitySquid')
+                        // You can also leave 'what' as an empty array to affect all mobs, but you probably don't want to use replace: true at that point.
+                        // Note: Named mobs (like the 'There is no Cow Level' from above) won't match 'Cow', but will match 'net.minecraft.entity.passive.EntityCow'
+                    replace: true, // False will simply add items
+                    drops: [ // Items to add / replace on the drop table
+                        {
+                            what: "minecraft:cooked_beef", // Drop cooked steak
+                            chance: 0.75, // 75% chance to get the drop
+                            min: 1, // Which will create at least 1 of them
+                            max: 4, // And at most 4 of them...
+                            lootingMultiplier: 1.5, // But taking looting into account (grants an additional 1.5  per level of looting)
+                            damageType: "player" // only when being killed by the player; this can be left out, or set to other damage sources
+                        },
+                        // Below, a 100% chance to get 1 leather, but only when killed with shears.
+                        // Note: this does -not- force damageType: 'player'.
+                        // Also note: It's really annoying to kill a cow with shears.  Just saying.
+                        { what: "minecraft:leather", min: 1, max: 1, chance: 1.0, killedWith: "minecraft:shears" }
+                    ],
+                    exclude: [ // Items to exclude from being replaced
+                        "bloodmagic:ItemMonsterSoul" // Still allows you to get Demonic Wills from Blood Magic
+                    ]
+                },
+                {
+                    __comment: "You can also use this to specify that a particular drop should be removed from everything.",
+                    __result: "Makes sure you can't get rotten flesh from any mob",
+                    type: "setMobDrops",
+                    what: [],
+                    replace: false,
+                        // Note: 'replace' is false by default, but, note that you want to ensure this is false if you're doing this.
+                        // Specifying replace: true, and not providing drops: [] is basically saying "everything should drop nothing."
+                    remove: [ "minecraft:rotten_flesh" ]
                 }
             ]
         },
