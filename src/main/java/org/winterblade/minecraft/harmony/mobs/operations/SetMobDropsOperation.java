@@ -37,7 +37,7 @@ public class SetMobDropsOperation extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        LogHelper.info("Modifying drops for " + Joiner.on(", ").join(what));
+        LogHelper.info("Modifying drops for " + (0 < what.length ? Joiner.on(", ").join(what) : "everything"));
         MobDropRegistry.apply(ticket);
     }
 
