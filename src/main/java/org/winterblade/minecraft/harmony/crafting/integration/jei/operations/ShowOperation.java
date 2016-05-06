@@ -10,7 +10,7 @@ import org.winterblade.minecraft.harmony.crafting.integration.jei.Jei;
  * Created by Matt on 5/6/2016.
  */
 @RecipeOperation(name = "hide", dependsOn = "JEI")
-public class HideOperation extends BaseRecipeOperation {
+public class ShowOperation extends BaseRecipeOperation {
     /*
      * Serialized properties
      */
@@ -23,11 +23,11 @@ public class HideOperation extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        Jei.hide(what);
+        Jei.show(what);
     }
 
     @Override
     public void Undo() {
-        Jei.show(what);
+        Jei.hide(what);
     }
 }
