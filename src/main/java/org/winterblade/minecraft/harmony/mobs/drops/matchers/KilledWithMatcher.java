@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.mobs.drops.matchers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
@@ -12,14 +13,24 @@ import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 /**
  * Created by Matt on 5/7/2016.
  */
-@Component(properties = {"killedWith"})
+@Component(properties = {"killedWith", "consume", "damagePer"})
 @PrioritizedObject(priority = Priority.HIGH)
-public class KilledWithMatcher implements IMobDropMatcher {
+public class KilledWithMatcher extends BaseItemStackMatcher{
     private final ItemStack killedWith;
 
     public KilledWithMatcher(ItemStack killedWith) {
+        this(killedWith, false);
+    }
+
+    public KilledWithMatcher(ItemStack killedWith, boolean consume) {
+        this(killedWith, consume, 0);
+    }
+
+    public KilledWithMatcher(ItemStack killedWith, boolean consume, double damagePer) {
+        super(damagePer, consume, EnumHand.MAIN_HAND);
         this.killedWith = killedWith;
     }
+
 
     /**
      * Should return true if this matcher matches the given event
@@ -39,6 +50,10 @@ public class KilledWithMatcher implements IMobDropMatcher {
         ItemStack heldEquipment = entityBase.getHeldItemMainhand();
 
         // Make sure we have held equipment and that it's right:
-        return heldEquipment != null && heldEquipment.isItemEqualIgnoreDurability(killedWith);
+        if(heldEquipment == null || !heldEquipment.isItemEqualIgnoreDurability(killedWith)) return false;
+
+        consumeOrDamageItem(entityBase, heldEquipment, drop);
+
+        return true;
     }
 }
