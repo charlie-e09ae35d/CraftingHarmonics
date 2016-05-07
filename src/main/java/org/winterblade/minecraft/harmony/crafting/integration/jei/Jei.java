@@ -4,6 +4,7 @@ import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
 import mezz.jei.api.JEIPlugin;
+import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
@@ -44,5 +45,25 @@ public class Jei implements IModPlugin {
         // If we don't have JEI, we don't care...
         if(jeiRegistry == null) return;
         jeiRegistry.getJeiHelpers().reload();
+    }
+
+    /**
+     * Removes the given item stack from the blacklist
+     * @param itemStack    The item to show
+     */
+    public static void show(ItemStack itemStack) {
+        // If we don't have JEI, we don't care...
+        if(jeiRegistry == null) return;
+        jeiRegistry.getJeiHelpers().getItemBlacklist().removeItemFromBlacklist(itemStack);
+    }
+
+    /**
+     * Adds the given item stack to the blacklist
+     * @param itemStack    The item to hide
+     */
+    public static void hide(ItemStack itemStack) {
+        // If we don't have JEI, we don't care...
+        if(jeiRegistry == null) return;
+        jeiRegistry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(itemStack);
     }
 }

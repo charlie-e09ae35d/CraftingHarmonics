@@ -9,7 +9,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Matt on 4/29/2016.
@@ -30,7 +32,7 @@ public class ApplySetCommand implements ICommand {
      */
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/ch applySet <Set Name>";
+        return "/ch applySet [-s|--silent] <Set Name> [<Set Name>...]";
     }
 
     @Override
@@ -47,23 +49,39 @@ public class ApplySetCommand implements ICommand {
      */
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if(args.length <= 0) {
-            sender.addChatMessage(new TextComponentString("A set name must be specified."));
+        Set<String> sets = new HashSet<>();
+        boolean silent = false;
+
+        for(String arg : args) {
+            if (!arg.startsWith("-")) {
+                sets.add(arg);
+            }
+
+            if(arg.equals("-s") || arg.equals("--silent")) silent = true;
+        }
+
+        if(sets.size() <= 0) {
+            if(!silent) sender.addChatMessage(new TextComponentString("A set name must be specified."));
             return;
         }
 
-        if(!CraftingHarmonicsMod.isValidSet(args[0])) {
-            sender.addChatMessage(new TextComponentString(args[0] + " is not a valid set."));
-            sender.addChatMessage(new TextComponentString("Valid sets: " + Joiner.on(", ").join(CraftingHarmonicsMod.getAllSets())));
+        for(String set : sets) {
+            if (!CraftingHarmonicsMod.isValidSet(set)) {
+                if(!silent) {
+                    sender.addChatMessage(new TextComponentString(args[0] + " is not a valid set."));
+                    sender.addChatMessage(new TextComponentString("Valid sets: " + Joiner.on(", ").join(CraftingHarmonicsMod.getAllSets())));
+                }
+                return;
+            }
+        }
+
+        if(!CraftingHarmonicsMod.applySets(sets.toArray(new String[sets.size()]))) {
+            if(!silent) sender.addChatMessage(new TextComponentString("One or more of the sets: "
+                    + Joiner.on(", ").join(sets) + " could not be applied."));
             return;
         }
 
-        if(!CraftingHarmonicsMod.applySet(args[0])) {
-            sender.addChatMessage(new TextComponentString(args[0] + " could not be applied."));
-            return;
-        }
-
-        sender.addChatMessage(new TextComponentString(args[0] + " applied."));
+        if(!silent) sender.addChatMessage(new TextComponentString(Joiner.on(", ").join(sets) + " applied."));
         CraftingHarmonicsMod.syncAllConfigs();
     }
 

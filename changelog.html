@@ -1,4 +1,47 @@
 <div>
+    <h2>Version 1.3.9</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Adding ability to hide/show entries from JEI using the below commands, both of which can be used in
+            custom sets to gradually display new blocks as the game progresses:
+            <ul>
+                <li>
+                    hide: Hide an item/block from the JEI list; note that recipes that use the item, or make the item,
+                    will still allow players to get to the item, so, if you really want to remove all signs of the item,
+                    remember to remove the recipes as well.
+                </li>
+                <li>show: Show an item/block in the JEI list after it's been hidden</li>
+            </ul>
+        </li>
+        <li>
+            Per <a href="https://github.com/legendblade/CraftingHarmonics/issues/37">request</a> updating setMobDrops
+            to add the ability to:
+            <ul>
+                <li>Check if the target has a particular potion effect applied</li>
+                <li>Check if the attacker has a particular potion effect applied</li>
+                <li>Specify minimum (and maximum) looting level to get a particular drop</li>
+                <li>Add the ability to check if a particular item is in the attacker's offhand</li>
+                <li>Add the ability to check if a particular item is in the player's inventory (main inventory/hotbar)</li>
+            </ul><br />
+            In addition, all spots which check if the attacker has a particular item have been updated to add the
+            ability to consume the item or damage it by a set amount per drop that was generated.
+        </li>
+        <li>
+            Per <a href="https://github.com/legendblade/CraftingHarmonics/issues/36">request</a> changing applySet/removeSet
+            commands to:
+            <ul>
+                <li>
+                    Adds a --silent (alias: -s) flag you can pass to have the set be applied/removed silently, without
+                    notifying the user of the command, to deal with how BetterQuesting runs its commands.
+                </li>
+                <li>Allow multiple sets to be applied or removed at once</li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
     <h2>Version 1.3.8</h2>
     <h4>Features</h4>
     <ul>

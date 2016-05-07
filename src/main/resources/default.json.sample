@@ -483,10 +483,54 @@
                             lootingMultiplier: 1.5, // But taking looting into account (grants an additional 1.5  per level of looting)
                             damageType: "player" // only when being killed by the player; this can be left out, or set to other damage sources
                         },
+
                         // Below, a 100% chance to get 1 leather, but only when killed with shears.
                         // Note: this does -not- force damageType: 'player'.
                         // Also note: It's really annoying to kill a cow with shears.  Just saying.
-                        { what: "minecraft:leather", min: 1, max: 1, chance: 1.0, killedWith: "minecraft:shears" }
+                        // This also damages the shears by 1 per drop.
+                        {
+                            what: "minecraft:leather",
+                            min: 1,
+                            max: 1,
+                            chance: 1.0,
+                            killedWith: "minecraft:shears",
+                            consume: false, // consume and damagePer are optional
+                            damagePer: 1.0  // But consume must be specified and be false if using damagePer.
+                        },
+
+                        // You can also set minimum and maximum looting levels:
+                        {
+                            what: "minecraft:redstone",
+                            min: 3,
+                            max: 10,
+                            minLooting: 1,
+                            maxLooting: 2
+                        },
+
+                        // Check if the attacker is wielding an offhand:
+                        {
+                            // Don't ask why damaging a shield gets wheat; I'm just coming up with random examples at this point...
+                            what: "minecraft:wheat",
+                            min: 1,
+                            max: 10,
+                            attackerHasOffhand: "minecraft:shield",
+                            consumeOffhand: false, // This can be set to true to use the same number of the offhand item as items are dropped
+                            damageOffhandPer: 2.0
+                                // Damage the offhand by this amount per drop generated.  You must specify consumeOffhand: false if you want this
+                                // to work.  If the number of drops generated is more than the item could be damaged by, the number of drops
+                                // will be reduced to the proper amount.  Fractional amounts of remaining damage will not yield a drop.
+                        },
+
+                        // Now, specifically for players, we can also check to see if they have an item in their inventory:
+                        {
+                            // Yes, this could be applied to a ghast instead of a cow, but I'm not going flying around fighting ghasts for testing...
+                            what: "minecraft:ghast_tear",
+                            min: 2,
+                            max: 4, // This will check across item stacks and decrement each accordingly.
+                            playerHasInventory: "minecraft:glass_bottle",
+                            consumeInventory: true,
+                            damageInventoryPer: 0.0 // This is ignored since consumeInventory is true, but, here for reference.
+                        }
                     ],
                     exclude: [ // Items to exclude from being replaced
                         "bloodmagic:ItemMonsterSoul" // Still allows you to get Demonic Wills from Blood Magic
@@ -504,6 +548,45 @@
                         // This also defaults to false; if we mark this true, even players won't drop any rotten flesh they're carrying
                         // Note: depending on if a graves mod is installed, this may override this functionality.
                     remove: [ "minecraft:rotten_flesh" ]
+                },
+                {
+                    __comment: "You can specify that a mob has to be under a specific potion effect to do give a certain drop...",
+                    __result: "Makes cows drop rotten flesh when under the poison effect.",
+                    // Note that this is applied after the operation that removes rotten flesh drops!
+                    type: "setMobDrops",
+                    what: ["Cow"],
+                    drops: [
+                        {
+                            what: "minecraft:rotten_flesh",
+                            min: 1,
+                            max: 1,
+                            mobHasPotionEffect: "minecraft:poison"
+                        }
+                    ]
+                },
+                {
+                    __comment: "You can also specify that the player (or other entity doing the killing) has to be under a specific effect.",
+                    __result: "Makes mobs drop diamonds if the attacker has the luck effect.",
+                    type: "setMobDrops",
+                    what: [],
+                    drops: [
+                        {
+                            what: "minecraft:diamond",
+                            min: 1,
+                            max: 1,
+                            attackerHasPotionEffect: "minecraft:luck"
+                        }
+                    ]
+                },
+
+                // JEI Integration
+                {
+                    __comment: "You can add items to the JEI blacklist to hide them from JEI",
+                    __result: "Hides gold blocks from JEI",
+                    type: "hide", // There's also a 'show' command'
+                    what: "minecraft:gold_block"
+                    // Both this, and the 'show' can be added to custom sets, so you can gradually show new items as the game goes on.
+                    // Keep in mind, though, that recipes that still make the item or use the item can be used to get to it.
                 }
             ]
         },
