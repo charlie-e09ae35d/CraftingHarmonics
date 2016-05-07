@@ -12,7 +12,7 @@ import org.winterblade.minecraft.harmony.api.Priority;
 /**
  * Created by Matt on 5/7/2016.
  */
-@Component(properties = {"attackerHasOffhand", "consume", "damagePer"})
+@Component(properties = {"attackerHasOffhand", "consumeOffhand", "damageOffhandPer"})
 @PrioritizedObject(priority = Priority.MEDIUM)
 public class AttackerHasOffhandMatcher extends BaseItemStackMatcher {
     private final ItemStack offhand;
