@@ -6,7 +6,7 @@ import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
-import org.winterblade.minecraft.harmony.mobs.dto.MobDrop;
+import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
 import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.UUID;
