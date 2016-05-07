@@ -33,8 +33,7 @@ public class MobHasPotionMatcher implements IMobDropMatcher {
         if(entity == null || !EntityLivingBase.class.isAssignableFrom(entity.getClass())) return false;
 
         // Get our entity and convert it over:
-        EntityLivingBase entityBase = (EntityLivingBase) evt.getSource().getEntity();
-        if(entityBase == null) return false;
+        EntityLivingBase entityBase = (EntityLivingBase) entity;
 
         return entityBase.isPotionActive(potion);
     }
