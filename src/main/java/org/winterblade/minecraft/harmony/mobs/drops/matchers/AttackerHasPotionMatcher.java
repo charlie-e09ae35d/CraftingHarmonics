@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.mobs.drops.matchers;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
@@ -28,7 +29,7 @@ public class AttackerHasPotionMatcher implements IMobDropMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(LivingDropsEvent evt) {
+    public boolean isMatch(LivingDropsEvent evt, ItemStack drop) {
         Entity entity = evt.getSource().getEntity();
         if(entity == null || !EntityLivingBase.class.isAssignableFrom(entity.getClass())) return false;
 

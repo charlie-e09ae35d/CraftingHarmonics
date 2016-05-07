@@ -83,9 +83,6 @@ public class MobDropRegistry {
             // Now, actually calculate out our drop rates...
             Random rand = evt.getEntity().getEntityWorld().rand;
             for(MobDrop drop : handler.getDrops()) {
-                // Check if this drop matches:
-                if(!drop.matches(evt)) continue;
-
                 int min = drop.getMin();
                 int max = drop.getMax();
 
@@ -108,6 +105,9 @@ public class MobDropRegistry {
                     // You'd have to try really hard to do this, but... just in case...
                     dropStack.stackSize = 64;
                 }
+
+                // Check if this drop matches:
+                if(!drop.matches(evt, dropStack)) continue;
 
                 // Make sure we have sane drop amounts:
                 if(dropStack.stackSize < 0) continue;

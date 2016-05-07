@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.drops.matchers;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
@@ -26,7 +27,7 @@ public class MaxLootingMatcher implements IMobDropMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(LivingDropsEvent evt) {
+    public boolean isMatch(LivingDropsEvent evt, ItemStack drop) {
         return evt.getLootingLevel() <= level;
     }
 }

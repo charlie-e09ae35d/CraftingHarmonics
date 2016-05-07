@@ -28,7 +28,7 @@ public class KilledWithMatcher implements IMobDropMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(LivingDropsEvent evt) {
+    public boolean isMatch(LivingDropsEvent evt, ItemStack drop) {
         Entity entity = evt.getSource().getEntity();
         if(entity == null || !EntityLivingBase.class.isAssignableFrom(entity.getClass())) return false;
 

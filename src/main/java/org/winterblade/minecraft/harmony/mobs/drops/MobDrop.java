@@ -53,13 +53,14 @@ public class MobDrop {
     /**
      * Determine if the input event matches our target.
      * @param evt       The event to match
+     * @param drop      The dropped item; this can be modified.
      * @return          True if the matchers match.
      */
-    public boolean matches(LivingDropsEvent evt) {
+    public boolean matches(LivingDropsEvent evt, ItemStack drop) {
 
         // Iterate our matchers, finding the first one that fails.
         for(MobDropMatcherData matcher : matchers) {
-            if(!matcher.getMatcher().isMatch(evt)) return false;
+            if(!matcher.getMatcher().isMatch(evt, drop)) return false;
         }
 
         return true;
