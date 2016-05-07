@@ -177,6 +177,20 @@ public class CraftingHarmonicsMod {
     }
 
     /**
+     * Undo the given sets
+     * @param sets  The sets to undo
+     * @return      True if a set was undone, false otherwise
+     */
+    public static boolean undoSets(String[] sets) {
+        boolean removedSet = false;
+        for(String set : sets) {
+            removedSet = undoSet(set) || removedSet;
+        }
+
+        return removedSet;
+    }
+
+    /**
      * Undo a given set
      * @param set   The set to undo
      * @return      True if a set was undone, false otherwise
