@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
-import org.winterblade.minecraft.harmony.mobs.dto.MobDrop;
+import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
 import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.*;
@@ -83,30 +83,8 @@ public class MobDropRegistry {
             // Now, actually calculate out our drop rates...
             Random rand = evt.getEntity().getEntityWorld().rand;
             for(MobDrop drop : handler.getDrops()) {
-                String damageType = drop.getDamageType();
-
-                // If we're checking damage type, and it's not equal:
-                if(damageType != null && !damageType.equals(evt.getSource().getDamageType())) continue;
-
-                if(drop.getKilledWith() != null) {
-                    // If we can't get a base entity off this...
-                    Entity entity = evt.getSource().getEntity();
-                    if(entity == null || !EntityLivingBase.class.isAssignableFrom(entity.getClass())) continue;
-
-                    // Get our entity and convert it over:
-                    EntityLivingBase entityBase = (EntityLivingBase) evt.getSource().getEntity();
-                    if(entityBase == null) continue;
-
-                    ItemStack heldEquipment = entityBase.getHeldItemMainhand();
-
-                    // Make sure we have held equipment and that it's right:
-                    if(heldEquipment == null || !heldEquipment.isItemEqualIgnoreDurability(drop.getKilledWith())) continue;
-                }
-
-                double dr = rand.nextDouble();
-
-                // If we rolled higher than the chance, move on:
-                if(drop.getChance() < dr) continue;
+                // Check if this drop matches:
+                if(!drop.matches(evt)) continue;
 
                 int min = drop.getMin();
                 int max = drop.getMax();
@@ -124,7 +102,16 @@ public class MobDropRegistry {
                 ItemStack dropStack = ItemStack.copyItemStack(drop.getWhat());
 
                 // Update the stack size:
-                dropStack.stackSize = qty + Math.round(evt.getLootingLevel() * drop.getLootingMultiplier());
+                try {
+                    dropStack.stackSize = Math.toIntExact(qty + Math.round(evt.getLootingLevel() * drop.getLootingMultiplier()));
+                } catch(ArithmeticException e) {
+                    // You'd have to try really hard to do this, but... just in case...
+                    dropStack.stackSize = 64;
+                }
+
+                // Make sure we have sane drop amounts:
+                if(dropStack.stackSize < 0) continue;
+                if(64 < dropStack.stackSize) dropStack.stackSize = 64;
 
                 evt.getDrops().add(
                         new EntityItem(
