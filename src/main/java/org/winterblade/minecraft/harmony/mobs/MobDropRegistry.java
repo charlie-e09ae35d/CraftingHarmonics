@@ -111,7 +111,7 @@ public class MobDropRegistry {
 
                 // Make sure we have sane drop amounts:
                 if(dropStack.stackSize < 0) continue;
-                if(64 < dropStack.stackSize) dropStack.stackSize = 64;
+                if(dropStack.getMaxStackSize() < dropStack.stackSize) dropStack.stackSize = dropStack.getMaxStackSize();
 
                 evt.getDrops().add(
                         new EntityItem(
