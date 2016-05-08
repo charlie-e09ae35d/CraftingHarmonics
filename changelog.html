@@ -1,4 +1,169 @@
 <div>
+    <h2>Version 1.3.10</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Updating Forge to recommended build 1887 and updating MCP mappings.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
+    <h2>Version 1.3.9</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Adding ability to hide/show entries from JEI using the below commands, both of which can be used in
+            custom sets to gradually display new blocks as the game progresses:
+            <ul>
+                <li>
+                    hide: Hide an item/block from the JEI list; note that recipes that use the item, or make the item,
+                    will still allow players to get to the item, so, if you really want to remove all signs of the item,
+                    remember to remove the recipes as well.
+                </li>
+                <li>show: Show an item/block in the JEI list after it's been hidden</li>
+            </ul>
+        </li>
+        <li>
+            Per <a href="https://github.com/legendblade/CraftingHarmonics/issues/37">request</a> updating setMobDrops
+            to add the ability to:
+            <ul>
+                <li>Check if the target has a particular potion effect applied</li>
+                <li>Check if the attacker has a particular potion effect applied</li>
+                <li>Specify minimum (and maximum) looting level to get a particular drop</li>
+                <li>Add the ability to check if a particular item is in the attacker's offhand</li>
+                <li>Add the ability to check if a particular item is in the player's inventory (main inventory/hotbar)</li>
+            </ul><br />
+            In addition, all spots which check if the attacker has a particular item have been updated to add the
+            ability to consume the item or damage it by a set amount per drop that was generated.
+        </li>
+        <li>
+            Per <a href="https://github.com/legendblade/CraftingHarmonics/issues/36">request</a> changing applySet/removeSet
+            commands to:
+            <ul>
+                <li>
+                    Adds a --silent (alias: -s) flag you can pass to have the set be applied/removed silently, without
+                    notifying the user of the command, to deal with how BetterQuesting runs its commands.
+                </li>
+                <li>Allow multiple sets to be applied or removed at once</li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
+    <h2>Version 1.3.8</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Per <a href="https://github.com/legendblade/CraftingHarmonics/issues/34">request</a> added new setMobDrops
+            operation to control what items mobs drop, will allow for:
+            <ul>
+                <li>Adding or removing a drop to a mob/set of mobs</li>
+                <li>Replacing an entire drop table with your logic</li>
+                <li>Replacements can exclude specific items (like Demonic Will from Blood Magic)</li>
+            </ul><br />
+            Each drop entry can individually specify:
+            <ul>
+                <li>Set chance of each drop entry separately</li>
+                <li>Set quantity of each drop item betwen a min and max range</li>
+                <li>Add a bonus multiplier for looting (can also be negative)</li>
+                <li>Specify the damage source ('player', 'onFire', etc)</li>
+                <li>Specify that the attacker has to be using a specific item to cause the drop</li>
+            </ul><br />
+            Additionally, drop tables can be overlaid on top of one another (ie: specify multiple tables affect a
+            given mob), and can also be applied via custom sets.
+        </li>
+        <li>
+            The return of the Settings.cfg file; you can now set if the mod should log info about mob drop events,
+            so that you can better figure out entity names and damage types.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
+    <h2>Version 1.3.7</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Adding the ability to change harvest levels on blocks and tools using the following operations:
+            <ul>
+                <li>remapHarvestLevel: Takes all blocks at a given harvest level and set them to another.</li>
+                <li>setHarvestLevel: Sets the harvest level on a given block/with a given tool.</li>
+                <li>setToolHarvestLevel: Changes the effective harvest level of a particular tool.</li>
+            </ul>
+        </li>
+        <li>
+            Adding the ability to change stats on TiCon tools using the following operations:
+            <ul>
+                <li>setMaterialStats: Modifies the stats for a given material.</li>
+            </ul>
+        </li>
+        <li>
+            Adding the ability to set harvest level names for new/existing TiCon harvest levels using the following:
+            <ul>
+                <li>setHarvestLevelName: Adds a new name for a harvest level or modifies an existing one.</li>
+            </ul>
+        </li>
+        <li>
+            Harvest level names can be applied with custom sets as well, so, you could leave a harvest level as
+            "Unknown" until the player reaches a certain point in progression where they should be able to mine it;
+            optionally combine this with setting harvest levels to ensure the player really doesn't mine it until
+            after that point.
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/33">issue #33</a> where
+            the build server wasn't properly linking the Nashorn Scriping Library as a required mod when uploading to CF.
+        </li>
+    </ul>
+</div>
+<div>
+    <h2>Version 1.3.6</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/25">issue #25</a> where
+            a player connecting to a server could crash due to not having world data to save applied recipes to.
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/26">issue #26</a> where
+            we were trying to reload JEI even if the player didn't have JEI installed.
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/27">issue #27</a> where
+            the difficulty based sets were trying to be applied before the world finished loading and causing a CTD.
+        </li>
+        <li>
+            Standardized logging.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
+    <h2>Version 1.3.5</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            You can now register more sets than just default; now 'peaceful', 'easy', 'normal', and 'hard' are valid
+            options and will take effect when the singleplayer game/server is set to the associated difficulty level.
+            See the sample file for more information.
+        </li>
+        <li>
+            You can also add custom sets as well, named anything other than 'default', 'peaceful', 'easy',
+            'normal', or 'hard'.  These custom sets can be applied or removed with the /ch applySet setName and
+            /ch removeSet setName command.  These could then be associated with command blocks or quest mods that allow
+            running commands, or simply run by a server op.
+        </li>
+        <li>
+            Updated to Forge 1865.
+        </li>
+        <li>
+            Fixing some issues with tab completion for commands.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
     <h2>Version 1.3.4</h2>
     <h4>Features</h4>
     <ul>

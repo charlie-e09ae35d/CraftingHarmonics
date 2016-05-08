@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class GetHeldNbtCommand implements ICommand {
         }
 
         String nbtText = mainHand.getTagCompound().toString();
-        System.out.println(nbtText);
+        LogHelper.info(nbtText);
         sender.addChatMessage(new TextComponentString("NBT (also logged): " + nbtText));
     }
 

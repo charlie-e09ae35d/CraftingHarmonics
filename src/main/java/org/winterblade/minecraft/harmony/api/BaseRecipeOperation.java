@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.api;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 /**
  * Created by Matt on 4/6/2016.
@@ -34,7 +35,7 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
             return true;
         }
         catch(Exception e) {
-            System.out.println("Error creating " + getClass().getSimpleName());
+            LogHelper.error("Error creating " + getClass().getSimpleName());
             return false;
         }
     }

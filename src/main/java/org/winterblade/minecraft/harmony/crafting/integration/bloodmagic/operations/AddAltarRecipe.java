@@ -3,12 +3,12 @@ package org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.operat
 import WayofTime.bloodmagic.api.altar.EnumAltarTier;
 import WayofTime.bloodmagic.api.registry.AltarRecipeRegistry;
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.ReflectedBloodMagicRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.Arrays;
 
@@ -39,7 +39,7 @@ public class AddAltarRecipe extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        CraftingHarmonicsMod.logger.info("Adding blood altar recipe for '" + ItemRegistry.outputItemName(output) + "'.");
+        LogHelper.info("Adding blood altar recipe for '" + ItemRegistry.outputItemName(output) + "'.");
         ReflectedBloodMagicRegistry.addAltarRecipe(recipe);
     }
 

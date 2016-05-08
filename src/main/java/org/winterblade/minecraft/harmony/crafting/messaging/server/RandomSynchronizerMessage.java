@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import org.winterblade.minecraft.harmony.utility.SynchronizedRandom;
 
 /**
@@ -50,7 +51,7 @@ public class RandomSynchronizerMessage implements IMessage {
          */
         @Override
         public IMessage onMessage(RandomSynchronizerMessage message, MessageContext ctx) {
-            System.out.println("Received random seed from server: " + message.seed);
+            LogHelper.info("Received random seed from server: " + message.seed);
             SynchronizedRandom.setMyRandom(message.seed);
             return null;
         }

@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,7 +29,7 @@ public class ItemRegistry {
 
     public static void Init() {
         // Get the item's location
-        System.out.println("Initializing item registry...");
+        LogHelper.info("Initializing item registry...");
 
         RegistryNamespaced<ResourceLocation, Item> itemRegistry = Item.REGISTRY;
 
@@ -46,7 +47,7 @@ public class ItemRegistry {
             if(!itemsByMod.containsKey(mod)) itemsByMod.put(mod, new ArrayList<Item>());
             itemsByMod.get(mod).add(item);
         }
-        System.out.println("Item registry complete.");
+        LogHelper.info("Item registry complete.");
     }
 
     /**

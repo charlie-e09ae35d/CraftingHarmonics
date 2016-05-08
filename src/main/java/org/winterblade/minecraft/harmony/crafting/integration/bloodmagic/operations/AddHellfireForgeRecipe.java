@@ -2,13 +2,13 @@ package org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.operat
 
 import WayofTime.bloodmagic.api.recipe.TartaricForgeRecipe;
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.ReflectedBloodMagicRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 /**
  * Created by Matt on 4/22/2016.
@@ -35,7 +35,7 @@ public class AddHellfireForgeRecipe extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        CraftingHarmonicsMod.logger.info("Adding Hellfire Forge recipe for '" + ItemRegistry.outputItemName(output) + "'.");
+        LogHelper.info("Adding Hellfire Forge recipe for '" + ItemRegistry.outputItemName(output) + "'.");
         ReflectedBloodMagicRegistry.addHellfireForgeRecipe(recipe);
     }
 

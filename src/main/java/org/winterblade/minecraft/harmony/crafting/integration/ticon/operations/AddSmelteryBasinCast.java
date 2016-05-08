@@ -2,12 +2,12 @@ package org.winterblade.minecraft.harmony.crafting.integration.ticon.operations;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.integration.ticon.ReflectedTinkerRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import slimeknights.mantle.util.RecipeMatch;
 import slimeknights.tconstruct.library.smeltery.CastingRecipe;
 
@@ -37,7 +37,7 @@ public class AddSmelteryBasinCast extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        CraftingHarmonicsMod.logger.info("Adding Tinker's basin cast for '" + ItemRegistry.outputItemName(what) + "'.");
+        LogHelper.info("Adding Tinker's basin cast for '" + ItemRegistry.outputItemName(what) + "'.");
         ReflectedTinkerRegistry.addBasinCast(recipe);
     }
 

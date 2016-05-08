@@ -4,12 +4,12 @@ import WayofTime.bloodmagic.api.recipe.TartaricForgeRecipe;
 import WayofTime.bloodmagic.api.registry.TartaricForgeRecipeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.integration.bloodmagic.ReflectedBloodMagicRegistry;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class RemoveHellfireForgeRecipe extends BaseRecipeOperation {
     @Override
     public void Apply() {
         if(recipe == null) return;
-        CraftingHarmonicsMod.logger.info("Removing Hellfire Forge recipe for '" + ItemRegistry.outputItemName(what) + "'.");
+        LogHelper.info("Removing Hellfire Forge recipe for '" + ItemRegistry.outputItemName(what) + "'.");
         ReflectedBloodMagicRegistry.removeHellfireForgeRecipe(recipe);
     }
 

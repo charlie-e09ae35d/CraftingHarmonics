@@ -16,6 +16,7 @@ import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.NbtMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.OreDictionaryMatcher;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
@@ -54,7 +55,7 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
 
         // Make sure we have a string and somebody's not trying to be clever..
         if(!(item instanceof String)) {
-            System.err.println("Couldn't convert '" + item.toString() + "' to a valid item string.");
+            LogHelper.error("Couldn't convert '" + item.toString() + "' to a valid item string.");
             return output;
         }
 
@@ -62,7 +63,7 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
 
         // And if we still don't have anything, means we still had a bad input string...
         if(RecipeInput.isNullOrEmpty(output)) {
-            System.err.println("Couldn't convert '" + item.toString() + "' to a valid item string.");
+            LogHelper.error("Couldn't convert '" + item.toString() + "' to a valid item string.");
             return output;
         }
 
@@ -120,7 +121,7 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
         try {
             item = ItemRegistry.TranslateToItemStack(itemString);
         } catch (ItemMissingException e) {
-            System.err.println("Couldn't convert '" + itemString + "' to a valid item string.");
+            LogHelper.error("Couldn't convert '" + itemString + "' to a valid item string.");
             return;
         }
 
