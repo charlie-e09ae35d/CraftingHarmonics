@@ -43,4 +43,13 @@ public abstract class BaseTechRebornAddOperation extends BaseRecipeOperation {
     protected ItemStack getInput(int id) {
         return (id < with.length ? with[id] : null);
     }
+
+    /**
+     * Gets the output at the given ID, or null if none exists
+     * @param id    The ID to check
+     * @return      The ItemStack at that position, null if it doesn't exist
+     */
+    protected ItemStack getOutput(int id) {
+        return (id < what.length ? what[id] : null);
+    }
 }
