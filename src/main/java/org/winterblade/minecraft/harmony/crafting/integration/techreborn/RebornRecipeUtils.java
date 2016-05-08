@@ -8,6 +8,7 @@ import reborncore.api.recipe.RecipeHandler;
  */
 //
 public class RebornRecipeUtils {
+    public static final String TechRebornModId = "techreborn";
     private RebornRecipeUtils() { }
 
     public static void addRecipe(IBaseRecipeType recipe) {

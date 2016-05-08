@@ -1,7 +1,5 @@
 package org.winterblade.minecraft.harmony.crafting.integration.techreborn.operations;
 
-import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.integration.techreborn.RebornRecipeUtils;
@@ -10,7 +8,7 @@ import techreborn.api.recipe.machines.AlloySmelterRecipe;
 /**
  * Created by Matt on 5/8/2016.
  */
-@RecipeOperation(name = "TechReborn.addAlloySmelter", dependsOn = "techreborn")
+@RecipeOperation(name = "TechReborn.addAlloySmelter", dependsOn = RebornRecipeUtils.TechRebornModId)
 public class AddAlloySmelterOperation extends BaseTechRebornAddOperation {
     @Override
     public void Init() throws ItemMissingException {
