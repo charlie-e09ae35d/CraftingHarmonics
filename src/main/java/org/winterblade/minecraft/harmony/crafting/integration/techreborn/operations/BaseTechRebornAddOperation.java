@@ -34,4 +34,13 @@ public abstract class BaseTechRebornAddOperation extends BaseRecipeOperation {
     public void Undo() {
         RebornRecipeUtils.removeRecipe(recipe);
     }
+
+    /**
+     * Gets the input at the given ID, or null if none exists
+     * @param id    The ID to check
+     * @return      The ItemStack at that position, null if it doesn't exist
+     */
+    protected ItemStack getInput(int id) {
+        return (id < with.length ? with[id] : null);
+    }
 }

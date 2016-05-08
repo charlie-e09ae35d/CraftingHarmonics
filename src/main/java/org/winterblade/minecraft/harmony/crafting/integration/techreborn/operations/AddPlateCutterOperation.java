@@ -15,6 +15,5 @@ public class AddPlateCutterOperation extends BaseTechRebornAddOperation {
         if(what.length != 1) throw new ItemMissingException("Plate cutter recipes require 1 output item.");
         if(with.length != 1) throw new ItemMissingException("Plate cutter recipes require 1 input item.");
         recipe = new PlateCuttingMachineRecipe(with[0], what[0], ticks, euPerTick);
-
     }
 }
