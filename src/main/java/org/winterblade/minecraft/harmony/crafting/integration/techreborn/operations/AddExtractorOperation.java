@@ -4,17 +4,17 @@ import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.integration.techreborn.RebornRecipeUtils;
 import reborncore.api.recipe.IBaseRecipeType;
-import techreborn.api.recipe.machines.ImplosionCompressorRecipe;
+import techreborn.api.recipe.machines.ExtractorRecipe;
 
 /**
  * Created by Matt on 5/8/2016.
  */
-@RecipeOperation(name = "TechReborn.addImplosionCompressor", dependsOn = RebornRecipeUtils.TechRebornModId)
-public class AddImplosionCompressor extends BaseTechRebornAddOperation {
-    public AddImplosionCompressor() {super("Implosion Compressor", 2);}
+@RecipeOperation(name = "TechReborn.addExtractor", dependsOn = RebornRecipeUtils.TechRebornModId)
+public class AddExtractorOperation extends BaseTechRebornAddOperation {
+    public AddExtractorOperation() {super("Extractor");}
 
     @Override
     protected IBaseRecipeType getRecipe() throws ItemMissingException {
-        return new ImplosionCompressorRecipe(getInput(0), getInput(1), getOutput(0), getOutput(1), ticks, euPerTick);
+        return new ExtractorRecipe(getInput(0), getOutput(0), ticks, euPerTick);
     }
 }

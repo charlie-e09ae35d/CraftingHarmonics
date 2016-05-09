@@ -10,8 +10,8 @@ import techreborn.api.recipe.machines.AssemblingMachineRecipe;
  * Created by Matt on 5/8/2016.
  */
 @RecipeOperation(name = "TechReborn.addAssemblingMachine", dependsOn = RebornRecipeUtils.TechRebornModId)
-public class AddAssemblingMachineRecipe extends BaseTechRebornAddOperation {
-    public AddAssemblingMachineRecipe() {super("Assembling Machine");}
+public class AddAssemblingMachineOperation extends BaseTechRebornAddOperation {
+    public AddAssemblingMachineOperation() {super("Assembling Machine");}
 
     @Override
     protected IBaseRecipeType getRecipe() throws ItemMissingException {
