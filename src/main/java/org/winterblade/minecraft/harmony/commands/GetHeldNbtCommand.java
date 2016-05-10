@@ -15,10 +15,15 @@ import java.util.List;
 /**
  * Created by Matt on 4/7/2016.
  */
-public class GetHeldNbtCommand implements ICommand {
+public class GetHeldNbtCommand extends SubCommand {
     @Override
     public String getCommandName() {
         return "getHeldNBT";
+    }
+
+    @Override
+    public String getHelpText() {
+        return "Gets the NBT of your current held main hand item in JSON format.";
     }
 
     @Override
@@ -67,11 +72,6 @@ public class GetHeldNbtCommand implements ICommand {
     }
 
     @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return true;
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return null;
     }
@@ -79,11 +79,6 @@ public class GetHeldNbtCommand implements ICommand {
     @Override
     public boolean isUsernameIndex(String[] args, int index) {
         return false;
-    }
-
-    @Override
-    public int compareTo(ICommand o) {
-        return 0;
     }
 
 }
