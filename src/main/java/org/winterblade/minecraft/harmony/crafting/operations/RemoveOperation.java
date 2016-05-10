@@ -154,7 +154,7 @@ public class RemoveOperation extends BaseRecipeOperation {
     private void RemoveCraftingRecpies() {
         List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 
-        InventoryCrafting inv = simulateInventoryOf(with);
+        InventoryCrafting inv = ItemRegistry.simulateInventoryOf(with, width, height);
 
         LogHelper.info("Searching for recipes to remove for " + modId + ":" + itemName + ":" + metadata + "...");
 
@@ -170,40 +170,6 @@ public class RemoveOperation extends BaseRecipeOperation {
             removedRecipes.add(new RemovedCraftingRecipe(recipe));
             recipeIterator.remove();
         }
-    }
-
-    /**
-     * Simulates an inventory with the given inputs as
-     * @param inputs    The inputs
-     * @return          The crafting inventory
-     */
-    private InventoryCrafting simulateInventoryOf(ItemStack[] inputs) {
-        if(inputs == null) return null;
-
-        // Make a contianer...
-        Container c = new ContainerWorkbench(new InventoryPlayer(null), null, BlockPos.ORIGIN);
-
-        // Figure out our sizes:
-        if(width <= 0 && height <= 0) {
-            width = height = inputs.length > 4 ? 3 : 2;
-        }
-
-        if(width <= 0) {
-            width = (int)Math.ceil((double)inputs.length / height);
-        }
-
-        if(height <= 0) {
-            height = (int)Math.ceil((double)inputs.length / width);
-        }
-
-        InventoryCrafting inv = new InventoryCrafting(c, width, height);
-
-        for (int i = 0; i < inputs.length; i++) {
-            inv.setInventorySlotContents(i, inputs[i]);
-        }
-
-        // And pretend we're crafting:
-        return inv;
     }
 
     @Override
