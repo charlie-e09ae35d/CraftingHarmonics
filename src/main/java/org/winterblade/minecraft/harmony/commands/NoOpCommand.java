@@ -21,7 +21,7 @@ public class NoOpCommand implements ICommand {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return null;
+        return "Unknown command.  Use /ch help for a list of available commands.";
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.commands;
 
+import com.google.common.base.Joiner;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -55,7 +56,18 @@ public class CommandHandler implements ICommand {
         }
 
         String[] subArgs = Arrays.copyOfRange(args,1,args.length);
-        getSubCommand(args[0]).execute(server, sender, subArgs);
+
+        // Make sure we're not doing help:
+        if(!args[0].equals("help")) getSubCommand(args[0]).execute(server, sender, subArgs);
+
+        // Otherwise, actually do help;
+        sender.addChatMessage(new TextComponentString("Crafting Harmonics help:"));
+        if(subArgs.length <= 0 || subArgs[0].equals("")) {
+            sender.addChatMessage(new TextComponentString("Available subcommands: " + Joiner.on(", ").join(subcommands.keySet())));
+            sender.addChatMessage(new TextComponentString("Use /ch help <subcommand> for more information."));
+        } else {
+            sender.addChatMessage(new TextComponentString(getSubCommand(subArgs[0]).getCommandUsage(sender)));
+        }
     }
 
     @Override
