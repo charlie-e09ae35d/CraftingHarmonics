@@ -2,6 +2,9 @@ package org.winterblade.minecraft.harmony.crafting;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,6 +13,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryNamespaced;
 import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
@@ -352,6 +356,44 @@ public class ItemRegistry {
         return Item.REGISTRY.getNameForObject(itemStack.getItem()).toString() + ":" +
                 ((meta == OreDictionary.WILDCARD_VALUE) ? "*" : meta);
     }
+
+
+    /**
+     * Simulates an inventory with the given inputs as
+     * @param inputs    The inputs
+     * @param width     The width of the inventory to simulate
+     * @param height    The height of the inventory to simulate
+     * @return          The crafting inventory
+     */
+    public static InventoryCrafting simulateInventoryOf(ItemStack[] inputs, int width, int height) {
+        if(inputs == null) return null;
+
+        // Make a container...
+        Container c = new ContainerWorkbench(new InventoryPlayer(null), null, BlockPos.ORIGIN);
+
+        // Figure out our sizes:
+        if(width <= 0 && height <= 0) {
+            width = height = inputs.length > 4 ? 3 : 2;
+        }
+
+        if(width <= 0) {
+            width = (int)Math.ceil((double)inputs.length / height);
+        }
+
+        if(height <= 0) {
+            height = (int)Math.ceil((double)inputs.length / width);
+        }
+
+        InventoryCrafting inv = new InventoryCrafting(c, width, height);
+
+        for (int i = 0; i < inputs.length; i++) {
+            inv.setInventorySlotContents(i, inputs[i]);
+        }
+
+        // And pretend we're crafting:
+        return inv;
+    }
+
 
     private enum ItemType {
         Regular, ExactNbt, FuzzyNbt

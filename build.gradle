@@ -21,6 +21,8 @@ repositories {
     maven { url "http://maven.winterblade.org/content/repositories/minecraft/" }
     maven { url "http://dvs1.progwml6.com/files/maven" } // JEI, TiCon, etc
     maven { url "http://tehnut.info/maven/" } // Blood Magic
+    maven { url "http://maven.modmuss50.me/" } // TechReborn, RebornCore
+    maven { url 'http://maven.rubbix.net' } // Tesla API
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -63,6 +65,10 @@ dependencies {
 
     // Blood Magic
     deobfCompile "com.wayoftime.bloodmagic:BloodMagic:1.9-2.0.0-33"
+
+    // TechReborn
+    compile "RebornCore:RebornCore-1.9:+:dev"
+    compile "TechReborn:TechReborn-1.9:1.0.6.225:dev"
 }
 
 //Add dependencies to the JAR
