@@ -15,13 +15,18 @@ import java.util.List;
 /**
  * Created by Matt on 4/23/2016.
  */
-public class ListFluidsCommand implements ICommand {
+public class ListFluidsCommand extends SubCommand {
     /**
      * Gets the name of the command
      */
     @Override
     public String getCommandName() {
         return "listFluids";
+    }
+
+    @Override
+    public String getHelpText() {
+        return "Lists all fluids currently in the fluid registry.";
     }
 
     /**
@@ -54,17 +59,6 @@ public class ListFluidsCommand implements ICommand {
         LogHelper.info(fluids);
     }
 
-    /**
-     * Check if the given ICommandSender has permission to execute this command
-     *
-     * @param server The Minecraft server instance
-     * @param sender The command sender who we are checking permission on
-     */
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return false;
-    }
-
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return null;
@@ -79,10 +73,5 @@ public class ListFluidsCommand implements ICommand {
     @Override
     public boolean isUsernameIndex(String[] args, int index) {
         return false;
-    }
-
-    @Override
-    public int compareTo(ICommand o) {
-        return 0;
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Matt on 4/22/2016.
  */
-public class GetResourceLocatorCommand implements ICommand {
+public class GetResourceLocatorCommand extends SubCommand {
 
     /**
      * Gets the name of the command
@@ -24,6 +24,11 @@ public class GetResourceLocatorCommand implements ICommand {
     @Override
     public String getCommandName() {
         return "getResourceLocator";
+    }
+
+    @Override
+    public String getHelpText() {
+        return "Gets the resource locator (item string) of your currently held main hand item to use in configs.";
     }
 
     /**
@@ -78,17 +83,6 @@ public class GetResourceLocatorCommand implements ICommand {
         sender.addChatMessage(new TextComponentString("Locator (also logged): " + resourceLocator));
     }
 
-    /**
-     * Check if the given ICommandSender has permission to execute this command
-     *
-     * @param server The Minecraft server instance
-     * @param sender The command sender who we are checking permission on
-     */
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return false;
-    }
-
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return null;
@@ -103,10 +97,5 @@ public class GetResourceLocatorCommand implements ICommand {
     @Override
     public boolean isUsernameIndex(String[] args, int index) {
         return false;
-    }
-
-    @Override
-    public int compareTo(ICommand o) {
-        return 0;
     }
 }

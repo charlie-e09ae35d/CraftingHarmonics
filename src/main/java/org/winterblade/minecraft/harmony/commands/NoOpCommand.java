@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by Matt on 4/7/2016.
  */
-public class NoOpCommand implements ICommand {
+public class NoOpCommand extends SubCommand {
     @Override
     public String getCommandName() {
         return null;
@@ -21,7 +21,12 @@ public class NoOpCommand implements ICommand {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "Unknown command.  Use /ch help for a list of available commands.";
+        return "Use /ch help for a list of available commands.";
+    }
+
+    @Override
+    public String getHelpText() {
+        return "Unknown command.";
     }
 
     @Override
@@ -37,11 +42,6 @@ public class NoOpCommand implements ICommand {
     }
 
     @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return true;
-    }
-
-    @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return new ArrayList<>();
     }
@@ -51,8 +51,4 @@ public class NoOpCommand implements ICommand {
         return false;
     }
 
-    @Override
-    public int compareTo(ICommand o) {
-        return 0;
-    }
 }

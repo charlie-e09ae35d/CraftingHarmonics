@@ -12,13 +12,18 @@ import java.util.List;
 /**
  * Created by Matt on 4/16/2016.
  */
-public class ReloadCommand implements ICommand {
+public class ReloadCommand extends SubCommand {
     /**
      * Gets the name of the command
      */
     @Override
     public String getCommandName() {
         return "reload";
+    }
+
+    @Override
+    public String getHelpText() {
+        return "Reloads the configuration from disk and syncs configs out to all connected players.";
     }
 
     /**
@@ -48,17 +53,6 @@ public class ReloadCommand implements ICommand {
         CraftingHarmonicsMod.reloadConfigs(server);
     }
 
-    /**
-     * Check if the given ICommandSender has permission to execute this command
-     *
-     * @param server The Minecraft server instance
-     * @param sender The command sender who we are checking permission on
-     */
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return false;
-    }
-
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return null;
@@ -73,10 +67,5 @@ public class ReloadCommand implements ICommand {
     @Override
     public boolean isUsernameIndex(String[] args, int index) {
         return false;
-    }
-
-    @Override
-    public int compareTo(ICommand o) {
-        return 0;
     }
 }

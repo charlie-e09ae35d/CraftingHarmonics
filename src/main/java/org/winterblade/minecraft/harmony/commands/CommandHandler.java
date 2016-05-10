@@ -16,7 +16,7 @@ import java.util.*;
  */
 public class CommandHandler implements ICommand {
     private static final List<String> aliases = new ArrayList<>();
-    private static final Map<String, ICommand> subcommands = new HashMap<>();
+    private static final Map<String, SubCommand> subcommands = new HashMap<>();
 
     static {
         aliases.add("ch");
@@ -61,12 +61,15 @@ public class CommandHandler implements ICommand {
         if(!args[0].equals("help")) getSubCommand(args[0]).execute(server, sender, subArgs);
 
         // Otherwise, actually do help;
-        sender.addChatMessage(new TextComponentString("Crafting Harmonics help:"));
         if(subArgs.length <= 0 || subArgs[0].equals("")) {
+            sender.addChatMessage(new TextComponentString("--- Crafting Harmonics Help ---"));
             sender.addChatMessage(new TextComponentString("Available subcommands: " + Joiner.on(", ").join(subcommands.keySet())));
             sender.addChatMessage(new TextComponentString("Use /ch help <subcommand> for more information."));
         } else {
-            sender.addChatMessage(new TextComponentString(getSubCommand(subArgs[0]).getCommandUsage(sender)));
+            SubCommand command = getSubCommand(subArgs[0]);
+            sender.addChatMessage(new TextComponentString("--- Crafting Harmonics " + subArgs[0] + " Help ---"));
+            sender.addChatMessage(new TextComponentString(command.getHelpText()));
+            sender.addChatMessage(new TextComponentString(command.getCommandUsage(sender)));
         }
     }
 
@@ -103,7 +106,7 @@ public class CommandHandler implements ICommand {
      * @param name  The name of the command to get
      * @return      The command, or a no-op if it doesn't exist.
      */
-    private ICommand getSubCommand(String name) {
+    private SubCommand getSubCommand(String name) {
         if(name == null || name.equals("") || !subcommands.containsKey(name)) return new NoOpCommand();
         return subcommands.get(name);
     }
