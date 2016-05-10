@@ -67,9 +67,9 @@ public class CommandHandler implements ICommand {
             sender.addChatMessage(new TextComponentString("Use /ch help <subcommand> for more information."));
         } else {
             SubCommand command = getSubCommand(subArgs[0]);
-            sender.addChatMessage(new TextComponentString("--- Crafting Harmonics " + subArgs[0] + " Help ---"));
+            sender.addChatMessage(new TextComponentString("--- Crafting Harmonics '" + subArgs[0] + "' Help ---"));
             sender.addChatMessage(new TextComponentString(command.getHelpText()));
-            sender.addChatMessage(new TextComponentString(command.getCommandUsage(sender)));
+            sender.addChatMessage(new TextComponentString("Usage: " + command.getCommandUsage(sender)));
         }
     }
 
@@ -80,7 +80,7 @@ public class CommandHandler implements ICommand {
 
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
-        if(args.length == 0 || args[0].equals("")) {
+        if(args.length == 0 || args[0].equals("") || args[0].equals("help")) {
             return new ArrayList<>(subcommands.keySet());
         }
 
