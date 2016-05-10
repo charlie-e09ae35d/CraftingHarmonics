@@ -16,7 +16,7 @@ public class AddShapelessOperation extends BaseAddOperation {
      * Serialized properties:
      */
     private RecipeInput[] with;
-    private ShapelessComponentRecipe recipe;
+    protected ShapelessComponentRecipe recipe;
 
     @Override
     public void Init() throws ItemMissingException {
