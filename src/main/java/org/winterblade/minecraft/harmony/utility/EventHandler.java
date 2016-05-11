@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.utility;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -10,6 +11,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.crafting.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
+import org.winterblade.minecraft.harmony.mobs.MobShedRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 /**
@@ -53,6 +55,18 @@ public class EventHandler {
             MobDropRegistry.handleDrops(evt);
         } catch(Exception ex) {
             LogHelper.error("Error handling drop event; please report this along with your config file.", ex);
+            evt.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onLivingUpdate(LivingEvent.LivingUpdateEvent evt) {
+        if(evt.isCanceled()) return;
+
+        try {
+            MobShedRegistry.handleSheds(evt);
+        } catch(Exception ex) {
+            LogHelper.error("Error handling living update event; please report this along with your config file.", ex);
             evt.setCanceled(true);
         }
     }
