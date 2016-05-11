@@ -61,7 +61,7 @@ public class EventHandler {
 
     @SubscribeEvent
     public void onLivingUpdate(LivingEvent.LivingUpdateEvent evt) {
-        if(evt.isCanceled()) return;
+        if(evt.isCanceled() || evt.getEntity().getEntityWorld().isRemote) return;
 
         try {
             MobShedRegistry.handleSheds(evt);
