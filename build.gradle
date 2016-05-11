@@ -64,7 +64,7 @@ dependencies {
     compile files("libs/TConstruct-1.9-2.2.2.DEV.adc860a.jar")
 
     // Blood Magic
-    deobfCompile "com.wayoftime.bloodmagic:BloodMagic:1.9-2.0.0-33"
+    deobfCompile "com.wayoftime.bloodmagic:BloodMagic:1.9-2.0.0-35"
 
     // TechReborn
     compile "RebornCore:RebornCore-1.9:+:dev"
