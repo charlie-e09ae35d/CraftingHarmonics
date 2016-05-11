@@ -22,8 +22,8 @@ public class RecipeOperationRegistry {
 
             // Check if we have the specified mod loaded:
             if(!anno.dependsOn().equals("") && !Loader.isModLoaded(anno.dependsOn())) {
-                // TODO: Logger update, but, we don't actually have our logger at this point.
                 LogHelper.warn(anno.name() + " depends on '" + anno.dependsOn() + "', which is not loaded.");
+                continue;
             } else {
                 LogHelper.info("Registering operation '" + anno.name() + "'.");
             }
