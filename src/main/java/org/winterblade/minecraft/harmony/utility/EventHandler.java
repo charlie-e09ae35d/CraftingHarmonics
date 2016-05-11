@@ -48,6 +48,18 @@ public class EventHandler {
     }
 
     @SubscribeEvent
+    public void onWorldTick(TickEvent.WorldTickEvent evt) {
+        if(evt.phase != TickEvent.Phase.END || evt.world.isRemote) return;
+
+        try {
+            MobShedRegistry.handleSheds(evt);
+        } catch(Exception ex) {
+            LogHelper.error("Error handling world tick; please report this along with your config file.", ex);
+            evt.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
     public void onMobDrop(LivingDropsEvent evt) {
         if(evt.isCanceled()) return;
 
@@ -55,18 +67,6 @@ public class EventHandler {
             MobDropRegistry.handleDrops(evt);
         } catch(Exception ex) {
             LogHelper.error("Error handling drop event; please report this along with your config file.", ex);
-            evt.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
-    public void onLivingUpdate(LivingEvent.LivingUpdateEvent evt) {
-        if(evt.isCanceled() || evt.getEntity().getEntityWorld().isRemote) return;
-
-        try {
-            MobShedRegistry.handleSheds(evt);
-        } catch(Exception ex) {
-            LogHelper.error("Error handling living update event; please report this along with your config file.", ex);
             evt.setCanceled(true);
         }
     }

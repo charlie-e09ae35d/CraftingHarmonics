@@ -1,7 +1,11 @@
 package org.winterblade.minecraft.harmony.mobs;
 
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EntitySelectors;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
 import java.util.*;
@@ -19,51 +23,57 @@ public class MobShedRegistry {
      * Handles a mob shed event
      * @param evt    The event to process
      */
-    public static void handleSheds(LivingEvent.LivingUpdateEvent evt) {
+    public static void handleSheds(TickEvent.WorldTickEvent evt) {
         // Only process sheds once every 10 seconds (roughly):
-        if(evt.getEntity().getEntityWorld().getTotalWorldTime() % 200 != 0)
+        if(evt.world.getTotalWorldTime() % 200 != 0)
             return;
 
-        String entityName = evt.getEntity().getName();
-        String entityClassName = evt.getEntity().getClass().getName();
+        Random rand = evt.world.rand;
+        // Doing it this way to avoid doing modulo for potentially thousands of entities in a LivingUpdate event.
+        List<EntityLiving> entities = evt.world.getEntities(EntityLiving.class, EntitySelectors.IS_ALIVE);
 
-        for(UUID id : activeHandlers) {
-            MobShedHandler handler = handlers.get(id);
+        for(EntityLiving entity : entities) {
+            if (EntityPlayer.class.isAssignableFrom(entity.getClass())) continue;
 
-            // If we don't have a handler, or the handler doesn't match:
-            if(handler == null ||
-                    (!handler.isMatch(entityName)) && !handler.isMatch(entityClassName)) continue;
+            String entityName = entity.getName();
+            String entityClassName = entity.getClass().getName();
 
-            // Now, actually calculate out our drop rates...
-            Random rand = evt.getEntity().getEntityWorld().rand;
+            for (UUID id : activeHandlers) {
+                MobShedHandler handler = handlers.get(id);
 
-            for(MobShed drop : handler.getDrops()) {
-                int min = drop.getMin();
-                int max = drop.getMax();
+                // If we don't have a handler, or the handler doesn't match:
+                if (handler == null ||
+                        (!handler.isMatch(entityName)) && !handler.isMatch(entityClassName)) continue;
 
-                // Figure out how many to give:
-                int qty;
-                if(min != max) {
-                    int delta = Math.abs(drop.getMax() - drop.getMin());
-                    qty = rand.nextInt(delta) + min;
-                } else {
-                    qty = min;
+                // Now, actually calculate out our drop rates...
+                for (MobShed drop : handler.getDrops()) {
+                    int min = drop.getMin();
+                    int max = drop.getMax();
+
+                    // Figure out how many to give:
+                    int qty;
+                    if (min != max) {
+                        int delta = Math.abs(drop.getMax() - drop.getMin());
+                        qty = rand.nextInt(delta) + min;
+                    } else {
+                        qty = min;
+                    }
+
+                    // Do the drop!
+                    ItemStack dropStack = ItemStack.copyItemStack(drop.getWhat());
+
+                    // Check if this drop matches:
+                    if (!drop.matches(entity, dropStack)) continue;
+
+                    // Make sure we have sane drop amounts:
+                    if (dropStack.stackSize < 0) continue;
+                    if (dropStack.getMaxStackSize() < dropStack.stackSize)
+                        dropStack.stackSize = dropStack.getMaxStackSize();
+
+                    // Do the drop:
+                    entity.entityDropItem(dropStack, 0.0f);
                 }
-
-                // Do the drop!
-                ItemStack dropStack = ItemStack.copyItemStack(drop.getWhat());
-
-                // Check if this drop matches:
-                if(!drop.matches(evt, dropStack)) continue;
-
-                // Make sure we have sane drop amounts:
-                if(dropStack.stackSize < 0) continue;
-                if(dropStack.getMaxStackSize() < dropStack.stackSize) dropStack.stackSize = dropStack.getMaxStackSize();
-
-                // Do the drop:
-                evt.getEntity().entityDropItem(dropStack, 0.0f);
             }
-
         }
     }
 

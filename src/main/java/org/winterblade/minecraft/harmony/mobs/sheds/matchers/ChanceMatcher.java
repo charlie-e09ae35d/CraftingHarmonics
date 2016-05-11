@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.sheds.matchers;
 
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -28,7 +29,7 @@ public class ChanceMatcher implements IMobShedMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(LivingEvent.LivingUpdateEvent evt, ItemStack drop) {
-        return evt.getEntity().getEntityWorld().rand.nextDouble() < chance;
+    public boolean isMatch(EntityLiving evt, ItemStack drop) {
+        return evt.getEntityWorld().rand.nextDouble() < chance;
     }
 }
