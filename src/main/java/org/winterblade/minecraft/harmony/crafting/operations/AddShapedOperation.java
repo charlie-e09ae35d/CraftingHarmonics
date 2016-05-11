@@ -20,7 +20,7 @@ public class AddShapedOperation extends BaseAddOperation {
     private RecipeInput[] with;
     private int width;
     private int height;
-    private ShapedComponentRecipe recipe;
+    protected ShapedComponentRecipe recipe;
 
     @Override
     public void Init() throws ItemMissingException {

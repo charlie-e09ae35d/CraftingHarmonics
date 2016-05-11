@@ -25,7 +25,9 @@ public abstract class RemoveSmelteryCast extends BaseRecipeOperation {
     protected transient List<CastingRecipe> recipes = new ArrayList<>();
 
     protected boolean matches(CastingRecipe recipe) {
-        if(!recipe.getResult().isItemEqualIgnoreDurability(what)) return false;
+        // Be a little over-paranoid with this:
+        if(what == null || recipe.getResult() == null
+                || !recipe.getResult().isItemEqualIgnoreDurability(what)) return false;
 
         // If that's all we needed to check
         if(with == null && cast == null) return true;
@@ -36,8 +38,7 @@ public abstract class RemoveSmelteryCast extends BaseRecipeOperation {
                 !recipe.cast.getInputs().get(0).isItemEqualIgnoreDurability(cast))) return false;
 
         // Check our fluids as well...
-        if(with != null && !recipe.getFluid().isFluidEqual(with)) return false;
+        return !(with != null && !recipe.getFluid().isFluidEqual(with));
 
-        return true;
     }
 }

@@ -2,7 +2,6 @@ package org.winterblade.minecraft.harmony.commands;
 
 import com.google.common.base.Joiner;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -16,13 +15,18 @@ import java.util.Set;
 /**
  * Created by Matt on 4/29/2016.
  */
-public class ApplySetCommand implements ICommand {
+public class ApplySetCommand extends SubCommand {
     /**
      * Gets the name of the command
      */
     @Override
     public String getCommandName() {
         return "applySet";
+    }
+
+    @Override
+    public String getHelpText() {
+        return "Ass a set to the currently loaded sets.";
     }
 
     /**
@@ -33,11 +37,6 @@ public class ApplySetCommand implements ICommand {
     @Override
     public String getCommandUsage(ICommandSender sender) {
         return "/ch applySet [-s|--silent] <Set Name> [<Set Name>...]";
-    }
-
-    @Override
-    public List<String> getCommandAliases() {
-        return null;
     }
 
     /**
@@ -85,17 +84,6 @@ public class ApplySetCommand implements ICommand {
         CraftingHarmonicsMod.syncAllConfigs();
     }
 
-    /**
-     * Check if the given ICommandSender has permission to execute this command
-     *
-     * @param server The Minecraft server instance
-     * @param sender The command sender who we are checking permission on
-     */
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return false;
-    }
-
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return CraftingHarmonicsMod.getAllSets();
@@ -112,8 +100,4 @@ public class ApplySetCommand implements ICommand {
         return false;
     }
 
-    @Override
-    public int compareTo(ICommand o) {
-        return 0;
-    }
 }

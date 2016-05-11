@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.commands;
 
+import com.google.common.base.Joiner;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -15,7 +16,7 @@ import java.util.*;
  */
 public class CommandHandler implements ICommand {
     private static final List<String> aliases = new ArrayList<>();
-    private static final Map<String, ICommand> subcommands = new HashMap<>();
+    private static final Map<String, SubCommand> subcommands = new HashMap<>();
 
     static {
         aliases.add("ch");
@@ -55,7 +56,21 @@ public class CommandHandler implements ICommand {
         }
 
         String[] subArgs = Arrays.copyOfRange(args,1,args.length);
-        getSubCommand(args[0]).execute(server, sender, subArgs);
+
+        // Make sure we're not doing help:
+        if(!args[0].equals("help")) getSubCommand(args[0]).execute(server, sender, subArgs);
+
+        // Otherwise, actually do help;
+        if(subArgs.length <= 0 || subArgs[0].equals("")) {
+            sender.addChatMessage(new TextComponentString("--- Crafting Harmonics Help ---"));
+            sender.addChatMessage(new TextComponentString("Available subcommands: " + Joiner.on(", ").join(subcommands.keySet())));
+            sender.addChatMessage(new TextComponentString("Use /ch help <subcommand> for more information."));
+        } else {
+            SubCommand command = getSubCommand(subArgs[0]);
+            sender.addChatMessage(new TextComponentString("--- Crafting Harmonics '" + subArgs[0] + "' Help ---"));
+            sender.addChatMessage(new TextComponentString(command.getHelpText()));
+            sender.addChatMessage(new TextComponentString("Usage: " + command.getCommandUsage(sender)));
+        }
     }
 
     @Override
@@ -65,7 +80,7 @@ public class CommandHandler implements ICommand {
 
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
-        if(args.length == 0 || args[0].equals("")) {
+        if(args.length == 0 || args[0].equals("") || args[0].equals("help")) {
             return new ArrayList<>(subcommands.keySet());
         }
 
@@ -91,7 +106,7 @@ public class CommandHandler implements ICommand {
      * @param name  The name of the command to get
      * @return      The command, or a no-op if it doesn't exist.
      */
-    private ICommand getSubCommand(String name) {
+    private SubCommand getSubCommand(String name) {
         if(name == null || name.equals("") || !subcommands.containsKey(name)) return new NoOpCommand();
         return subcommands.get(name);
     }

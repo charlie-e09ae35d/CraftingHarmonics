@@ -16,13 +16,18 @@ import java.util.Set;
 /**
  * Created by Matt on 4/29/2016.
  */
-public class RemoveSetCommand implements ICommand {
+public class RemoveSetCommand extends SubCommand {
     /**
      * Gets the name of the command
      */
     @Override
     public String getCommandName() {
         return "removeSet";
+    }
+
+    @Override
+    public String getHelpText() {
+        return "Removes a set from the currently loaded sets.";
     }
 
     /**
@@ -85,17 +90,6 @@ public class RemoveSetCommand implements ICommand {
         CraftingHarmonicsMod.syncAllConfigs();
     }
 
-    /**
-     * Check if the given ICommandSender has permission to execute this command
-     *
-     * @param server The Minecraft server instance
-     * @param sender The command sender who we are checking permission on
-     */
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return false;
-    }
-
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, BlockPos pos) {
         return CraftingHarmonicsMod.getAllSets();
@@ -110,10 +104,5 @@ public class RemoveSetCommand implements ICommand {
     @Override
     public boolean isUsernameIndex(String[] args, int index) {
         return false;
-    }
-
-    @Override
-    public int compareTo(ICommand o) {
-        return 0;
     }
 }

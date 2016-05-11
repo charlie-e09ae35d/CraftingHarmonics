@@ -2,6 +2,8 @@ package org.winterblade.minecraft.harmony.crafting.integration.ticon;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import org.winterblade.minecraft.harmony.utility.LogHelper;
+import slimeknights.mantle.util.RecipeMatchRegistry;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.materials.IMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
@@ -10,6 +12,7 @@ import slimeknights.tconstruct.library.smeltery.CastingRecipe;
 import slimeknights.tconstruct.library.traits.ITrait;
 import slimeknights.tconstruct.library.utils.HarvestLevels;
 
+import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +29,9 @@ public class ReflectedTinkerRegistry {
     // Harvest levels:
     public static Map<Integer, String> harvestLevelNames;
 
+    // Various other reflection:
+    private static Field recipeMatchItems;
+
     static {
         // Hook directly into this because we can't remove an alloy after it's been added:
         alloyRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "alloyRegistry");
@@ -34,6 +40,12 @@ public class ReflectedTinkerRegistry {
 
         // Harvest levels:
         harvestLevelNames = ObfuscationReflectionHelper.getPrivateValue(HarvestLevels.class, null, "harvestLevelNames");
+        try {
+            recipeMatchItems = RecipeMatchRegistry.class.getDeclaredField("items");
+            recipeMatchItems.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            LogHelper.warn("Unable to access some of TiCon's Material fields");
+        }
     }
 
     private ReflectedTinkerRegistry() {}
@@ -139,6 +151,14 @@ public class ReflectedTinkerRegistry {
             output.addStats(stats);
             for(ITrait trait : output.getAllTraitsForStats(stats.getIdentifier())) {
                 output.addTrait(trait, stats.getIdentifier());
+            }
+        }
+
+        if(recipeMatchItems != null) {
+            try {
+                recipeMatchItems.set(output, recipeMatchItems.get(material));
+            } catch (IllegalAccessException e) {
+                LogHelper.warn("Unable to copy TiCon material's items.");
             }
         }
 
