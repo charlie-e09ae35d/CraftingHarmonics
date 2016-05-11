@@ -4,8 +4,8 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntitySelectors;
-import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
 import java.util.*;
@@ -18,6 +18,7 @@ public class MobShedRegistry {
 
     private static final Map<UUID, MobShedHandler> handlers = new HashMap<>();
     private static final Set<UUID> activeHandlers = new LinkedHashSet<>();
+    private static boolean isActive = false;
 
     /**
      * Handles a mob shed event
@@ -25,7 +26,7 @@ public class MobShedRegistry {
      */
     public static void handleSheds(TickEvent.WorldTickEvent evt) {
         // Only process sheds once every 10 seconds (roughly):
-        if(evt.world.getTotalWorldTime() % 200 != 0)
+        if(!isActive || evt.world.getTotalWorldTime() % CraftingHarmonicsMod.getConfigManager().getShedSeconds() != 0)
             return;
 
         Random rand = evt.world.rand;
@@ -84,11 +85,13 @@ public class MobShedRegistry {
     }
 
     public static void apply(UUID ticket) {
+        isActive = true;
         activeHandlers.add(ticket);
     }
 
     public static void remove(UUID ticket) {
         activeHandlers.remove(ticket);
+        if(activeHandlers.size() <= 0) isActive = false;
     }
 
     private static class MobShedHandler extends BaseMobDropHandler<MobShed> {
