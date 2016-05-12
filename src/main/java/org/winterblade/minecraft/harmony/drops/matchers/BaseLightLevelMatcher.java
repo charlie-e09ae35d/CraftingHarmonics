@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.drops.matchers;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 
 /**
  * Created by Matt on 5/11/2016.
@@ -16,11 +17,11 @@ public abstract class BaseLightLevelMatcher {
         this.max = max;
     }
 
-    protected boolean matches(Entity entity) {
-        return entity != null && matches(entity.getEntityWorld(), entity.getPosition());
+    protected BaseDropMatchResult matches(Entity entity) {
+        return new BaseDropMatchResult(entity != null && checkLight(entity.getEntityWorld(), entity.getPosition()));
     }
 
-    protected boolean matches(World world, BlockPos pos) {
+    private boolean checkLight(World world, BlockPos pos) {
         if(world == null || pos == null) return false;
         int light = world.getLight(pos);
         return min <= light && light <= max;

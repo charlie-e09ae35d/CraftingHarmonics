@@ -8,6 +8,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseHasPotionMatcher;
 
@@ -28,7 +29,7 @@ public class AttackerHasPotionMatcher extends BaseHasPotionMatcher implements IM
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(LivingDropsEvent evt, ItemStack drop) {
+    public BaseDropMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
         return matches(evt.getSource().getEntity());
     }
 }

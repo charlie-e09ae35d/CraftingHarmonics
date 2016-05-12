@@ -7,7 +7,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.ForgeEventFactory;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,14 +25,14 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
         this.requiredItem = requiredItem;
     }
 
-    protected boolean matches(Entity entity, ItemStack drop) {
-        if(entity == null || !EntityPlayer.class.isAssignableFrom(entity.getClass())) return false;
+    protected BaseDropMatchResult matches(Entity entity, ItemStack drop) {
+        if(entity == null || !EntityPlayer.class.isAssignableFrom(entity.getClass())) return BaseDropMatchResult.False;
 
         // Get our entity and convert it over:
         EntityPlayer player = (EntityPlayer) entity;
 
         // Sanity checking...
-        if(player.inventory == null || player.inventory.mainInventory == null) return false;
+        if(player.inventory == null || player.inventory.mainInventory == null) return BaseDropMatchResult.False;
 
         // Find everything in the inventory that can match this...
         BiMap<Integer, ItemStack> matchingItems = HashBiMap.create();
@@ -39,14 +43,16 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
             if(item == null || !item.isItemEqualIgnoreDurability(requiredItem)) continue;
 
             // If we only wanted to match the item, just say we found it here and save a lot of cycles:
-            if(!consume && damagePer <= 0) return true;
+            if(!consume && damagePer <= 0) return BaseDropMatchResult.True;
 
             matchingItems.put(i, item);
         }
 
+        Map<Integer, ItemStack> affectedItems = new HashMap<>();
+
         int dropsRemaining = drop.stackSize;
         for(Map.Entry<Integer, ItemStack> entry : matchingItems.entrySet()) {
-            ItemStack equipment = entry.getValue();
+            ItemStack equipment = ItemStack.copyItemStack(entry.getValue());
             int dropCount = 0;
             // Yes, there's code duplication here...
             if(consume) {
@@ -60,6 +66,8 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
                 if(equipment.stackSize <= 0) {
                     equipment = null;
                 }
+
+                affectedItems.put(entry.getKey(), equipment);
             } else if(0 < damagePer) {
                 // TODO: Deal with unbreaking enchants?
                 int remainingDmg = equipment.getMaxDamage() - equipment.getItemDamage();
@@ -73,12 +81,12 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
 
                 // Destroy the offhand if necessary:
                 if(equipment.getMaxDamage() <= equipment.getItemDamage()) {
-                    ForgeEventFactory.onPlayerDestroyItem(player, equipment, null);
                     equipment = null;
                 }
+
+                affectedItems.put(entry.getKey(), equipment);
             }
 
-            player.replaceItemInInventory(entry.getKey(), equipment);
             dropsRemaining -= dropCount;
 
             // If we processed everything, bail
@@ -88,6 +96,14 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
         // If we couldn't generate all the items...
         if(0 < dropsRemaining) drop.stackSize -= dropsRemaining;
 
-        return true;
+        // Return something to update the inventory if we succeed.
+        return new BaseDropMatchResult(true, new Runnable() {
+            @Override
+            public void run() {
+                for(Map.Entry<Integer, ItemStack> entry : affectedItems.entrySet()) {
+                    player.replaceItemInInventory(entry.getKey(), entry.getValue());
+                }
+            }
+        });
     }
 }

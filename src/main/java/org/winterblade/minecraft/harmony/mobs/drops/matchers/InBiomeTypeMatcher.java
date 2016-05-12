@@ -5,6 +5,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseBiomeTypeMatcher;
 
@@ -24,7 +25,7 @@ public class InBiomeTypeMatcher extends BaseBiomeTypeMatcher implements IMobDrop
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(LivingDropsEvent livingDropsEvent, ItemStack drop) {
+    public BaseDropMatchResult isMatch(LivingDropsEvent livingDropsEvent, ItemStack drop) {
         return matches(livingDropsEvent.getEntity());
     }
 }

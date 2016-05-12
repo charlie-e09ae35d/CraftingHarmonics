@@ -1,23 +1,21 @@
 package org.winterblade.minecraft.harmony.mobs.drops.matchers;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseItemStackMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseMainHandMatcher;
+import org.winterblade.minecraft.harmony.drops.matchers.BaseHeldEquipmentMatcher;
 
 /**
  * Created by Matt on 5/7/2016.
  */
 @Component(properties = {"killedWith", "consume", "damagePer"})
 @PrioritizedObject(priority = Priority.HIGH)
-public class KilledWithMatcher extends BaseMainHandMatcher implements IMobDropMatcher {
+public class KilledWithMatcher extends BaseHeldEquipmentMatcher implements IMobDropMatcher {
     public KilledWithMatcher(ItemStack killedWith) {
         this(killedWith, false);
     }
@@ -37,7 +35,7 @@ public class KilledWithMatcher extends BaseMainHandMatcher implements IMobDropMa
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(LivingDropsEvent evt, ItemStack drop) {
+    public BaseDropMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
         return matches(evt.getSource().getEntity(), drop);
     }
 }

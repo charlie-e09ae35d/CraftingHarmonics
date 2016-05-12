@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.drops.matchers;
 
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.BiomeDictionary;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,8 @@ public class BaseBiomeTypeMatcher {
         }
     }
 
-    protected boolean matches(Entity entity) {
-        if(entity == null) return false;
+    protected BaseDropMatchResult matches(Entity entity) {
+        if(entity == null) return BaseDropMatchResult.False;
 
         // Get all the tags for this biome:
         BiomeDictionary.Type[] biomeTags = BiomeDictionary.getTypesForBiome(
@@ -34,10 +35,10 @@ public class BaseBiomeTypeMatcher {
         // Figure out if we match:
         for(BiomeDictionary.Type type : biomeTags) {
             if(!types.contains(type)) continue;
-            return true;
+            return BaseDropMatchResult.True;
         }
 
-        return false;
+        return BaseDropMatchResult.False;
     }
 
 }

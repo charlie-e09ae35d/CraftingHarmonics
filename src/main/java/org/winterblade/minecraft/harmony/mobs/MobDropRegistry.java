@@ -4,6 +4,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 import org.winterblade.minecraft.harmony.drops.BaseDropHandler;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
@@ -105,11 +106,15 @@ public class MobDropRegistry {
                 }
 
                 // Check if this drop matches:
-                if(!drop.matches(evt, dropStack)) continue;
+                BaseDropMatchResult result = drop.matches(evt, dropStack);
+                if(!result.isMatch()) continue;
 
                 // Make sure we have sane drop amounts:
                 if(dropStack.stackSize < 0) continue;
                 if(dropStack.getMaxStackSize() < dropStack.stackSize) dropStack.stackSize = dropStack.getMaxStackSize();
+
+                // Now perform our updates:
+                if(result.getCallback() != null) result.getCallback().run();
 
                 evt.getDrops().add(
                         new EntityItem(

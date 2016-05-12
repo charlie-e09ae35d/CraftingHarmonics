@@ -7,6 +7,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseChanceMatcher;
@@ -28,7 +29,7 @@ public class ChanceMatcher extends BaseChanceMatcher implements IMobShedMatcher 
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(EntityLiving evt, ItemStack drop) {
+    public BaseDropMatchResult isMatch(EntityLiving evt, ItemStack drop) {
         return match(evt.getEntityWorld().rand);
     }
 }

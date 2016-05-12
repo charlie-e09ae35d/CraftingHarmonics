@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.drops.matchers;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public abstract class BaseDimensionMatcher {
         this.dimensionIds = Lists.newArrayList(dimensionIds);
     }
 
-    protected boolean matches(Entity entity) {
-        return dimensionIds.contains(entity.dimension);
+    protected BaseDropMatchResult matches(Entity entity) {
+        return new BaseDropMatchResult(dimensionIds.contains(entity.dimension));
     }
 }

@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.api;
+package org.winterblade.minecraft.harmony.api.drops;
 
 import net.minecraft.item.ItemStack;
 
@@ -12,5 +12,5 @@ public interface IBaseDropMatcher<TEvt> {
      * @param drop   The dropped item; this can be modified.
      * @return       True if it should match; false otherwise
      */
-    boolean isMatch(TEvt evt, ItemStack drop);
+    BaseDropMatchResult isMatch(TEvt evt, ItemStack drop);
 }

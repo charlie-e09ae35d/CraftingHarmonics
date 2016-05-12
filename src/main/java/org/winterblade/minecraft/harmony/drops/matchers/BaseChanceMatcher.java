@@ -1,5 +1,7 @@
 package org.winterblade.minecraft.harmony.drops.matchers;
 
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+
 import java.util.Random;
 
 /**
@@ -12,7 +14,7 @@ public abstract class BaseChanceMatcher {
         this.chance = chance;
     }
 
-    protected boolean match(Random rand) {
-        return rand.nextDouble() < chance;
+    protected BaseDropMatchResult match(Random rand) {
+        return new BaseDropMatchResult(rand.nextDouble() < chance);
     }
 }

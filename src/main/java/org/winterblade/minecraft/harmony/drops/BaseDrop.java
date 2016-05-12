@@ -2,9 +2,12 @@ package org.winterblade.minecraft.harmony.drops;
 
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.IBaseDropMatcher;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.drops.IBaseDropMatcher;
 import org.winterblade.minecraft.harmony.utility.BaseMatcherData;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -46,14 +49,20 @@ public abstract class BaseDrop<TEvt, TMatch extends IBaseDropMatcher<TEvt>> {
      * @param drop      The dropped item; this can be modified.
      * @return          True if the matchers match.
      */
-    public boolean matches(TEvt evt, ItemStack drop) {
+    public BaseDropMatchResult matches(TEvt evt, ItemStack drop) {
+        List<Runnable> callbacks = new ArrayList<>();
 
         // Iterate our matchers, finding the first one that fails.
         for(BaseMatcherData<TMatch> matcher : matchers) {
-            if(!matcher.getMatcher().isMatch(evt, drop)) return false;
+            BaseDropMatchResult result = matcher.getMatcher().isMatch(evt, drop);
+            if(!result.isMatch()) return BaseDropMatchResult.False;
+            if(result.getCallback() != null) callbacks.add(result.getCallback());
         }
 
-        return true;
+        // Return a composite of all our runnables...
+        return new BaseDropMatchResult(true, () -> {
+            callbacks.forEach(Runnable::run);
+        });
     }
 
     /**

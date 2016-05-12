@@ -1,23 +1,21 @@
 package org.winterblade.minecraft.harmony.mobs.drops.matchers;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseItemStackMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseOffHandMatcher;
+import org.winterblade.minecraft.harmony.drops.matchers.BaseHeldEquipmentMatcher;
 
 /**
  * Created by Matt on 5/7/2016.
  */
 @Component(properties = {"attackerHasOffhand", "consumeOffhand", "damageOffhandPer"})
 @PrioritizedObject(priority = Priority.MEDIUM)
-public class AttackerHasOffhandMatcher extends BaseOffHandMatcher implements IMobDropMatcher {
+public class AttackerHasOffhandMatcher extends BaseHeldEquipmentMatcher implements IMobDropMatcher {
     public AttackerHasOffhandMatcher(ItemStack offhand) {
         this(offhand, false);
     }
@@ -39,7 +37,7 @@ public class AttackerHasOffhandMatcher extends BaseOffHandMatcher implements IMo
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(LivingDropsEvent evt, ItemStack drop) {
+    public BaseDropMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
         return matches(evt.getSource().getEntity(), drop);
     }
 
