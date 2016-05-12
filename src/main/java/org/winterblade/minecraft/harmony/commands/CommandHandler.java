@@ -58,7 +58,10 @@ public class CommandHandler implements ICommand {
         String[] subArgs = Arrays.copyOfRange(args,1,args.length);
 
         // Make sure we're not doing help:
-        if(!args[0].equals("help")) getSubCommand(args[0]).execute(server, sender, subArgs);
+        if(!args[0].equals("help")) {
+            getSubCommand(args[0]).execute(server, sender, subArgs);
+            return;
+        }
 
         // Otherwise, actually do help;
         if(subArgs.length <= 0 || subArgs[0].equals("")) {
