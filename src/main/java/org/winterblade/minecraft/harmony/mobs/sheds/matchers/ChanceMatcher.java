@@ -9,17 +9,16 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
+import org.winterblade.minecraft.harmony.drops.matchers.BaseChanceMatcher;
 
 /**
  * Created by Matt on 5/7/2016.
  */
 @Component(properties = {"chance"})
 @PrioritizedObject(priority = Priority.HIGHEST)
-public class ChanceMatcher implements IMobShedMatcher {
-    private final float chance;
-
+public class ChanceMatcher extends BaseChanceMatcher implements IMobShedMatcher {
     public ChanceMatcher(float chance) {
-        this.chance = chance;
+        super(chance);
     }
 
     /**
@@ -30,6 +29,6 @@ public class ChanceMatcher implements IMobShedMatcher {
      */
     @Override
     public boolean isMatch(EntityLiving evt, ItemStack drop) {
-        return evt.getEntityWorld().rand.nextDouble() < chance;
+        return match(evt.getEntityWorld().rand);
     }
 }

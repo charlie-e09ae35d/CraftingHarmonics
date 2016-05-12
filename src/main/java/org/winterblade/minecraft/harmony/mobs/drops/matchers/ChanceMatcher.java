@@ -6,17 +6,16 @@ import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
+import org.winterblade.minecraft.harmony.drops.matchers.BaseChanceMatcher;
 
 /**
  * Created by Matt on 5/7/2016.
  */
 @Component(properties = {"chance"})
 @PrioritizedObject(priority = Priority.HIGHEST)
-public class ChanceMatcher implements IMobDropMatcher {
-    private final float chance;
-
+public class ChanceMatcher extends BaseChanceMatcher implements IMobDropMatcher {
     public ChanceMatcher(float chance) {
-        this.chance = chance;
+        super(chance);
     }
 
     /**
@@ -27,6 +26,6 @@ public class ChanceMatcher implements IMobDropMatcher {
      */
     @Override
     public boolean isMatch(LivingDropsEvent evt, ItemStack drop) {
-        return evt.getEntity().getEntityWorld().rand.nextDouble() < chance;
+        return match(evt.getEntity().getEntityWorld().rand);
     }
 }
