@@ -4,6 +4,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import org.winterblade.minecraft.harmony.drops.BaseDropHandler;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
 import org.winterblade.minecraft.harmony.utility.LogHelper;
@@ -136,7 +137,7 @@ public class MobDropRegistry {
         activeHandlers.remove(ticket);
     }
 
-    private static class DropHandler extends BaseMobDropHandler<MobDrop> {
+    private static class DropHandler extends BaseDropHandler<MobDrop> {
         private final ItemStack[] remove;
         private final boolean replace;
         private final boolean includePlayerDrops;

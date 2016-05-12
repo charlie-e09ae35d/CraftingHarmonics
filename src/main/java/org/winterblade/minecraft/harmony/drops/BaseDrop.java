@@ -1,8 +1,8 @@
-package org.winterblade.minecraft.harmony.mobs;
+package org.winterblade.minecraft.harmony.drops;
 
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.mobs.IBaseMobDropMatcher;
+import org.winterblade.minecraft.harmony.api.IBaseDropMatcher;
 import org.winterblade.minecraft.harmony.utility.BaseMatcherData;
 
 import java.util.PriorityQueue;
@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 /**
  * Created by Matt on 5/10/2016.
  */
-public abstract class BaseMobDrop <TEvt, TMatch extends IBaseMobDropMatcher<TEvt>> {
+public abstract class BaseDrop<TEvt, TMatch extends IBaseDropMatcher<TEvt>> {
     private final PriorityQueue<BaseMatcherData<TMatch>> matchers = new PriorityQueue<>();
     private ItemStack what;
     private int min;

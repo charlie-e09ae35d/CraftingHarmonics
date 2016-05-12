@@ -2,12 +2,12 @@ package org.winterblade.minecraft.harmony.mobs.drops;
 
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
-import org.winterblade.minecraft.harmony.mobs.BaseMobDrop;
+import org.winterblade.minecraft.harmony.drops.BaseDrop;
 
 /**
  * Created by Matt on 5/4/2016.
  */
-public class MobDrop extends BaseMobDrop<LivingDropsEvent, IMobDropMatcher> {
+public class MobDrop extends BaseDrop<LivingDropsEvent, IMobDropMatcher> {
     private double lootingMultiplier;
 
     public double getLootingMultiplier() {

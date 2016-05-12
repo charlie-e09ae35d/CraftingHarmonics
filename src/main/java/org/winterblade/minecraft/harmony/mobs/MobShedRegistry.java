@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntitySelectors;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.winterblade.minecraft.harmony.drops.BaseDropHandler;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
@@ -94,7 +95,7 @@ public class MobShedRegistry {
         if(activeHandlers.size() <= 0) isActive = false;
     }
 
-    private static class MobShedHandler extends BaseMobDropHandler<MobShed> {
+    private static class MobShedHandler extends BaseDropHandler<MobShed> {
         MobShedHandler(String[] what, MobShed[] drops) {
             super(what, drops);
         }
