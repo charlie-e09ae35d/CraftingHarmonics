@@ -9,17 +9,16 @@ import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
+import org.winterblade.minecraft.harmony.drops.matchers.BaseHasPotionMatcher;
 
 /**
  * Created by Matt on 5/7/2016.
  */
 @Component(properties = {"mobHasPotionEffect"})
 @PrioritizedObject(priority = Priority.MEDIUM)
-public class MobHasPotionMatcher implements IMobDropMatcher {
-    private final Potion potion;
-
+public class MobHasPotionMatcher extends BaseHasPotionMatcher implements IMobDropMatcher {
     public MobHasPotionMatcher(Potion potion) {
-        this.potion = potion;
+        super(potion);
     }
 
     /**
@@ -30,12 +29,6 @@ public class MobHasPotionMatcher implements IMobDropMatcher {
      */
     @Override
     public boolean isMatch(LivingDropsEvent evt, ItemStack drop) {
-        Entity entity = evt.getEntity();
-        if(entity == null || !EntityLivingBase.class.isAssignableFrom(entity.getClass())) return false;
-
-        // Get our entity and convert it over:
-        EntityLivingBase entityBase = (EntityLivingBase) entity;
-
-        return entityBase.isPotionActive(potion);
+        return matches(evt.getEntity());
     }
 }
