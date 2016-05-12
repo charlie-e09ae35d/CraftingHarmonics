@@ -37,14 +37,14 @@ public class MobDropDeserializer implements IScriptObjectDeserializer {
             mirror = ScriptUtils.wrap((ScriptObject) input);
         }
 
-        // If we don't have an item... /sigh
-        if (!mirror.containsKey("what")) return output;
-
-        try {
-            output.setWhat(ItemRegistry.TranslateToItemStack(mirror.get("what").toString()));
-        } catch (ItemMissingException e) {
-            LogHelper.error("Couldn't convert '" + mirror.get("what") + "' to a valid item string.");
-            return output;
+        // If have a mob...
+        if (mirror.containsKey("what")) {
+            try {
+                output.setWhat(ItemRegistry.TranslateToItemStack(mirror.get("what").toString()));
+            } catch (ItemMissingException e) {
+                LogHelper.error("Couldn't convert '" + mirror.get("what") + "' to a valid item string.");
+                return output;
+            }
         }
 
         if(mirror.containsKey("min")) {
