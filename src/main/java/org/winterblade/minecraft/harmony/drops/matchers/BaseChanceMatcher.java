@@ -5,7 +5,7 @@ import java.util.Random;
 /**
  * Created by Matt on 5/11/2016.
  */
-public class BaseChanceMatcher {
+public abstract class BaseChanceMatcher {
     private final float chance;
 
     public BaseChanceMatcher(float chance) {

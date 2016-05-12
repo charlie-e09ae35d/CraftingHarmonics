@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.mobs.drops.matchers;
+package org.winterblade.minecraft.harmony.drops.matchers;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,7 +10,7 @@ import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 /**
  * Created by Matt on 5/7/2016.
  */
-public abstract class BaseItemStackMatcher implements IMobDropMatcher {
+public abstract class BaseItemStackMatcher {
     protected final boolean consume;
     protected final double damagePer;
     protected final EnumHand hand;
