@@ -9,8 +9,6 @@ import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
 
-import java.util.List;
-
 /**
  * Created by Matt on 5/12/2016.
  */

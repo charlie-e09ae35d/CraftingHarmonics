@@ -1,6 +1,5 @@
 package org.winterblade.minecraft.harmony.crafting.integration.techreborn.operations;
 
-import net.minecraft.item.crafting.CraftingManager;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.integration.techreborn.RebornRecipeUtils;
 import org.winterblade.minecraft.harmony.crafting.operations.AddShapelessOperation;

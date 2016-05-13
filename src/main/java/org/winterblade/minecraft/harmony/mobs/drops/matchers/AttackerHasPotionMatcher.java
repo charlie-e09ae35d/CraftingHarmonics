@@ -1,7 +1,5 @@
 package org.winterblade.minecraft.harmony.mobs.drops.matchers;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
