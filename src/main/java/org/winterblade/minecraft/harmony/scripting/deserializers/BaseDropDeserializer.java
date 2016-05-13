@@ -4,6 +4,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
+import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.drops.IBaseDropMatcher;
 import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
@@ -69,8 +70,9 @@ public abstract class BaseDropDeserializer <TEvt, TMatcher extends IBaseDropMatc
         // Deal with matchers
         if(matchers != null) {
             for (TMatcher matcher : matchers) {
-                PrioritizedObject priority = matcher.getClass().getAnnotation(PrioritizedObject.class);
-                output.addMatcher(matcher, priority.priority());
+                PrioritizedObject priorityAnno = matcher.getClass().getAnnotation(PrioritizedObject.class);
+                Priority priority = priorityAnno != null ? priorityAnno.priority() : Priority.MEDIUM;
+                output.addMatcher(matcher, priority);
             }
         }
         // Allow the actual deserializer to do its work:

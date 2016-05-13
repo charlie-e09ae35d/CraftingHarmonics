@@ -77,6 +77,7 @@ public class BlockDropRegistry {
             // Now, actually calculate out our drop rates...
             Random rand = evt.getWorld().rand;
             for(BlockDrop drop : handler.getDrops()) {
+                if(drop == null) continue;
                 int min = drop.getMin();
                 int max = drop.getMax();
 
