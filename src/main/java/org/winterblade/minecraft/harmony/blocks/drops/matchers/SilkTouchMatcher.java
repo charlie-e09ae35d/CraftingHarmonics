@@ -29,6 +29,6 @@ public class SilkTouchMatcher implements IBlockDropMatcher {
      */
     @Override
     public BaseDropMatchResult isMatch(BlockEvent.HarvestDropsEvent harvestDropsEvent, ItemStack drop) {
-        return harvestDropsEvent.isSilkTouching() ? BaseDropMatchResult.True : BaseDropMatchResult.False;
+        return harvestDropsEvent.isSilkTouching() == silkTouching ? BaseDropMatchResult.True : BaseDropMatchResult.False;
     }
 }
