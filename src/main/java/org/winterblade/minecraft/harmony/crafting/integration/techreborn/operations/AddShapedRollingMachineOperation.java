@@ -1,8 +1,6 @@
 package org.winterblade.minecraft.harmony.crafting.integration.techreborn.operations;
 
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.integration.techreborn.RebornRecipeUtils;
 import org.winterblade.minecraft.harmony.crafting.operations.AddShapedOperation;
 import org.winterblade.minecraft.harmony.utility.LogHelper;

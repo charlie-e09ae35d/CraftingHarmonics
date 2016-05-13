@@ -1,25 +1,23 @@
 package org.winterblade.minecraft.harmony.mobs.drops.matchers;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
+import org.winterblade.minecraft.harmony.drops.matchers.BaseHasPotionMatcher;
 
 /**
  * Created by Matt on 5/7/2016.
  */
 @Component(properties = {"attackerHasPotionEffect"})
 @PrioritizedObject(priority = Priority.MEDIUM)
-public class AttackerHasPotionMatcher implements IMobDropMatcher {
-    private final Potion potion;
-
+public class AttackerHasPotionMatcher extends BaseHasPotionMatcher implements IMobDropMatcher {
     public AttackerHasPotionMatcher(Potion potion) {
-        this.potion = potion;
+        super(potion);
     }
 
     /**
@@ -29,13 +27,7 @@ public class AttackerHasPotionMatcher implements IMobDropMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(LivingDropsEvent evt, ItemStack drop) {
-        Entity entity = evt.getSource().getEntity();
-        if(entity == null || !EntityLivingBase.class.isAssignableFrom(entity.getClass())) return false;
-
-        // Get our entity and convert it over:
-        EntityLivingBase entityBase = (EntityLivingBase) entity;
-
-        return entityBase.isPotionActive(potion);
+    public BaseDropMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
+        return matches(evt.getSource().getEntity());
     }
 }

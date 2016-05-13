@@ -2,7 +2,6 @@ package org.winterblade.minecraft.harmony.commands;
 
 import com.google.common.base.Joiner;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;

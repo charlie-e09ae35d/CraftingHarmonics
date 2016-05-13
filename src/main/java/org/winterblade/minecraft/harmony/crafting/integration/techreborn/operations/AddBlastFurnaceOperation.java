@@ -5,7 +5,6 @@ import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.integration.techreborn.RebornRecipeUtils;
 import reborncore.api.recipe.IBaseRecipeType;
 import techreborn.api.recipe.machines.BlastFurnaceRecipe;
-import techreborn.api.recipe.machines.PlateCuttingMachineRecipe;
 
 /**
  * Created by Matt on 5/8/2016.

@@ -22,6 +22,8 @@ public class ConfigManager {
     private final String configPath;
     private final List<File> setFiles = new ArrayList<>();
     private boolean debugMobDropEvents;
+    private boolean debugBlockDropEvents;
+    private int shedSeconds;
 
     /**
      * Generates a new config manager using the config path
@@ -42,6 +44,14 @@ public class ConfigManager {
                 Configuration.CATEGORY_GENERAL,
                 false,
                 "Should we log entities/damageTypes for mob drops; this will be pretty spammy.");
+
+        debugBlockDropEvents = configMain.getBoolean("LogBlockDropEvents",
+                Configuration.CATEGORY_GENERAL,
+                false,
+                "Should we log blocks/states for block drops; this will be pretty spammy.");
+
+        shedSeconds = configMain.getInt("SecondsBetweenSheds",Configuration.CATEGORY_GENERAL,
+                10, 1, 100000, "The number of seconds between calculating if a mob should shed something (if sheds are configured).") * 20;
 
         configMain.save();
     }
@@ -123,5 +133,13 @@ public class ConfigManager {
 
     public boolean debugMobDropEvents() {
         return debugMobDropEvents;
+    }
+
+    public int getShedSeconds() {
+        return shedSeconds;
+    }
+
+    public boolean debugBlockDropEvents() {
+        return debugBlockDropEvents;
     }
 }

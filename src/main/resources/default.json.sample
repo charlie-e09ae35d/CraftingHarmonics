@@ -481,7 +481,30 @@
                             min: 1, // Which will create at least 1 of them
                             max: 4, // And at most 4 of them...
                             lootingMultiplier: 1.5, // But taking looting into account (grants an additional 1.5  per level of looting)
-                            damageType: "player" // only when being killed by the player; this can be left out, or set to other damage sources
+                            damageType: "player", // only when being killed by the player; this can be left out, or set to other damage sources
+                            inDimensions: [-1,0,1],
+                            inBiomes: ["Plains"]
+                        },
+                        {
+                            what: "minecraft:cooked_chicken", // Make them drop cooked chicken instead when in a Forest
+                            min: 1,
+                            max: 1,
+                            // Composite object to help with dealing with combining checks you might not otherwise be able to do:
+                            and: [
+                                {
+                                    inBiomeTypes: ["Hot", "Sparse"] // If we're in a hot -or- sparse place.
+                                },
+                                {
+                                    inBiomeTypes: ["Dry"] // And it's dry
+                                }
+                            ]
+                            // Valid values include:
+                            // For Temperature: HOT, COLD,
+                            // For Vegetation: SPARSE, DENSE,
+                            // For Moisture: WET, DRY,
+                            // For Trees: SAVANNA, CONIFEROUS, JUNGLE,
+                            // For Misc: SPOOKY, DEAD, LUSH, NETHER, END, MUSHROOM, MAGICAL, OCEAN, RIVER,
+                            // Generic Types: MESA, FOREST, PLAINS, MOUNTAIN, HILLS, SWAMP, SANDY, SNOWY, WASTELAND, BEACH;
                         },
 
                         // Below, a 100% chance to get 1 leather, but only when killed with shears.
@@ -495,7 +518,7 @@
                             chance: 1.0,
                             killedWith: "minecraft:shears",
                             consume: false, // consume and damagePer are optional
-                            damagePer: 1.0  // But consume must be specified and be false if using damagePer.
+                            damagePer: 1.0
                         },
 
                         // You can also set minimum and maximum looting levels:
@@ -515,10 +538,13 @@
                             max: 10,
                             attackerHasOffhand: "minecraft:shield",
                             consumeOffhand: false, // This can be set to true to use the same number of the offhand item as items are dropped
-                            damageOffhandPer: 2.0
-                                // Damage the offhand by this amount per drop generated.  You must specify consumeOffhand: false if you want this
+                            damageOffhandPer: 2.0,
+                                // Damage the offhand by this amount per drop generated.  You must specify consumeOffhand: false (or leave it out) if you want this
                                 // to work.  If the number of drops generated is more than the item could be damaged by, the number of drops
                                 // will be reduced to the proper amount.  Fractional amounts of remaining damage will not yield a drop.
+                            not: { // This is a composite, anything you put here will be inverted...
+                                mobHasPotionEffect: "minecraft:poison" // Specify that they cannot have poison on them
+                            }
                         },
 
                         // Now, specifically for players, we can also check to see if they have an item in their inventory:
@@ -527,9 +553,19 @@
                             what: "minecraft:ghast_tear",
                             min: 2,
                             max: 4, // This will check across item stacks and decrement each accordingly.
-                            playerHasInventory: "minecraft:glass_bottle",
-                            consumeInventory: true,
-                            damageInventoryPer: 0.0 // This is ignored since consumeInventory is true, but, here for reference.
+                            // Composite object for checking two separate sets of conditions; the first one matched will be executed...
+                            or: [
+                                {
+                                    maxLightLevel: 3 // If we're below light level 3...
+                                },
+                                {
+                                    // ... or if the player has glass bottles.
+                                    playerHasInventory: "minecraft:glass_bottle",
+                                    consumeInventory: true,
+                                    damageInventoryPer: 0.0 // This is ignored since consumeInventory is true, but, here for reference.
+                                }
+                                // At light level 3 or lower, the bottles won't be consumed, since it matches the first entry.  At 4 or above, they will.
+                            ]
                         }
                     ],
                     exclude: [ // Items to exclude from being replaced
@@ -577,6 +613,95 @@
                             attackerHasPotionEffect: "minecraft:luck"
                         }
                     ]
+                },
+
+                // Mob shedding
+                // Most of the conditions that can be used for mob and block drops can be used here, except those that depend on the player.  Reference the wiki for more information.
+                {
+                    __comment: "You can specify that mobs can 'shed' items, much like Botania",
+                    __result: "Makes cows shed beef.",
+                    type: "addMobShed",
+                    what: ["Cow"],
+                    sheds: [
+                        {
+                            what: "minecraft:beef",
+                            min: 1,
+                            max: 2,
+                            chance: 1.0, // 100% chance; like drops, this is optional.  Sheds will happen once every 10 seconds (by default; configured in the Settings.cfg file).
+                            minLightLevel: 12, // This should only happen when the cow is either in direct sunlight, or relatively near a torch
+                            minMobHealth: 5.0, // Make sure the mob has at least this much HP; cows have 10 by default
+                            damageOnShed: 0.5, // Cause a bit of damage when it happens; minimum HP argument is not required, but could help.  Set negative to heal instead.
+                            sheddingDamageType: "starve", // The type of damage, defaults to 'generic',
+                                // Normal Minecraft values are:
+                                // inFire, lightningBolt, onFire, lava, inWall, drown, starve, cactus, fall, flyIntoWall,
+                                // outOfWorld, generic, magic, wither, anvil, fallingBlock, dragonBreath
+                                // (note: This can, of course, cause death, in which case, this would be the damageType in the drop event.)
+                            sheddingDamageIsUnblockable: true, // Make it so armor doesn't effect this, defaults to 'false'
+                            sheddingDamageIsAbsolute: false, // Make it so potions and other effects don't prevent this, defaults to 'false'
+                            sheddingDamageIsCreative: true, // Make this completely unblockable damage, defaults to 'false'.
+                            // Fun fact: You can cause players to shed.  Food for thought.
+                        }
+                    ]
+                },
+
+                // Block drops
+                // Also has most of the same conditions as mob drops.  Reference the wiki for more information.
+                // As usual, these are going to be a lot of non-sensical examples...
+                // Also note: things which involve the the player will generally return false when dealing with things like explosions/quarries/etc
+                {
+                    type: "setBlockDrops",
+                    what: ["minecraft:dirt"], // Also optional, will apply for every block otherwise
+                    state: { // If you don't provide a state map, this will apply every state of the block.  States are logged if you set the config option for it.
+                        // States will be matched by a value check first, and a string conversion second, if both fail, then it doesn't match
+                        snowy: false,
+                        variant: "dirt"
+                        // You can also leave out a property if you don't care about that particular property (for instance, many mod blocks have facing, but you might not necessarily care)
+                    },
+                    replace: false, // No, we shouldn't replace the drop table, just add to it
+                    drops: [
+                        {
+                            what: "minecraft:apple",
+                            min: 1,
+                            max: 3,
+                            // Composites can be chained together to create more complicated effects..
+                            // Gives 100% chance in direct sunlight, or, if lightlevel 10 or above: a 50% chance unless the player has Luck.
+                            or: [
+                                {
+                                    chance: 1.0, // 100% chance, still very optional.
+                                    minLightLevel: 15, // But only in direct sunlight
+                                },
+                                {
+                                    minLightLevel: 10, // Slightly less sunlight
+                                    or: [
+                                        {
+                                            chance: 0.5
+                                        },
+                                        {
+                                            playerHasPotionEffect: "minecraft:luck"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            what: "minecraft:bone",
+                            min: 1,
+                            max: 1,
+                            minedWith: "minecraft:diamond_shovel",
+                            nbt: "{ench:[0:{id:18s}]}", // This has to be specified as a string, because it isn't valid JSON
+                            fuzzyNbt: true, // For reference, the above is "Bane of Arthropods", and, since it's fuzzy, it should allow any level.
+                            maxHeight: 63 // Only when below sea level; F3 shows the Y level that you're on (ie blocks in the same level as your feet count - not below your feet)
+                        },
+                        {
+                            what: "minecraft:wheat",
+                            min: 1,
+                            max: 4,
+                            itemInInventory: "minecraft:shears",
+                            damageInventoryPer: 1.0
+                        }
+                    ],
+                    // You can specify 'exclude' the same as with mob drops, though it's probably less useful here.
+                    // Remove is the same thing as mob drops, if you're just wanting to remove a drop, use that and specify 'replace: false'
                 },
 
                 // JEI Integration

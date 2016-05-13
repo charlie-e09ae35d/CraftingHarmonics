@@ -1,35 +1,83 @@
 package org.winterblade.minecraft.harmony.mobs.drops.matchers;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
+import org.winterblade.minecraft.harmony.api.ComponentParameter;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
+import org.winterblade.minecraft.harmony.drops.matchers.BaseHeldEquipmentMatcher;
 
 /**
  * Created by Matt on 5/7/2016.
  */
-@Component(properties = {"attackerHasOffhand", "consumeOffhand", "damageOffhandPer"})
+@Component(properties = {"attackerHasOffhand", "consumeOffhand", "damageOffhandPer", "nbtOffhand", "fuzzyNbtOffhand"})
 @PrioritizedObject(priority = Priority.MEDIUM)
-public class AttackerHasOffhandMatcher extends BaseItemStackMatcher {
-    private final ItemStack offhand;
-
-    public AttackerHasOffhandMatcher(ItemStack offhand) {
-        this(offhand, false);
+public class AttackerHasOffhandMatcher extends BaseHeldEquipmentMatcher implements IMobDropMatcher {
+    // This is pretty much constructor hell...
+    public AttackerHasOffhandMatcher(ItemStack item) {
+        this(item, false);
     }
 
-    public AttackerHasOffhandMatcher(ItemStack offhand, boolean consume) {
-        this(offhand, consume, 0);
+    // Consume, up to including NBT
+    public AttackerHasOffhandMatcher(ItemStack item, boolean consume) {
+        this(item, consume, 0.0, null, false);
     }
 
-    public AttackerHasOffhandMatcher(ItemStack offhand, boolean consume, double damagePer) {
-        super(damagePer, consume, EnumHand.OFF_HAND);
-        this.offhand = offhand;
+    public AttackerHasOffhandMatcher(ItemStack item, boolean consume, @ComponentParameter(property = "nbtOffhand") NBTTagCompound nbt) {
+        this(item, consume, 0.0, nbt, false);
     }
 
+    public AttackerHasOffhandMatcher(ItemStack item, boolean consume,
+                                @ComponentParameter(property = "nbtOffhand") NBTTagCompound nbt,
+                                @ComponentParameter(property = "fuzzyNbtOffhand") boolean fuzzyNbt) {
+        this(item, consume, 0.0, nbt, fuzzyNbt);
+    }
+
+    // Damage per, up to including NBT
+    public AttackerHasOffhandMatcher(ItemStack item, @ComponentParameter(property = "damageOffhandPer") double damagePer) {
+        this(item, false, damagePer, null, false);
+    }
+
+    public AttackerHasOffhandMatcher(ItemStack item, @ComponentParameter(property = "damageOffhandPer") double damagePer,
+                                @ComponentParameter(property = "nbtOffhand") NBTTagCompound nbt) {
+        this(item, false, damagePer, nbt, false);
+    }
+
+    public AttackerHasOffhandMatcher(ItemStack item, @ComponentParameter(property = "damageOffhandPer") double damagePer,
+                                @ComponentParameter(property = "nbtOffhand") NBTTagCompound nbt,
+                                @ComponentParameter(property = "fuzzyNbtOffhand") boolean fuzzyNbt) {
+        this(item, false, damagePer, nbt, fuzzyNbt);
+    }
+
+    // NBT only
+    public AttackerHasOffhandMatcher(ItemStack item,
+                                @ComponentParameter(property = "nbtOffhand") NBTTagCompound nbt) {
+        this(item, nbt, false);
+    }
+
+    public AttackerHasOffhandMatcher(ItemStack item,
+                                @ComponentParameter(property = "nbtOffhand") NBTTagCompound nbt,
+                                @ComponentParameter(property = "fuzzyNbtOffhand") boolean fuzzyNbt) {
+        this(item, false, 0.0, nbt, fuzzyNbt);
+    }
+
+    // Full constructors
+    public AttackerHasOffhandMatcher(ItemStack item, boolean consume, double damagePer) {
+        this(item, consume, damagePer, null);
+    }
+
+    public AttackerHasOffhandMatcher(ItemStack item, boolean consume, double damagePer, NBTTagCompound nbt) {
+        this(item, consume, damagePer, nbt, false);
+    }
+
+    public AttackerHasOffhandMatcher(ItemStack item, boolean consume, double damagePer, NBTTagCompound nbt, boolean fuzzyNbt) {
+        super(item, damagePer, consume, nbt, fuzzyNbt, EnumHand.OFF_HAND);
+    }
 
     /**
      * Should return true if this matcher matches the given event
@@ -39,21 +87,8 @@ public class AttackerHasOffhandMatcher extends BaseItemStackMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(LivingDropsEvent evt, ItemStack drop) {
-        Entity entity = evt.getSource().getEntity();
-        if(entity == null || !EntityLivingBase.class.isAssignableFrom(entity.getClass())) return false;
-
-        // Get our entity and convert it over:
-        EntityLivingBase entityBase = (EntityLivingBase) entity;
-
-        ItemStack heldEquipment = entityBase.getHeldItemOffhand();
-
-        // Make sure we have held equipment and that it's right:
-        if(heldEquipment == null || !heldEquipment.isItemEqualIgnoreDurability(offhand)) return false;
-
-        consumeOrDamageItem(entityBase, heldEquipment, drop);
-
-        return true;
+    public BaseDropMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
+        return matches(evt.getSource().getEntity(), drop);
     }
 
 }

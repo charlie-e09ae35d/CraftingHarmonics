@@ -1,12 +1,11 @@
 package org.winterblade.minecraft.harmony.mobs;
 
-import com.google.common.collect.Lists;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.drops.BaseDropHandler;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
 import org.winterblade.minecraft.harmony.utility.LogHelper;
@@ -107,11 +106,15 @@ public class MobDropRegistry {
                 }
 
                 // Check if this drop matches:
-                if(!drop.matches(evt, dropStack)) continue;
+                BaseDropMatchResult result = drop.matches(evt, dropStack);
+                if(!result.isMatch()) continue;
 
                 // Make sure we have sane drop amounts:
                 if(dropStack.stackSize < 0) continue;
                 if(dropStack.getMaxStackSize() < dropStack.stackSize) dropStack.stackSize = dropStack.getMaxStackSize();
+
+                // Now perform our updates:
+                if(result.getCallback() != null) result.getCallback().run();
 
                 evt.getDrops().add(
                         new EntityItem(
@@ -139,29 +142,18 @@ public class MobDropRegistry {
         activeHandlers.remove(ticket);
     }
 
-    private static class DropHandler {
-        private final List<String> what;
+    private static class DropHandler extends BaseDropHandler<MobDrop> {
         private final ItemStack[] remove;
-        private final MobDrop[] drops;
         private final boolean replace;
         private final boolean includePlayerDrops;
         private final ItemStack[] exclude;
 
         DropHandler(String[] what, MobDrop[] drops, boolean replace, ItemStack[] exclude, ItemStack[] remove, boolean includePlayerDrops) {
+            super(what, drops);
             this.replace = replace;
             this.includePlayerDrops = includePlayerDrops;
-            this.what = Lists.newArrayList(what);
-            this.drops = drops != null ? drops : new MobDrop[0];
             this.exclude = exclude != null ? exclude : new ItemStack[0];
             this.remove = remove != null ? remove : new ItemStack[0];
-        }
-
-        public boolean isMatch(String entity) {
-            return what == null || what.size() <= 0 || what.contains(entity);
-        }
-
-        public MobDrop[] getDrops() {
-            return drops;
         }
 
         public boolean isReplace() {
