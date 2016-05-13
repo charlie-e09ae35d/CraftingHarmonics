@@ -1,6 +1,8 @@
 package org.winterblade.minecraft.harmony.drops.matchers;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
 import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 
@@ -26,11 +28,15 @@ public class BaseBiomeTypeMatcher {
     }
 
     protected BaseDropMatchResult matches(Entity entity) {
-        if(entity == null) return BaseDropMatchResult.False;
+        return matches(entity.getEntityWorld(), entity.getPosition());
+    }
+
+    protected BaseDropMatchResult matches(World world, BlockPos pos) {
+        if(world == null) return BaseDropMatchResult.False;
 
         // Get all the tags for this biome:
         BiomeDictionary.Type[] biomeTags = BiomeDictionary.getTypesForBiome(
-                entity.getEntityWorld().getBiomeGenForCoords(entity.getPosition()));
+                world.getBiomeGenForCoords(pos));
 
         // Figure out if we match:
         for(BiomeDictionary.Type type : biomeTags) {

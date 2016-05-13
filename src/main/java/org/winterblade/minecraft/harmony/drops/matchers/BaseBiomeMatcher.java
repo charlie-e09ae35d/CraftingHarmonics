@@ -2,6 +2,8 @@ package org.winterblade.minecraft.harmony.drops.matchers;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 
 import java.util.List;
@@ -17,6 +19,10 @@ public abstract class BaseBiomeMatcher {
     }
 
     protected BaseDropMatchResult matches(Entity entity) {
-        return new BaseDropMatchResult(biomeIds.contains(entity.getEntityWorld().getBiomeGenForCoords(entity.getPosition()).getBiomeName()));
+        return matches(entity.getEntityWorld(), entity.getPosition());
+    }
+
+    protected BaseDropMatchResult matches(World world, BlockPos pos) {
+        return new BaseDropMatchResult(biomeIds.contains(world.getBiomeGenForCoords(pos).getBiomeName()));
     }
 }

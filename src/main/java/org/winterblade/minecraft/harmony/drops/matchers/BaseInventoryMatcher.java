@@ -5,9 +5,12 @@ import com.google.common.collect.HashBiMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,10 +19,15 @@ import java.util.Map;
  */
 public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
     private final ItemStack requiredItem;
+    private final NBTTagCompound nbt;
+    private final boolean fuzzyNbt;
 
-    public BaseInventoryMatcher(ItemStack requiredItem, double damagePer, boolean consume, EnumHand hand) {
+    public BaseInventoryMatcher(ItemStack requiredItem, double damagePer, boolean consume, @Nullable NBTTagCompound nbt,
+                                boolean fuzzyNbt, EnumHand hand) {
         super(damagePer, consume, hand);
         this.requiredItem = requiredItem;
+        this.nbt = nbt;
+        this.fuzzyNbt = fuzzyNbt;
     }
 
     protected BaseDropMatchResult matches(Entity entity, ItemStack drop) {
@@ -37,7 +45,9 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
         ItemStack[] mainInventory = player.inventory.mainInventory;
         for (int i = 0, mainInventoryLength = mainInventory.length; i < mainInventoryLength; i++) {
             ItemStack item = mainInventory[i];
-            if(item == null || !item.isItemEqualIgnoreDurability(requiredItem)) continue;
+            if(item == null
+                    || !item.isItemEqualIgnoreDurability(requiredItem)
+                    || (nbt != null && !ItemRegistry.CheckIfNbtMatches(nbt, item.getTagCompound(), fuzzyNbt))) continue;
 
             // If we only wanted to match the item, just say we found it here and save a lot of cycles:
             if(!consume && damagePer <= 0) return BaseDropMatchResult.True;

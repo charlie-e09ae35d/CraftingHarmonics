@@ -2,6 +2,8 @@ package org.winterblade.minecraft.harmony.drops.matchers;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
 import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 
 import java.util.List;
@@ -18,5 +20,9 @@ public abstract class BaseDimensionMatcher {
 
     protected BaseDropMatchResult matches(Entity entity) {
         return new BaseDropMatchResult(dimensionIds.contains(entity.dimension));
+    }
+
+    protected BaseDropMatchResult matches(World world) {
+        return new BaseDropMatchResult(dimensionIds.contains(world.provider.getDimension()));
     }
 }

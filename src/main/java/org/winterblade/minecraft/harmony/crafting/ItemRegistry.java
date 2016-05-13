@@ -8,10 +8,7 @@ import net.minecraft.inventory.ContainerWorkbench;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTException;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.RegistryNamespaced;
@@ -285,17 +282,35 @@ public class ItemRegistry {
 
             NBTBase sourceTag = source.getTag(s);
             NBTBase destTag = dest.getTag(s);
-
-            // If our tags aren't the same type
-            if(sourceTag.getId() != destTag.getId()) return false;
-
-            // If we have an NBTTagCompound
-            if(sourceTag instanceof NBTTagCompound) {
-                // Go deeper...
-                if(!CheckIfAtLeastAllTagsArePresent((NBTTagCompound)sourceTag, (NBTTagCompound)destTag)) return false;
-            } else if(!sourceTag.equals(destTag)) return false; // Non-compound tag, so, we're fine.
+            if (!CompareTags(sourceTag, destTag)) return false;
         }
 
+        return true;
+    }
+
+    /**
+     * Checks if at least all tags in the first parameter are in the second
+     * @param sourceTag    The source to check
+     * @param destTag      The destination to check
+     * @return             True if they are present in the second
+     */
+    private static boolean CompareTags(NBTBase sourceTag, NBTBase destTag) {
+        // If our tags aren't the same type
+        if(sourceTag.getId() != destTag.getId()) return false;
+
+        // If we have an NBTTagCompound
+        if(sourceTag instanceof NBTTagCompound) {
+            // Go deeper...
+            if (!CheckIfAtLeastAllTagsArePresent((NBTTagCompound) sourceTag, (NBTTagCompound) destTag))
+                return false;
+        } else if(sourceTag instanceof NBTTagList) {
+            NBTTagList sourceList = (NBTTagList) sourceTag;
+            NBTTagList destList = (NBTTagList) destTag;
+
+            for(int i = 0; i < sourceList.tagCount(); i++) {
+                if(!CompareTags(sourceList.get(i), destList.get(i))) return false;
+            }
+        } else if(!sourceTag.equals(destTag)) return false;
         return true;
     }
 

@@ -518,7 +518,7 @@
                             chance: 1.0,
                             killedWith: "minecraft:shears",
                             consume: false, // consume and damagePer are optional
-                            damagePer: 1.0  // But consume must be specified and be false if using damagePer.
+                            damagePer: 1.0
                         },
 
                         // You can also set minimum and maximum looting levels:
@@ -539,7 +539,7 @@
                             attackerHasOffhand: "minecraft:shield",
                             consumeOffhand: false, // This can be set to true to use the same number of the offhand item as items are dropped
                             damageOffhandPer: 2.0,
-                                // Damage the offhand by this amount per drop generated.  You must specify consumeOffhand: false if you want this
+                                // Damage the offhand by this amount per drop generated.  You must specify consumeOffhand: false (or leave it out) if you want this
                                 // to work.  If the number of drops generated is more than the item could be damaged by, the number of drops
                                 // will be reduced to the proper amount.  Fractional amounts of remaining damage will not yield a drop.
                             not: { // This is a composite, anything you put here will be inverted...
@@ -642,6 +642,66 @@
                             // Fun fact: You can cause players to shed.  Food for thought.
                         }
                     ]
+                },
+
+                // Block drops
+                // Also has most of the same conditions as mob drops.  Reference the wiki for more information.
+                // As usual, these are going to be a lot of non-sensical examples...
+                // Also note: things which involve the the player will generally return false when dealing with things like explosions/quarries/etc
+                {
+                    type: "setBlockDrops",
+                    what: ["minecraft:dirt"], // Also optional, will apply for every block otherwise
+                    state: { // If you don't provide a state map, this will apply every state of the block.  States are logged if you set the config option for it.
+                        // States will be matched by a value check first, and a string conversion second, if both fail, then it doesn't match
+                        snowy: false,
+                        variant: "dirt"
+                        // You can also leave out a property if you don't care about that particular property (for instance, many mod blocks have facing, but you might not necessarily care)
+                    },
+                    replace: false, // No, we shouldn't replace the drop table, just add to it
+                    drops: [
+                        {
+                            what: "minecraft:apple",
+                            min: 1,
+                            max: 3,
+                            // Composites can be chained together to create more complicated effects..
+                            // Gives 100% chance in direct sunlight, or, if lightlevel 10 or above: a 50% chance unless the player has Luck.
+                            or: [
+                                {
+                                    chance: 1.0, // 100% chance, still very optional.
+                                    minLightLevel: 15, // But only in direct sunlight
+                                },
+                                {
+                                    minLightLevel: 10, // Slightly less sunlight
+                                    or: [
+                                        {
+                                            chance: 0.5
+                                        },
+                                        {
+                                            playerHasPotionEffect: "minecraft:luck"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            what: "minecraft:bone",
+                            min: 1,
+                            max: 1,
+                            minedWith: "minecraft:diamond_shovel",
+                            nbt: "{ench:[0:{id:18s}]}", // This has to be specified as a string, because it isn't valid JSON
+                            fuzzyNbt: true, // For reference, the above is "Bane of Arthropods", and, since it's fuzzy, it should allow any level.
+                            maxHeight: 63 // Only when below sea level; F3 shows the Y level that you're on (ie blocks in the same level as your feet count - not below your feet)
+                        },
+                        {
+                            what: "minecraft:wheat",
+                            min: 1,
+                            max: 4,
+                            itemInInventory: "minecraft:shears",
+                            damageInventoryPer: 1.0
+                        }
+                    ],
+                    // You can specify 'exclude' the same as with mob drops, though it's probably less useful here.
+                    // Remove is the same thing as mob drops, if you're just wanting to remove a drop, use that and specify 'replace: false'
                 },
 
                 // JEI Integration
