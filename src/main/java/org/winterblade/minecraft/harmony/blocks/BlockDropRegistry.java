@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.world.BlockEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
@@ -19,7 +20,7 @@ import java.util.*;
 public class BlockDropRegistry {
     private static final Map<UUID, DropHandler> handlers = new HashMap<>();
     private static final Set<UUID> activeHandlers = new LinkedHashSet<>();
-
+    private static final Set<BlockPos> explodedBlocks = new HashSet<>();
 
     public static void handleDrops(BlockEvent.HarvestDropsEvent evt) {
         IBlockState state = evt.getState();
@@ -131,6 +132,30 @@ public class BlockDropRegistry {
 
     public static void remove(UUID ticket) {
         activeHandlers.remove(ticket);
+    }
+
+    /**
+     * Called to register that a block is about to be exploded
+     * @param affectedBlocks    The blocks to be exploded
+     */
+    public static void registerExplodedBlocks(List<BlockPos> affectedBlocks) {
+        explodedBlocks.addAll(affectedBlocks);
+    }
+
+    /**
+     * Checks if the given position has been exploded recently
+     * @param pos    The position to check
+     * @return       True if this was exploded, false otherwise
+     */
+    public static boolean wasExploded(BlockPos pos) {
+        return explodedBlocks.contains(pos);
+    }
+
+    /**
+     * Called once we're done with the tick in which we should process explosions
+     */
+    public static void clearExplodedList() {
+        explodedBlocks.clear();
     }
 
     private static class DropHandler extends BaseDropHandler<BlockDrop> {

@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -55,6 +56,9 @@ public class EventHandler {
 
         try {
             MobShedRegistry.handleSheds(evt);
+
+            // We should (hopefully) be done dealing with the explosion by this point...
+            BlockDropRegistry.clearExplodedList();
         } catch(Exception ex) {
             LogHelper.error("Error handling world tick; please report this along with your config file.", ex);
         }
@@ -79,6 +83,17 @@ public class EventHandler {
             BlockDropRegistry.handleDrops(evt);
         } catch (Exception ex) {
             LogHelper.error("Error handling block drop event; please report this along with your config file.", ex);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onExplosion(ExplosionEvent.Detonate evt) {
+        if(evt.isCanceled()) return;
+
+        try {
+            BlockDropRegistry.registerExplodedBlocks(evt.getAffectedBlocks());
+        } catch (Exception ex) {
+            LogHelper.error("Error handling explosion detonation event; please report this along with your config file.", ex);
         }
     }
 }
