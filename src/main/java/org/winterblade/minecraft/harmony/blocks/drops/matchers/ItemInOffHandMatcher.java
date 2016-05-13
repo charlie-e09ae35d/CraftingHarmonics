@@ -4,7 +4,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.world.BlockEvent;
+import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.ComponentParameter;
+import org.winterblade.minecraft.harmony.api.PrioritizedObject;
+import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.blocks.IBlockDropMatcher;
 import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseHeldEquipmentMatcher;
@@ -12,6 +15,8 @@ import org.winterblade.minecraft.harmony.drops.matchers.BaseHeldEquipmentMatcher
 /**
  * Created by Matt on 5/13/2016.
  */
+@Component(properties = {"itemInOfffhand", "consumeOffhand", "damageOffhandPer", "nbtOffhand", "fuzzyNbtOffhand"})
+@PrioritizedObject(priority = Priority.MEDIUM)
 public class ItemInOffHandMatcher extends BaseHeldEquipmentMatcher implements IBlockDropMatcher {
     // This is pretty much constructor hell...
     public ItemInOffHandMatcher(ItemStack item) {
