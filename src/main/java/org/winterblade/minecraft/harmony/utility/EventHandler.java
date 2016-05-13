@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
+import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
 import org.winterblade.minecraft.harmony.crafting.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
 import org.winterblade.minecraft.harmony.mobs.MobShedRegistry;
@@ -77,7 +78,7 @@ public class EventHandler {
         if(evt.isCanceled()) return;
 
         try {
-
+            BlockDropRegistry.handleDrops(evt);
         } catch (Exception ex) {
             LogHelper.error("Error handling block drop event; please report this along with your config file.", ex);
             evt.setCanceled(true);

@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
+import org.winterblade.minecraft.harmony.blocks.BlockStateMatcher;
 import org.winterblade.minecraft.harmony.blocks.drops.BlockDrop;
 import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 import org.winterblade.minecraft.harmony.utility.LogHelper;
@@ -24,6 +25,7 @@ public class SetBlockDropsOperation extends BaseRecipeOperation {
     private BlockDrop[] drops;
     private ItemStack[] exclude;
     private ItemStack[] remove;
+    private BlockStateMatcher state;
 
     /*
      * Computed properties
@@ -32,7 +34,7 @@ public class SetBlockDropsOperation extends BaseRecipeOperation {
 
     @Override
     public void Init() throws ItemMissingException {
-        ticket = BlockDropRegistry.registerHandler(what, drops, replace, exclude, remove);
+        ticket = BlockDropRegistry.registerHandler(what, drops, replace, exclude, remove, state);
     }
 
     @Override
