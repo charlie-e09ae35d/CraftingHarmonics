@@ -5,6 +5,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 
 /**
@@ -27,7 +28,7 @@ public class MaxLootingMatcher implements IMobDropMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(LivingDropsEvent evt, ItemStack drop) {
-        return evt.getLootingLevel() <= level;
+    public BaseDropMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
+        return new BaseDropMatchResult(evt.getLootingLevel() <= level);
     }
 }

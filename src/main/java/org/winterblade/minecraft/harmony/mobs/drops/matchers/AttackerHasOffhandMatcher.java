@@ -1,22 +1,21 @@
 package org.winterblade.minecraft.harmony.mobs.drops.matchers;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
+import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
+import org.winterblade.minecraft.harmony.drops.matchers.BaseHeldEquipmentMatcher;
 
 /**
  * Created by Matt on 5/7/2016.
  */
 @Component(properties = {"attackerHasOffhand", "consumeOffhand", "damageOffhandPer"})
 @PrioritizedObject(priority = Priority.MEDIUM)
-public class AttackerHasOffhandMatcher extends BaseItemStackMatcher {
-    private final ItemStack offhand;
-
+public class AttackerHasOffhandMatcher extends BaseHeldEquipmentMatcher implements IMobDropMatcher {
     public AttackerHasOffhandMatcher(ItemStack offhand) {
         this(offhand, false);
     }
@@ -26,8 +25,7 @@ public class AttackerHasOffhandMatcher extends BaseItemStackMatcher {
     }
 
     public AttackerHasOffhandMatcher(ItemStack offhand, boolean consume, double damagePer) {
-        super(damagePer, consume, EnumHand.OFF_HAND);
-        this.offhand = offhand;
+        super(offhand, damagePer, consume, EnumHand.OFF_HAND);
     }
 
 
@@ -39,21 +37,8 @@ public class AttackerHasOffhandMatcher extends BaseItemStackMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public boolean isMatch(LivingDropsEvent evt, ItemStack drop) {
-        Entity entity = evt.getSource().getEntity();
-        if(entity == null || !EntityLivingBase.class.isAssignableFrom(entity.getClass())) return false;
-
-        // Get our entity and convert it over:
-        EntityLivingBase entityBase = (EntityLivingBase) entity;
-
-        ItemStack heldEquipment = entityBase.getHeldItemOffhand();
-
-        // Make sure we have held equipment and that it's right:
-        if(heldEquipment == null || !heldEquipment.isItemEqualIgnoreDurability(offhand)) return false;
-
-        consumeOrDamageItem(entityBase, heldEquipment, drop);
-
-        return true;
+    public BaseDropMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
+        return matches(evt.getSource().getEntity(), drop);
     }
 
 }

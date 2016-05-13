@@ -4,6 +4,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.winterblade.minecraft.harmony.api.*;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -18,15 +19,15 @@ public class AnnotationUtil {
         return getClassMap(asmDataTable, RecipeOperation.class, BaseRecipeOperation.class, "name");
     }
 
-    public static Map<ArrayList<String>, Class<Object>> getComponentClasses(@Nonnull ASMDataTable asmDataTable) {
-        return getClassMap(asmDataTable, Component.class, Object.class, "properties");
+    public static Map<String, Class<Object>> getComponentClasses(@Nonnull ASMDataTable asmDataTable) {
+        return getClassMap(asmDataTable, Component.class, Object.class, null);
     }
 
     @SuppressWarnings("unchecked")
     private static <T,Tk> Map<Tk, Class<T>> getClassMap(@Nonnull ASMDataTable asmDataTable,
                                                         Class<?> annotationClass,
                                                         Class<T> outputClass,
-                                                        String idParam) {
+                                                        @Nullable String idParam) {
         String annotationClassName = annotationClass.getCanonicalName();
         Set<ASMDataTable.ASMData> asmTable = asmDataTable.getAll(annotationClassName);
 
@@ -44,7 +45,9 @@ public class AnnotationUtil {
                 // Fall back to name
                 Object name = null;
 
-                if(asmData.getAnnotationInfo().containsKey(idParam)) {
+                if(idParam == null) {
+                    name = asmData.getClassName();
+                } else if(asmData.getAnnotationInfo().containsKey(idParam)) {
                     name = asmData.getAnnotationInfo().get(idParam);
                 }
 

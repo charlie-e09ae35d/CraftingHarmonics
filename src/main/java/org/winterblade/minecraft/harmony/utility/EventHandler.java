@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.crafting.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
+import org.winterblade.minecraft.harmony.mobs.MobShedRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 /**
@@ -43,6 +44,18 @@ public class EventHandler {
         if(evt.phase != TickEvent.Phase.END) return;
 
         CraftingHarmonicsMod.checkDifficultyChanged();
+    }
+
+    @SubscribeEvent
+    public void onWorldTick(TickEvent.WorldTickEvent evt) {
+        if(evt.phase != TickEvent.Phase.END || evt.world.isRemote) return;
+
+        try {
+            MobShedRegistry.handleSheds(evt);
+        } catch(Exception ex) {
+            LogHelper.error("Error handling world tick; please report this along with your config file.", ex);
+            evt.setCanceled(true);
+        }
     }
 
     @SubscribeEvent

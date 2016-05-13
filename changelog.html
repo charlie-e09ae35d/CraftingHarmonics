@@ -1,4 +1,23 @@
 <div>
+    <h2>Version 1.3.12</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Adding mob shedding support.  By default, no mobs will shed, and all sheds have to be added
+            using the 'addMobShed' command.
+        </li>
+        <li>
+            Adding new Settings.cfg entry 'I:SecondsBetweenSheds' which determines the number of seconds
+            between the shed code running.  By default, this is 10 to help with TPS.
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/52">issue #52</a> where
+            items could be damaged/consumed when the event was cancelled by another matcher.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
     <h2>Version 1.3.11</h2>
     <h4>Features</h4>
     <ul>
@@ -12,7 +31,7 @@
             help was running every time, regardless of if a command was run or not.
         </li>
     </ul>
-</div>div>
+</div>
 <hr />
 <div>
     <h2>Version 1.3.10</h2>
