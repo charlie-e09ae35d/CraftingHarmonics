@@ -28,41 +28,41 @@ public class AttackerHasOffhandMatcher extends BaseHeldEquipmentMatcher implemen
         this(item, consume, 0.0, null, false);
     }
 
-    public AttackerHasOffhandMatcher(ItemStack item, boolean consume, @ComponentParameter(property = "nbt") NBTTagCompound nbt) {
+    public AttackerHasOffhandMatcher(ItemStack item, boolean consume, @ComponentParameter(property = "nbtOffhand") NBTTagCompound nbt) {
         this(item, consume, 0.0, nbt, false);
     }
 
     public AttackerHasOffhandMatcher(ItemStack item, boolean consume,
-                                 @ComponentParameter(property = "nbt") NBTTagCompound nbt,
-                                 @ComponentParameter(property = "fuzzyNbt") boolean fuzzyNbt) {
+                                @ComponentParameter(property = "nbtOffhand") NBTTagCompound nbt,
+                                @ComponentParameter(property = "fuzzyNbtOffhand") boolean fuzzyNbt) {
         this(item, consume, 0.0, nbt, fuzzyNbt);
     }
 
     // Damage per, up to including NBT
-    public AttackerHasOffhandMatcher(ItemStack item, @ComponentParameter(property = "damagePer") double damagePer) {
+    public AttackerHasOffhandMatcher(ItemStack item, @ComponentParameter(property = "damageOffhandPer") double damagePer) {
         this(item, false, damagePer, null, false);
     }
 
-    public AttackerHasOffhandMatcher(ItemStack item, @ComponentParameter(property = "damagePer") double damagePer,
-                                 @ComponentParameter(property = "nbt") NBTTagCompound nbt) {
+    public AttackerHasOffhandMatcher(ItemStack item, @ComponentParameter(property = "damageOffhandPer") double damagePer,
+                                @ComponentParameter(property = "nbtOffhand") NBTTagCompound nbt) {
         this(item, false, damagePer, nbt, false);
     }
 
-    public AttackerHasOffhandMatcher(ItemStack item, @ComponentParameter(property = "damagePer") double damagePer,
-                                 @ComponentParameter(property = "nbt") NBTTagCompound nbt,
-                                 @ComponentParameter(property = "fuzzyNbt") boolean fuzzyNbt) {
+    public AttackerHasOffhandMatcher(ItemStack item, @ComponentParameter(property = "damageOffhandPer") double damagePer,
+                                @ComponentParameter(property = "nbtOffhand") NBTTagCompound nbt,
+                                @ComponentParameter(property = "fuzzyNbtOffhand") boolean fuzzyNbt) {
         this(item, false, damagePer, nbt, fuzzyNbt);
     }
 
     // NBT only
     public AttackerHasOffhandMatcher(ItemStack item,
-                                 @ComponentParameter(property = "nbt") NBTTagCompound nbt) {
+                                @ComponentParameter(property = "nbtOffhand") NBTTagCompound nbt) {
         this(item, nbt, false);
     }
 
     public AttackerHasOffhandMatcher(ItemStack item,
-                                 @ComponentParameter(property = "nbt") NBTTagCompound nbt,
-                                 @ComponentParameter(property = "fuzzyNbt") boolean fuzzyNbt) {
+                                @ComponentParameter(property = "nbtOffhand") NBTTagCompound nbt,
+                                @ComponentParameter(property = "fuzzyNbtOffhand") boolean fuzzyNbt) {
         this(item, false, 0.0, nbt, fuzzyNbt);
     }
 
