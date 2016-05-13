@@ -21,6 +21,10 @@ public abstract class BaseLightLevelMatcher {
         return new BaseDropMatchResult(entity != null && checkLight(entity.getEntityWorld(), entity.getPosition()));
     }
 
+    protected BaseDropMatchResult matches(World world, BlockPos blockPos) {
+        return new BaseDropMatchResult(world != null && checkLight(world, blockPos));
+    }
+
     private boolean checkLight(World world, BlockPos pos) {
         if(world == null || pos == null) return false;
         int light = world.getLight(pos);
