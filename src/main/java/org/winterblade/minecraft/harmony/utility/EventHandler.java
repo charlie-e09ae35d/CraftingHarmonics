@@ -57,7 +57,6 @@ public class EventHandler {
             MobShedRegistry.handleSheds(evt);
         } catch(Exception ex) {
             LogHelper.error("Error handling world tick; please report this along with your config file.", ex);
-            evt.setCanceled(true);
         }
     }
 
@@ -69,7 +68,6 @@ public class EventHandler {
             MobDropRegistry.handleDrops(evt);
         } catch(Exception ex) {
             LogHelper.error("Error handling drop event; please report this along with your config file.", ex);
-            evt.setCanceled(true);
         }
     }
 
@@ -81,7 +79,6 @@ public class EventHandler {
             BlockDropRegistry.handleDrops(evt);
         } catch (Exception ex) {
             LogHelper.error("Error handling block drop event; please report this along with your config file.", ex);
-            evt.setCanceled(true);
         }
     }
 }
