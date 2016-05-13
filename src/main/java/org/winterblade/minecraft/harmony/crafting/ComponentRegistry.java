@@ -1,7 +1,8 @@
 package org.winterblade.minecraft.harmony.crafting;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import org.winterblade.minecraft.harmony.api.*;
+import org.winterblade.minecraft.harmony.api.Component;
+import org.winterblade.minecraft.harmony.api.ComponentParameter;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.utility.LogHelper;
 
@@ -22,11 +23,8 @@ public class ComponentRegistry {
         this.componentImpls = componentImpls;
     }
 
-    public static void registerComponents(Map<ArrayList<String>, Class<Object>> matchers) {
-        for(Map.Entry<ArrayList<String>, Class<Object>> matcher : matchers.entrySet()) {
-            // If we haven't defined properties, then we don't need to register it.
-            if(matcher.getKey().size() <= 0) continue;
-
+    public static void registerComponents(Map<String, Class<Object>> matchers) {
+        for(Map.Entry<String, Class<Object>> matcher : matchers.entrySet()) {
             Class componentClass = matcher.getValue();
 
             // Find what constructors we have available to us:
@@ -38,6 +36,8 @@ public class ComponentRegistry {
                 continue;
             }
 
+            Component annotation = (Component) componentClass.getAnnotation(Component.class);
+
             Map<String, Integer> propertyConstructorCount = new HashMap<>();
             Map<String, Class<?>> propertyTypes = new HashMap<>();
             Map<Constructor, List<String>> constructorMap = new HashMap<>();
@@ -45,7 +45,7 @@ public class ComponentRegistry {
             // Time to do a bunch of stuff to figure out how to make the object...
             for(Constructor constructor : constructors) {
                 List<String> props
-                        = readParameters(matcher.getKey(), propertyConstructorCount, propertyTypes, constructor);
+                        = readParameters(annotation.properties(), propertyConstructorCount, propertyTypes, constructor);
 
                 // We couldn't accept this constructor...
                 if(props == null || props.size() <= 0) continue;
@@ -68,7 +68,7 @@ public class ComponentRegistry {
 
             do {
                 // And grab everything.
-                parents.add(current);
+//                parents.add(current);
                 Collections.addAll(parents, current.getInterfaces());
                 current = current.getSuperclass();
             } while(current != Object.class); // We're not registering all components in a bucket.  You do not need this.
@@ -183,7 +183,7 @@ public class ComponentRegistry {
         return output;
     }
 
-    private static List<String> readParameters(List<String> properties,
+    private static List<String> readParameters(String[] properties,
                                                Map<String, Integer> propertyConstructorCount,
                                                Map<String, Class<?>> propertyTypes,
                                                Constructor constructor) {
@@ -201,9 +201,9 @@ public class ComponentRegistry {
             if (paramAnnotation != null) {
                 // If we have the annotation, use that..
                 name = paramAnnotation.property();
-            } else if (i < properties.size()) {
+            } else if (i < properties.length) {
                 // Assume that the constructor params match the order of properties
-                name = properties.get(i);
+                name = properties[i];
             } else {
                 // Otherwise... nope
                 return null;
@@ -307,6 +307,11 @@ public class ComponentRegistry {
 
         Class getComponentClass() {
             return componentClass;
+        }
+
+        @Override
+        public String toString() {
+            return "ComponentRegistration{" + componentClass + '}';
         }
     }
 
