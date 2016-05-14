@@ -68,7 +68,7 @@ dependencies {
 
     // TechReborn
     compile "RebornCore:RebornCore-1.9:+:dev"
-    compile "TechReborn:TechReborn-1.9:1.0.6.225:dev"
+    compile "TechReborn:TechReborn-1.9:1.0.6.254:dev"
 }
 
 //Add dependencies to the JAR
