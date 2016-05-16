@@ -8,15 +8,20 @@ import org.winterblade.minecraft.harmony.blocks.BlockMatcher;
 import javax.annotation.Nullable;
 
 /**
- * Created by Matt on 5/14/2016.
+ * Created by Matt on 5/15/2016.
  */
-public abstract class BaseAboveBlockMatcher extends BaseBlockMatcher {
+public abstract class BaseBlockMatcher {
     @Nullable
-    public BaseAboveBlockMatcher(@Nullable BlockMatcher matcher) {
-        super(matcher);
+    private final BlockMatcher matcher;
+
+    public BaseBlockMatcher(@Nullable BlockMatcher matcher) {
+        this.matcher = matcher;
     }
 
     protected BaseDropMatchResult matches(World world, BlockPos pos) {
-        return super.matches(world, pos.down());
+        return matcher != null && matcher.matches(world.getBlockState(pos))
+                ? BaseDropMatchResult.True
+                : BaseDropMatchResult.False;
     }
+
 }
