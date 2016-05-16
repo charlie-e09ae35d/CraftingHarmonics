@@ -24,6 +24,7 @@ public class ConfigManager {
     private boolean debugMobDropEvents;
     private boolean debugBlockDropEvents;
     private int shedSeconds;
+    private int dayTickLength;
 
     /**
      * Generates a new config manager using the config path
@@ -52,6 +53,10 @@ public class ConfigManager {
 
         shedSeconds = configMain.getInt("SecondsBetweenSheds",Configuration.CATEGORY_GENERAL,
                 10, 1, 100000, "The number of seconds between calculating if a mob should shed something (if sheds are configured).") * 20;
+
+        // Just in case another mod is modifying this:
+        dayTickLength = configMain.getInt("DayTickLength", Configuration.CATEGORY_GENERAL,
+                24000, 1, Integer.MAX_VALUE, "The length of a standard Minecraft day, for use in time calculations.");
 
         configMain.save();
     }
@@ -141,5 +146,9 @@ public class ConfigManager {
 
     public boolean debugBlockDropEvents() {
         return debugBlockDropEvents;
+    }
+
+    public int getDayTickLength() {
+        return dayTickLength;
     }
 }

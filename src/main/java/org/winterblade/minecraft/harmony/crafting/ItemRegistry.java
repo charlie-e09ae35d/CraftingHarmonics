@@ -118,10 +118,10 @@ public class ItemRegistry {
 
         // Check if we're reading in NBT data...
         if(parts.length >= 5) {
-            if(parts[4].startsWith("=")) translatedType = ItemType.ExactNbt;
+            if(parts[4].startsWith("=") || parts[4].startsWith("{")) translatedType = ItemType.ExactNbt;
             else if(parts[4].startsWith("~")) translatedType = ItemType.FuzzyNbt;
 
-            parts[4] = parts[4].substring(1);
+            if(!parts[4].startsWith("{")) parts[4] = parts[4].substring(1);
 
             // Now recombine the NBT; if only I hadn't used : as a separator...
             for(int i = 5; i < parts.length; i++) {
@@ -161,7 +161,7 @@ public class ItemRegistry {
             }
 
             // Update it with our values:
-            compound.setBoolean("CraftingHarmonicsIsFuzzyMatch", translatedType == ItemType.FuzzyNbt);
+            if(translatedType == ItemType.FuzzyNbt) compound.setBoolean("CraftingHarmonicsIsFuzzyMatch", true);
             itemStack.setTagCompound(compound);
         }
 
@@ -252,7 +252,7 @@ public class ItemRegistry {
         NBTTagCompound compound = new NBTTagCompound();
 
         // Fall back to checking the tag compound...
-        if(!isFuzzy) isFuzzy = orig.getBoolean("CraftingHarmonicsIsFuzzyMatch");
+        if(!isFuzzy) isFuzzy = orig.hasKey("CraftingHarmonicsIsFuzzyMatch");
 
         for (String s : orig.getKeySet()) {
             // Skip our tag...
