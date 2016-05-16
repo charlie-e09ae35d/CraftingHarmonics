@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.drops.matchers;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 
@@ -24,7 +25,7 @@ public abstract class BaseNearbyMobMatcher extends BaseAreaMatcher<String> {
 
     @Override
     protected boolean matchWithinRange(World world, AxisAlignedBB boundingBox, int min, int max, int returnOn) {
-        int foundCount = world.getEntitiesWithinAABB(EntityLiving.class, boundingBox, this::checkItem).size();
+        int foundCount = world.getEntitiesWithinAABB(EntityLivingBase.class, boundingBox, this::checkItem).size();
         return (min <= foundCount && foundCount <= max);
     }
 }
