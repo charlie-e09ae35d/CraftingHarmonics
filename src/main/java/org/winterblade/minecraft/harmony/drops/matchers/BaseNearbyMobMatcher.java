@@ -32,11 +32,8 @@ public abstract class BaseNearbyMobMatcher {
     }
 
     protected BaseDropMatchResult matches(World world, BlockPos pos) {
-        // Initially set this to our block pos
-        AxisAlignedBB bb = new AxisAlignedBB(pos);
-
-        // Then expand it:
-        bb.expandXyz(dist);
+        // Get one from our block pos and expand it
+        AxisAlignedBB bb = new AxisAlignedBB(pos).expandXyz(dist);
 
         // If we're just searching for a minimum number of mobs, and don't care about the max:
         int returnOn = max != Integer.MAX_VALUE ? Integer.MAX_VALUE : min;
