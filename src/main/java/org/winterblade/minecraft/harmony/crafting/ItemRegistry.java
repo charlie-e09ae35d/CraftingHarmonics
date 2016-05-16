@@ -118,7 +118,7 @@ public class ItemRegistry {
 
         // Check if we're reading in NBT data...
         if(parts.length >= 5) {
-            if(parts[4].startsWith("=")) translatedType = ItemType.ExactNbt;
+            if(parts[4].startsWith("=") || parts[4].startsWith("{")) translatedType = ItemType.ExactNbt;
             else if(parts[4].startsWith("~")) translatedType = ItemType.FuzzyNbt;
 
             parts[4] = parts[4].substring(1);
