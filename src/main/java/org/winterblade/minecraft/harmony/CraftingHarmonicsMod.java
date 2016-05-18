@@ -113,7 +113,7 @@ public class CraftingHarmonicsMod {
      * @param operation The operation to add.
      */
     public static void AddOperationToSet(String setName, IRecipeOperation operation) {
-        if(!craftingSets.containsKey(setName)) craftingSets.put(setName, new CraftingSet());
+        if(!craftingSets.containsKey(setName)) craftingSets.put(setName, new CraftingSet(setName));
 
         craftingSets.get(setName).AddOperation(operation);
     }
