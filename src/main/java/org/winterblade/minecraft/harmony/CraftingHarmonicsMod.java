@@ -311,4 +311,8 @@ public class CraftingHarmonicsMod {
     public static ConfigManager getConfigManager() {
         return configManager;
     }
+
+    public static SavedGameData getSavedGameData() {
+        return savedGameData;
+    }
 }

@@ -28,7 +28,7 @@ public class AddStarterItemOperation extends BasePerPlayerOperation {
      * @throws ItemMissingException If something went wrong
      */
     @Override
-    public void Init() throws ItemMissingException {
+    public void doInit() throws ItemMissingException {
         if(what == null) throw new ItemMissingException("addStarterItems must have a list of starter items.");
 
         // Only compute an ID if necessary...

@@ -4,21 +4,42 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
+import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.CraftingSet;
+import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 public abstract class BasePerPlayerOperation extends BaseRecipeOperation {
-    private transient Set<UUID> appliedPlayers = new HashSet<>();
+    private transient Set<String> appliedPlayers = new HashSet<>();
+
+    /**
+     * Called to initialize the set
+     *
+     * @throws ItemMissingException If something went wrong
+     */
+    @Override
+    public final void Init() throws ItemMissingException {
+        // Actually initialize the operation...
+        doInit();
+
+        // And now, make sure we have our applied players
+        appliedPlayers.clear();
+        appliedPlayers.addAll(CraftingHarmonicsMod.getSavedGameData().getAppliedPlayerIdsForOp(getId()));
+    }
+
+    public abstract void doInit() throws ItemMissingException;
 
     /**
      * Called to apply the set
      */
     @Override
     public final void Apply() {
+        // Make sure we're on the server...
+        if(FMLCommonHandler.instance().getMinecraftServerInstance() == null) return;
+
         // Register the operation
         CraftingSet.addPerPlayerOperation(this);
 
@@ -31,6 +52,9 @@ public abstract class BasePerPlayerOperation extends BaseRecipeOperation {
     }
 
     public final void Undo() {
+        // Make sure we're on the server...
+        if(FMLCommonHandler.instance().getMinecraftServerInstance() == null) return;
+
         // Remove the registration...
         CraftingSet.removePerPlayerOperation(this);
 
@@ -44,11 +68,13 @@ public abstract class BasePerPlayerOperation extends BaseRecipeOperation {
 
     public void doApply(EntityPlayerMP player) {
         // If we're doing once only, then pass on players that have it already...
-        if(onceOnly() && appliedPlayers.contains(player.getUniqueID())) return;
+        String playerId = player.getUniqueID().toString();
+        if(onceOnly() && appliedPlayers.contains(playerId)) return;
 
         applyPerPlayer(player);
         if(onceOnly()) {
-            appliedPlayers.add(player.getUniqueID());
+            appliedPlayers.add(playerId);
+            CraftingHarmonicsMod.getSavedGameData().addPlayerForOperation(getId(), playerId);
         }
     }
 
@@ -56,10 +82,12 @@ public abstract class BasePerPlayerOperation extends BaseRecipeOperation {
 
     public void doUndo(EntityPlayerMP player) {
         // If we're doing once only, or if the player doesn't have it...
-        if(onceOnly() || !appliedPlayers.contains(player.getUniqueID())) return;
+        String playerId = player.getUniqueID().toString();
+        if(onceOnly() || !appliedPlayers.contains(playerId)) return;
 
         undoPerPlayer(player);
-        appliedPlayers.remove(player.getUniqueID());
+        appliedPlayers.remove(playerId);
+        CraftingHarmonicsMod.getSavedGameData().removePlayerForOperation(getId(), playerId);
     }
 
     public abstract void undoPerPlayer(EntityPlayerMP player);
@@ -67,12 +95,6 @@ public abstract class BasePerPlayerOperation extends BaseRecipeOperation {
     @Override
     public final boolean perPlayer() {
         return true;
-    }
-
-    @Nullable
-    @Override
-    public final Side getSide() {
-        return Side.SERVER;
     }
 
     /**
