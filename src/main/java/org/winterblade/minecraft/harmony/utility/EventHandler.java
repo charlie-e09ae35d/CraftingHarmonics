@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
+import org.winterblade.minecraft.harmony.CraftingSet;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
 import org.winterblade.minecraft.harmony.crafting.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
@@ -24,22 +25,26 @@ public class EventHandler {
     @SubscribeEvent
     // This is called on the server.
     public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent evt) {
-        EntityPlayer player = evt.player;
+        EntityPlayer basePlayer = evt.player;
 
-        if(!(player instanceof EntityPlayerMP)) return;
+        if(!(basePlayer instanceof EntityPlayerMP)) return;
+        EntityPlayerMP player = (EntityPlayerMP)basePlayer;
 
         long seed = player.getEntityWorld().getTotalWorldTime() + player.getEntityWorld().getSeed();
         LogHelper.info("Player logged in, getting them a new random seed for crafting: " + seed);
 
         SynchronizedRandom.generateNewRandom(player.getUniqueID().toString(), seed);
-        PacketHandler.synchronizeRandomToPlayer(seed, (EntityPlayerMP)player);
+        PacketHandler.synchronizeRandomToPlayer(seed, player);
 
         // If we're doing SP, we need to set up the base sets...
         if(FMLCommonHandler.instance().getMinecraftServerInstance().isSinglePlayer()) {
             CraftingHarmonicsMod.applyBaseSets();
+        } else {
+            // Apply our per-player operations...
+            CraftingSet.runPerPlayerOperations(player);
         }
 
-        PacketHandler.synchronizeConfig(NashornConfigProcessor.getInstance().getCache(), (EntityPlayerMP)player);
+        PacketHandler.synchronizeConfig(NashornConfigProcessor.getInstance().getCache(), player);
     }
 
 

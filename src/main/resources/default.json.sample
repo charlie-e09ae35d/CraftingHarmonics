@@ -614,6 +614,27 @@
                         }
                     ]
                 },
+                {
+                    // /summon Zombie ~0 ~1 ~0 {HandItems:[{id:iron_sword},{id:shield}]}
+                    __comment: "You can specify that a mob has to be using a particular item for a drop.",
+                    __result: "Drops a golden apple from any Zombie wielding an iron sword, and sticks from those with shields",
+                    type: "setMobDrops",
+                    what: ["Zombie"],
+                    drops: [
+                        {
+                            what: "minecraft:golden_apple",
+                            min: 1,
+                            max: 1,
+                            mobHasMainhand: "minecraft:iron_sword"
+                        },
+                        {
+                            what: "minecraft:stick",
+                            min: 1,
+                            max: 1,
+                            mobHasOffhand: "minecraft:shield"
+                        }
+                    ]
+                },
 
                 // Mob shedding
                 // Most of the conditions that can be used for mob and block drops can be used here, except those that depend on the player.  Reference the wiki for more information.
@@ -712,6 +733,7 @@
                             what: "minecraft:wheat",
                             min: 1,
                             max: 4,
+                            silkTouch: true,
                             itemInInventory: "minecraft:shears",
                             damageInventoryPer: 1.0
                         },
@@ -798,6 +820,16 @@
                         }
                     ]
                 },
+
+
+                // Starter sets
+                {
+                    __comment: "You can add starting item sets to the default set, as well as the peaceful, easy, normal, and hard difficulty sets",
+                    __result: "Gives the player a diamond sword when starting off.",
+                    type: "addStarterItem",
+                    what: ["minecraft:diamond_sword","minecraft:golden_apple"] // If you change the starter items, it will re-apply the set
+                },
+
 
                 // JEI Integration
                 {
