@@ -28,7 +28,7 @@ repositories {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
-version = "1.9.0-1.3.12"
+version = "1.9.0-1.3.13"
 group= "org.winterblade.minecraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "craftingharmonics"
 
@@ -68,7 +68,7 @@ dependencies {
 
     // TechReborn
     compile "RebornCore:RebornCore-1.9:+:dev"
-    compile "TechReborn:TechReborn-1.9:1.0.6.225:dev"
+    compile "TechReborn:TechReborn-1.9:1.0.6.254:dev"
 }
 
 //Add dependencies to the JAR

@@ -7,8 +7,7 @@ import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.storage.MapStorage;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Matt on 4/29/2016.
@@ -17,6 +16,7 @@ public class SavedGameData extends WorldSavedData {
     private static final String DATA_NAME = CraftingHarmonicsMod.MODID + "_SavedGameData";
 
     private Set<String> loadedSets = new HashSet<>();
+    private Map<String, Set<String>> appliedPlayers = new HashMap<>();
 
     public SavedGameData() {
         this(DATA_NAME);
@@ -72,6 +72,34 @@ public class SavedGameData extends WorldSavedData {
     }
 
     /**
+     * Get a list of all the players a particular operation has been applied to.
+     * @param opId    The operation ID to pull
+     * @return        The set of all applied player IDs.
+     */
+    public Set<String> getAppliedPlayerIdsForOp(String opId) {
+        return appliedPlayers.containsKey(opId) ? ImmutableSet.copyOf(appliedPlayers.get(opId)) : ImmutableSet.of();
+    }
+
+    /**
+     * Add a the given player to the given operation ID
+     * @param opId    The operation ID to add to
+     * @param id      The player ID to add
+     */
+    public void addPlayerForOperation(String opId, String id) {
+        if(!appliedPlayers.containsKey(opId)) appliedPlayers.put(opId, new HashSet<>());
+        if(appliedPlayers.get(opId).add(id)) markDirty();
+    }
+
+    /**
+     * Remove a player from the given operation ID
+     * @param opId    The operation ID to remove from
+     * @param id      The player ID to remove
+     */
+    public void removePlayerForOperation(String opId, String id) {
+        if(appliedPlayers.containsKey(opId) && appliedPlayers.get(opId).remove(id)) markDirty();
+    }
+
+    /**
      * reads in data from the NBTTagCompound into this MapDataBase
      *
      * @param nbt   The NBT to read from
@@ -82,6 +110,17 @@ public class SavedGameData extends WorldSavedData {
         if(nbt.hasKey("LoadedSets")) {
             loadedSets.clear();
             loadedSets.addAll(nbt.getCompoundTag("LoadedSets").getKeySet());
+        }
+
+        if(nbt.hasKey("AppliedPlayers")) {
+            appliedPlayers.clear();
+
+            NBTTagCompound tag = nbt.getCompoundTag("AppliedPlayers");
+            Set<String> opIds = tag.getKeySet();
+
+            for(String opId : opIds) {
+                appliedPlayers.put(opId, tag.getCompoundTag(opId).getKeySet());
+            }
         }
     }
 
@@ -101,5 +140,17 @@ public class SavedGameData extends WorldSavedData {
 
         // Write the entire compound to NBT now:
         nbt.setTag("LoadedSets", loadedSetNbt);
+
+        // Deal with applied sets per player
+        NBTTagCompound appliedPlayersTag = new NBTTagCompound();
+
+        for(Map.Entry<String, Set<String>> entry : appliedPlayers.entrySet()) {
+            NBTTagCompound opTag = new NBTTagCompound();
+            for(String id : entry.getValue()) {
+                opTag.setBoolean(id, true);
+            }
+            appliedPlayersTag.setTag(entry.getKey(), opTag);
+        }
+        nbt.setTag("AppliedPlayers", appliedPlayersTag);
     }
 }

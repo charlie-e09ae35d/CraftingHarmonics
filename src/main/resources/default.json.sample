@@ -614,6 +614,27 @@
                         }
                     ]
                 },
+                {
+                    // /summon Zombie ~0 ~1 ~0 {HandItems:[{id:iron_sword},{id:shield}]}
+                    __comment: "You can specify that a mob has to be using a particular item for a drop.",
+                    __result: "Drops a golden apple from any Zombie wielding an iron sword, and sticks from those with shields",
+                    type: "setMobDrops",
+                    what: ["Zombie"],
+                    drops: [
+                        {
+                            what: "minecraft:golden_apple",
+                            min: 1,
+                            max: 1,
+                            mobHasMainhand: "minecraft:iron_sword"
+                        },
+                        {
+                            what: "minecraft:stick",
+                            min: 1,
+                            max: 1,
+                            mobHasOffhand: "minecraft:shield"
+                        }
+                    ]
+                },
 
                 // Mob shedding
                 // Most of the conditions that can be used for mob and block drops can be used here, except those that depend on the player.  Reference the wiki for more information.
@@ -640,6 +661,22 @@
                             sheddingDamageIsAbsolute: false, // Make it so potions and other effects don't prevent this, defaults to 'false'
                             sheddingDamageIsCreative: true, // Make this completely unblockable damage, defaults to 'false'.
                             // Fun fact: You can cause players to shed.  Food for thought.
+                        },
+                        {
+                            what: "minecraft:clay",
+                            min: 1,
+                            max: 1,
+                            insideBlock: "minecraft:water" // Detect if the mob is currently inside a given block (could be quicksand, other fluids, etc); this can also have the expanded NBT
+                        },
+                        {
+                            what: 'minecraft:spawn_egg:0:1:{EntityTag:{id:"Cow"}}',
+                            min: 1,
+                            max: 1,
+                            // Check for a second cow (note: since we're a Cow, checking for Cows, there will always be 1 cow: the one we're checking from)
+                            // This looks in a 5 block radius from the cow.
+                            // 'what' and 'dist' must be provided, though what can be an empty array if you want to check every mob.
+                            // 'min' and 'max' are optional; their defaults are 0 and a really high number, by default.  Don't set max unless you need to.
+                            aroundMobs: { what: ["Cow"], min: 2, dist: 5 }
                         }
                     ]
                 },
@@ -696,13 +733,103 @@
                             what: "minecraft:wheat",
                             min: 1,
                             max: 4,
+                            silkTouch: true,
                             itemInInventory: "minecraft:shears",
                             damageInventoryPer: 1.0
+                        },
+                        {
+                            // Makes dirt drop soul sand when -above- soul sand
+                            what: "minecraft:soul_sand",
+                            min: 1,
+                            max: 1,
+                            aboveBlock: "minecraft:soul_sand" // Simple form is acceptable.
+                        },
+                        {
+                            // And makes it drop a mushroom when above podzol
+                            what: "minecraft:brown_mushroom",
+                            min: 1,
+                            max: 1,
+                            aboveBlock: {
+                                block: "minecraft:dirt",
+                                state: {
+                                    variant: "podzol"
+                                }
+                            }
+                        },
+                        {
+                            // Makes diamonds drop after dusk (and before midnight)
+                            what: "minecraft:diamond",
+                            min: 1,
+                            max: 1,
+                            or: [
+                                { minTimeOfDay: 1080 }, // This time is in in-game minutes, so, this is roughly 6 PM
+                                { maxTimeOfDay: 360 } // Or before 6AM
+                            ],
+                            // Damage the player a bit for this though.  Shares the same properties as the shedding damage.
+                            damagePlayer: 1.0,
+                            playerDamageType: "magic",
+                            playerDamageIsUnblockable: true,
+                            playerDamageIsAbsolute: true
+                        },
+                        {
+                            // Note: This just makes sure that the moon is the correct phase.  Combine with time of day matchers to make sure it's only night.
+                            what: "minecraft:nether_star",
+                            min: 1,
+                            max: 1,
+                            moonPhase: "Full"
+                            // Valid values are:
+                            // Full, WaningGibbous, ThirdQuarter, WaningCrescent,
+                            // New, WaxingCrescent, FirstQuarter, WaxingGibbous;
+                        },
+                        {
+                            // Sand.  It gets everywhere.  In the cracks.
+                            what: "minecraft:sand",
+                            min: 1,
+                            max: 1,
+                            // If this piece of dirt is around at least 3 other pieces of sand, drop sand...
+                            aroundBlocks: { what: ["minecraft:sand"], min: 3, dist: 1}
+                        },
+                        {
+                            // If the scoreboard entry 'testObj' is between 500 and 5000... drop clay?
+                            what: "minecraft:clay",
+                            min: 1,
+                            max: 1,
+                            minScore: {name: "testObj", value: 500},
+                            maxScore: {name: "testObj", value: 5000}
                         }
                     ],
                     // You can specify 'exclude' the same as with mob drops, though it's probably less useful here.
                     // Remove is the same thing as mob drops, if you're just wanting to remove a drop, use that and specify 'replace: false'
                 },
+                {
+                    type: "setBlockDrops",
+                    what: [],
+                    drops: [
+                        {
+                            what: "minecraft:diamond",
+                            min: 1,
+                            max: 1,
+                            minedByExplosion: true // Only when caused by an explosion
+                        },
+                        {
+                            // Everything also drops dirt!
+                            what: "minecraft:dirt",
+                            min: 1,
+                            max: 1,
+                            minedByPlayer: true, // ... when mined by a player
+                        }
+                    ]
+                },
+
+
+                // Starter sets
+                {
+                    __comment: "You can add starting item sets to the default set, as well as the peaceful, easy, normal, and hard difficulty sets",
+                    __result: "Gives the player a diamond sword when starting off.",
+                    type: "addStarterItem",
+                    what: ["minecraft:diamond_sword","minecraft:golden_apple"] // If you change the starter items, it will re-apply the set
+                },
+
 
                 // JEI Integration
                 {
