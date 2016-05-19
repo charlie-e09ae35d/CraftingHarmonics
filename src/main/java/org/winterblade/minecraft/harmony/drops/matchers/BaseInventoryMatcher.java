@@ -47,7 +47,7 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
             ItemStack item = mainInventory[i];
             if(item == null
                     || !item.isItemEqualIgnoreDurability(requiredItem)
-                    || (nbt != null && !ItemUtility.CheckIfNbtMatches(nbt, item.getTagCompound(), fuzzyNbt))) continue;
+                    || (nbt != null && !ItemUtility.checkIfNbtMatches(nbt, item.getTagCompound(), fuzzyNbt))) continue;
 
             // If we only wanted to match the item, just say we found it here and save a lot of cycles:
             if(!consume && damagePer <= 0) return BaseDropMatchResult.True;

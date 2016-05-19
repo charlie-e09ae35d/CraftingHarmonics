@@ -35,7 +35,7 @@ public class FuelRegistry implements IFuelHandler {
     @Override
     public int getBurnTime(ItemStack fuel) {
         for (Map.Entry<ItemStack, Integer> kv : burnTimes.entrySet()) {
-            if (!ItemUtility.AreItemsEquivalent(kv.getKey(), fuel)) continue;
+            if (!ItemUtility.areItemsEquivalent(kv.getKey(), fuel)) continue;
             return kv.getValue();
         }
 

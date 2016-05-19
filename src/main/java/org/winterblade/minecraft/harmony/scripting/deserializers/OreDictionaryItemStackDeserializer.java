@@ -27,8 +27,8 @@ public class OreDictionaryItemStackDeserializer implements IScriptObjectDeserial
      * @throws ItemMissingException If the item couldn't be found.
      */
     public static OreDictionaryItemStack TranslateToOreDictionaryItemStack(String data) throws ItemMissingException {
-        return ItemUtility.IsOreDictionaryEntry(data)
-                ? new OreDictionaryItemStack(data, ItemUtility.GetOreDictionaryName(data))
-                : new OreDictionaryItemStack(data, ItemUtility.TranslateToItemStack(data));
+        return ItemUtility.isOreDictionaryEntry(data)
+                ? new OreDictionaryItemStack(data, ItemUtility.getOreDictionaryName(data))
+                : new OreDictionaryItemStack(data, ItemUtility.translateToItemStack(data));
     }
 }

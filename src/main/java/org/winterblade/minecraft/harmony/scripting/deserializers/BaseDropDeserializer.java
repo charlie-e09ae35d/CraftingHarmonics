@@ -46,7 +46,7 @@ public abstract class BaseDropDeserializer <TEvt, TMatcher extends IBaseDropMatc
         // If have a mob...
         if (mirror.containsKey("what")) {
             try {
-                output.setWhat(ItemUtility.TranslateToItemStack(mirror.get("what").toString()));
+                output.setWhat(ItemUtility.translateToItemStack(mirror.get("what").toString()));
             } catch (ItemMissingException e) {
                 LogHelper.error("Couldn't convert '" + mirror.get("what") + "' to a valid item string.");
                 return output;

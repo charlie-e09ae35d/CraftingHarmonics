@@ -48,7 +48,7 @@ public class RemoveOperation extends BaseRecipeOperation {
         // If we really, really want to remove everything...
         if(what.equals("*") || what.equals("*:*") || what.equals("*:*:*")) return true;
 
-        String[] name = ItemUtility.GetFullyQualifiedItemName(recipeOutput.getItem()).split(":");
+        String[] name = ItemUtility.getFullyQualifiedItemName(recipeOutput.getItem()).split(":");
 
         switch(matchType) {
             case ItemOnly:

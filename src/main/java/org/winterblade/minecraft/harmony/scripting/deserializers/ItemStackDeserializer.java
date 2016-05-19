@@ -14,7 +14,7 @@ public class ItemStackDeserializer implements IScriptObjectDeserializer {
     @Override
     public Object Deserialize(Object input) {
         try {
-            return ItemUtility.TranslateToItemStack((String)input);
+            return ItemUtility.translateToItemStack((String)input);
         } catch (ItemMissingException e) {
             return null;
         }

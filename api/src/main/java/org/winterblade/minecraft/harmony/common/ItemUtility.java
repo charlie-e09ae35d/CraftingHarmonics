@@ -24,7 +24,7 @@ public class ItemUtility {
      * @param item  The item to search for
      * @return      The fully qualified name
      */
-    public static String GetFullyQualifiedItemName(Item item) {
+    public static String getFullyQualifiedItemName(Item item) {
         return Item.REGISTRY.getNameForObject(item).toString();
     }
 
@@ -34,8 +34,8 @@ public class ItemUtility {
      * @return                      The item
      * @throws ItemMissingException When the item cannot be found in the registry.
      */
-    public static ItemStack GetItem(String fullyQualifiedName) throws ItemMissingException {
-        return GetItem(fullyQualifiedName, 1);
+    public static ItemStack getItem(String fullyQualifiedName) throws ItemMissingException {
+        return getItem(fullyQualifiedName, 1);
     }
 
     /**
@@ -44,8 +44,8 @@ public class ItemUtility {
      * @return                      The item
      * @throws ItemMissingException When the item cannot be found in the registry.
      */
-    public static ItemStack GetItem(String fullyQualifiedName, int quantity) throws ItemMissingException {
-        return GetItem(fullyQualifiedName, quantity, 0);
+    public static ItemStack getItem(String fullyQualifiedName, int quantity) throws ItemMissingException {
+        return getItem(fullyQualifiedName, quantity, 0);
     }
 
     /**
@@ -54,7 +54,7 @@ public class ItemUtility {
      * @return                      The item
      * @throws ItemMissingException When the item cannot be found in the registry.
      */
-    public static ItemStack GetItem(String fullyQualifiedName, int quantity, int meta) throws ItemMissingException {
+    public static ItemStack getItem(String fullyQualifiedName, int quantity, int meta) throws ItemMissingException {
         Item item = Item.REGISTRY.getObject(new ResourceLocation(fullyQualifiedName));
         if(item == null) throw new ItemMissingException("Item '" + fullyQualifiedName + "' could not be found.");
         return new ItemStack(item, quantity, meta);
@@ -66,8 +66,8 @@ public class ItemUtility {
      * @return      The ItemStack requested
      * @throws ItemMissingException When the item cannot be found in the registry.
      */
-    public static ItemStack TranslateToItemStack(String item) throws ItemMissingException {
-        return TranslateToItemStack(item, 1);
+    public static ItemStack translateToItemStack(String item) throws ItemMissingException {
+        return translateToItemStack(item, 1);
     }
 
     /**
@@ -77,7 +77,7 @@ public class ItemUtility {
      * @return          The ItemStack requested
      * @throws ItemMissingException When the item cannot be found in the registry.
      */
-    public static ItemStack TranslateToItemStack(String item, int quantity) throws ItemMissingException {
+    public static ItemStack translateToItemStack(String item, int quantity) throws ItemMissingException {
         if(item == null || item.equals("")) return null;
 
         ItemType translatedType = ItemType.Regular;
@@ -100,21 +100,21 @@ public class ItemUtility {
         ItemStack itemStack = null;
 
         if(parts.length == 1) {
-            itemStack = GetItem("minecraft:" + parts[0], 1);
+            itemStack = getItem("minecraft:" + parts[0], 1);
         } else if(parts.length == 2) {
-            itemStack = GetItem(parts[0] + ":" + parts[1], 1);
+            itemStack = getItem(parts[0] + ":" + parts[1], 1);
         } else if (parts.length == 3 && parts[2].equals("*")) {
-            itemStack = GetItem(parts[0] + ":" + parts[1], 1, OreDictionary.WILDCARD_VALUE);
+            itemStack = getItem(parts[0] + ":" + parts[1], 1, OreDictionary.WILDCARD_VALUE);
         } else if(parts.length == 3) {
-            itemStack = GetItem(parts[0] + ":" + parts[1], 1, Integer.parseInt(parts[2]));
+            itemStack = getItem(parts[0] + ":" + parts[1], 1, Integer.parseInt(parts[2]));
         } else if(parts.length >= 4) {
             itemStack = parts[2].equals("*")
-                ? GetItem(parts[0] + ":" + parts[1], Integer.parseInt(parts[3]))
-                : GetItem(parts[0] + ":" + parts[1], Integer.parseInt(parts[3]), Integer.parseInt(parts[2]));
+                ? getItem(parts[0] + ":" + parts[1], Integer.parseInt(parts[3]))
+                : getItem(parts[0] + ":" + parts[1], Integer.parseInt(parts[3]), Integer.parseInt(parts[2]));
         }
 
         if(itemStack == null) return null;
-        UpdateStackQuantity(itemStack, quantity);
+        updateStackQuantity(itemStack, quantity);
 
 
         // Check to see if we're doing anything special here...
@@ -141,7 +141,7 @@ public class ItemUtility {
      * @param itemStack The item stack
      * @param quantity  The quantity to set.
      */
-    public static void UpdateStackQuantity(ItemStack itemStack, int quantity) {
+    public static void updateStackQuantity(ItemStack itemStack, int quantity) {
         // Set our stack size if a valid quantity was specified (and larger than one):
         if(1 < quantity && quantity <= itemStack.getMaxStackSize()) {
             itemStack.stackSize = quantity;
@@ -154,8 +154,8 @@ public class ItemUtility {
      * @param b The second item stack
      * @return  If the items, stack size, and metadata are equivalent.
      */
-    public static boolean AreItemsEquivalent(ItemStack a, ItemStack b) {
-        return AreItemsEquivalent(a.getItem(), b.getItem())
+    public static boolean areItemsEquivalent(ItemStack a, ItemStack b) {
+        return areItemsEquivalent(a.getItem(), b.getItem())
                 && (a.getMetadata() == OreDictionary.WILDCARD_VALUE || a.getMetadata() == b.getMetadata());
     }
 
@@ -165,9 +165,9 @@ public class ItemUtility {
      * @param b The second item
      * @return  If the items' fully qualified names are equal.
      */
-    public static boolean AreItemsEquivalent(Item a, Item b) {
-        String aName = GetFullyQualifiedItemName(a);
-        String bName = GetFullyQualifiedItemName(b);
+    public static boolean areItemsEquivalent(Item a, Item b) {
+        String aName = getFullyQualifiedItemName(a);
+        String bName = getFullyQualifiedItemName(b);
 
         return (aName.equals(bName));
     }
@@ -177,7 +177,7 @@ public class ItemUtility {
      * @param entry  The entry to check
      * @return      True if this is an ore dictionary item.
      */
-    public static boolean IsOreDictionaryEntry(String entry) {
+    public static boolean isOreDictionaryEntry(String entry) {
         return entry.startsWith("<");
     }
 
@@ -186,7 +186,7 @@ public class ItemUtility {
      * @param entry The entry to check
      * @return      The ore dictionary name
      */
-    public static String GetOreDictionaryName(String entry) {
+    public static String getOreDictionaryName(String entry) {
         return entry.substring(1,entry.length()-1);
     }
 
@@ -197,10 +197,10 @@ public class ItemUtility {
      * @param isFuzzy   If we should force a fuzzy match
      * @return          True if they are the same (or similar if it's a fuzzy match)
      */
-    public static boolean CheckIfNbtMatches(ItemStack source, ItemStack dest, boolean isFuzzy) {
+    public static boolean checkIfNbtMatches(ItemStack source, ItemStack dest, boolean isFuzzy) {
         return source != null && dest != null
                 && source.hasTagCompound() == dest.hasTagCompound()
-                && CheckIfNbtMatches(source.getTagCompound(), dest.getTagCompound(), isFuzzy);
+                && checkIfNbtMatches(source.getTagCompound(), dest.getTagCompound(), isFuzzy);
     }
 
     /**
@@ -210,7 +210,7 @@ public class ItemUtility {
      * @param isFuzzy   If we should force a fuzzy match
      * @return          True if they are the same (or similar if it's a fuzzy match)
      */
-    public static boolean CheckIfNbtMatches(NBTTagCompound orig, NBTTagCompound dest, boolean isFuzzy) {
+    public static boolean checkIfNbtMatches(NBTTagCompound orig, NBTTagCompound dest, boolean isFuzzy) {
         // If one or the other is null, and they both aren't, bail
         if(dest == null && orig != null) return false;
 
@@ -234,7 +234,7 @@ public class ItemUtility {
             return compound.toString().equals(dest.toString());
         }
 
-        return CheckIfAtLeastAllTagsArePresent(compound, dest);
+        return checkIfAtLeastAllTagsArePresent(compound, dest);
     }
 
     /**
@@ -243,14 +243,14 @@ public class ItemUtility {
      * @param dest      The destination to confirm there are at least the same tags in
      * @return          True if they are present in the second.
      */
-    private static boolean CheckIfAtLeastAllTagsArePresent(NBTTagCompound source, NBTTagCompound dest) {
+    private static boolean checkIfAtLeastAllTagsArePresent(NBTTagCompound source, NBTTagCompound dest) {
         for(String s : source.getKeySet()) {
             // If we don't have it, bail...
             if(!dest.hasKey(s)) return false;
 
             NBTBase sourceTag = source.getTag(s);
             NBTBase destTag = dest.getTag(s);
-            if (!CompareTags(sourceTag, destTag)) return false;
+            if (!compareTags(sourceTag, destTag)) return false;
         }
 
         return true;
@@ -262,21 +262,21 @@ public class ItemUtility {
      * @param destTag      The destination to check
      * @return             True if they are present in the second
      */
-    private static boolean CompareTags(NBTBase sourceTag, NBTBase destTag) {
+    private static boolean compareTags(NBTBase sourceTag, NBTBase destTag) {
         // If our tags aren't the same type
         if(sourceTag.getId() != destTag.getId()) return false;
 
         // If we have an NBTTagCompound
         if(sourceTag instanceof NBTTagCompound) {
             // Go deeper...
-            if (!CheckIfAtLeastAllTagsArePresent((NBTTagCompound) sourceTag, (NBTTagCompound) destTag))
+            if (!checkIfAtLeastAllTagsArePresent((NBTTagCompound) sourceTag, (NBTTagCompound) destTag))
                 return false;
         } else if(sourceTag instanceof NBTTagList) {
             NBTTagList sourceList = (NBTTagList) sourceTag;
             NBTTagList destList = (NBTTagList) destTag;
 
             for(int i = 0; i < sourceList.tagCount(); i++) {
-                if(!CompareTags(sourceList.get(i), destList.get(i))) return false;
+                if(!compareTags(sourceList.get(i), destList.get(i))) return false;
             }
         } else if(!sourceTag.equals(destTag)) return false;
         return true;
@@ -287,7 +287,7 @@ public class ItemUtility {
      * @param inv   The inventory grid to convert
      * @return      The grid as a List, skipping nulls
      */
-    public static List<ItemStack> GetInventoryGridAsList(InventoryCrafting inv) {
+    public static List<ItemStack> getInventoryGridAsList(InventoryCrafting inv) {
         List<ItemStack> grid = new ArrayList<>();
 
         // Get a better list of grid inputs...

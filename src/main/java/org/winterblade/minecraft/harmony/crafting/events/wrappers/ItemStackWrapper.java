@@ -29,7 +29,7 @@ public class ItemStackWrapper {
     }
 
     public ItemStackWrapper replaceItem(String id) throws ItemMissingException {
-        itemStack = ItemUtility.TranslateToItemStack(id);
+        itemStack = ItemUtility.translateToItemStack(id);
         return this;
     }
 

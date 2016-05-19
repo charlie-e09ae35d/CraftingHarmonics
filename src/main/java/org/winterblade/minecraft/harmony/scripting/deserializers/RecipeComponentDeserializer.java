@@ -36,10 +36,10 @@ public class RecipeComponentDeserializer implements IScriptObjectDeserializer {
         if(data instanceof String) {
             String itemString = (String)data;
 
-            if(ItemUtility.IsOreDictionaryEntry(itemString)) {
-                component.setOreDictName(itemString, ItemUtility.GetOreDictionaryName(itemString));
+            if(ItemUtility.isOreDictionaryEntry(itemString)) {
+                component.setOreDictName(itemString, ItemUtility.getOreDictionaryName(itemString));
             } else {
-                component.setItemStack(itemString, ItemUtility.TranslateToItemStack(itemString));
+                component.setItemStack(itemString, ItemUtility.translateToItemStack(itemString));
             }
 
             return component;

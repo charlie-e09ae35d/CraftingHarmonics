@@ -106,9 +106,9 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
     private void addItemStringBasedMatchers(RecipeInput output, String itemString) {
         if(itemString.trim().equals("")) return;
 
-        if(ItemUtility.IsOreDictionaryEntry(itemString)) {
+        if(ItemUtility.isOreDictionaryEntry(itemString)) {
             // This will be literally the only matcher on this object.
-            String oreDictName = ItemUtility.GetOreDictionaryName(itemString);
+            String oreDictName = ItemUtility.getOreDictionaryName(itemString);
             output.addMatcher(
                 new OreDictionaryMatcher(oreDictName), Priority.MEDIUM
             );
@@ -119,7 +119,7 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
         ItemStack item;
 
         try {
-            item = ItemUtility.TranslateToItemStack(itemString);
+            item = ItemUtility.translateToItemStack(itemString);
         } catch (ItemMissingException e) {
             LogHelper.error("Couldn't convert '" + itemString + "' to a valid item string.");
             return;

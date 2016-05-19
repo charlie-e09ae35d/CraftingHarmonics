@@ -26,7 +26,7 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
         if (output.getItemStack() == null)
             throw new ItemMissingException("Unable to find requested output item " + output.toString());
 
-        ItemUtility.UpdateStackQuantity(output.getItemStack(), quantity);
+        ItemUtility.updateStackQuantity(output.getItemStack(), quantity);
 
         if(nbt != null && !nbt.hasNoTags()) {
             output.getItemStack().setTagCompound(nbt);
