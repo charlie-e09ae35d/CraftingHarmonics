@@ -45,6 +45,8 @@ def integrations = [
         'ticon'
 ]
 
+subprojects.each { subproject -> evaluationDependsOn( subproject.path ) }
+
 minecraft {
     version = "1.9-12.16.1.1887"
     runDir = "run"
