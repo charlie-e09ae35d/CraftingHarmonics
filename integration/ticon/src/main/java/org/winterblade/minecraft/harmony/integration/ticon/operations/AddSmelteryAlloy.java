@@ -3,9 +3,9 @@ package org.winterblade.minecraft.harmony.integration.ticon.operations;
 import net.minecraftforge.fluids.FluidStack;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.integration.ticon.ReflectedTinkerRegistry;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.utility.LogHelper;
 import slimeknights.tconstruct.library.smeltery.AlloyRecipe;
 
 /**

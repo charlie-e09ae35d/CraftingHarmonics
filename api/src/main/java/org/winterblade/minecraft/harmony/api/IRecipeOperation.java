@@ -1,7 +1,6 @@
 package org.winterblade.minecraft.harmony.api;
 
 import net.minecraftforge.fml.relauncher.Side;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
 
 import javax.annotation.Nullable;
 

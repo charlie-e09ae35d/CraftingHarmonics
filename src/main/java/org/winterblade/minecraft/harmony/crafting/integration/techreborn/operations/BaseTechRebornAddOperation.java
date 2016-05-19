@@ -3,9 +3,9 @@ package org.winterblade.minecraft.harmony.crafting.integration.techreborn.operat
 import com.google.common.base.Joiner;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.integration.techreborn.RebornRecipeUtils;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.utility.LogHelper;
 import reborncore.api.recipe.IBaseRecipeType;
 
 /**

@@ -4,11 +4,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.events.ItemOnCraftedCallback;
 import org.winterblade.minecraft.harmony.crafting.events.ItemOnCraftedEvent;
 import org.winterblade.minecraft.harmony.crafting.events.wrappers.ItemStackWrapper;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.utility.LogHelper;
 import org.winterblade.minecraft.harmony.utility.SynchronizedRandom;
 
 import javax.annotation.Nonnull;

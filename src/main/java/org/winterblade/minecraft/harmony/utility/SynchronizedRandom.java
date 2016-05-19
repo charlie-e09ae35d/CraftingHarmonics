@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.utility;
 
 import net.minecraft.entity.player.EntityPlayer;
+import org.winterblade.minecraft.harmony.api.utility.LogHelper;
 
 import java.util.HashMap;
 import java.util.Map;

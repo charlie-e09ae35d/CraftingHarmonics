@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting;
+package org.winterblade.minecraft.harmony.api;
 
 /**
  * Created by Matt on 4/5/2016.

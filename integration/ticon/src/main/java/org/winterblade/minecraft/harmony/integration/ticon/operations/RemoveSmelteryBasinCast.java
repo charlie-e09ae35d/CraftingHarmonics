@@ -1,10 +1,9 @@
 package org.winterblade.minecraft.harmony.integration.ticon.operations;
 
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.integration.ticon.ReflectedTinkerRegistry;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.utility.LogHelper;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.smeltery.CastingRecipe;
 
@@ -28,7 +27,7 @@ public class RemoveSmelteryBasinCast extends RemoveSmelteryCast {
 
     @Override
     public void Apply() {
-        LogHelper.info("Removing Tinker's basin cast for '" + ItemRegistry.outputItemName(what) + "'.");
+        LogHelper.info("Removing Tinker's basin cast for '" + what.toString() + "'.");
         for(CastingRecipe recipe : recipes) {
             ReflectedTinkerRegistry.removeBasinCast(recipe);
         }

@@ -3,7 +3,7 @@ package org.winterblade.minecraft.harmony.crafting.operations;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.utility.LogHelper;
 
 import java.util.ArrayList;
 import java.util.List;

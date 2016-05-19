@@ -56,10 +56,12 @@ minecraft {
 configurations {
     embed
     compile.extendsFrom(embed)
-    integration
 }
 
 dependencies {
+    // Our API
+    compile project(":api")
+
     // JEI
     deobfCompile "mezz.jei:jei_1.9:3.3.0.192"
     deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.2.1.5"
@@ -71,13 +73,16 @@ dependencies {
     // TechReborn
     compile "RebornCore:RebornCore-1.9:+:dev"
     compile "TechReborn:TechReborn-1.9:1.0.6.254:dev"
-
-    integration project(":integration:ticon")
 }
 
 //Add dependencies to the JAR
 jar {
+    dependsOn integrations.collect { ':integration:'+ it + ':jar'}
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+    from project(":api").sourceSets.main.output
+    for (p in integrations) {
+        from project(':integration:' + p).sourceSets.main.output
+    }
 }
 
 processResources
@@ -97,20 +102,6 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-    }
-}
-
-task assembleAll(type: Jar, dependsOn: ['build'] + integrations.collect { ':integration:'+ it + ':build'}) {
-    baseName = archivesBaseName + "-full-" + version
-    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
-
-//    for (p in integrations) {
-//        println(project(':integration:' + p).configurations.b)
-//        from project(':integration:' + p).sourceSets.main.output.classesDir
-//        from project(':integration:' + p).sourceSets.main.output.resourcesDir
-//    }
-    from {
-        configurations.integration.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 

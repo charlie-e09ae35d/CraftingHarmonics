@@ -1,13 +1,12 @@
 package org.winterblade.minecraft.harmony.items.operations;
 
-import com.google.common.base.Joiner;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.BasePerPlayerOperation;
+import org.winterblade.minecraft.harmony.BasePerPlayerOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.utility.LogHelper;
 
 /**
  * Created by Matt on 5/17/2016.

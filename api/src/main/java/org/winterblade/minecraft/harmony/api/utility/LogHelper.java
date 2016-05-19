@@ -1,16 +1,15 @@
-package org.winterblade.minecraft.harmony.utility;
+package org.winterblade.minecraft.harmony.api.utility;
 
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.message.Message;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 
 /**
  * Borrowed from Pahimar and EE3.
  */
 public class LogHelper
 {
-    public static final Marker MOD_MARKER = MarkerManager.getMarker(CraftingHarmonicsMod.MODID);
-    private static Logger logger = LogManager.getLogger(CraftingHarmonicsMod.MODID);
+    public static final Marker MOD_MARKER = MarkerManager.getMarker("CraftingHarmonics");
+    private static Logger logger = LogManager.getLogger("CraftingHarmonics");
 
     public static Logger getLogger() {
         return logger;

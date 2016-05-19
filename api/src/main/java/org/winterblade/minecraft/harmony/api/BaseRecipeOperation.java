@@ -2,9 +2,8 @@ package org.winterblade.minecraft.harmony.api;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraftforge.fml.relauncher.Side;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.utility.LogHelper;
+import org.winterblade.minecraft.scripting.api.IScriptContext;
 
 import javax.annotation.Nullable;
 
@@ -34,9 +33,9 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
      * @param data  The operation data.
      * @return      If the operation succeeded.
      */
-    public final boolean Convert(ScriptObjectMirror data) {
+    public final boolean Convert(IScriptContext context, ScriptObjectMirror data) {
         try {
-            ReadData(data);
+            ReadData(context, data);
             return true;
         }
         catch(Exception e) {
@@ -49,9 +48,9 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
      * Used to convert the provided operation from the file into the given recipe.
      * @param data The operation data
      */
-    protected void ReadData(ScriptObjectMirror data) throws ItemMissingException {
+    protected void ReadData(IScriptContext context, ScriptObjectMirror data) throws ItemMissingException {
         // Base implementation just attempts to map properties one-to-one
-        NashornConfigProcessor.getInstance().nashorn.parseScriptObject(data, this);
+        context.parseScriptObject(data, this);
     }
 
     /**

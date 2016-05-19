@@ -1,14 +1,11 @@
-package org.winterblade.minecraft.harmony.api;
+package org.winterblade.minecraft.harmony;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
-import org.winterblade.minecraft.harmony.CraftingSet;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
 
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 

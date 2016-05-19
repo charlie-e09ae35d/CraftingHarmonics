@@ -2,7 +2,7 @@ package org.winterblade.minecraft.harmony.crafting.events.wrappers;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 
 public class ItemStackWrapper {

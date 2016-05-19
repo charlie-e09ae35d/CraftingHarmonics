@@ -1,7 +1,7 @@
 package org.winterblade.minecraft.harmony.crafting.integration.techreborn.operations;
 
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.integration.techreborn.RebornRecipeUtils;
 import reborncore.api.recipe.IBaseRecipeType;
 import techreborn.api.recipe.machines.AssemblingMachineRecipe;

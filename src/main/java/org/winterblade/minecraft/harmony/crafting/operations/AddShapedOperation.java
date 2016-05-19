@@ -3,10 +3,10 @@ package org.winterblade.minecraft.harmony.crafting.operations;
 import net.minecraft.item.crafting.CraftingManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.utility.LogHelper;
 
 /**
  * Created by Matt on 4/5/2016.

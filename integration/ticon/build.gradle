@@ -48,7 +48,7 @@ configurations {
 }
 
 dependencies {
-    compile rootProject
+    compile project(":api")
 
     // TiCon integration; done badly.
     deobfCompile "slimeknights.mantle:Mantle:1.9-0.9.4.jenkins126"
