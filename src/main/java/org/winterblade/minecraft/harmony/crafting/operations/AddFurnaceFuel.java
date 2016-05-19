@@ -6,7 +6,7 @@ import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.api.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**

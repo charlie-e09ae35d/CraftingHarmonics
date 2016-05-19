@@ -5,7 +5,7 @@ import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
-import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.api.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;

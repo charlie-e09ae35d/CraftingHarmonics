@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.operations;
+package org.winterblade.minecraft.harmony.common.crafting.operations;
 
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -6,7 +6,7 @@ import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
-import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.api.crafting.components.RecipeComponent;
 
 /**
  * Created by Matt on 4/6/2016.

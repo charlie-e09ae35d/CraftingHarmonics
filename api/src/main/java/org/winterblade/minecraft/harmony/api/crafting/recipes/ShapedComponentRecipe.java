@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.recipes;
+package org.winterblade.minecraft.harmony.api.crafting.recipes;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.winterblade.minecraft.harmony.api.crafting.RecipeInput;
-import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.api.crafting.components.RecipeComponent;
 
 import java.util.*;
 

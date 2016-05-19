@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.components;
+package org.winterblade.minecraft.harmony.api.crafting.components;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

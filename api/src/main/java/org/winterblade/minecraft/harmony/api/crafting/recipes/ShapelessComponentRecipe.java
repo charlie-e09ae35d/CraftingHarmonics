@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.recipes;
+package org.winterblade.minecraft.harmony.api.crafting.recipes;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
