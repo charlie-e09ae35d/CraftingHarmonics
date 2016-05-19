@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.utility;
+package org.winterblade.minecraft.harmony.common.utility;
 
 import net.minecraft.item.ItemStack;
 

@@ -2,7 +2,7 @@ package org.winterblade.minecraft.harmony.scripting.deserializers;
 
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
-import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
+import org.winterblade.minecraft.harmony.common.utility.OreDictionaryItemStack;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 

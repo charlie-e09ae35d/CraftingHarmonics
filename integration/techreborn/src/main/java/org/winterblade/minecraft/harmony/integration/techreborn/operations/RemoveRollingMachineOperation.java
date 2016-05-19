@@ -6,7 +6,7 @@ import net.minecraft.item.crafting.IRecipe;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.integration.techreborn.RebornRecipeUtils;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import techreborn.api.RollingMachineRecipe;
@@ -37,7 +37,7 @@ public class RemoveRollingMachineOperation extends BaseRecipeOperation {
         removedRecipes.clear();
 
         // Simulate an inventory so we can do matching...
-        InventoryCrafting inv = ItemRegistry.simulateInventoryOf(with, 3, 3);
+        InventoryCrafting inv = ItemUtility.simulateInventoryOf(with, 3, 3);
 
         for (IRecipe recipe : RollingMachineRecipe.instance.getRecipeList()) {
             // Figure out if we match...
@@ -51,7 +51,7 @@ public class RemoveRollingMachineOperation extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        LogHelper.info("Removing recipes from TechReborn's Rolling Machine that produce: " + what.toString());
+        LogHelper.info("Removing recipes from TechReborn's Rolling Machine that produce: " + ItemUtility.outputItemName(what));
         for(IRecipe recipe : removedRecipes) {
             RollingMachineRecipe.instance.getRecipeList().remove(recipe);
         }

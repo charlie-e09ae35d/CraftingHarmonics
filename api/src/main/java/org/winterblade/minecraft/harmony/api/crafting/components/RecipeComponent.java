@@ -3,7 +3,7 @@ package org.winterblade.minecraft.harmony.api.crafting.components;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
+import org.winterblade.minecraft.harmony.common.utility.OreDictionaryItemStack;
 
 /**
  * Created by Matt on 4/8/2016.

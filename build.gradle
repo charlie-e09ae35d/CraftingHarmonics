@@ -44,7 +44,7 @@ ext {
 def integrations = [
         'ticon',
         'bloodmagic',
-        //'techreborn'
+        'techreborn'
 ]
 
 subprojects.each { subproject -> evaluationDependsOn( subproject.path ) }
