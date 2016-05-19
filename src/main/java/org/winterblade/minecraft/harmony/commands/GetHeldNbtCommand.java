@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import org.winterblade.minecraft.harmony.api.utility.LogHelper;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.List;
 

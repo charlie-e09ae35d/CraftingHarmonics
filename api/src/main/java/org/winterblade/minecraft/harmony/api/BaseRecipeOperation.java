@@ -2,7 +2,7 @@ package org.winterblade.minecraft.harmony.api;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraftforge.fml.relauncher.Side;
-import org.winterblade.minecraft.harmony.api.utility.LogHelper;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.scripting.api.IScriptContext;
 
 import javax.annotation.Nullable;

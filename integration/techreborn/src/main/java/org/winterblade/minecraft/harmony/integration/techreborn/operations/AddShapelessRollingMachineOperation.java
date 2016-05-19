@@ -3,7 +3,7 @@ package org.winterblade.minecraft.harmony.integration.techreborn.operations;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.integration.techreborn.RebornRecipeUtils;
 import org.winterblade.minecraft.harmony.crafting.operations.AddShapelessOperation;
-import org.winterblade.minecraft.harmony.api.utility.LogHelper;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import techreborn.api.RollingMachineRecipe;
 
 /**

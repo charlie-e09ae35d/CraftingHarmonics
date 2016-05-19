@@ -7,7 +7,7 @@ import org.winterblade.minecraft.harmony.integration.ticon.ReflectedTinkerRegist
 import org.winterblade.minecraft.harmony.integration.ticon.dto.TinkersExtraMaterialStats;
 import org.winterblade.minecraft.harmony.integration.ticon.dto.TinkersHandleMaterialStats;
 import org.winterblade.minecraft.harmony.integration.ticon.dto.TinkersHeadMaterialStats;
-import org.winterblade.minecraft.harmony.api.utility.LogHelper;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import slimeknights.tconstruct.library.materials.ExtraMaterialStats;
 import slimeknights.tconstruct.library.materials.HandleMaterialStats;
 import slimeknights.tconstruct.library.materials.HeadMaterialStats;

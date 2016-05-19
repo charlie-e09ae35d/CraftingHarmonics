@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.api.utility;
+package org.winterblade.minecraft.harmony.common.utility;
 
 import org.apache.logging.log4j.*;
 import org.apache.logging.log4j.message.Message;
