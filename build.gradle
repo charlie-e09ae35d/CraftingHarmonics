@@ -38,10 +38,12 @@ targetCompatibility = 1.8
 
 ext {
     repo = "http://maven.winterblade.org/content/repositories/MinecraftDev/"
-    integrations = [
-            'ticon'
-    ]
 }
+
+// Define our integrations
+def integrations = [
+        'ticon'
+]
 
 minecraft {
     version = "1.9-12.16.1.1887"
@@ -54,6 +56,7 @@ minecraft {
 configurations {
     embed
     compile.extendsFrom(embed)
+    integration
 }
 
 dependencies {
@@ -62,16 +65,14 @@ dependencies {
     deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.2.1.5"
     // compile files('libs/NashornLib-1.9.0-1.8.77-1.2.0')
 
-    // TiCon integration; done badly.
-    deobfCompile "slimeknights.mantle:Mantle:1.9-0.9.4.jenkins126"
-    compile files("libs/TConstruct-1.9-2.2.2.DEV.adc860a.jar")
-
     // Blood Magic
     deobfCompile "com.wayoftime.bloodmagic:BloodMagic:1.9-2.0.0-35"
 
     // TechReborn
     compile "RebornCore:RebornCore-1.9:+:dev"
     compile "TechReborn:TechReborn-1.9:1.0.6.254:dev"
+
+    integration project(":integration:ticon")
 }
 
 //Add dependencies to the JAR
@@ -100,11 +101,16 @@ processResources
 }
 
 task assembleAll(type: Jar, dependsOn: ['build'] + integrations.collect { ':integration:'+ it + ':build'}) {
-
+    baseName = archivesBaseName + "-full-" + version
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
 
-    for (p in integrations) {
-        from project(':integration:' + p).sourceSets.main.output
+//    for (p in integrations) {
+//        println(project(':integration:' + p).configurations.b)
+//        from project(':integration:' + p).sourceSets.main.output.classesDir
+//        from project(':integration:' + p).sourceSets.main.output.resourcesDir
+//    }
+    from {
+        configurations.integration.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
 

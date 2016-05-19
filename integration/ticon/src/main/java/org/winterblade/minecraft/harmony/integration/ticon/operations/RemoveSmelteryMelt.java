@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.integration.ticon.operations;
+package org.winterblade.minecraft.harmony.integration.ticon.operations;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;

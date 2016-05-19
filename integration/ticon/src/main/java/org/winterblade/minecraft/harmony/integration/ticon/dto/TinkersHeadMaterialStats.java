@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.integration.ticon.dto;
+package org.winterblade.minecraft.harmony.integration.ticon.dto;
 
 /**
  * Created by Matt on 5/3/2016.

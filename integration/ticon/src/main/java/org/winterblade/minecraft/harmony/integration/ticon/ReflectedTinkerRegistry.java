@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.integration.ticon;
+package org.winterblade.minecraft.harmony.integration.ticon;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
