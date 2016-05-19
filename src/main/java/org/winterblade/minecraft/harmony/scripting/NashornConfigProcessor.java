@@ -32,7 +32,7 @@ public class NashornConfigProcessor implements INashornMod {
         String tempHeader;
         try {
             tempHeader = Resources.toString(Resources.getResource("scripts/InternalFileProcessor.js"), Charsets.UTF_8);
-        } catch (IOException e) {
+        } catch (IllegalArgumentException | IOException e) {
             LogHelper.fatal("Unable to load file processing header; things will go badly from here out...");
             tempHeader = "";
         }
