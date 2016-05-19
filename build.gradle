@@ -42,7 +42,9 @@ ext {
 
 // Define our integrations
 def integrations = [
-        'ticon'
+        'ticon',
+        'bloodmagic',
+        //'techreborn'
 ]
 
 subprojects.each { subproject -> evaluationDependsOn( subproject.path ) }
@@ -68,13 +70,6 @@ dependencies {
     deobfCompile "mezz.jei:jei_1.9:3.3.0.192"
     deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.2.1.5"
     // compile files('libs/NashornLib-1.9.0-1.8.77-1.2.0')
-
-    // Blood Magic
-    deobfCompile "com.wayoftime.bloodmagic:BloodMagic:1.9-2.0.0-35"
-
-    // TechReborn
-    compile "RebornCore:RebornCore-1.9:+:dev"
-    compile "TechReborn:TechReborn-1.9:1.0.6.254:dev"
 }
 
 //Add dependencies to the JAR

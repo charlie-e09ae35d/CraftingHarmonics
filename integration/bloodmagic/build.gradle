@@ -15,7 +15,7 @@ buildscript {
 
 repositories {
     maven { url "http://maven.winterblade.org/content/repositories/minecraft/" }
-    maven { url "http://dvs1.progwml6.com/files/maven" } // JEI, TiCon, etc
+    maven { url "http://tehnut.info/maven/" } // Blood Magic
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -44,10 +44,7 @@ configurations {
 
 dependencies {
     compile project(":api")
-
-    // TiCon integration; done badly.
-    deobfCompile "slimeknights.mantle:Mantle:1.9-0.9.4.jenkins126"
-    compile files("libs/TConstruct-1.9-2.2.2.DEV.adc860a.jar")
+    deobfCompile "com.wayoftime.bloodmagic:BloodMagic:1.9-2.0.0-35"
 }
 
 //Add dependencies to the JAR
@@ -56,21 +53,21 @@ jar {
 }
 
 processResources
-{
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+        {
+            // this will ensure that this task is redone when the versions change.
+            inputs.property "version", project.version
+            inputs.property "mcversion", project.minecraft.version
 
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
+            // replace stuff in mcmod.info, nothing else
+            from(sourceSets.main.resources.srcDirs) {
+                include 'mcmod.info'
 
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
+                // replace version and mcversion
+                expand 'version':project.version, 'mcversion':project.minecraft.version
+            }
 
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-}
+            // copy everything else, thats not the mcmod.info
+            from(sourceSets.main.resources.srcDirs) {
+                exclude 'mcmod.info'
+            }
+        }

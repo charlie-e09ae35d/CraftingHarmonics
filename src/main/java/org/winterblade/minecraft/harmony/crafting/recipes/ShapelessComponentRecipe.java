@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import org.winterblade.minecraft.harmony.crafting.RecipeInput;
+import org.winterblade.minecraft.harmony.api.crafting.RecipeInput;
 
 import java.util.*;
 
