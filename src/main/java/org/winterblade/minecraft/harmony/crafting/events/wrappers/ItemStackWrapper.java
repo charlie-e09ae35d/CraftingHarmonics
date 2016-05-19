@@ -3,7 +3,7 @@ package org.winterblade.minecraft.harmony.crafting.events.wrappers;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 
 public class ItemStackWrapper {
     private ItemStack itemStack;
@@ -29,7 +29,7 @@ public class ItemStackWrapper {
     }
 
     public ItemStackWrapper replaceItem(String id) throws ItemMissingException {
-        itemStack = ItemRegistry.TranslateToItemStack(id);
+        itemStack = ItemUtility.TranslateToItemStack(id);
         return this;
     }
 

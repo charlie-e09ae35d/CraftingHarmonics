@@ -8,9 +8,9 @@ import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
 import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.api.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;
 import org.winterblade.minecraft.harmony.crafting.matchers.MetadataMatcher;
@@ -106,9 +106,9 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
     private void addItemStringBasedMatchers(RecipeInput output, String itemString) {
         if(itemString.trim().equals("")) return;
 
-        if(ItemRegistry.IsOreDictionaryEntry(itemString)) {
+        if(ItemUtility.IsOreDictionaryEntry(itemString)) {
             // This will be literally the only matcher on this object.
-            String oreDictName = ItemRegistry.GetOreDictionaryName(itemString);
+            String oreDictName = ItemUtility.GetOreDictionaryName(itemString);
             output.addMatcher(
                 new OreDictionaryMatcher(oreDictName), Priority.MEDIUM
             );
@@ -119,7 +119,7 @@ public class RecipeInputDeserializer implements IScriptObjectDeserializer {
         ItemStack item;
 
         try {
-            item = ItemRegistry.TranslateToItemStack(itemString);
+            item = ItemUtility.TranslateToItemStack(itemString);
         } catch (ItemMissingException e) {
             LogHelper.error("Couldn't convert '" + itemString + "' to a valid item string.");
             return;

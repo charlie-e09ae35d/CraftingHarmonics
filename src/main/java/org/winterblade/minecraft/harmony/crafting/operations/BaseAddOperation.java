@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
 
 /**
@@ -26,7 +26,7 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
         if (output.getItemStack() == null)
             throw new ItemMissingException("Unable to find requested output item " + output.toString());
 
-        ItemRegistry.UpdateStackQuantity(output.getItemStack(), quantity);
+        ItemUtility.UpdateStackQuantity(output.getItemStack(), quantity);
 
         if(nbt != null && !nbt.hasNoTags()) {
             output.getItemStack().setTagCompound(nbt);

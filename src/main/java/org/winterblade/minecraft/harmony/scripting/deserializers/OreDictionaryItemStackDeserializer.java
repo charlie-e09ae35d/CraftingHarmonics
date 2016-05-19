@@ -1,7 +1,7 @@
 package org.winterblade.minecraft.harmony.scripting.deserializers;
 
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.utility.OreDictionaryItemStack;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
@@ -27,8 +27,8 @@ public class OreDictionaryItemStackDeserializer implements IScriptObjectDeserial
      * @throws ItemMissingException If the item couldn't be found.
      */
     public static OreDictionaryItemStack TranslateToOreDictionaryItemStack(String data) throws ItemMissingException {
-        return ItemRegistry.IsOreDictionaryEntry(data)
-                ? new OreDictionaryItemStack(data, ItemRegistry.GetOreDictionaryName(data))
-                : new OreDictionaryItemStack(data, ItemRegistry.TranslateToItemStack(data));
+        return ItemUtility.IsOreDictionaryEntry(data)
+                ? new OreDictionaryItemStack(data, ItemUtility.GetOreDictionaryName(data))
+                : new OreDictionaryItemStack(data, ItemUtility.TranslateToItemStack(data));
     }
 }

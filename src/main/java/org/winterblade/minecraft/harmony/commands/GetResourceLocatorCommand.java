@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.List;
@@ -77,7 +77,7 @@ public class GetResourceLocatorCommand extends SubCommand {
             return;
         }
 
-        String resourceLocator = ItemRegistry.outputItemName(mainHand);
+        String resourceLocator = ItemUtility.outputItemName(mainHand);
         LogHelper.info(resourceLocator);
         sender.addChatMessage(new TextComponentString("Locator (also logged): " + resourceLocator));
     }

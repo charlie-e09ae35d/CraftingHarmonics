@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.BasePerPlayerOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
@@ -36,7 +36,7 @@ public class AddStarterItemOperation extends BasePerPlayerOperation {
         if(!super.getId().equals("")) return;
         id = "addStarterItems";
         for(ItemStack item : what) {
-            id += "_" + ItemRegistry.outputItemName(item);
+            id += "_" + ItemUtility.outputItemName(item);
         }
     }
 
