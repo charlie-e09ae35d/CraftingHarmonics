@@ -38,6 +38,9 @@ targetCompatibility = 1.8
 
 ext {
     repo = "http://maven.winterblade.org/content/repositories/MinecraftDev/"
+    integrations = [
+            'ticon'
+    ]
 }
 
 minecraft {
@@ -93,6 +96,15 @@ processResources
     // copy everything else, thats not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+task assembleAll(type: Jar, dependsOn: ['build'] + integrations.collect { ':integration:'+ it + ':build'}) {
+
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+
+    for (p in integrations) {
+        from project(':integration:' + p).sourceSets.main.output
     }
 }
 
