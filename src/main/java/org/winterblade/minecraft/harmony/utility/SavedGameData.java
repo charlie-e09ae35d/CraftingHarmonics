@@ -34,7 +34,7 @@ public class SavedGameData extends WorldSavedData {
     public static SavedGameData get(World world) {
         MapStorage storage = world.getMapStorage();
 
-        SavedGameData instance = (SavedGameData) storage.loadData(SavedGameData.class, DATA_NAME);
+        SavedGameData instance = (SavedGameData) storage.getOrLoadData(SavedGameData.class, DATA_NAME);
 
         // If we got a good instance...
         if(instance != null) return instance;
@@ -130,7 +130,7 @@ public class SavedGameData extends WorldSavedData {
      * @param nbt   The NBT to write to
      */
     @Override
-    public void writeToNBT(NBTTagCompound nbt) {
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
         NBTTagCompound loadedSetNbt = new NBTTagCompound();
 
         // Not the most elegant solution, but...
@@ -152,5 +152,6 @@ public class SavedGameData extends WorldSavedData {
             appliedPlayersTag.setTag(entry.getKey(), opTag);
         }
         nbt.setTag("AppliedPlayers", appliedPlayersTag);
+        return nbt;
     }
 }
