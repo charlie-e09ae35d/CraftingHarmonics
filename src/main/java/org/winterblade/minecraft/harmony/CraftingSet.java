@@ -80,14 +80,10 @@ public class CraftingSet {
      * Initializes the operations
      */
     void Init() {
-        Side side = FMLCommonHandler.instance().getSide();
         ProgressManager.ProgressBar setProgress = ProgressManager.push("Initializing", operations.size());
 
         for(IOperation op : operations) {
             setProgress.step(op.toString());
-
-            // Skip sided only operations that we're not on the right side of...
-            if(op.getSide() != null && op.getSide() != side) continue;
 
             try {
                 op.init();
@@ -103,14 +99,13 @@ public class CraftingSet {
     }
 
     void Apply() {
-        Side side = FMLCommonHandler.instance().getSide();
         ProgressManager.ProgressBar setProgress = ProgressManager.push("Applying", operations.size());
 
         for(IOperation op : operations) {
             setProgress.step(op.toString());
 
             // Skip sided only operations that we're not on the right side of...
-            if(!op.shouldApply() || op.getSide() != null && op.getSide() != side) continue;
+            if(!op.shouldApply()) continue;
 
             try {
                 op.apply();
@@ -124,7 +119,6 @@ public class CraftingSet {
     }
 
     public void Undo() {
-        Side side = FMLCommonHandler.instance().getSide();
         // Reverse the sort order... badly.
         List<IOperation> revserseOps = new ArrayList<>(operations);
         Collections.reverse(revserseOps);
@@ -132,7 +126,7 @@ public class CraftingSet {
         // Undo the operations in the opposite way we applied them:
         for(IOperation op : revserseOps) {
             // Skip sided only operations that we're not on the right side of...
-            if(!op.shouldUndo() || op.getSide() != null && op.getSide() != side) continue;
+            if(!op.shouldUndo()) continue;
 
             try {
                 op.undo();

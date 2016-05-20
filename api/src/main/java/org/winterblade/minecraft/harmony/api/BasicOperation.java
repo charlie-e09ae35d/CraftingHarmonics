@@ -1,11 +1,8 @@
 package org.winterblade.minecraft.harmony.api;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import net.minecraftforge.fml.relauncher.Side;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.scripting.api.IScriptContext;
-
-import javax.annotation.Nullable;
 
 /**
  * Created by Matt on 4/6/2016.
@@ -92,12 +89,6 @@ public abstract class BasicOperation implements IOperation {
     @Override
     public boolean perPlayer() {
         return false;
-    }
-
-    @Override
-    @Nullable
-    public Side getSide() {
-        return null;
     }
 
     @Override

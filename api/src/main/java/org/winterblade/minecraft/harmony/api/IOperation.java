@@ -43,13 +43,6 @@ public interface IOperation extends Comparable<IOperation> {
     boolean perPlayer();
 
     /**
-     * If the operation should only be applied client/server side
-     * @return  The side to apply the operation on, null otherwise.
-     */
-    @Nullable
-    Side getSide();
-
-    /**
      * Gets the ID for this operation.
      * @return  The ID for this command; should be unique
      */
