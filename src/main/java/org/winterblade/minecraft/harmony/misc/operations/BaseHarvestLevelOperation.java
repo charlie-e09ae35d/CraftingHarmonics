@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.operations;
+package org.winterblade.minecraft.harmony.misc.operations;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;

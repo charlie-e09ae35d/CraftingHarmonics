@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.messaging.server;
+package org.winterblade.minecraft.harmony.messaging.server;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
-import org.winterblade.minecraft.harmony.crafting.integration.jei.Jei;
+import org.winterblade.minecraft.harmony.integration.jei.Jei;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 

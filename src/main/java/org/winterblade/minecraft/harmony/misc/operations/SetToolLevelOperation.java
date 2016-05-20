@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.operations;
+package org.winterblade.minecraft.harmony.misc.operations;
 
 import net.minecraft.item.Item;
 import org.winterblade.minecraft.harmony.api.BasicOperation;

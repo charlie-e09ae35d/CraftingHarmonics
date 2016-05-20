@@ -9,7 +9,7 @@ import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
-import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
+import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.crafting.matchers.ItemMatcher;

@@ -7,7 +7,7 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.drops.IBaseDropMatcher;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
-import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
+import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.drops.BaseDrop;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;

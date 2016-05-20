@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.messaging.server;
+package org.winterblade.minecraft.harmony.messaging.server;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;

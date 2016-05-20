@@ -1,9 +1,8 @@
-package org.winterblade.minecraft.harmony.crafting;
+package org.winterblade.minecraft.harmony.scripting;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.ComponentParameter;
-import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.lang.reflect.Constructor;

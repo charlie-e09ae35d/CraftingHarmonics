@@ -1,16 +1,16 @@
-package org.winterblade.minecraft.harmony.crafting.integration.jei.operations;
+package org.winterblade.minecraft.harmony.integration.jei.operations;
 
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
-import org.winterblade.minecraft.harmony.crafting.integration.jei.Jei;
+import org.winterblade.minecraft.harmony.integration.jei.Jei;
 
 /**
  * Created by Matt on 5/6/2016.
  */
 @Operation(name = "hide", dependsOn = "JEI")
-public class ShowOperation extends BasicOperation {
+public class HideOperation extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -23,11 +23,11 @@ public class ShowOperation extends BasicOperation {
 
     @Override
     public void apply() {
-        Jei.show(what);
+        Jei.hide(what);
     }
 
     @Override
     public void undo() {
-        Jei.hide(what);
+        Jei.show(what);
     }
 }

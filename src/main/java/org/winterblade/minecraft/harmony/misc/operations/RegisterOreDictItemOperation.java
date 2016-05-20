@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.operations;
+package org.winterblade.minecraft.harmony.misc.operations;
 
 import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
@@ -7,6 +7,7 @@ import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.crafting.operations.RemoveOperation;
 
 /**
  * Created by Matt on 4/6/2016.
