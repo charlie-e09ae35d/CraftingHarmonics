@@ -1,11 +1,11 @@
 package org.winterblade.minecraft.harmony.integration.ticon.operations;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.RecipeOperation;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import slimeknights.mantle.util.RecipeMatch;
 import slimeknights.tconstruct.library.TinkerRegistry;
@@ -42,7 +42,7 @@ public class AddSmelteryMaterial extends BaseRecipeOperation {
     @Override
     public void Apply() {
         LogHelper.info("Adding Tinker's smeltery melt to turn '"
-                + Item.REGISTRY.getNameForObject(with.getItem()) + "' into '" + what + "'.");
+                + ItemUtility.outputItemName(with) + "' into '" + what + "'.");
         TinkerRegistry.registerMelting(recipe);
     }
 

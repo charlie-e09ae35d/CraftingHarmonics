@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.integration.bloodmagic.ReflectedBloodMagicRegistry;
 
@@ -38,7 +39,7 @@ public class AddAltarRecipe extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        LogHelper.info("Adding blood altar recipe for '" + output.toString() + "'.");
+        LogHelper.info("Adding blood altar recipe for '" + ItemUtility.outputItemName(output) + "'.");
         ReflectedBloodMagicRegistry.addAltarRecipe(recipe);
     }
 

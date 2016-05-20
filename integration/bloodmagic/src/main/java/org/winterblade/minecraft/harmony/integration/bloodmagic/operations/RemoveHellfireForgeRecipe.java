@@ -7,6 +7,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.integration.bloodmagic.ReflectedBloodMagicRegistry;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
@@ -43,7 +44,7 @@ public class RemoveHellfireForgeRecipe extends BaseRecipeOperation {
     @Override
     public void Apply() {
         if(recipe == null) return;
-        LogHelper.info("Removing Hellfire Forge recipe for '" + what.toString() + "'.");
+        LogHelper.info("Removing Hellfire Forge recipe for '" + ItemUtility.outputItemName(what) + "'.");
         ReflectedBloodMagicRegistry.removeHellfireForgeRecipe(recipe);
     }
 

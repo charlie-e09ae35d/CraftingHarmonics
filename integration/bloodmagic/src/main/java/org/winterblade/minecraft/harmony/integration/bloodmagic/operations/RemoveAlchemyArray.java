@@ -5,6 +5,7 @@ import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.api.crafting.RecipeInput;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.integration.bloodmagic.ReflectedBloodMagicRegistry;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
@@ -39,7 +40,7 @@ public class RemoveAlchemyArray extends BaseRecipeOperation {
             LogHelper.info("Removing Alchemy Array for '" + input.toString() + "'.");
             recipe = ReflectedBloodMagicRegistry.removeAlchemyArray(input.toString(), catalyst);
         } else if(input instanceof ItemStack) {
-            LogHelper.info("Removing Alchemy Array for '" + input.toString() + "'.");
+            LogHelper.info("Removing Alchemy Array for '" + ItemUtility.outputItemName((ItemStack) input) + "'.");
             recipe = ReflectedBloodMagicRegistry.removeAlchemyArray((ItemStack)input, catalyst);
         }
     }

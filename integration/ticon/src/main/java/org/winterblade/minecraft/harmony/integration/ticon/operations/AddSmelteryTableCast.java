@@ -5,6 +5,7 @@ import net.minecraftforge.fluids.FluidStack;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.integration.ticon.ReflectedTinkerRegistry;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import slimeknights.mantle.util.RecipeMatch;
@@ -36,7 +37,7 @@ public class AddSmelteryTableCast extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        LogHelper.info("Adding Tinker's table cast for '" + what.toString() + "'.");
+        LogHelper.info("Adding Tinker's table cast for '" + ItemUtility.outputItemName(what) + "'.");
         ReflectedTinkerRegistry.addTableCast(recipe);
     }
 

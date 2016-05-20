@@ -9,6 +9,7 @@ import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.api.crafting.RecipeInput;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.integration.bloodmagic.ReflectedBloodMagicRegistry;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
@@ -52,7 +53,7 @@ public class AddAlchemyArray extends BaseRecipeOperation {
 
     @Override
     public void Apply() {
-        LogHelper.info("Adding Alchemy Array recipe for '" + output.toString() + "'.");
+        LogHelper.info("Adding Alchemy Array recipe for '" + ItemUtility.outputItemName(output) + "'.");
         if(input instanceof String) {
             ReflectedBloodMagicRegistry.addAlchemyArray((String)input, catalyst, effect, renderer);
         } else if(input instanceof ItemStack) {
