@@ -4,9 +4,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.common.crafting.operations.BaseAddOperation;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.Map;
 

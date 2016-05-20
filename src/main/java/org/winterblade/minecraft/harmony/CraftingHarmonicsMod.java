@@ -21,13 +21,13 @@ import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
 import org.winterblade.minecraft.harmony.crafting.messaging.PacketHandler;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessComponentRecipe;
+import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapedComponentRecipe;
+import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapelessComponentRecipe;
 import org.winterblade.minecraft.harmony.proxies.CommonProxy;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.utility.SavedGameData;
 
 import java.util.*;

@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.crafting;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.IFuelHandler;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class FuelRegistry implements IFuelHandler {
     @Override
     public int getBurnTime(ItemStack fuel) {
         for (Map.Entry<ItemStack, Integer> kv : burnTimes.entrySet()) {
-            if (!ItemRegistry.AreItemsEquivalent(kv.getKey(), fuel)) continue;
+            if (!ItemUtility.areItemsEquivalent(kv.getKey(), fuel)) continue;
             return kv.getValue();
         }
 

@@ -3,9 +3,9 @@ package org.winterblade.minecraft.harmony.scripting.deserializers;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
-import org.winterblade.minecraft.harmony.crafting.components.RecipeComponent;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
+import org.winterblade.minecraft.harmony.api.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
@@ -36,10 +36,10 @@ public class RecipeComponentDeserializer implements IScriptObjectDeserializer {
         if(data instanceof String) {
             String itemString = (String)data;
 
-            if(ItemRegistry.IsOreDictionaryEntry(itemString)) {
-                component.setOreDictName(itemString, ItemRegistry.GetOreDictionaryName(itemString));
+            if(ItemUtility.isOreDictionaryEntry(itemString)) {
+                component.setOreDictName(itemString, ItemUtility.getOreDictionaryName(itemString));
             } else {
-                component.setItemStack(itemString, ItemRegistry.TranslateToItemStack(itemString));
+                component.setItemStack(itemString, ItemUtility.translateToItemStack(itemString));
             }
 
             return component;

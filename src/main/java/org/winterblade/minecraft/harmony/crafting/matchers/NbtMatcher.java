@@ -7,7 +7,7 @@ import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.Component;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 
 /**
  * Created by Matt on 4/9/2016.
@@ -38,6 +38,6 @@ public class NbtMatcher implements IRecipeInputMatcher {
      */
     @Override
     public boolean matches(ItemStack input, InventoryCrafting inventory, ItemStack output) {
-        return input != null && ItemRegistry.CheckIfNbtMatches(tag, input.getTagCompound(), fuzzy);
+        return input != null && ItemUtility.checkIfNbtMatches(tag, input.getTagCompound(), fuzzy);
     }
 }
