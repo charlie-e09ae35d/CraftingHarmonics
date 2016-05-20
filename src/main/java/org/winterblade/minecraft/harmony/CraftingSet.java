@@ -67,7 +67,7 @@ public class CraftingSet {
      * Adds an operation to the set.
      * @param operation The operation.
      */
-    public void AddOperation(IOperation operation) {
+    public void addOperation(IOperation operation) {
         // Make sure we're not trying to add something to a non-base set.
         if(operation.baseSetOnly() && !isBaseSet) {
             LogHelper.error("The operation '" + operation.toString() + "' can only be added to a base set; it cannot be added here.");
@@ -79,7 +79,7 @@ public class CraftingSet {
     /**
      * Initializes the operations
      */
-    void Init() {
+    void init() {
         ProgressManager.ProgressBar setProgress = ProgressManager.push("Initializing", operations.size());
 
         for(IOperation op : operations) {
@@ -98,7 +98,7 @@ public class CraftingSet {
         Collections.sort(operations);
     }
 
-    void Apply() {
+    void apply() {
         ProgressManager.ProgressBar setProgress = ProgressManager.push("Applying", operations.size());
 
         for(IOperation op : operations) {
@@ -118,7 +118,7 @@ public class CraftingSet {
         ProgressManager.pop(setProgress);
     }
 
-    public void Undo() {
+    public void undo() {
         // Reverse the sort order... badly.
         List<IOperation> revserseOps = new ArrayList<>(operations);
         Collections.reverse(revserseOps);

@@ -115,7 +115,7 @@ public class CraftingHarmonicsMod {
     public static void AddOperationToSet(String setName, IOperation operation) {
         if(!craftingSets.containsKey(setName)) craftingSets.put(setName, new CraftingSet(setName));
 
-        craftingSets.get(setName).AddOperation(operation);
+        craftingSets.get(setName).addOperation(operation);
     }
 
     /**
@@ -134,7 +134,7 @@ public class CraftingHarmonicsMod {
             // Init sets once:
             if(initializedSets.contains(set.getKey())) continue;
 
-            set.getValue().Init();
+            set.getValue().init();
             initializedSets.add(set.getKey());
         }
     }
@@ -170,7 +170,7 @@ public class CraftingHarmonicsMod {
     public static boolean applySet(String set) {
         if(appliedSets.contains(set) || !craftingSets.containsKey(set)) return false;
 
-        craftingSets.get(set).Apply();
+        craftingSets.get(set).apply();
         appliedSets.add(set);
         if(savedGameData != null) savedGameData.addSet(set);
         return true;
@@ -199,7 +199,7 @@ public class CraftingHarmonicsMod {
         // Only undo an applied set:
         if(!appliedSets.contains(set) || !craftingSets.containsKey(set)) return false;
 
-        craftingSets.get(set).Undo();
+        craftingSets.get(set).undo();
         appliedSets.remove(set);
         if(savedGameData != null) savedGameData.removeSet(set);
         return true;
@@ -212,7 +212,7 @@ public class CraftingHarmonicsMod {
         // Restore original crafting behavior first.
         for(String set : appliedSets) {
             if(!craftingSets.containsKey(set)) continue;
-            craftingSets.get(set).Undo();
+            craftingSets.get(set).undo();
         }
 
         // Clear all the things!
