@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
+import org.winterblade.minecraft.harmony.api.IOperation;
 import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
 import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
@@ -112,7 +112,7 @@ public class CraftingHarmonicsMod {
      * @param setName   The set name to add to.
      * @param operation The operation to add.
      */
-    public static void AddOperationToSet(String setName, IRecipeOperation operation) {
+    public static void AddOperationToSet(String setName, IOperation operation) {
         if(!craftingSets.containsKey(setName)) craftingSets.put(setName, new CraftingSet(setName));
 
         craftingSets.get(setName).AddOperation(operation);

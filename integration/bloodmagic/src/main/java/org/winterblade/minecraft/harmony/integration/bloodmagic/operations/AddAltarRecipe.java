@@ -3,9 +3,9 @@ package org.winterblade.minecraft.harmony.integration.bloodmagic.operations;
 import WayofTime.bloodmagic.api.altar.EnumAltarTier;
 import WayofTime.bloodmagic.api.registry.AltarRecipeRegistry;
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.OperationException;
+import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.integration.bloodmagic.ReflectedBloodMagicRegistry;
@@ -15,8 +15,8 @@ import java.util.Arrays;
 /**
  * Created by Matt on 4/21/2016.
  */
-@RecipeOperation(name = "addBloodAltarRecipe", dependsOn = "BloodMagic")
-public class AddAltarRecipe extends BaseRecipeOperation {
+@Operation(name = "addBloodAltarRecipe", dependsOn = "BloodMagic")
+public class AddAltarRecipe extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -33,18 +33,18 @@ public class AddAltarRecipe extends BaseRecipeOperation {
     AltarRecipeRegistry.AltarRecipe recipe;
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         recipe = new AltarRecipeRegistry.AltarRecipe(Arrays.asList(with), output, EnumAltarTier.values()[minTier-1], lpCost, consumeRate, drainRate, false);
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Adding blood altar recipe for '" + ItemUtility.outputItemName(output) + "'.");
         ReflectedBloodMagicRegistry.addAltarRecipe(recipe);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         ReflectedBloodMagicRegistry.removeAltarRecipe(recipe);
     }
 }

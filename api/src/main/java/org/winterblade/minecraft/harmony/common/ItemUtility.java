@@ -10,7 +10,7 @@ import net.minecraft.nbt.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.oredict.OreDictionary;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.OperationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,9 @@ public class ItemUtility {
      * Gets an ItemStack with the item
      * @param fullyQualifiedName    The FQIN
      * @return                      The item
-     * @throws ItemMissingException When the item cannot be found in the registry.
+     * @throws OperationException When the item cannot be found in the registry.
      */
-    public static ItemStack getItem(String fullyQualifiedName) throws ItemMissingException {
+    public static ItemStack getItem(String fullyQualifiedName) throws OperationException {
         return getItem(fullyQualifiedName, 1);
     }
 
@@ -42,9 +42,9 @@ public class ItemUtility {
      * Gets an ItemStack with the item and quantity requested.
      * @param fullyQualifiedName    The FQIN
      * @return                      The item
-     * @throws ItemMissingException When the item cannot be found in the registry.
+     * @throws OperationException When the item cannot be found in the registry.
      */
-    public static ItemStack getItem(String fullyQualifiedName, int quantity) throws ItemMissingException {
+    public static ItemStack getItem(String fullyQualifiedName, int quantity) throws OperationException {
         return getItem(fullyQualifiedName, quantity, 0);
     }
 
@@ -52,11 +52,11 @@ public class ItemUtility {
      * Gets an ItemStack with the item, quantity, and metadata requested
      * @param fullyQualifiedName    The FQIN
      * @return                      The item
-     * @throws ItemMissingException When the item cannot be found in the registry.
+     * @throws OperationException When the item cannot be found in the registry.
      */
-    public static ItemStack getItem(String fullyQualifiedName, int quantity, int meta) throws ItemMissingException {
+    public static ItemStack getItem(String fullyQualifiedName, int quantity, int meta) throws OperationException {
         Item item = Item.REGISTRY.getObject(new ResourceLocation(fullyQualifiedName));
-        if(item == null) throw new ItemMissingException("Item '" + fullyQualifiedName + "' could not be found.");
+        if(item == null) throw new OperationException("Item '" + fullyQualifiedName + "' could not be found.");
         return new ItemStack(item, quantity, meta);
     }
 
@@ -64,9 +64,9 @@ public class ItemUtility {
      * Translates an item input into an appropriate item stack
      * @param item  The item to translate
      * @return      The ItemStack requested
-     * @throws ItemMissingException When the item cannot be found in the registry.
+     * @throws OperationException When the item cannot be found in the registry.
      */
-    public static ItemStack translateToItemStack(String item) throws ItemMissingException {
+    public static ItemStack translateToItemStack(String item) throws OperationException {
         return translateToItemStack(item, 1);
     }
 
@@ -75,9 +75,9 @@ public class ItemUtility {
      * @param item      The item to translate
      * @param quantity  The quantity requested
      * @return          The ItemStack requested
-     * @throws ItemMissingException When the item cannot be found in the registry.
+     * @throws OperationException When the item cannot be found in the registry.
      */
-    public static ItemStack translateToItemStack(String item, int quantity) throws ItemMissingException {
+    public static ItemStack translateToItemStack(String item, int quantity) throws OperationException {
         if(item == null || item.equals("")) return null;
 
         ItemType translatedType = ItemType.Regular;
@@ -125,7 +125,7 @@ public class ItemUtility {
             try {
                 compound = JsonToNBT.getTagFromJson(parts[4]);
             } catch (NBTException e) {
-                throw new ItemMissingException("Unable to convert input NBT into something readable by Minecraft; got response '" + e.getMessage() + "'.");
+                throw new OperationException("Unable to convert input NBT into something readable by Minecraft; got response '" + e.getMessage() + "'.");
             }
 
             // Update it with our values:

@@ -1,6 +1,6 @@
 package org.winterblade.minecraft.harmony.integration.techreborn.operations;
 
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.integration.techreborn.RebornRecipeUtils;
 import org.winterblade.minecraft.harmony.common.crafting.operations.AddShapedOperation;
@@ -10,16 +10,16 @@ import techreborn.api.RollingMachineRecipe;
 /**
  * Created by Matt on 5/9/2016.
  */
-@RecipeOperation(name = "TechReborn.addShapedRollingMachine", dependsOn = RebornRecipeUtils.TechRebornModId)
+@Operation(name = "TechReborn.addShapedRollingMachine", dependsOn = RebornRecipeUtils.TechRebornModId)
 public class AddShapedRollingMachineOperation extends AddShapedOperation {
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Adding a shaped TechReborn Rolling Machine recipe for " + ItemUtility.outputItemName(output.getItemStack()));
         RollingMachineRecipe.instance.getRecipeList().add(recipe);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         RollingMachineRecipe.instance.getRecipeList().remove(recipe);
     }
 }

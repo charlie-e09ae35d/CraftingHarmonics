@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface RecipeOperation {
+public @interface Operation {
     String name();
 
     String dependsOn() default "";

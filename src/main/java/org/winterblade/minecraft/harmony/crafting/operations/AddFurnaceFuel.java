@@ -1,29 +1,29 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.IOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
  * Created by Matt on 4/6/2016.
  */
-@RecipeOperation(name = "addFurnaceFuel")
-public class AddFurnaceFuel extends BaseRecipeOperation {
+@Operation(name = "addFurnaceFuel")
+public class AddFurnaceFuel extends BasicOperation {
     private RecipeComponent what;
     private int burnTime;
 
     @Override
-    public void Init() throws ItemMissingException {
-        if (what == null) throw new ItemMissingException("Unable to find requested fuel item.");
+    public void init() throws OperationException {
+        if (what == null) throw new OperationException("Unable to find requested fuel item.");
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Registering fuel '" + what.toString() + "' with burn time '" + burnTime + "'.");
         int curBurnTime = GameRegistry.getFuelValue(what.getItemStack());
         if (curBurnTime > burnTime) {
@@ -36,12 +36,12 @@ public class AddFurnaceFuel extends BaseRecipeOperation {
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         FuelRegistry.getInstance().RemoveFuel(what.getItemStack());
     }
 
     @Override
-    public int compareTo(IRecipeOperation o) {
+    public int compareTo(IOperation o) {
         int baseCompare = super.compareTo(o);
         if(baseCompare != 0) return baseCompare;
 

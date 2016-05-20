@@ -3,13 +3,13 @@ package org.winterblade.minecraft.harmony.crafting.operations;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 
 /**
  * Created by Matt on 5/2/2016.
  */
-@RecipeOperation(name = "remapHarvestLevel")
+@Operation(name = "remapHarvestLevel")
 public class RemapHarvestLevelsOperation extends BaseHarvestLevelOperation {
     /*
      * Serialized properties
@@ -20,7 +20,7 @@ public class RemapHarvestLevelsOperation extends BaseHarvestLevelOperation {
 
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         affectedBlocks.clear();
         if(with.equals("")) with = null;
 

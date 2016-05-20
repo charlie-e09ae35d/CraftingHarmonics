@@ -2,9 +2,9 @@ package org.winterblade.minecraft.harmony.integration.bloodmagic.operations;
 
 import WayofTime.bloodmagic.api.registry.AltarRecipeRegistry;
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.integration.bloodmagic.ReflectedBloodMagicRegistry;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -14,8 +14,8 @@ import java.util.Set;
 /**
  * Created by Matt on 4/21/2016.
  */
-@RecipeOperation(name = "removeBloodAltarRecipe", dependsOn = "BloodMagic")
-public class RemoveAltarRecipe extends BaseRecipeOperation {
+@Operation(name = "removeBloodAltarRecipe", dependsOn = "BloodMagic")
+public class RemoveAltarRecipe extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -28,7 +28,7 @@ public class RemoveAltarRecipe extends BaseRecipeOperation {
     private transient AltarRecipeRegistry.AltarRecipe recipe;
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         Set<AltarRecipeRegistry.AltarRecipe> recipes = AltarRecipeRegistry.getRecipes().values();
 
         for(AltarRecipeRegistry.AltarRecipe r : recipes) {
@@ -40,14 +40,14 @@ public class RemoveAltarRecipe extends BaseRecipeOperation {
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         if(recipe == null) return;
         LogHelper.info("Removing blood altar recipe for '" + ItemUtility.outputItemName(what) + "'.");
         ReflectedBloodMagicRegistry.removeAltarRecipe(recipe);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         if(recipe == null) return;
         ReflectedBloodMagicRegistry.addAltarRecipe(recipe);
     }

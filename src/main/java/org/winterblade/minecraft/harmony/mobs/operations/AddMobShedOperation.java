@@ -1,9 +1,9 @@
 package org.winterblade.minecraft.harmony.mobs.operations;
 
 import com.google.common.base.Joiner;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.mobs.MobShedRegistry;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -13,8 +13,8 @@ import java.util.UUID;
 /**
  * Created by Matt on 5/10/2016.
  */
-@RecipeOperation(name = "addMobShed")
-public class AddMobShedOperation extends BaseRecipeOperation {
+@Operation(name = "addMobShed")
+public class AddMobShedOperation extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -27,18 +27,18 @@ public class AddMobShedOperation extends BaseRecipeOperation {
     private transient UUID ticket;
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         ticket = MobShedRegistry.registerHandler(what, sheds);
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Adding sheds for " + (0 < what.length ? Joiner.on(", ").join(what) : "everything"));
         MobShedRegistry.apply(ticket);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         MobShedRegistry.remove(ticket);
     }
 }

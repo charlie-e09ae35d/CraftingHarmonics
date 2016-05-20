@@ -7,22 +7,22 @@ import javax.annotation.Nullable;
 /**
  * Created by Matt on 4/5/2016.
  */
-public interface IRecipeOperation extends Comparable<IRecipeOperation> {
+public interface IOperation extends Comparable<IOperation> {
     /**
      * Called to initialize the set
-     * @throws ItemMissingException If something went wrong
+     * @throws OperationException If something went wrong
      */
-    void Init() throws ItemMissingException;
+    void init() throws OperationException;
 
     /**
      * Called to apply the set (if not player-specific)
      */
-    void Apply();
+    void apply();
 
     /**
      * Called to remove the set (if not player-specific)
      */
-    void Undo();
+    void undo();
 
     /**
      * If the set should only be allowable in a base set (default/difficulty based sets)

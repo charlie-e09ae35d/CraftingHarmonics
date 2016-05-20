@@ -8,7 +8,7 @@ import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.drops.IBaseDropMatcher;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.drops.BaseDrop;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
@@ -47,7 +47,7 @@ public abstract class BaseDropDeserializer <TEvt, TMatcher extends IBaseDropMatc
         if (mirror.containsKey("what")) {
             try {
                 output.setWhat(ItemUtility.translateToItemStack(mirror.get("what").toString()));
-            } catch (ItemMissingException e) {
+            } catch (OperationException e) {
                 LogHelper.error("Couldn't convert '" + mirror.get("what") + "' to a valid item string.");
                 return output;
             }

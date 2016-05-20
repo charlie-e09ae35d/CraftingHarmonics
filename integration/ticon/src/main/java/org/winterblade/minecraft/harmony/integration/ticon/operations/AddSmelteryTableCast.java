@@ -2,9 +2,9 @@ package org.winterblade.minecraft.harmony.integration.ticon.operations;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.integration.ticon.ReflectedTinkerRegistry;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -14,8 +14,8 @@ import slimeknights.tconstruct.library.smeltery.CastingRecipe;
 /**
  * Created by Matt on 4/25/2016.
  */
-@RecipeOperation(name = "addSmelteryTableCast", dependsOn = "tconstruct")
-public class AddSmelteryTableCast extends BaseRecipeOperation {
+@Operation(name = "addSmelteryTableCast", dependsOn = "tconstruct")
+public class AddSmelteryTableCast extends BasicOperation {
     /*
      * Serialized Properties
      */
@@ -31,18 +31,18 @@ public class AddSmelteryTableCast extends BaseRecipeOperation {
     private transient CastingRecipe recipe;
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         recipe = new CastingRecipe(what, RecipeMatch.ofNBT(cast), with, consumeCast, switchOutput);
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Adding Tinker's table cast for '" + ItemUtility.outputItemName(what) + "'.");
         ReflectedTinkerRegistry.addTableCast(recipe);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         ReflectedTinkerRegistry.removeTableCast(recipe);
     }
 }

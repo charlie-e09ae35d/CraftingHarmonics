@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 /**
  * Created by Matt on 4/6/2016.
  */
-public abstract class BaseRecipeOperation implements IRecipeOperation {
+public abstract class BasicOperation implements IOperation {
     private int priority;
     private String id;
     private transient boolean applied;
@@ -21,11 +21,11 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
     protected String __name;
 
     @Override
-    public int compareTo(IRecipeOperation o) {
+    public int compareTo(IOperation o) {
         // Don't try and sort:
-        if(!(BaseRecipeOperation.class.isAssignableFrom(o.getClass()))) return 0;
+        if(!(BasicOperation.class.isAssignableFrom(o.getClass()))) return 0;
 
-        return priority - ((BaseRecipeOperation) o).priority;
+        return priority - ((BasicOperation) o).priority;
     }
 
     /**
@@ -33,9 +33,9 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
      * @param data  The operation data.
      * @return      If the operation succeeded.
      */
-    public final boolean Convert(IScriptContext context, ScriptObjectMirror data) {
+    public final boolean convert(IScriptContext context, ScriptObjectMirror data) {
         try {
-            ReadData(context, data);
+            readData(context, data);
             return true;
         }
         catch(Exception e) {
@@ -48,7 +48,7 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
      * Used to convert the provided operation from the file into the given recipe.
      * @param data The operation data
      */
-    protected void ReadData(IScriptContext context, ScriptObjectMirror data) throws ItemMissingException {
+    protected void readData(IScriptContext context, ScriptObjectMirror data) throws OperationException {
         // Base implementation just attempts to map properties one-to-one
         context.parseScriptObject(data, this);
     }
@@ -56,10 +56,10 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
     /**
      * Called to initialize the set
      *
-     * @throws ItemMissingException If something went wrong
+     * @throws OperationException If something went wrong
      */
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         // Do nothing
     }
 
@@ -67,7 +67,7 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
      * Called to apply the set (if not player-specific)
      */
     @Override
-    public void Apply() {
+    public void apply() {
         // Do nothing
     }
 
@@ -75,7 +75,7 @@ public abstract class BaseRecipeOperation implements IRecipeOperation {
      * Called to remove the set (if not player-specific)
      */
     @Override
-    public void Undo() {
+    public void undo() {
         // Do nothing
     }
 

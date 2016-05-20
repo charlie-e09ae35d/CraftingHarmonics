@@ -2,9 +2,9 @@ package org.winterblade.minecraft.harmony.integration.techreborn.operations;
 
 import com.google.common.base.Joiner;
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.integration.techreborn.RebornRecipeUtils;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import reborncore.api.recipe.IBaseRecipeType;
@@ -16,8 +16,8 @@ import java.util.List;
 /**
  * Created by Matt on 5/8/2016.
  */
-@RecipeOperation(name = "TechReborn.removeRecipe", dependsOn = RebornRecipeUtils.TechRebornModId)
-public class RemoveRecipeOperation extends BaseRecipeOperation {
+@Operation(name = "TechReborn.removeRecipe", dependsOn = RebornRecipeUtils.TechRebornModId)
+public class RemoveRecipeOperation extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -30,8 +30,8 @@ public class RemoveRecipeOperation extends BaseRecipeOperation {
     private transient List<IBaseRecipeType> recipes = new ArrayList<>();
 
     @Override
-    public void Init() throws ItemMissingException {
-        if(what == null || what.length <= 0) throw new ItemMissingException("Removing a TechReborn recipe must have at least one output.");
+    public void init() throws OperationException {
+        if(what == null || what.length <= 0) throw new OperationException("Removing a TechReborn recipe must have at least one output.");
         recipes.clear();
 
         for(IBaseRecipeType recipe : RecipeHandler.recipeList) {
@@ -41,7 +41,7 @@ public class RemoveRecipeOperation extends BaseRecipeOperation {
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Removing TechReborn recipes producing: " + Joiner.on(", ").join(what));
         for(IBaseRecipeType recipe : recipes) {
             RebornRecipeUtils.removeRecipe(recipe);
@@ -49,7 +49,7 @@ public class RemoveRecipeOperation extends BaseRecipeOperation {
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         for(IBaseRecipeType recipe : recipes) {
             RebornRecipeUtils.addRecipe(recipe);
         }

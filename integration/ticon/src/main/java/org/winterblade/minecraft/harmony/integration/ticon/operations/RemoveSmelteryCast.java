@@ -2,7 +2,7 @@ package org.winterblade.minecraft.harmony.integration.ticon.operations;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
 import slimeknights.tconstruct.library.smeltery.CastingRecipe;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Matt on 4/25/2016.
  */
-public abstract class RemoveSmelteryCast extends BaseRecipeOperation {
+public abstract class RemoveSmelteryCast extends BasicOperation {
     /*
      * Serialized Properties
      */

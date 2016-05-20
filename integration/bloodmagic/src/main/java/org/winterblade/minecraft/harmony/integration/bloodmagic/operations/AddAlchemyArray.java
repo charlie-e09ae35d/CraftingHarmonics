@@ -5,9 +5,9 @@ import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyArrayEffect;
 import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyArrayEffectCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.integration.bloodmagic.ReflectedBloodMagicRegistry;
@@ -16,8 +16,8 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 /**
  * Created by Matt on 4/22/2016.
  */
-@RecipeOperation(name = "addAlchemyArray", dependsOn = "BloodMagic")
-public class AddAlchemyArray extends BaseRecipeOperation {
+@Operation(name = "addAlchemyArray", dependsOn = "BloodMagic")
+public class AddAlchemyArray extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -36,7 +36,7 @@ public class AddAlchemyArray extends BaseRecipeOperation {
     private transient Object input;
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         // Figure out our renderer first...
         renderer = circle != null && !circle.equals("")
                 ? new ResourceLocation(circle)
@@ -52,7 +52,7 @@ public class AddAlchemyArray extends BaseRecipeOperation {
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Adding Alchemy Array recipe for '" + ItemUtility.outputItemName(output) + "'.");
         if(input instanceof String) {
             ReflectedBloodMagicRegistry.addAlchemyArray((String)input, catalyst, effect, renderer);
@@ -62,7 +62,7 @@ public class AddAlchemyArray extends BaseRecipeOperation {
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         if(input instanceof String) {
             ReflectedBloodMagicRegistry.removeAlchemyArray((String)input, catalyst);
         } else if(input instanceof ItemStack) {

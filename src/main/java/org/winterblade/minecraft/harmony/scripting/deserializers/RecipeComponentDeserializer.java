@@ -3,7 +3,7 @@ package org.winterblade.minecraft.harmony.scripting.deserializers;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.api.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
@@ -19,7 +19,7 @@ public class RecipeComponentDeserializer implements IScriptObjectDeserializer {
     public Object Deserialize(Object input) {
         try {
             return TranslateToItemStack(input);
-        } catch (ItemMissingException e) {
+        } catch (OperationException e) {
             return null;
         }
     }
@@ -28,9 +28,9 @@ public class RecipeComponentDeserializer implements IScriptObjectDeserializer {
      * Translates script data to an item stack
      * @param data  The data to translate
      * @return      The ItemStack requested
-     * @throws ItemMissingException When the item cannot be found in the registry.
+     * @throws OperationException When the item cannot be found in the registry.
      */
-    private static RecipeComponent TranslateToItemStack(Object data) throws ItemMissingException {
+    private static RecipeComponent TranslateToItemStack(Object data) throws OperationException {
         RecipeComponent component = new RecipeComponent();
 
         if(data instanceof String) {

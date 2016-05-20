@@ -1,15 +1,15 @@
 package org.winterblade.minecraft.harmony.crafting.operations;
 
 import net.minecraft.item.Item;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 
 /**
  * Created by Matt on 5/2/2016.
  */
-@RecipeOperation(name = "setToolHarvestLevel")
-public class SetToolLevelOperation extends BaseRecipeOperation {
+@Operation(name = "setToolHarvestLevel")
+public class SetToolLevelOperation extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -23,19 +23,19 @@ public class SetToolLevelOperation extends BaseRecipeOperation {
     private transient int from;
 
     @Override
-    public void Init() throws ItemMissingException {
-        if(what == null) throw new ItemMissingException("Cannot set tool harvest level on unknown item.");
+    public void init() throws OperationException {
+        if(what == null) throw new OperationException("Cannot set tool harvest level on unknown item.");
 
         from = what.getHarvestLevel(null, as);
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         what.setHarvestLevel(as, to);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         what.setHarvestLevel(as, from);
     }
 }
