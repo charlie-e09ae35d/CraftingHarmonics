@@ -86,7 +86,7 @@ public class CraftingSet {
             setProgress.step(op.toString());
 
             try {
-                op.init();
+                op.runInit();
             } catch (Exception ex) {
                 LogHelper.error("Error initializing operation.", ex);
             }
@@ -108,7 +108,7 @@ public class CraftingSet {
             if(!op.shouldApply()) continue;
 
             try {
-                op.apply();
+                op.runApply();
             }
             catch(Exception ex) {
                 LogHelper.error("Error applying operation.", ex);
@@ -129,7 +129,7 @@ public class CraftingSet {
             if(!op.shouldUndo()) continue;
 
             try {
-                op.undo();
+                op.runUndo();
             }
             catch(Exception ex) {
                 LogHelper.error("Error undoing operation.", ex);

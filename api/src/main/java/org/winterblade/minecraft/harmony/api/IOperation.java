@@ -12,17 +12,17 @@ public interface IOperation extends Comparable<IOperation> {
      * Called to initialize the set
      * @throws OperationException If something went wrong
      */
-    void init() throws OperationException;
+    void runInit() throws OperationException;
 
     /**
      * Called to apply the set (if not player-specific)
      */
-    void apply();
+    void runApply();
 
     /**
      * Called to remove the set (if not player-specific)
      */
-    void undo();
+    void runUndo();
 
     /**
      * If the set should only be allowable in a base set (default/difficulty based sets)
@@ -35,12 +35,6 @@ public interface IOperation extends Comparable<IOperation> {
      * @return  True if it should only be done once; false otherwise
      */
     boolean onceOnly();
-
-    /**
-     * If the set should be applied per player
-     * @return  True if it should be applied per player; false otherwise
-     */
-    boolean perPlayer();
 
     /**
      * Gets the ID for this operation.

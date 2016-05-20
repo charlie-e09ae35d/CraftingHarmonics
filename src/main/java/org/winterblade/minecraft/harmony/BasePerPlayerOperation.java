@@ -89,11 +89,6 @@ public abstract class BasePerPlayerOperation extends BasicOperation {
 
     public abstract void undoPerPlayer(EntityPlayerMP player);
 
-    @Override
-    public final boolean perPlayer() {
-        return true;
-    }
-
     /**
      * Called to check if the operation should be applied.
      *
