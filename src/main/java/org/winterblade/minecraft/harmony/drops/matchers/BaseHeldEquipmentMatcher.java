@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 
 import javax.annotation.Nullable;
 
@@ -38,7 +38,7 @@ public abstract class BaseHeldEquipmentMatcher extends BaseItemStackMatcher {
         // Make sure we have held equipment and that it's right:
         if(heldEquipment == null
                 || !heldEquipment.isItemEqualIgnoreDurability(itemStack)
-                || (nbt != null && !ItemRegistry.CheckIfNbtMatches(nbt, heldEquipment.getTagCompound(), fuzzyNbt))) return BaseDropMatchResult.False;
+                || (nbt != null && !ItemUtility.checkIfNbtMatches(nbt, heldEquipment.getTagCompound(), fuzzyNbt))) return BaseDropMatchResult.False;
 
         return new BaseDropMatchResult(true, consumeOrDamageItem(entityBase, heldEquipment, drop));
     }

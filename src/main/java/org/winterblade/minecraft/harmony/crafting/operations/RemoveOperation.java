@@ -8,9 +8,9 @@ import net.minecraft.item.crafting.IRecipe;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.IRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,7 +48,7 @@ public class RemoveOperation extends BaseRecipeOperation {
         // If we really, really want to remove everything...
         if(what.equals("*") || what.equals("*:*") || what.equals("*:*:*")) return true;
 
-        String[] name = ItemRegistry.GetFullyQualifiedItemName(recipeOutput.getItem()).split(":");
+        String[] name = ItemUtility.getFullyQualifiedItemName(recipeOutput.getItem()).split(":");
 
         switch(matchType) {
             case ItemOnly:
@@ -150,7 +150,7 @@ public class RemoveOperation extends BaseRecipeOperation {
     private void RemoveCraftingRecpies() {
         List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 
-        InventoryCrafting inv = ItemRegistry.simulateInventoryOf(with, width, height);
+        InventoryCrafting inv = ItemUtility.simulateInventoryOf(with, width, height);
 
         LogHelper.info("Searching for recipes to remove for " + modId + ":" + itemName + ":" + metadata + "...");
 

@@ -1,7 +1,10 @@
 package org.winterblade.minecraft.harmony.utility;
 
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import org.winterblade.minecraft.harmony.api.*;
+import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
+import org.winterblade.minecraft.harmony.api.Component;
+import org.winterblade.minecraft.harmony.api.RecipeOperation;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

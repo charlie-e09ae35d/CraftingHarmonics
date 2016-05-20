@@ -3,10 +3,10 @@ package org.winterblade.minecraft.harmony.mobs.operations;
 import com.google.common.base.Joiner;
 import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
 import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
 import org.winterblade.minecraft.harmony.mobs.MobShedRegistry;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.UUID;
 

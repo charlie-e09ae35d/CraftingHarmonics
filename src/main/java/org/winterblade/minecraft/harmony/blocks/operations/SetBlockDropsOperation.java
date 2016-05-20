@@ -7,8 +7,8 @@ import org.winterblade.minecraft.harmony.api.RecipeOperation;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
 import org.winterblade.minecraft.harmony.blocks.BlockStateMatcher;
 import org.winterblade.minecraft.harmony.blocks.drops.BlockDrop;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.UUID;
 
