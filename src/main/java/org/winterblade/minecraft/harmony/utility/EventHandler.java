@@ -61,7 +61,7 @@ public class EventHandler {
         if(evt.phase != TickEvent.Phase.END || evt.world.isRemote) return;
 
         try {
-            MobTickRegistry.handleSheds(evt);
+            MobTickRegistry.handleTick(evt);
 
             // We should (hopefully) be done dealing with the explosion by this point...
             BlockDropRegistry.clearExplodedList();

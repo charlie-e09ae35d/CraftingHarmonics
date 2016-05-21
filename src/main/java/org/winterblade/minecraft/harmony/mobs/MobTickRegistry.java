@@ -2,14 +2,14 @@ package org.winterblade.minecraft.harmony.mobs;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntitySelectors;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.winterblade.minecraft.harmony.api.BaseMatchResult;
-import org.winterblade.minecraft.harmony.drops.BaseDropHandler;
+import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -18,20 +18,32 @@ import java.util.*;
 public class MobTickRegistry {
     private MobTickRegistry() {}
 
-    private static final Map<String, Set<UUID>> shedCache = new HashMap<>();
-    private static final Map<UUID, MobShedHandler> sheds = new HashMap<>();
-    private static final Set<UUID> activeSheds = new LinkedHashSet<>();
-
+    private static boolean inited = false;
     private static boolean isActive = false;
+
+    // Tick handlers
+    private static TickHandler<MobShed, MobShed.Handler> shedHandler;
+
+    public static void init() {
+        inited = true;
+
+        shedHandler = new TickHandler<>(MobShed.Handler.class, CraftingHarmonicsMod.getConfigManager().getShedSeconds());
+    }
 
     /**
      * Handles a mob shed event
      * @param evt    The event to process
      */
-    public static void handleSheds(TickEvent.WorldTickEvent evt) {
-        // Only process sheds once every 10 seconds (roughly):
-        if(!isActive || evt.world.getTotalWorldTime() % CraftingHarmonicsMod.getConfigManager().getShedSeconds() != 0)
-            return;
+    public static void handleTick(TickEvent.WorldTickEvent evt) {
+        // Init, if we have to...
+        if(!inited) init();
+        if(!isActive) return;
+
+        // Figure out what we're doing...
+        boolean shedsActive = shedHandler.isActiveThisTick(evt);
+
+        // If we're not doing anything...
+        if(!shedsActive) return;
 
         Random rand = evt.world.rand;
         // Doing it this way to avoid doing modulo for potentially thousands of entities in a LivingUpdate event.
@@ -43,106 +55,133 @@ public class MobTickRegistry {
             String entityName = entity.getName();
             String entityClassName = entity.getClass().getName();
 
-            handleSheds(rand, entity, entityName, entityClassName);
+            if(shedsActive) shedHandler.handle(rand, entity, entityName, entityClassName);
         }
     }
 
     /**
-     * Handles entity sheds
-     * @param rand               The rand to use
-     * @param entity             The entity to effect
-     * @param entityName         The entity's name
-     * @param entityClassName    The entity's class name
+     * Updates if we're actually active overall right now...
      */
-    private static void handleSheds(Random rand, EntityLiving entity, String entityName, String entityClassName) {
-        if(shedCache.containsKey(entityClassName)) {
-            for(UUID id : shedCache.get(entityClassName)) {
-                // If we're inactive, just pass on it
-                if(!activeSheds.contains(id)) continue;
-
-                MobShedHandler handler = sheds.get(id);
-                if(handler == null) continue;
-                applyHandler(rand, entity, handler);
-            }
-            return;
-        }
-
-        // Populate the cache
-        shedCache.put(entityClassName, new HashSet<>());
-
-        for (Map.Entry<UUID, MobShedHandler> entry : sheds.entrySet()) {
-            // If we don't have a handler, or the handler doesn't match:
-            if (!entry.getValue().isMatch(entityName) && !entry.getValue().isMatch(entityClassName)) continue;
-            shedCache.get(entityClassName).add(entry.getKey());
-
-            if(activeSheds.contains(entry.getKey()))
-            applyHandler(rand, entity, entry.getValue());
-        }
+    private static void calcActive() {
+        isActive = shedHandler.isActive();
     }
 
     /**
-     * Applies the handler to the given mob
-     * @param rand       The rand to use
-     * @param entity     The entity to apply to
-     * @param handler    The handler to apply
+     * Shed registrations
      */
-    private static void applyHandler(Random rand, EntityLiving entity, MobShedHandler handler) {
-        // Now, actually calculate out our drop rates...
-        for (MobShed drop : handler.getDrops()) {
-            int min = drop.getMin();
-            int max = drop.getMax();
 
-            // Figure out how many to give:
-            int qty;
-            if (min != max) {
-                int delta = Math.abs(drop.getMax() - drop.getMin());
-                qty = rand.nextInt(delta) + min;
-            } else {
-                qty = min;
-            }
-
-            // Do the drop!
-            ItemStack dropStack = ItemStack.copyItemStack(drop.getWhat());
-
-            // Check if this drop matches:
-            BaseMatchResult result = drop.matches(entity, dropStack);
-            if(!result.isMatch()) continue;
-
-            // Make sure we have sane drop amounts:
-            if (dropStack.stackSize < 0) continue;
-            if (dropStack.getMaxStackSize() < dropStack.stackSize)
-                dropStack.stackSize = dropStack.getMaxStackSize();
-
-            // Now perform our updates:
-            if(result.getCallback() != null) result.getCallback().run();
-
-            // Do the drop:
-            entity.entityDropItem(dropStack, 0.0f);
-        }
-    }
-
+    @Nullable
     public static UUID registerShed(String[] what, MobShed[] drops) {
-        UUID id = UUID.randomUUID();
-        sheds.put(id, new MobShedHandler(what, drops));
-        shedCache.clear();
-        return id;
+        // Init, if we have to...
+        if(!inited) init();
+
+        return shedHandler.registerHandler(what, drops);
     }
 
     public static void applyShed(UUID ticket) {
-        isActive = true;
-        activeSheds.add(ticket);
+        shedHandler.apply(ticket);
+        calcActive();
     }
 
     public static void removeShed(UUID ticket) {
-        activeSheds.remove(ticket);
-        if(activeSheds.size() <= 0) isActive = false;
+        shedHandler.remove(ticket);
+        calcActive();
     }
 
-    private static class MobShedHandler extends BaseDropHandler<MobShed> {
-        MobShedHandler(String[] what, MobShed[] drops) {
-            super(what, drops);
+    /**
+     * Tick handler
+     */
+
+    private static class TickHandler<TMatcher, THandler extends BaseEventMatch.BaseMatchHandler<TMatcher>> {
+        private final Class<THandler> handlerClass;
+        private final int freq;
+        private boolean isActive = false;
+
+        // Full handler list
+        private final Map<UUID, THandler> handlers = new HashMap<>();
+
+        // Entity-to-handler cache
+        private final Map<String, Set<UUID>> cache = new HashMap<>();
+
+        // Active handlers from all sets
+        private final Set<UUID> activeHandlers = new LinkedHashSet<>();
+
+        TickHandler(Class<THandler> handlerClass, int freq) {
+            this.handlerClass = handlerClass;
+            this.freq = freq;
+        }
+
+        void handle(Random rand, EntityLiving entity, String entityName, String entityClassName) {
+            // If we have a cached entry, just do that...
+            if(cache.containsKey(entityClassName)) {
+                for(UUID id : cache.get(entityClassName)) {
+                    // If we're inactive, just pass on it
+                    if(!activeHandlers.contains(id)) continue;
+
+                    // Get the handler, make sure we actually got one, then apply it
+                    THandler handler = handlers.get(id);
+                    if(handler == null) continue;
+                    handler.apply(rand, entity);
+                }
+                return;
+            }
+
+            // Populate the cache
+            cache.put(entityClassName, new HashSet<>());
+
+            for (Map.Entry<UUID, THandler> entry : handlers.entrySet()) {
+                // If we don't have a handler, or the handler doesn't match:
+                if (!entry.getValue().isMatch(entityName) && !entry.getValue().isMatch(entityClassName)) continue;
+                cache.get(entityClassName).add(entry.getKey());
+
+                // If it's active, apply it
+                if(activeHandlers.contains(entry.getKey())) entry.getValue().apply(rand, entity);
+            }
+        }
+
+
+        /**
+         * Registers the given handler for this handler
+         * @param what        The mobs to match
+         * @param matchers    The additional matchers to use
+         * @return            The registered UUID
+         */
+        @Nullable
+        UUID registerHandler(String[] what, TMatcher[] matchers) {
+            UUID id = UUID.randomUUID();
+            THandler handler;
+            try {
+                handler = handlerClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                LogHelper.error("Error registering tick handler.", e);
+                return null;
+            }
+
+            // Set our matchers
+            handler.setWhat(what);
+            handler.setMatchers(matchers);
+
+            handlers.put(id, handler);
+            cache.clear();
+            return id;
+        }
+
+        public void apply(UUID ticket) {
+            isActive = true;
+            activeHandlers.add(ticket);
+        }
+
+        public void remove(UUID ticket) {
+            activeHandlers.remove(ticket);
+            if(activeHandlers.size() <= 0) isActive = false;
+        }
+
+        boolean isActive() {
+            return isActive;
+        }
+
+        boolean isActiveThisTick(TickEvent.WorldTickEvent evt) {
+            return isActive() && (evt.world.getWorldTime() % freq) == 0;
         }
     }
-
-
 }

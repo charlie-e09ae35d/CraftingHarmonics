@@ -1,5 +1,7 @@
 package org.winterblade.minecraft.harmony;
 
+import com.google.common.collect.Lists;
+import net.minecraft.entity.EntityLiving;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.IMobMatcher;
@@ -8,6 +10,7 @@ import org.winterblade.minecraft.harmony.utility.BaseMatcherData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Random;
 
 /**
  * Created by Matt on 5/20/2016.
@@ -43,4 +46,28 @@ public class BaseEventMatch<TEvt, TResult, TMatcher extends IMobMatcher<TEvt, TR
     public void addMatcher(TMatcher matcher, Priority priority) {
         matchers.add(new BaseMatcherData<>(matcher, priority));
     }
+
+    public static abstract class BaseMatchHandler<T> {
+        protected List<String> what;
+        protected List<T> matchers;
+
+        public void setWhat(String[] what) {
+            this.what = Lists.newArrayList(what);
+        }
+
+        public void setMatchers(T[] matchers) {
+            this.matchers = matchers != null ? Lists.newArrayList(matchers) : new ArrayList<>();
+        }
+
+        public boolean isMatch(String entity) {
+            return what == null || what.size() <= 0 || what.contains(entity);
+        }
+
+        public List<T> getMatchers() {
+            return matchers;
+        }
+
+        public abstract void apply(Random rand, EntityLiving entity);
+    }
+
 }
