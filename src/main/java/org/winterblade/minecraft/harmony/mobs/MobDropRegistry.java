@@ -8,7 +8,7 @@ import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
 import org.winterblade.minecraft.harmony.drops.BaseDropHandler;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.*;
 

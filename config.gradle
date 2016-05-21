@@ -1,0 +1,21 @@
+/*
+ * Main settings
+ */
+ext {
+    repo = "http://maven.winterblade.org/content/repositories/MinecraftDev/"
+    version = "1.9.4-21.4.0"
+    forgeVersion = "1.9.4-12.17.0.1909-1.9.4"
+    mappings = "snapshot_20160518"
+}
+
+/*
+ * Common config below here
+ */
+version = ext.version
+group= "org.winterblade.minecraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+
+/// /Add "embedded" configuration
+configurations {
+    embed
+    compile.extendsFrom(embed)
+}

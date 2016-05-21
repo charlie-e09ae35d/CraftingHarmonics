@@ -6,7 +6,7 @@ import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 

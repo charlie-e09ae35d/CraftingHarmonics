@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -47,7 +47,7 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
             ItemStack item = mainInventory[i];
             if(item == null
                     || !item.isItemEqualIgnoreDurability(requiredItem)
-                    || (nbt != null && !ItemRegistry.CheckIfNbtMatches(nbt, item.getTagCompound(), fuzzyNbt))) continue;
+                    || (nbt != null && !ItemUtility.checkIfNbtMatches(nbt, item.getTagCompound(), fuzzyNbt))) continue;
 
             // If we only wanted to match the item, just say we found it here and save a lot of cycles:
             if(!consume && damagePer <= 0) return BaseDropMatchResult.True;

@@ -13,21 +13,21 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
+import org.winterblade.minecraft.harmony.api.IOperation;
 import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
-import org.winterblade.minecraft.harmony.crafting.ComponentRegistry;
+import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
-import org.winterblade.minecraft.harmony.crafting.messaging.PacketHandler;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapedComponentRecipe;
-import org.winterblade.minecraft.harmony.crafting.recipes.ShapelessComponentRecipe;
+import org.winterblade.minecraft.harmony.messaging.PacketHandler;
+import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapedComponentRecipe;
+import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapelessComponentRecipe;
 import org.winterblade.minecraft.harmony.proxies.CommonProxy;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.utility.SavedGameData;
 
 import java.util.*;
@@ -39,7 +39,7 @@ import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
  * Created by Matt on 4/5/2016.
  */
 @Mod(modid = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.MODID, version = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.VERSION,
-    dependencies = "required-after:NashornLib@[1.9.0-1.8.77-1.2.1,)")
+    dependencies = "required-after:NashornLib@[1.9.0-1.8.77-1.2.2,)")
 public class CraftingHarmonicsMod {
     public static final String MODID = "craftingharmonics";
     public static final String VERSION = "@VERSION@";
@@ -112,10 +112,10 @@ public class CraftingHarmonicsMod {
      * @param setName   The set name to add to.
      * @param operation The operation to add.
      */
-    public static void AddOperationToSet(String setName, IRecipeOperation operation) {
+    public static void AddOperationToSet(String setName, IOperation operation) {
         if(!craftingSets.containsKey(setName)) craftingSets.put(setName, new CraftingSet(setName));
 
-        craftingSets.get(setName).AddOperation(operation);
+        craftingSets.get(setName).addOperation(operation);
     }
 
     /**
@@ -134,7 +134,7 @@ public class CraftingHarmonicsMod {
             // Init sets once:
             if(initializedSets.contains(set.getKey())) continue;
 
-            set.getValue().Init();
+            set.getValue().init();
             initializedSets.add(set.getKey());
         }
     }
@@ -170,7 +170,7 @@ public class CraftingHarmonicsMod {
     public static boolean applySet(String set) {
         if(appliedSets.contains(set) || !craftingSets.containsKey(set)) return false;
 
-        craftingSets.get(set).Apply();
+        craftingSets.get(set).apply();
         appliedSets.add(set);
         if(savedGameData != null) savedGameData.addSet(set);
         return true;
@@ -199,7 +199,7 @@ public class CraftingHarmonicsMod {
         // Only undo an applied set:
         if(!appliedSets.contains(set) || !craftingSets.containsKey(set)) return false;
 
-        craftingSets.get(set).Undo();
+        craftingSets.get(set).undo();
         appliedSets.remove(set);
         if(savedGameData != null) savedGameData.removeSet(set);
         return true;
@@ -212,7 +212,7 @@ public class CraftingHarmonicsMod {
         // Restore original crafting behavior first.
         for(String set : appliedSets) {
             if(!craftingSets.containsKey(set)) continue;
-            craftingSets.get(set).Undo();
+            craftingSets.get(set).undo();
         }
 
         // Clear all the things!

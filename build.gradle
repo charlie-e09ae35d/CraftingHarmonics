@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
 
@@ -28,52 +28,52 @@ repositories {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
-version = "1.9.0-1.3.13"
-group= "org.winterblade.minecraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+apply from: 'config.gradle'
+
+subprojects {
+    apply from: rootProject.file('config.gradle')
+}
+
 archivesBaseName = "craftingharmonics"
 
-// java version
+// Java Version
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-ext {
-    repo = "http://maven.winterblade.org/content/repositories/MinecraftDev/"
-}
-
 minecraft {
-    version = "1.9-12.16.1.1887"
+    version = project.forgeVersion
     runDir = "run"
-    mappings = "snapshot_20160506"
+    mappings = project.mappings
     replace '@VERSION@', project.version
 }
 
-/// /Add "embedded" configuration
-configurations {
-    embed
-    compile.extendsFrom(embed)
-}
+// Define our integrations
+def integrations = [
+        'ticon',
+        'bloodmagic',
+        'techreborn'
+]
+
+subprojects.each { subproject -> evaluationDependsOn( subproject.path ) }
 
 dependencies {
+    // Our API
+    compile project(":api")
+
     // JEI
-    deobfCompile "mezz.jei:jei_1.9:3.3.0.192"
-    deobfCompile "org.winterblade.minecraft:NashornLib:1.9.0-1.8.77-1.2.1.5"
+    deobfCompile "mezz.jei:jei_1.9.4:3.4.0.202"
+    deobfCompile "org.winterblade.minecraft:NashornLib:1.9.4-1.8.77-1.2.2.6"
     // compile files('libs/NashornLib-1.9.0-1.8.77-1.2.0')
-
-    // TiCon integration; done badly.
-    deobfCompile "slimeknights.mantle:Mantle:1.9-0.9.4.jenkins126"
-    compile files("libs/TConstruct-1.9-2.2.2.DEV.adc860a.jar")
-
-    // Blood Magic
-    deobfCompile "com.wayoftime.bloodmagic:BloodMagic:1.9-2.0.0-35"
-
-    // TechReborn
-    compile "RebornCore:RebornCore-1.9:+:dev"
-    compile "TechReborn:TechReborn-1.9:1.0.6.254:dev"
 }
 
 //Add dependencies to the JAR
 jar {
+    dependsOn integrations.collect { ':integration:'+ it + ':jar'}
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+    from project(":api").sourceSets.main.output
+    for (p in integrations) {
+        from project(':integration:' + p).sourceSets.main.output
+    }
 }
 
 processResources

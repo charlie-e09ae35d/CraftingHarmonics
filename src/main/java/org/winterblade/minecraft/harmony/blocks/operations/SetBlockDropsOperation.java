@@ -2,21 +2,21 @@ package org.winterblade.minecraft.harmony.blocks.operations;
 
 import com.google.common.base.Joiner;
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
 import org.winterblade.minecraft.harmony.blocks.BlockStateMatcher;
 import org.winterblade.minecraft.harmony.blocks.drops.BlockDrop;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.OperationException;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.UUID;
 
 /**
  * Created by Matt on 5/12/2016.
  */
-@RecipeOperation(name = "setBlockDrops")
-public class SetBlockDropsOperation extends BaseRecipeOperation {
+@Operation(name = "setBlockDrops")
+public class SetBlockDropsOperation extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -33,18 +33,18 @@ public class SetBlockDropsOperation extends BaseRecipeOperation {
     private transient UUID ticket;
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         ticket = BlockDropRegistry.registerHandler(what, drops, replace, exclude, remove, state);
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Modifying block drops for " + (0 < what.length ? Joiner.on(", ").join(what) : "everything"));
         BlockDropRegistry.apply(ticket);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         BlockDropRegistry.remove(ticket);
     }
 }

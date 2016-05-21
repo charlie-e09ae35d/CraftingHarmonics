@@ -5,12 +5,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.IOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,8 +20,8 @@ import java.util.Map;
 /**
  * Created by Matt on 4/5/2016.
  */
-@RecipeOperation(name = "remove")
-public class RemoveOperation extends BaseRecipeOperation {
+@Operation(name = "remove")
+public class RemoveOperation extends BasicOperation {
     /**
      * Serialized properties
      */
@@ -48,7 +48,7 @@ public class RemoveOperation extends BaseRecipeOperation {
         // If we really, really want to remove everything...
         if(what.equals("*") || what.equals("*:*") || what.equals("*:*:*")) return true;
 
-        String[] name = ItemRegistry.GetFullyQualifiedItemName(recipeOutput.getItem()).split(":");
+        String[] name = ItemUtility.getFullyQualifiedItemName(recipeOutput.getItem()).split(":");
 
         switch(matchType) {
             case ItemOnly:
@@ -67,7 +67,7 @@ public class RemoveOperation extends BaseRecipeOperation {
 
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         String[] parts = what.split(":");
 
         if(parts.length >= 3 && !parts[2].equals("*")) {
@@ -115,13 +115,13 @@ public class RemoveOperation extends BaseRecipeOperation {
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         if(FromFlags.hasFlag(fromFlag, FromFlags.CRAFTING)) RemoveCraftingRecpies();
         if(FromFlags.hasFlag(fromFlag, FromFlags.FURNACE)) RemoveFurnaceRecpies();
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         for(IRemovedRecipe removedRecipe : removedRecipes) {
             removedRecipe.Undo();
         }
@@ -150,7 +150,7 @@ public class RemoveOperation extends BaseRecipeOperation {
     private void RemoveCraftingRecpies() {
         List<IRecipe> recipeList = CraftingManager.getInstance().getRecipeList();
 
-        InventoryCrafting inv = ItemRegistry.simulateInventoryOf(with, width, height);
+        InventoryCrafting inv = ItemUtility.simulateInventoryOf(with, width, height);
 
         LogHelper.info("Searching for recipes to remove for " + modId + ":" + itemName + ":" + metadata + "...");
 
@@ -169,7 +169,7 @@ public class RemoveOperation extends BaseRecipeOperation {
     }
 
     @Override
-    public int compareTo(IRecipeOperation o) {
+    public int compareTo(IOperation o) {
         int baseCompare = super.compareTo(o);
         if(baseCompare != 0) return baseCompare;
 

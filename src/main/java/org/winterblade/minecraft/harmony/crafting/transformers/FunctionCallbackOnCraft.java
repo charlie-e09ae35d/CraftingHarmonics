@@ -4,11 +4,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
-import org.winterblade.minecraft.harmony.crafting.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.crafting.events.ItemOnCraftedCallback;
 import org.winterblade.minecraft.harmony.crafting.events.ItemOnCraftedEvent;
 import org.winterblade.minecraft.harmony.crafting.events.wrappers.ItemStackWrapper;
-import org.winterblade.minecraft.harmony.utility.LogHelper;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.utility.SynchronizedRandom;
 
 import javax.annotation.Nonnull;
@@ -21,7 +21,7 @@ import java.util.Random;
 public class FunctionCallbackOnCraft implements IItemStackTransformer {
     private final ItemOnCraftedCallback fn;
 
-    public FunctionCallbackOnCraft(ItemOnCraftedCallback fn) throws ItemMissingException {
+    public FunctionCallbackOnCraft(ItemOnCraftedCallback fn) throws OperationException {
         this.fn = fn;
     }
 
