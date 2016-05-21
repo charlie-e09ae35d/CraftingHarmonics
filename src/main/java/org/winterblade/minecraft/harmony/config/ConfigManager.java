@@ -55,8 +55,8 @@ public class ConfigManager {
         shedSeconds = configMain.getInt("SecondsBetweenSheds",Configuration.CATEGORY_GENERAL,
                 10, 1, 100000, "The number of seconds between calculating if a mob should shed something (if sheds are configured).") * 20;
 
-        potionEffectTicks = configMain.getInt("SecondsBetweenPotionEffects",Configuration.CATEGORY_GENERAL,
-                10, 1, 100000, "The number of seconds between calculating if a mob should get a potion effect (if potion effects are configured).") * 20;
+        potionEffectTicks = configMain.getInt("TicksBetweenPotionEffects",Configuration.CATEGORY_GENERAL,
+                5, 1, 2000000, "The number of game ticks between calculating if a mob should get a potion effect (if potion effects are configured).");
 
         // Just in case another mod is modifying this:
         dayTickLength = configMain.getInt("DayTickLength", Configuration.CATEGORY_GENERAL,

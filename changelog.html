@@ -3,6 +3,15 @@
     <h4>Features</h4>
     <ul>
         <li>
+            Adding mob potion effect support, so that you can apply potion effects to mobs (and players) based on
+            the matcher system.  By default, no mobs will have potion effects applied, and all effects have to be added
+            using the 'addMobPotionEffect' operation.
+        </li>
+        <li>
+            Adding new Settings.cfg entry 'I:TicksBetweenPotionEffects' which determines the number of seconds
+            between the potion effect code running.  By default, this is 5 to help with TPS.
+        </li>
+        <li>
             Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/54">issue #54</a> where
             ordering of tag lists mattered with fuzzy matchers.
         </li>

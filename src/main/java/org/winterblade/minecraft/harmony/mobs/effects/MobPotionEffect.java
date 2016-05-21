@@ -104,7 +104,7 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
 
             // Duration; defaults to the number of ticks between checks
             output.duration = mirror.containsKey("duration") ? (int) ScriptUtils.convert(mirror.get("duration"), Integer.class)
-                    : CraftingHarmonicsMod.getConfigManager().getPotionEffectTicks();
+                    : CraftingHarmonicsMod.getConfigManager().getPotionEffectTicks()+1;
 
             output.amplifier = mirror.containsKey("amplifier") ? (int) ScriptUtils.convert(mirror.get("amplifier"), Integer.class) : 0;
             output.showParticles = mirror.containsKey("showParticles") && (boolean) ScriptUtils.convert(mirror.get("showParticles"), Boolean.class);
