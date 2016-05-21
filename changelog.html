@@ -6,6 +6,11 @@
             Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/54">issue #54</a> where
             ordering of tag lists mattered with fuzzy matchers.
         </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/62">issue #62</a> where
+            the saved world data was assigning an immutable set where it shouldn't have and causing per-player
+            operations (like starter inventory) to fail to realize they'd already been applied.
+        </li>
     </ul>
 </div>
 <hr />
