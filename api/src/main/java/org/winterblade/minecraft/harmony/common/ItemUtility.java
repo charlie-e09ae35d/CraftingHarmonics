@@ -272,13 +272,32 @@ public class ItemUtility {
             if (!checkIfAtLeastAllTagsArePresent((NBTTagCompound) sourceTag, (NBTTagCompound) destTag))
                 return false;
         } else if(sourceTag instanceof NBTTagList) {
-            NBTTagList sourceList = (NBTTagList) sourceTag;
-            NBTTagList destList = (NBTTagList) destTag;
-
-            for(int i = 0; i < sourceList.tagCount(); i++) {
-                if(!compareTags(sourceList.get(i), destList.get(i))) return false;
-            }
+            // Do a semi-expensive match...
+            if(!compareTagLists((NBTTagList) sourceTag, (NBTTagList) destTag)) return false;
         } else if(!sourceTag.equals(destTag)) return false;
+        return true;
+    }
+
+    /**
+     * Compare two tag lists to make sure that all entries in the first are present in the second
+     * @param sourceList    The source list
+     * @param destList      The destination list
+     * @return              True if all entries in source are present in dest; false otherwise.
+     */
+    private static boolean compareTagLists(NBTTagList sourceList, NBTTagList destList) {
+        boolean foundMatch = false;
+        for(int i = 0; i < sourceList.tagCount(); i++) {
+            // Check every tag here...
+            for(int j = 0; j < destList.tagCount(); j++) {
+                if(!compareTags(sourceList.get(i), destList.get(j))) continue;
+                foundMatch = true;
+                break;
+            }
+
+            // If we didn't find a match, bail...
+            if(!foundMatch) return false;
+        }
+
         return true;
     }
 
