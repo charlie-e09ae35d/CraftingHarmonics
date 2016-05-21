@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.mobs.sheds.matchers;
 
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
@@ -28,7 +29,7 @@ public class MinMobHealthMatcher implements IMobShedMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLiving entityLiving, ItemStack drop) {
+    public BaseMatchResult isMatch(EntityLivingBase entityLiving, ItemStack drop) {
         return new BaseMatchResult(health <= entityLiving.getHealth());
     }
 }

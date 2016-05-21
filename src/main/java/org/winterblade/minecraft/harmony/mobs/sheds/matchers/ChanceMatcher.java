@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.mobs.sheds.matchers;
 
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
@@ -26,7 +27,7 @@ public class ChanceMatcher extends BaseChanceMatcher implements IMobShedMatcher 
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLiving evt, ItemStack drop) {
+    public BaseMatchResult isMatch(EntityLivingBase evt, ItemStack drop) {
         return match(evt.getEntityWorld().rand);
     }
 }

@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.IMobMatcher;
@@ -67,7 +68,7 @@ public class BaseEventMatch<TEvt, TResult, TMatcher extends IMobMatcher<TEvt, TR
             return matchers;
         }
 
-        public abstract void apply(Random rand, EntityLiving entity);
+        public abstract void apply(Random rand, EntityLivingBase entity);
     }
 
 }

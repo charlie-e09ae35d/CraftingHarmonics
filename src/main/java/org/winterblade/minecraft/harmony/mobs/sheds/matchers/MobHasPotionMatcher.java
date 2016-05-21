@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.mobs.sheds.matchers;
 
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import org.winterblade.minecraft.harmony.api.Component;
@@ -28,7 +29,7 @@ public class MobHasPotionMatcher extends BaseHasPotionMatcher implements IMobShe
      * @return          True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLiving entity, ItemStack drop) {
+    public BaseMatchResult isMatch(EntityLivingBase entity, ItemStack drop) {
         return matches(entity);
     }
 }

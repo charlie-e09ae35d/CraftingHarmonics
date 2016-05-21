@@ -1,7 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs;
 
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EntitySelectors;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
@@ -51,11 +50,9 @@ public class MobTickRegistry {
 
         Random rand = evt.world.rand;
         // Doing it this way to avoid doing modulo for potentially thousands of entities in a LivingUpdate event.
-        List<EntityLiving> entities = evt.world.getEntities(EntityLiving.class, EntitySelectors.IS_ALIVE);
+        List<EntityLivingBase> entities = evt.world.getEntities(EntityLivingBase.class, EntitySelectors.IS_ALIVE);
 
-        for(EntityLiving entity : entities) {
-            if (EntityPlayer.class.isAssignableFrom(entity.getClass())) continue;
-
+        for(EntityLivingBase entity : entities) {
             String entityName = entity.getName();
             String entityClassName = entity.getClass().getName();
 
@@ -138,7 +135,7 @@ public class MobTickRegistry {
             this.freq = freq;
         }
 
-        void handle(Random rand, EntityLiving entity, String entityName, String entityClassName) {
+        void handle(Random rand, EntityLivingBase entity, String entityName, String entityClassName) {
             // If we have a cached entry, just do that...
             if(cache.containsKey(entityClassName)) {
                 for(UUID id : cache.get(entityClassName)) {
@@ -208,7 +205,7 @@ public class MobTickRegistry {
         }
 
         boolean isActiveThisTick(TickEvent.WorldTickEvent evt) {
-            return isActive() && (evt.world.getWorldTime() % freq) == 0;
+            return isActive() && (evt.world.getTotalWorldTime() % freq) == 0;
         }
     }
 }

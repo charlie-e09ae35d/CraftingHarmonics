@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.mobs.sheds;
 
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
@@ -12,14 +13,14 @@ import java.util.Random;
 /**
  * Created by Matt on 5/10/2016.
  */
-public class MobShed extends BaseDrop<EntityLiving, IMobShedMatcher> {
+public class MobShed extends BaseDrop<EntityLivingBase, IMobShedMatcher> {
     public static class Handler extends BaseEventMatch.BaseMatchHandler<MobShed> {
         /**
          * Applies the handler to the given mob
          * @param rand       The rand to use
          * @param entity     The entity to apply to
          */
-        public void apply(Random rand, EntityLiving entity) {
+        public void apply(Random rand, EntityLivingBase entity) {
             // Now, actually calculate out our drop rates...
             for (MobShed drop : this.getMatchers()) {
                 int min = drop.getMin();
