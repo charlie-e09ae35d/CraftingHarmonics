@@ -119,7 +119,7 @@ public class SavedGameData extends WorldSavedData {
             Set<String> opIds = tag.getKeySet();
 
             for(String opId : opIds) {
-                appliedPlayers.put(opId, tag.getCompoundTag(opId).getKeySet());
+                appliedPlayers.put(opId, new HashSet<>(tag.getCompoundTag(opId).getKeySet()));
             }
         }
     }

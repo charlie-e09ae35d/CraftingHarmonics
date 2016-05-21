@@ -5,7 +5,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.blocks.BlockMatcher;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseAboveBlockMatcher;
@@ -23,7 +23,7 @@ public class AboveBlockMatcher extends BaseAboveBlockMatcher implements IMobDrop
     }
 
     @Override
-    public BaseDropMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
+    public BaseMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
         return matches(evt.getEntity().getEntityWorld(), evt.getEntity().getPosition());
     }
 }

@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.scripting;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import net.minecraftforge.fml.common.Loader;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.ComponentParameter;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -25,6 +26,13 @@ public class ComponentRegistry {
     public static void registerComponents(Map<String, Class<Object>> matchers) {
         for(Map.Entry<String, Class<Object>> matcher : matchers.entrySet()) {
             Class componentClass = matcher.getValue();
+            Component annotation = (Component) componentClass.getAnnotation(Component.class);
+
+            if(!annotation.dependsOn().equals("") && !Loader.isModLoaded(annotation.dependsOn())) {
+                LogHelper.error("Component '" + componentClass.getSimpleName() + "' depends on '"
+                        + annotation.dependsOn() + "'; it will not be registered.");
+                continue;
+            }
 
             // Find what constructors we have available to us:
             Constructor[] constructors = componentClass.getConstructors();
@@ -34,8 +42,6 @@ public class ComponentRegistry {
                         "'; it will not be registered.");
                 continue;
             }
-
-            Component annotation = (Component) componentClass.getAnnotation(Component.class);
 
             Map<String, Integer> propertyConstructorCount = new HashMap<>();
             Map<String, Class<?>> propertyTypes = new HashMap<>();

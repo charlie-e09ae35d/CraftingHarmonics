@@ -2,7 +2,7 @@ package org.winterblade.minecraft.harmony.drops.matchers;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.blocks.BlockMatcher;
 
 import javax.annotation.Nullable;
@@ -18,10 +18,10 @@ public abstract class BaseBlockMatcher {
         this.matcher = matcher;
     }
 
-    protected BaseDropMatchResult matches(World world, BlockPos pos) {
+    protected BaseMatchResult matches(World world, BlockPos pos) {
         return matcher != null && matcher.matches(world.getBlockState(pos))
-                ? BaseDropMatchResult.True
-                : BaseDropMatchResult.False;
+                ? BaseMatchResult.True
+                : BaseMatchResult.False;
     }
 
 }

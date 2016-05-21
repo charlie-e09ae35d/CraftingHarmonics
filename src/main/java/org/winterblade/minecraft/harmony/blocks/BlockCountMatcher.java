@@ -44,12 +44,7 @@ public class BlockCountMatcher {
             }
 
             // Copy over all our matchers...
-            Object[] items = (Object[]) ScriptUtils.convert(mirror.get("what"), Object[].class);
-            matcher.what = new BlockMatcher[items.length];
-
-            for (int i = 0; i < items.length; i++) {
-                matcher.what[i] = (BlockMatcher) BLOCK_MATCHER_DESERIALIZER.Deserialize(items[i]);
-            }
+            matcher.what = convertArrayWithDeserializer(mirror, "what", BLOCK_MATCHER_DESERIALIZER, BlockMatcher.class);
 
             // Then the rest of our properties...
             matcher.dist = (int) ScriptUtils.convert(mirror.get("dist"), Integer.class);

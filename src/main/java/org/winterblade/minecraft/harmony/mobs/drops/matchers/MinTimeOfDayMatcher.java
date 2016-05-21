@@ -5,7 +5,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseTimeOfDayMatcher;
 
@@ -18,7 +18,7 @@ public class MinTimeOfDayMatcher extends BaseTimeOfDayMatcher implements IMobDro
     public MinTimeOfDayMatcher(long minTime) {super(minTime, Long.MAX_VALUE);}
 
     @Override
-    public BaseDropMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
+    public BaseMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
         return matches(evt.getEntity().getEntityWorld());
     }
 }

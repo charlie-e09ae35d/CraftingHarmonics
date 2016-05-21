@@ -2,7 +2,7 @@ package org.winterblade.minecraft.harmony.drops.matchers;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.blocks.BlockMatcher;
 
 import javax.annotation.Nullable;
@@ -16,7 +16,7 @@ public abstract class BaseAboveBlockMatcher extends BaseBlockMatcher {
         super(matcher);
     }
 
-    protected BaseDropMatchResult matches(World world, BlockPos pos) {
+    protected BaseMatchResult matches(World world, BlockPos pos) {
         return super.matches(world, pos.down());
     }
 }

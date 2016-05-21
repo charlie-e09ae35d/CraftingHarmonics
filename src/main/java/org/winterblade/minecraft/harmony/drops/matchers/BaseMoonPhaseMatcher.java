@@ -1,7 +1,7 @@
 package org.winterblade.minecraft.harmony.drops.matchers;
 
 import net.minecraft.world.World;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 
 /**
  * Created by Matt on 5/15/2016.
@@ -13,10 +13,10 @@ public abstract class BaseMoonPhaseMatcher {
         this.phase = phase.getPhase();
     }
 
-    protected BaseDropMatchResult matches(World world) {
+    protected BaseMatchResult matches(World world) {
         return phase == world.provider.getMoonPhase(world.getWorldInfo().getWorldTime())
-                ? BaseDropMatchResult.True
-                : BaseDropMatchResult.False;
+                ? BaseMatchResult.True
+                : BaseMatchResult.False;
     }
 
     public enum MoonPhase {

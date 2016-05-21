@@ -26,6 +26,7 @@ public class CommandHandler implements ICommand {
         subcommands.put("listFluids", new ListFluidsCommand());
         subcommands.put("applySet", new ApplySetCommand());
         subcommands.put("removeSet", new RemoveSetCommand());
+        subcommands.put("getPotions", new GetPotionsCommand());
     }
 
     @Override

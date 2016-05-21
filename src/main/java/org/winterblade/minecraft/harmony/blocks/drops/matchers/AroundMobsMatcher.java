@@ -6,7 +6,7 @@ import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.blocks.IBlockDropMatcher;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseNearbyMobMatcher;
 import org.winterblade.minecraft.harmony.mobs.MobCountMatcher;
 
@@ -28,7 +28,7 @@ public class AroundMobsMatcher extends BaseNearbyMobMatcher implements IBlockDro
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseDropMatchResult isMatch(BlockEvent.HarvestDropsEvent evt, ItemStack drop) {
+    public BaseMatchResult isMatch(BlockEvent.HarvestDropsEvent evt, ItemStack drop) {
         return matches(evt.getWorld(), evt.getPos());
     }
 }

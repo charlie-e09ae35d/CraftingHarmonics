@@ -1,23 +1,23 @@
-package org.winterblade.minecraft.harmony.api.drops;
+package org.winterblade.minecraft.harmony.api;
 
 import javax.annotation.Nullable;
 
 /**
  * Created by Matt on 5/12/2016.
  */
-public class BaseDropMatchResult {
-    public static final BaseDropMatchResult False = new BaseDropMatchResult(false);
-    public static final BaseDropMatchResult True = new BaseDropMatchResult(true);
+public class BaseMatchResult {
+    public static final BaseMatchResult False = new BaseMatchResult(false);
+    public static final BaseMatchResult True = new BaseMatchResult(true);
 
     private final boolean result;
     @Nullable
     private final Runnable callback;
 
-    public BaseDropMatchResult(boolean result) {
+    public BaseMatchResult(boolean result) {
         this(result, null);
     }
 
-    public BaseDropMatchResult(boolean result, @Nullable Runnable callback) {
+    public BaseMatchResult(boolean result, @Nullable Runnable callback) {
         this.result = result;
         this.callback = callback;
     }

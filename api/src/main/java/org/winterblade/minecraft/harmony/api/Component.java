@@ -17,5 +17,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Component {
     String[] properties();
+    String dependsOn() default "";
 }
 
