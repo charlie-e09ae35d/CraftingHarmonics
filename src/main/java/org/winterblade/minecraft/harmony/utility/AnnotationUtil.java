@@ -15,7 +15,6 @@ import java.util.*;
  */
 public class AnnotationUtil {
     private AnnotationUtil() {
-
     }
 
     public static Map<String, Class<BasicOperation>> getRecipeOperations(@Nonnull ASMDataTable asmDataTable) {
