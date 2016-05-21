@@ -3,22 +3,22 @@ package org.winterblade.minecraft.harmony;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.PlayerList;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class BasePerPlayerOperation extends BaseRecipeOperation {
+public abstract class BasePerPlayerOperation extends BasicOperation {
     private transient Set<String> appliedPlayers = new HashSet<>();
 
     /**
      * Called to initialize the set
      *
-     * @throws ItemMissingException If something went wrong
+     * @throws OperationException If something went wrong
      */
     @Override
-    public final void Init() throws ItemMissingException {
+    public final void init() throws OperationException {
         // Actually initialize the operation...
         doInit();
 
@@ -27,13 +27,13 @@ public abstract class BasePerPlayerOperation extends BaseRecipeOperation {
         appliedPlayers.addAll(CraftingHarmonicsMod.getSavedGameData().getAppliedPlayerIdsForOp(getId()));
     }
 
-    public abstract void doInit() throws ItemMissingException;
+    public abstract void doInit() throws OperationException;
 
     /**
      * Called to apply the set
      */
     @Override
-    public final void Apply() {
+    public final void apply() {
         // Make sure we're on the server...
         if(FMLCommonHandler.instance().getMinecraftServerInstance() == null) return;
 
@@ -48,7 +48,7 @@ public abstract class BasePerPlayerOperation extends BaseRecipeOperation {
         }
     }
 
-    public final void Undo() {
+    public final void undo() {
         // Make sure we're on the server...
         if(FMLCommonHandler.instance().getMinecraftServerInstance() == null) return;
 
@@ -88,11 +88,6 @@ public abstract class BasePerPlayerOperation extends BaseRecipeOperation {
     }
 
     public abstract void undoPerPlayer(EntityPlayerMP player);
-
-    @Override
-    public final boolean perPlayer() {
-        return true;
-    }
 
     /**
      * Called to check if the operation should be applied.

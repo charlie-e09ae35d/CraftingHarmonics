@@ -1,7 +1,7 @@
 package org.winterblade.minecraft.harmony.scripting.deserializers;
 
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
@@ -15,7 +15,7 @@ public class ItemStackDeserializer implements IScriptObjectDeserializer {
     public Object Deserialize(Object input) {
         try {
             return ItemUtility.translateToItemStack((String)input);
-        } catch (ItemMissingException e) {
+        } catch (OperationException e) {
             return null;
         }
     }

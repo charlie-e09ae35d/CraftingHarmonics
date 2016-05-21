@@ -1,13 +1,13 @@
-package org.winterblade.minecraft.harmony.crafting.messaging;
+package org.winterblade.minecraft.harmony.messaging;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
-import org.winterblade.minecraft.harmony.crafting.messaging.server.ConfigSyncMessage;
-import org.winterblade.minecraft.harmony.crafting.messaging.server.RandomSynchronizerMessage;
-import org.winterblade.minecraft.harmony.crafting.messaging.server.RandomSynchronizerMessage.RandomSynchronizerMessageHandler;
+import org.winterblade.minecraft.harmony.messaging.server.ConfigSyncMessage;
+import org.winterblade.minecraft.harmony.messaging.server.RandomSynchronizerMessage;
+import org.winterblade.minecraft.harmony.messaging.server.RandomSynchronizerMessage.RandomSynchronizerMessageHandler;
 
 import java.util.Map;
 

@@ -1,9 +1,9 @@
 package org.winterblade.minecraft.harmony.utility;
 
 import net.minecraftforge.fml.common.discovery.ASMDataTable;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Component;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import javax.annotation.Nonnull;
@@ -18,8 +18,8 @@ public class AnnotationUtil {
 
     }
 
-    public static Map<String, Class<BaseRecipeOperation>> getRecipeOperations(@Nonnull ASMDataTable asmDataTable) {
-        return getClassMap(asmDataTable, RecipeOperation.class, BaseRecipeOperation.class, "name");
+    public static Map<String, Class<BasicOperation>> getRecipeOperations(@Nonnull ASMDataTable asmDataTable) {
+        return getClassMap(asmDataTable, Operation.class, BasicOperation.class, "name");
     }
 
     public static Map<String, Class<Object>> getComponentClasses(@Nonnull ASMDataTable asmDataTable) {

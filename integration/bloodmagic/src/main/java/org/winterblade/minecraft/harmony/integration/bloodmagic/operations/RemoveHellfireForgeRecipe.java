@@ -4,9 +4,9 @@ import WayofTime.bloodmagic.api.recipe.TartaricForgeRecipe;
 import WayofTime.bloodmagic.api.registry.TartaricForgeRecipeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.integration.bloodmagic.ReflectedBloodMagicRegistry;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -16,8 +16,8 @@ import java.util.List;
 /**
  * Created by Matt on 4/21/2016.
  */
-@RecipeOperation(name = "removeHellfireForgeRecipe", dependsOn = "BloodMagic")
-public class RemoveHellfireForgeRecipe extends BaseRecipeOperation {
+@Operation(name = "removeHellfireForgeRecipe", dependsOn = "BloodMagic")
+public class RemoveHellfireForgeRecipe extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -30,7 +30,7 @@ public class RemoveHellfireForgeRecipe extends BaseRecipeOperation {
     private transient TartaricForgeRecipe recipe;
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         List<TartaricForgeRecipe> recipes = TartaricForgeRecipeRegistry.getRecipeList();
 
         for(TartaricForgeRecipe r : recipes) {
@@ -42,14 +42,14 @@ public class RemoveHellfireForgeRecipe extends BaseRecipeOperation {
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         if(recipe == null) return;
         LogHelper.info("Removing Hellfire Forge recipe for '" + ItemUtility.outputItemName(what) + "'.");
         ReflectedBloodMagicRegistry.removeHellfireForgeRecipe(recipe);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         if(recipe == null) return;
         ReflectedBloodMagicRegistry.addHellfireForgeRecipe(recipe);
     }

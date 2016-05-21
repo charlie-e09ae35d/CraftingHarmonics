@@ -3,9 +3,9 @@ package org.winterblade.minecraft.harmony.integration.techreborn.operations;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.integration.techreborn.RebornRecipeUtils;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -17,8 +17,8 @@ import java.util.List;
 /**
  * Created by Matt on 5/9/2016.
  */
-@RecipeOperation(name = "TechReborn.removeRollingMachine", dependsOn = RebornRecipeUtils.TechRebornModId)
-public class RemoveRollingMachineOperation extends BaseRecipeOperation {
+@Operation(name = "TechReborn.removeRollingMachine", dependsOn = RebornRecipeUtils.TechRebornModId)
+public class RemoveRollingMachineOperation extends BasicOperation {
     /**
      * Serialized properties
      */
@@ -32,8 +32,8 @@ public class RemoveRollingMachineOperation extends BaseRecipeOperation {
     private final List<IRecipe> removedRecipes = new ArrayList<>();
 
     @Override
-    public void Init() throws ItemMissingException {
-        if(what == null) throw new ItemMissingException("Output item to remove from TechReborn's Rolling Machine was not found.");
+    public void init() throws OperationException {
+        if(what == null) throw new OperationException("Output item to remove from TechReborn's Rolling Machine was not found.");
         removedRecipes.clear();
 
         // Simulate an inventory so we can do matching...
@@ -50,7 +50,7 @@ public class RemoveRollingMachineOperation extends BaseRecipeOperation {
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Removing recipes from TechReborn's Rolling Machine that produce: " + ItemUtility.outputItemName(what));
         for(IRecipe recipe : removedRecipes) {
             RollingMachineRecipe.instance.getRecipeList().remove(recipe);
@@ -58,7 +58,7 @@ public class RemoveRollingMachineOperation extends BaseRecipeOperation {
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         for(IRecipe recipe : removedRecipes) {
             RollingMachineRecipe.instance.getRecipeList().add(recipe);
         }

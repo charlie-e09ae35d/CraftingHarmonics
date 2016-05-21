@@ -2,8 +2,8 @@ package org.winterblade.minecraft.harmony.common.crafting.operations;
 
 import net.minecraft.item.crafting.CraftingManager;
 import org.apache.commons.lang3.ArrayUtils;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapedComponentRecipe;
@@ -12,7 +12,7 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 /**
  * Created by Matt on 4/5/2016.
  */
-@RecipeOperation(name = "addShaped")
+@Operation(name = "addShaped")
 public class AddShapedOperation extends BaseAddOperation {
     /**
      * Serialized properties:
@@ -24,14 +24,14 @@ public class AddShapedOperation extends BaseAddOperation {
     protected ShapedComponentRecipe recipe;
 
     @Override
-    public void Init() throws ItemMissingException {
-        super.Init();
+    public void init() throws OperationException {
+        super.init();
         if(with.length > 0) shape = with;
 
         RecipeInput[] filler = new RecipeInput[1];
         filler[0] = new RecipeInput();
 
-        if(shape.length <= 0) throw new ItemMissingException("Shaped recipe has no inputs.");
+        if(shape.length <= 0) throw new OperationException("Shaped recipe has no inputs.");
 
         // There are some edge cases in here where the user might have meant one
         // thing and receives another.  Not accounting for that just now.
@@ -80,13 +80,13 @@ public class AddShapedOperation extends BaseAddOperation {
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Adding shaped recipe for " + ItemUtility.outputItemName(output.getItemStack()));
         CraftingManager.getInstance().addRecipe(recipe);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         CraftingManager.getInstance().getRecipeList().remove(recipe);
     }
 }

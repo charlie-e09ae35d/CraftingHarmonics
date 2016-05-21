@@ -1,8 +1,8 @@
-package org.winterblade.minecraft.harmony.crafting.operations;
+package org.winterblade.minecraft.harmony.misc.operations;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by Matt on 5/2/2016.
  */
-public abstract class BaseHarvestLevelOperation extends BaseRecipeOperation {
+public abstract class BaseHarvestLevelOperation extends BasicOperation {
 
 
     /*
@@ -20,12 +20,12 @@ public abstract class BaseHarvestLevelOperation extends BaseRecipeOperation {
     protected transient List<BlockHarvestabilityModifier> affectedBlocks = new ArrayList<>();
 
     @Override
-    public void Apply() {
+    public void apply() {
         affectedBlocks.forEach(BlockHarvestabilityModifier::apply);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         affectedBlocks.forEach(BlockHarvestabilityModifier::undo);
     }
 

@@ -1,17 +1,17 @@
 package org.winterblade.minecraft.harmony.integration.ticon.operations;
 
 import net.minecraftforge.fluids.FluidStack;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.integration.ticon.ReflectedTinkerRegistry;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
  * Created by Matt on 4/24/2016.
  */
-@RecipeOperation(name = "addSmelteryFuel", dependsOn = "tconstruct")
-public class AddSmelteryFuel extends BaseRecipeOperation {
+@Operation(name = "addSmelteryFuel", dependsOn = "tconstruct")
+public class AddSmelteryFuel extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -19,18 +19,18 @@ public class AddSmelteryFuel extends BaseRecipeOperation {
     private int duration;
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
 
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Adding Tinker's smeltery fuel using '" + what.getFluid().getName() + "'.");
         ReflectedTinkerRegistry.addFuel(what, duration);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         ReflectedTinkerRegistry.removeFuel(what);
     }
 }

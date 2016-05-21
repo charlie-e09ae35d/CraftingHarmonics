@@ -1,6 +1,6 @@
 package org.winterblade.minecraft.harmony.scripting.deserializers;
 
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.OreDictionaryItemStack;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
@@ -15,7 +15,7 @@ public class OreDictionaryItemStackDeserializer implements IScriptObjectDeserial
     public Object Deserialize(Object input) {
         try {
             return TranslateToOreDictionaryItemStack((String)input);
-        } catch (ItemMissingException e) {
+        } catch (OperationException e) {
             return null;
         }
     }
@@ -24,9 +24,9 @@ public class OreDictionaryItemStackDeserializer implements IScriptObjectDeserial
      * Generate an OreDictionaryItemStack from the given info
      * @param data  The string to parse
      * @return      The OreDictionaryItemStack
-     * @throws ItemMissingException If the item couldn't be found.
+     * @throws OperationException If the item couldn't be found.
      */
-    public static OreDictionaryItemStack TranslateToOreDictionaryItemStack(String data) throws ItemMissingException {
+    public static OreDictionaryItemStack TranslateToOreDictionaryItemStack(String data) throws OperationException {
         return ItemUtility.isOreDictionaryEntry(data)
                 ? new OreDictionaryItemStack(data, ItemUtility.getOreDictionaryName(data))
                 : new OreDictionaryItemStack(data, ItemUtility.translateToItemStack(data));

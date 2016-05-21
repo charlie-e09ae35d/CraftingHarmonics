@@ -2,8 +2,8 @@ package org.winterblade.minecraft.harmony.integration.techreborn.operations;
 
 import com.google.common.base.Joiner;
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.integration.techreborn.RebornRecipeUtils;
 import reborncore.api.recipe.IBaseRecipeType;
@@ -11,7 +11,7 @@ import reborncore.api.recipe.IBaseRecipeType;
 /**
  * Created by Matt on 5/8/2016.
  */
-public abstract class BaseTechRebornAddOperation extends BaseRecipeOperation {
+public abstract class BaseTechRebornAddOperation extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -47,22 +47,22 @@ public abstract class BaseTechRebornAddOperation extends BaseRecipeOperation {
     }
 
     @Override
-    public final void Init() throws ItemMissingException {
-        if(what.length < minOutputs) throw new ItemMissingException("TechReborn's " + recipeType + " recipes require at least " + minOutputs + " output(s)");
-        if(with.length < minInputs) throw new ItemMissingException("TechReborn's " + recipeType + " recipes require at least " + minOutputs + " input(s)");
+    public final void init() throws OperationException {
+        if(what.length < minOutputs) throw new OperationException("TechReborn's " + recipeType + " recipes require at least " + minOutputs + " output(s)");
+        if(with.length < minInputs) throw new OperationException("TechReborn's " + recipeType + " recipes require at least " + minOutputs + " input(s)");
         recipe = getRecipe();
     }
 
-    protected abstract IBaseRecipeType getRecipe() throws ItemMissingException;
+    protected abstract IBaseRecipeType getRecipe() throws OperationException;
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Adding TechReborn "  + recipe.getUserFreindlyName() + " recipe for: " + Joiner.on(", ").join(what) + ".");
         RebornRecipeUtils.addRecipe(recipe);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         RebornRecipeUtils.removeRecipe(recipe);
     }
 

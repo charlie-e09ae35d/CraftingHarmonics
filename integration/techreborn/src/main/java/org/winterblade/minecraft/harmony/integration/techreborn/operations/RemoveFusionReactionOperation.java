@@ -1,9 +1,9 @@
 package org.winterblade.minecraft.harmony.integration.techreborn.operations;
 
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.integration.techreborn.RebornRecipeUtils;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import techreborn.api.reactor.FusionReactorRecipe;
@@ -15,8 +15,8 @@ import java.util.List;
 /**
  * Created by Matt on 5/8/2016.
  */
-@RecipeOperation(name = "TechReborn.removeFusionReaction", dependsOn = RebornRecipeUtils.TechRebornModId)
-public class RemoveFusionReactionOperation extends BaseRecipeOperation {
+@Operation(name = "TechReborn.removeFusionReaction", dependsOn = RebornRecipeUtils.TechRebornModId)
+public class RemoveFusionReactionOperation extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -28,8 +28,8 @@ public class RemoveFusionReactionOperation extends BaseRecipeOperation {
     private List<FusionReactorRecipe> recipes = new ArrayList<>();
 
     @Override
-    public void Init() throws ItemMissingException {
-        if(what == null) throw new ItemMissingException("Could not find output for removing TechReborn fusion reaction.");
+    public void init() throws OperationException {
+        if(what == null) throw new OperationException("Could not find output for removing TechReborn fusion reaction.");
         recipes.clear();
 
         for(FusionReactorRecipe recipe : FusionReactorRecipeHelper.reactorRecipes) {
@@ -39,7 +39,7 @@ public class RemoveFusionReactionOperation extends BaseRecipeOperation {
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Removing TechReborn fusion reaction for " + what.toString());
         for(FusionReactorRecipe recipe : recipes) {
             FusionReactorRecipeHelper.reactorRecipes.remove(recipe);
@@ -47,7 +47,7 @@ public class RemoveFusionReactionOperation extends BaseRecipeOperation {
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         for(FusionReactorRecipe recipe : recipes) {
             FusionReactorRecipeHelper.registerRecipe(recipe);
         }

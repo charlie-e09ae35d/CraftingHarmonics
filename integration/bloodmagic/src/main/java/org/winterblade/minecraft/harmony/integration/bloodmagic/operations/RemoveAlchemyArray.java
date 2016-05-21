@@ -1,9 +1,9 @@
 package org.winterblade.minecraft.harmony.integration.bloodmagic.operations;
 
 import net.minecraft.item.ItemStack;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.integration.bloodmagic.ReflectedBloodMagicRegistry;
@@ -12,8 +12,8 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 /**
  * Created by Matt on 4/22/2016.
  */
-@RecipeOperation(name = "removeAlchemyArray", dependsOn = "BloodMagic")
-public class RemoveAlchemyArray extends BaseRecipeOperation {
+@Operation(name = "removeAlchemyArray", dependsOn = "BloodMagic")
+public class RemoveAlchemyArray extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -27,12 +27,12 @@ public class RemoveAlchemyArray extends BaseRecipeOperation {
     private ReflectedBloodMagicRegistry.RemovedAlchemyArray recipe;
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         input = with.getFacsimileItem();
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         // If we have no identifiable property:
         if(with == null) return;
 
@@ -46,7 +46,7 @@ public class RemoveAlchemyArray extends BaseRecipeOperation {
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         if(recipe == null) return;
         ReflectedBloodMagicRegistry.addAlchemyArray(recipe.input, recipe.catalyst, recipe.effect, recipe.renderer);
     }

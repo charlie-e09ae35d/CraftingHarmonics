@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.crafting.integration.jei;
+package org.winterblade.minecraft.harmony.integration.jei;
 
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;

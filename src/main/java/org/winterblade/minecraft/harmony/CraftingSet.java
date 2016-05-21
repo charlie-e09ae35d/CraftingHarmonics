@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.relauncher.Side;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
+import org.winterblade.minecraft.harmony.api.IOperation;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.*;
@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class CraftingSet {
     private final static Set<BasePerPlayerOperation> activePerPlayerOperations = new HashSet<>();
-    private final List<IRecipeOperation> operations = new ArrayList<>();
+    private final List<IOperation> operations = new ArrayList<>();
     private final String setName;
     private final boolean isBaseSet;
 
@@ -67,7 +67,7 @@ public class CraftingSet {
      * Adds an operation to the set.
      * @param operation The operation.
      */
-    public void AddOperation(IRecipeOperation operation) {
+    public void addOperation(IOperation operation) {
         // Make sure we're not trying to add something to a non-base set.
         if(operation.baseSetOnly() && !isBaseSet) {
             LogHelper.error("The operation '" + operation.toString() + "' can only be added to a base set; it cannot be added here.");
@@ -79,18 +79,14 @@ public class CraftingSet {
     /**
      * Initializes the operations
      */
-    void Init() {
-        Side side = FMLCommonHandler.instance().getSide();
+    void init() {
         ProgressManager.ProgressBar setProgress = ProgressManager.push("Initializing", operations.size());
 
-        for(IRecipeOperation op : operations) {
+        for(IOperation op : operations) {
             setProgress.step(op.toString());
 
-            // Skip sided only operations that we're not on the right side of...
-            if(op.getSide() != null && op.getSide() != side) continue;
-
             try {
-                op.Init();
+                op.runInit();
             } catch (Exception ex) {
                 LogHelper.error("Error initializing operation.", ex);
             }
@@ -102,18 +98,17 @@ public class CraftingSet {
         Collections.sort(operations);
     }
 
-    void Apply() {
-        Side side = FMLCommonHandler.instance().getSide();
+    void apply() {
         ProgressManager.ProgressBar setProgress = ProgressManager.push("Applying", operations.size());
 
-        for(IRecipeOperation op : operations) {
+        for(IOperation op : operations) {
             setProgress.step(op.toString());
 
             // Skip sided only operations that we're not on the right side of...
-            if(!op.shouldApply() || op.getSide() != null && op.getSide() != side) continue;
+            if(!op.shouldApply()) continue;
 
             try {
-                op.Apply();
+                op.runApply();
             }
             catch(Exception ex) {
                 LogHelper.error("Error applying operation.", ex);
@@ -123,19 +118,18 @@ public class CraftingSet {
         ProgressManager.pop(setProgress);
     }
 
-    public void Undo() {
-        Side side = FMLCommonHandler.instance().getSide();
+    public void undo() {
         // Reverse the sort order... badly.
-        List<IRecipeOperation> revserseOps = new ArrayList<>(operations);
+        List<IOperation> revserseOps = new ArrayList<>(operations);
         Collections.reverse(revserseOps);
 
         // Undo the operations in the opposite way we applied them:
-        for(IRecipeOperation op : revserseOps) {
+        for(IOperation op : revserseOps) {
             // Skip sided only operations that we're not on the right side of...
-            if(!op.shouldUndo() || op.getSide() != null && op.getSide() != side) continue;
+            if(!op.shouldUndo()) continue;
 
             try {
-                op.Undo();
+                op.runUndo();
             }
             catch(Exception ex) {
                 LogHelper.error("Error undoing operation.", ex);

@@ -1,18 +1,19 @@
-package org.winterblade.minecraft.harmony.crafting.operations;
+package org.winterblade.minecraft.harmony.misc.operations;
 
 import net.minecraftforge.oredict.OreDictionary;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.IOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.crafting.operations.RemoveOperation;
 
 /**
  * Created by Matt on 4/6/2016.
  */
-@RecipeOperation(name = "registerOreDictItem")
-public class RegisterOreDictItemOperation extends BaseRecipeOperation {
+@Operation(name = "registerOreDictItem")
+public class RegisterOreDictItemOperation extends BasicOperation {
     /**
      * Serialized properties
      */
@@ -20,25 +21,25 @@ public class RegisterOreDictItemOperation extends BaseRecipeOperation {
     String oreDict;
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         if (what == null)
-            throw new ItemMissingException("Unable to find item " + what.toString() + " to add to dictionary '" + oreDict + "'.");
+            throw new OperationException("Unable to find item " + what.toString() + " to add to dictionary '" + oreDict + "'.");
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Adding '" + what.toString() + "' to the dictionary '" + oreDict + "'.");
         OreDictionary.registerOre(oreDict, what.getItemStack());
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         // Nope.
         // I mean, I could, but, it'd probably be a bad idea.
     }
 
     @Override
-    public int compareTo(IRecipeOperation o) {
+    public int compareTo(IOperation o) {
         int baseCompare = super.compareTo(o);
         if (baseCompare != 0) return baseCompare;
 

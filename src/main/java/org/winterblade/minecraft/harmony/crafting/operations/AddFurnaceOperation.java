@@ -3,8 +3,8 @@ package org.winterblade.minecraft.harmony.crafting.operations;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.crafting.components.RecipeComponent;
 import org.winterblade.minecraft.harmony.common.crafting.operations.BaseAddOperation;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by Matt on 4/5/2016.
  */
-@RecipeOperation(name = "addFurnace")
+@Operation(name = "addFurnace")
 public class AddFurnaceOperation extends BaseAddOperation {
     private static Map<ItemStack, Float> experienceList;
 
@@ -29,19 +29,19 @@ public class AddFurnaceOperation extends BaseAddOperation {
     }
 
     @Override
-    public void Init() throws ItemMissingException {
-        super.Init();
+    public void init() throws OperationException {
+        super.init();
 
-        if(with.getItemStack() == null) throw new ItemMissingException("Unable to find requested input item " + with.toString());
+        if(with.getItemStack() == null) throw new OperationException("Unable to find requested input item " + with.toString());
         if(with.hasNbt()) {
-            throw new ItemMissingException("NBT matching is not supported for furnace recipes.");
+            throw new OperationException("NBT matching is not supported for furnace recipes.");
         }
         inputStack = with.getItemStack();
         outputStack = output.getItemStack();
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Adding furnace recipe for " + output.toString());
         float curXp = FurnaceRecipes.instance().getSmeltingExperience(output.getItemStack());
         setXp = curXp == 0.0F;
@@ -60,7 +60,7 @@ public class AddFurnaceOperation extends BaseAddOperation {
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         FurnaceRecipes.instance().getSmeltingList().remove(inputStack);
         if(setXp) experienceList.remove(outputStack);
     }

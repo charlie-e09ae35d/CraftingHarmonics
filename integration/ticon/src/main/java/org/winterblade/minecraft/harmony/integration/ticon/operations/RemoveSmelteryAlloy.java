@@ -1,9 +1,9 @@
 package org.winterblade.minecraft.harmony.integration.ticon.operations;
 
 import net.minecraftforge.fluids.FluidStack;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.integration.ticon.ReflectedTinkerRegistry;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import slimeknights.tconstruct.library.TinkerRegistry;
@@ -15,20 +15,20 @@ import java.util.List;
 /**
  * Created by Matt on 4/21/2016.
  */
-@RecipeOperation(name = "removeSmelteryAlloy", dependsOn = "tconstruct")
-public class RemoveSmelteryAlloy extends BaseRecipeOperation {
+@Operation(name = "removeSmelteryAlloy", dependsOn = "tconstruct")
+public class RemoveSmelteryAlloy extends BasicOperation {
     private FluidStack what;
     private FluidStack[] with;
 
     private transient List<AlloyRecipe> recipes = new ArrayList<>();
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
 
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         recipes.clear();
 
         LogHelper.info("Removing '" + what.getFluid().getName() + "' alloys from the smeltery.");
@@ -40,7 +40,7 @@ public class RemoveSmelteryAlloy extends BaseRecipeOperation {
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         for(AlloyRecipe recipe : recipes) {
             ReflectedTinkerRegistry.addAlloy(recipe);
         }

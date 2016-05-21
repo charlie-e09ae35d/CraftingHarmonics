@@ -2,16 +2,16 @@ package org.winterblade.minecraft.harmony.common.crafting.operations;
 
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.IRecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.IOperation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.api.crafting.components.RecipeComponent;
 
 /**
  * Created by Matt on 4/6/2016.
  */
-public abstract class BaseAddOperation extends BaseRecipeOperation {
+public abstract class BaseAddOperation extends BasicOperation {
     /**
      * Serialized properties:
      */
@@ -21,10 +21,10 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
     protected NBTTagCompound nbt;
 
     @Override
-    public void Init() throws ItemMissingException
+    public void init() throws OperationException
     {
         if (output.getItemStack() == null)
-            throw new ItemMissingException("Unable to find requested output item " + output.toString());
+            throw new OperationException("Unable to find requested output item " + output.toString());
 
         ItemUtility.updateStackQuantity(output.getItemStack(), quantity);
 
@@ -40,7 +40,7 @@ public abstract class BaseAddOperation extends BaseRecipeOperation {
 
 
     @Override
-    public int compareTo(IRecipeOperation o) {
+    public int compareTo(IOperation o) {
         int baseCompare = super.compareTo(o);
         if(baseCompare != 0) return baseCompare;
 

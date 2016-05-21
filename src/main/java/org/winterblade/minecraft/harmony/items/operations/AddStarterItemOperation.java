@@ -3,15 +3,15 @@ package org.winterblade.minecraft.harmony.items.operations;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.BasePerPlayerOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
  * Created by Matt on 5/17/2016.
  */
-@RecipeOperation(name = "addStarterItem")
+@Operation(name = "addStarterItem")
 public class AddStarterItemOperation extends BasePerPlayerOperation {
     /*
      * Serialized properties
@@ -26,11 +26,11 @@ public class AddStarterItemOperation extends BasePerPlayerOperation {
     /**
      * Called to initialize the set
      *
-     * @throws ItemMissingException If something went wrong
+     * @throws OperationException If something went wrong
      */
     @Override
-    public void doInit() throws ItemMissingException {
-        if(what == null) throw new ItemMissingException("addStarterItems must have a list of starter items.");
+    public void doInit() throws OperationException {
+        if(what == null) throw new OperationException("addStarterItems must have a list of starter items.");
 
         // Only compute an ID if necessary...
         if(!super.getId().equals("")) return;

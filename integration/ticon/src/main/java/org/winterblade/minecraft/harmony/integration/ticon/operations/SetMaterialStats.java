@@ -1,8 +1,8 @@
 package org.winterblade.minecraft.harmony.integration.ticon.operations;
 
-import org.winterblade.minecraft.harmony.api.BaseRecipeOperation;
-import org.winterblade.minecraft.harmony.api.RecipeOperation;
-import org.winterblade.minecraft.harmony.api.ItemMissingException;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
+import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.integration.ticon.ReflectedTinkerRegistry;
 import org.winterblade.minecraft.harmony.integration.ticon.dto.TinkersExtraMaterialStats;
 import org.winterblade.minecraft.harmony.integration.ticon.dto.TinkersHandleMaterialStats;
@@ -16,8 +16,8 @@ import slimeknights.tconstruct.library.materials.Material;
 /**
  * Created by Matt on 5/3/2016.
  */
-@RecipeOperation(name = "setMaterialStats", dependsOn = "tconstruct")
-public class SetMaterialStats extends BaseRecipeOperation {
+@Operation(name = "setMaterialStats", dependsOn = "tconstruct")
+public class SetMaterialStats extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -34,10 +34,10 @@ public class SetMaterialStats extends BaseRecipeOperation {
     private transient Material updated;
 
     @Override
-    public void Init() throws ItemMissingException {
+    public void init() throws OperationException {
         // Get our original and copy:
         original = ReflectedTinkerRegistry.getMaterial(material);
-        if(original == null) throw new ItemMissingException("Unable to get TiCon material '" + material + "'.");
+        if(original == null) throw new OperationException("Unable to get TiCon material '" + material + "'.");
 
         updated = ReflectedTinkerRegistry.copyMaterial(original);
 
@@ -56,13 +56,13 @@ public class SetMaterialStats extends BaseRecipeOperation {
     }
 
     @Override
-    public void Apply() {
+    public void apply() {
         LogHelper.info("Updating stats for material '" + material + "'");
         ReflectedTinkerRegistry.setMaterial(updated);
     }
 
     @Override
-    public void Undo() {
+    public void undo() {
         ReflectedTinkerRegistry.setMaterial(original);
     }
 }
