@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.drops.matchers;
+package org.winterblade.minecraft.harmony.mobs.drops.matchers;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -7,15 +7,16 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
+import org.winterblade.minecraft.harmony.drops.matchers.BaseScoreboardMatcher;
 import org.winterblade.minecraft.harmony.dto.NameValuePair;
 
 /**
  * Created by Matt on 5/16/2016.
  */
-@Component(properties = {"maxScore"})
+@Component(properties = {"minScore"})
 @PrioritizedObject(priority = Priority.HIGH)
-public class MaxScoreboardMatcher extends BaseScoreboardMatcher implements IMobDropMatcher {
-    public MaxScoreboardMatcher(NameValuePair<Integer> score) {super(score.getName(), Integer.MIN_VALUE, score.getValue());}
+public class MinScoreboardMatcher extends BaseScoreboardMatcher implements IMobDropMatcher {
+    public MinScoreboardMatcher(NameValuePair<Integer> score) {super(score.getName(), score.getValue(), Integer.MAX_VALUE);}
 
     @Override
     public BaseMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
