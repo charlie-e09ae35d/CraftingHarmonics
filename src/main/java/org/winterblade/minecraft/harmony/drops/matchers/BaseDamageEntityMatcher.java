@@ -3,7 +3,7 @@ package org.winterblade.minecraft.harmony.drops.matchers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 
 /**
  * Created by Matt on 5/16/2016.
@@ -20,10 +20,10 @@ public abstract class BaseDamageEntityMatcher {
         if(isCreative) this.damageType.setDamageAllowedInCreativeMode();
     }
 
-    protected BaseDropMatchResult damageEntity(Entity entity) {
-        if(entity == null || !(entity instanceof EntityLivingBase)) return BaseDropMatchResult.True;
+    protected BaseMatchResult damageEntity(Entity entity) {
+        if(entity == null || !(entity instanceof EntityLivingBase)) return BaseMatchResult.True;
 
-        return new BaseDropMatchResult(true, () -> {
+        return new BaseMatchResult(true, () -> {
             if(0 <= health) {
                 entity.attackEntityFrom(damageType, health);
             } else {

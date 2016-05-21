@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
@@ -32,17 +32,17 @@ public class AndMatcher implements IMobShedMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseDropMatchResult isMatch(EntityLiving entity, ItemStack drop) {
-        if(composites == null || composites.length <= 0) return BaseDropMatchResult.False;
+    public BaseMatchResult isMatch(EntityLiving entity, ItemStack drop) {
+        if(composites == null || composites.length <= 0) return BaseMatchResult.False;
 
         List<Runnable> runnables = new ArrayList<>();
         int callbacks = 0;
 
         for(MobShed composite : composites) {
-            BaseDropMatchResult result = composite.matches(entity, drop);
+            BaseMatchResult result = composite.matches(entity, drop);
 
             // If we didn't match, we failed:
-            if(!result.isMatch()) return BaseDropMatchResult.False;
+            if(!result.isMatch()) return BaseMatchResult.False;
 
             // Add any callbacks we need to do:
             if(result.getCallback() != null) {
@@ -52,11 +52,11 @@ public class AndMatcher implements IMobShedMatcher {
         }
 
         // If we can handle this easily, do so:
-        if(callbacks <= 0) return BaseDropMatchResult.True;
-        if(callbacks == 1) return new BaseDropMatchResult(true, runnables.get(0));
+        if(callbacks <= 0) return BaseMatchResult.True;
+        if(callbacks == 1) return new BaseMatchResult(true, runnables.get(0));
 
         // Return a composite function:
-        return new BaseDropMatchResult(true, () -> {
+        return new BaseMatchResult(true, () -> {
             for(Runnable runnable : runnables) {
                 runnable.run();
             }

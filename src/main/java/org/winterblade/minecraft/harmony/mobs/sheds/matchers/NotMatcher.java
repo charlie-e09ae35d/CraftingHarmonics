@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
@@ -29,11 +29,11 @@ public class NotMatcher implements IMobShedMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseDropMatchResult isMatch(EntityLiving entity, ItemStack drop) {
+    public BaseMatchResult isMatch(EntityLiving entity, ItemStack drop) {
         // We aren't going to run any of the callbacks from here, as they're inverted.
-        BaseDropMatchResult result = composite.matches(entity, drop);
+        BaseMatchResult result = composite.matches(entity, drop);
 
         // Just invert the match:
-        return new BaseDropMatchResult(!result.isMatch());
+        return new BaseMatchResult(!result.isMatch());
     }
 }

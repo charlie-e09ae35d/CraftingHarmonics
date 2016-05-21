@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 
 import javax.annotation.Nullable;
@@ -30,14 +30,14 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
         this.fuzzyNbt = fuzzyNbt;
     }
 
-    protected BaseDropMatchResult matches(Entity entity, ItemStack drop) {
-        if(entity == null || !EntityPlayer.class.isAssignableFrom(entity.getClass())) return BaseDropMatchResult.False;
+    protected BaseMatchResult matches(Entity entity, ItemStack drop) {
+        if(entity == null || !EntityPlayer.class.isAssignableFrom(entity.getClass())) return BaseMatchResult.False;
 
         // Get our entity and convert it over:
         EntityPlayer player = (EntityPlayer) entity;
 
         // Sanity checking...
-        if(player.inventory == null || player.inventory.mainInventory == null) return BaseDropMatchResult.False;
+        if(player.inventory == null || player.inventory.mainInventory == null) return BaseMatchResult.False;
 
         // Find everything in the inventory that can match this...
         BiMap<Integer, ItemStack> matchingItems = HashBiMap.create();
@@ -50,7 +50,7 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
                     || (nbt != null && !ItemUtility.checkIfNbtMatches(nbt, item.getTagCompound(), fuzzyNbt))) continue;
 
             // If we only wanted to match the item, just say we found it here and save a lot of cycles:
-            if(!consume && damagePer <= 0) return BaseDropMatchResult.True;
+            if(!consume && damagePer <= 0) return BaseMatchResult.True;
 
             matchingItems.put(i, item);
         }
@@ -104,7 +104,7 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
         if(0 < dropsRemaining) drop.stackSize -= dropsRemaining;
 
         // Return something to update the inventory if we succeed.
-        return new BaseDropMatchResult(true, new Runnable() {
+        return new BaseMatchResult(true, new Runnable() {
             @Override
             public void run() {
                 for(Map.Entry<Integer, ItemStack> entry : affectedItems.entrySet()) {

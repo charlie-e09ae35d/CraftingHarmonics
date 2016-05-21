@@ -7,7 +7,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseHeldEquipmentMatcher;
 
@@ -37,7 +37,7 @@ public class MobHasOffhandMatcher extends BaseHeldEquipmentMatcher implements IM
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseDropMatchResult isMatch(LivingDropsEvent livingDropsEvent, ItemStack drop) {
+    public BaseMatchResult isMatch(LivingDropsEvent livingDropsEvent, ItemStack drop) {
         return matches(livingDropsEvent.getEntity(), drop);
     }
 }

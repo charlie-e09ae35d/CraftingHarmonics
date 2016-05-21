@@ -6,7 +6,7 @@ import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.blocks.IBlockDropMatcher;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.blocks.drops.BlockDrop;
 
 /**
@@ -29,10 +29,10 @@ public class OrMatcher implements IBlockDropMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseDropMatchResult isMatch(BlockEvent.HarvestDropsEvent evt, ItemStack drop) {
-        if(composites == null || composites.length <= 0) return BaseDropMatchResult.False;
+    public BaseMatchResult isMatch(BlockEvent.HarvestDropsEvent evt, ItemStack drop) {
+        if(composites == null || composites.length <= 0) return BaseMatchResult.False;
         for(BlockDrop composite : composites) {
-            BaseDropMatchResult result = composite.matches(evt, drop);
+            BaseMatchResult result = composite.matches(evt, drop);
 
             // If we didn't match, go on to the next one:
             if(!result.isMatch()) continue;
@@ -41,6 +41,6 @@ public class OrMatcher implements IBlockDropMatcher {
             return result;
         }
 
-        return BaseDropMatchResult.False;
+        return BaseMatchResult.False;
     }
 }

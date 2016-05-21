@@ -5,7 +5,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
 
@@ -29,10 +29,10 @@ public class OrMatcher implements IMobDropMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseDropMatchResult isMatch(LivingDropsEvent livingDropsEvent, ItemStack drop) {
-        if(composites == null || composites.length <= 0) return BaseDropMatchResult.False;
+    public BaseMatchResult isMatch(LivingDropsEvent livingDropsEvent, ItemStack drop) {
+        if(composites == null || composites.length <= 0) return BaseMatchResult.False;
         for(MobDrop composite : composites) {
-            BaseDropMatchResult result = composite.matches(livingDropsEvent, drop);
+            BaseMatchResult result = composite.matches(livingDropsEvent, drop);
 
             // If we didn't match, go on to the next one:
             if(!result.isMatch()) continue;
@@ -41,7 +41,7 @@ public class OrMatcher implements IMobDropMatcher {
             return result;
         }
 
-        return BaseDropMatchResult.False;
+        return BaseMatchResult.False;
     }
 }
 

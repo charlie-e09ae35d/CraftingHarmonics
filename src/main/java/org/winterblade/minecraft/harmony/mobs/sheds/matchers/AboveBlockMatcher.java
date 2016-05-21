@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
 import org.winterblade.minecraft.harmony.blocks.BlockMatcher;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseAboveBlockMatcher;
@@ -23,7 +23,7 @@ public class AboveBlockMatcher extends BaseAboveBlockMatcher implements IMobShed
     }
 
     @Override
-    public BaseDropMatchResult isMatch(EntityLiving entity, ItemStack drop) {
+    public BaseMatchResult isMatch(EntityLiving entity, ItemStack drop) {
         return matches(entity.getEntityWorld(), entity.getPosition());
     }
 }

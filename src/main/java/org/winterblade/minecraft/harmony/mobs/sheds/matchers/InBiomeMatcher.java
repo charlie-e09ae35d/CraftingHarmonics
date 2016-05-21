@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseBiomeMatcher;
 
@@ -25,7 +25,7 @@ public class InBiomeMatcher extends BaseBiomeMatcher implements IMobShedMatcher 
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseDropMatchResult isMatch(EntityLiving entity, ItemStack drop) {
+    public BaseMatchResult isMatch(EntityLiving entity, ItemStack drop) {
         return matches(entity);
     }
 }

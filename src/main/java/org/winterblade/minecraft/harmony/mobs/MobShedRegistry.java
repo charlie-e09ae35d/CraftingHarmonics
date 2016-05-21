@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntitySelectors;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.drops.BaseDropHandler;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
@@ -66,7 +66,7 @@ public class MobShedRegistry {
                     ItemStack dropStack = ItemStack.copyItemStack(drop.getWhat());
 
                     // Check if this drop matches:
-                    BaseDropMatchResult result = drop.matches(entity, dropStack);
+                    BaseMatchResult result = drop.matches(entity, dropStack);
                     if(!result.isMatch()) continue;
 
                     // Make sure we have sane drop amounts:

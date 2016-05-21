@@ -1,7 +1,7 @@
 package org.winterblade.minecraft.harmony.drops.matchers;
 
 import net.minecraft.util.math.BlockPos;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 
 /**
  * Created by Matt on 5/13/2016.
@@ -15,7 +15,7 @@ public abstract class BaseHeightMatcher {
         this.maxHeight = maxHeight;
     }
 
-    protected BaseDropMatchResult matches(BlockPos pos) {
-        return minHeight <= pos.getY() && pos.getY() <= maxHeight ? BaseDropMatchResult.True : BaseDropMatchResult.False;
+    protected BaseMatchResult matches(BlockPos pos) {
+        return minHeight <= pos.getY() && pos.getY() <= maxHeight ? BaseMatchResult.True : BaseMatchResult.False;
     }
 }
