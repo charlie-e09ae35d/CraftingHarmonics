@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.mobs.effects.MobPotionEffect;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
 import javax.annotation.Nullable;
@@ -23,11 +24,13 @@ public class MobTickRegistry {
 
     // Tick handlers
     private static TickHandler<MobShed, MobShed.Handler> shedHandler;
+    private static TickHandler<MobPotionEffect, MobPotionEffect.Handler> potionEffectHandler;
 
     public static void init() {
         inited = true;
 
         shedHandler = new TickHandler<>(MobShed.Handler.class, CraftingHarmonicsMod.getConfigManager().getShedSeconds());
+        potionEffectHandler = new TickHandler<>(MobPotionEffect.Handler.class, CraftingHarmonicsMod.getConfigManager().getPotionEffectTicks());
     }
 
     /**
@@ -41,9 +44,10 @@ public class MobTickRegistry {
 
         // Figure out what we're doing...
         boolean shedsActive = shedHandler.isActiveThisTick(evt);
+        boolean potionsActive = potionEffectHandler.isActiveThisTick(evt);
 
         // If we're not doing anything...
-        if(!shedsActive) return;
+        if(!shedsActive && !potionsActive) return;
 
         Random rand = evt.world.rand;
         // Doing it this way to avoid doing modulo for potentially thousands of entities in a LivingUpdate event.
@@ -56,6 +60,7 @@ public class MobTickRegistry {
             String entityClassName = entity.getClass().getName();
 
             if(shedsActive) shedHandler.handle(rand, entity, entityName, entityClassName);
+            if(potionsActive) potionEffectHandler.handle(rand, entity, entityName, entityClassName);
         }
     }
 
@@ -63,7 +68,7 @@ public class MobTickRegistry {
      * Updates if we're actually active overall right now...
      */
     private static void calcActive() {
-        isActive = shedHandler.isActive();
+        isActive = shedHandler.isActive() || potionEffectHandler.isActive();
     }
 
     /**
@@ -85,6 +90,28 @@ public class MobTickRegistry {
 
     public static void removeShed(UUID ticket) {
         shedHandler.remove(ticket);
+        calcActive();
+    }
+
+    /**
+     * Potion registrations
+     */
+
+    @Nullable
+    public static UUID registerPotionEffect(String[] what, MobPotionEffect[] effects) {
+        // Init, if we have to...
+        if(!inited) init();
+
+        return potionEffectHandler.registerHandler(what, effects);
+    }
+
+    public static void applyPotionEffect(UUID ticket) {
+        potionEffectHandler.apply(ticket);
+        calcActive();
+    }
+
+    public static void removePotionEffect(UUID ticket) {
+        potionEffectHandler.remove(ticket);
         calcActive();
     }
 

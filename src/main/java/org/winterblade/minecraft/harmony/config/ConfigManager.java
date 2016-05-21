@@ -25,6 +25,7 @@ public class ConfigManager {
     private boolean debugBlockDropEvents;
     private int shedSeconds;
     private int dayTickLength;
+    private int potionEffectTicks;
 
     /**
      * Generates a new config manager using the config path
@@ -53,6 +54,9 @@ public class ConfigManager {
 
         shedSeconds = configMain.getInt("SecondsBetweenSheds",Configuration.CATEGORY_GENERAL,
                 10, 1, 100000, "The number of seconds between calculating if a mob should shed something (if sheds are configured).") * 20;
+
+        potionEffectTicks = configMain.getInt("SecondsBetweenPotionEffects",Configuration.CATEGORY_GENERAL,
+                10, 1, 100000, "The number of seconds between calculating if a mob should get a potion effect (if potion effects are configured).") * 20;
 
         // Just in case another mod is modifying this:
         dayTickLength = configMain.getInt("DayTickLength", Configuration.CATEGORY_GENERAL,
@@ -142,6 +146,10 @@ public class ConfigManager {
 
     public int getShedSeconds() {
         return shedSeconds;
+    }
+
+    public int getPotionEffectTicks() {
+        return potionEffectTicks;
     }
 
     public boolean debugBlockDropEvents() {
