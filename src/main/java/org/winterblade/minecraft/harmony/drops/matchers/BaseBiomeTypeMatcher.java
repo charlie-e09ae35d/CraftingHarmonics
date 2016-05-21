@@ -4,7 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.BiomeDictionary;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +27,12 @@ public class BaseBiomeTypeMatcher {
         }
     }
 
-    protected BaseDropMatchResult matches(Entity entity) {
+    protected BaseMatchResult matches(Entity entity) {
         return matches(entity.getEntityWorld(), entity.getPosition());
     }
 
-    protected BaseDropMatchResult matches(World world, BlockPos pos) {
-        if(world == null) return BaseDropMatchResult.False;
+    protected BaseMatchResult matches(World world, BlockPos pos) {
+        if(world == null) return BaseMatchResult.False;
 
         // Get all the tags for this biome:
         BiomeDictionary.Type[] biomeTags = BiomeDictionary.getTypesForBiome(
@@ -41,10 +41,10 @@ public class BaseBiomeTypeMatcher {
         // Figure out if we match:
         for(BiomeDictionary.Type type : biomeTags) {
             if(!types.contains(type)) continue;
-            return BaseDropMatchResult.True;
+            return BaseMatchResult.True;
         }
 
-        return BaseDropMatchResult.False;
+        return BaseMatchResult.False;
     }
 
 }

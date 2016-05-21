@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 
 /**
  * Created by Matt on 5/16/2016.
@@ -22,7 +22,7 @@ public abstract class BaseAreaMatcher <TSource> {
         this.max = max;
     }
 
-    protected final BaseDropMatchResult matches(World world, BlockPos pos) {
+    protected final BaseMatchResult matches(World world, BlockPos pos) {
         // Get one from our block pos and expand it
         AxisAlignedBB bb = new AxisAlignedBB(pos).expandXyz(dist);
 
@@ -30,7 +30,7 @@ public abstract class BaseAreaMatcher <TSource> {
         int returnOn = max != Integer.MAX_VALUE ? Integer.MAX_VALUE : min;
 
         // Now find all the matching items within that bounding box:
-        return matchWithinRange(world, bb, min, max, returnOn) ? BaseDropMatchResult.True : BaseDropMatchResult.False;
+        return matchWithinRange(world, bb, min, max, returnOn) ? BaseMatchResult.True : BaseMatchResult.False;
     }
 
     /**

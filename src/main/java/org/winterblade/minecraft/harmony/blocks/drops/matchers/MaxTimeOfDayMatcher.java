@@ -6,7 +6,7 @@ import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.blocks.IBlockDropMatcher;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseTimeOfDayMatcher;
 
 /**
@@ -18,7 +18,7 @@ public class MaxTimeOfDayMatcher extends BaseTimeOfDayMatcher implements IBlockD
     public MaxTimeOfDayMatcher(long time) {super(0, time);}
 
     @Override
-    public BaseDropMatchResult isMatch(BlockEvent.HarvestDropsEvent harvestDropsEvent, ItemStack drop) {
+    public BaseMatchResult isMatch(BlockEvent.HarvestDropsEvent harvestDropsEvent, ItemStack drop) {
         return matches(harvestDropsEvent.getWorld());
     }
 }

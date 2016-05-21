@@ -6,7 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.world.BlockEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.blocks.drops.BlockDrop;
 import org.winterblade.minecraft.harmony.drops.BaseDropHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -103,7 +103,7 @@ public class BlockDropRegistry {
                 }
 
                 // Check if this drop matches:
-                BaseDropMatchResult result = drop.matches(evt, dropStack);
+                BaseMatchResult result = drop.matches(evt, dropStack);
                 if(!result.isMatch()) continue;
 
                 // Make sure we have sane drop amounts:

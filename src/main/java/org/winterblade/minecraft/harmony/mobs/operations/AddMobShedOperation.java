@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
-import org.winterblade.minecraft.harmony.mobs.MobShedRegistry;
+import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
@@ -28,17 +28,17 @@ public class AddMobShedOperation extends BasicOperation {
 
     @Override
     public void init() throws OperationException {
-        ticket = MobShedRegistry.registerHandler(what, sheds);
+        ticket = MobTickRegistry.registerShed(what, sheds);
     }
 
     @Override
     public void apply() {
         LogHelper.info("Adding sheds for " + (0 < what.length ? Joiner.on(", ").join(what) : "everything"));
-        MobShedRegistry.apply(ticket);
+        MobTickRegistry.applyShed(ticket);
     }
 
     @Override
     public void undo() {
-        MobShedRegistry.remove(ticket);
+        MobTickRegistry.removeShed(ticket);
     }
 }

@@ -1,13 +1,14 @@
 package org.winterblade.minecraft.harmony.mobs.sheds.matchers;
 
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseHeldEquipmentMatcher;
 
@@ -37,7 +38,7 @@ public class MobHasMainhandMatcher extends BaseHeldEquipmentMatcher implements I
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseDropMatchResult isMatch(EntityLiving entity, ItemStack drop) {
+    public BaseMatchResult isMatch(EntityLivingBase entity, ItemStack drop) {
         return matches(entity, drop);
     }
 }

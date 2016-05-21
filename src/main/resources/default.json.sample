@@ -822,6 +822,52 @@
                 },
 
 
+                // You can also apply potion effects to entities based on certain conditions, including just if a set is active..
+                {
+                    __comment: "Applies things to the player; I'm leaving cows alone this time... though you could use this on entities as well",
+                    type: "addMobPotionEffect",
+                    what: ["net.minecraft.entity.player.EntityPlayerMP"],
+                    effects: [
+                        {
+                            // Each effect has many of the same matchers as mob sheds
+                            what: "minecraft:luck",
+                            amplifier: 0, // The 'level' to add of the potion.  Defaults to 0. (in this case, 0 is Luck 1, and 1 is Luck 2)
+                            showParticles: false, // If effect particles should be shown while this is active.  Defaults to false; I hate potion particles.
+                            duration: 200,  // The duration in ticks of the effect (200 = 10 seconds).  If not specified, this defaults to the number of ticks between checks +1.
+                                            // If you make this longer than the number of seconds, you can end up stacking effects
+                            cures: [], // A list of consumables that can cure this effect.  By default this will be nothing.
+
+                        },
+                        {
+                            // Gives a chance of soul sand dissolving and causing a momentary wither effect
+                            what: "minecraft:wither",
+                            duration: 40,
+
+                            // Inventory matchers work similarly to the other versions, though each application of the effect only counts for 1 item.
+                            playerHasInventory: "minecraft:soul_sand",
+                            consumeInventory: true,
+                            minMobHealth: 3, // Only if they're at a level of HP that won't kill them.
+                            chance: 0.01 // 1% chance
+                        },
+                        {
+                            // Makes players move slowly in near pitch darkness
+                            what: "minecraft:slowness",
+                            amplifier: 1,
+                            maxLightLevel: 3
+                        },
+                        {
+                            // 5% Chance of poison when swimming in swampy biomes
+                            what: "minecraft:poison",
+                            duration: 1200, // A full minute...
+                            cures: ["minecraft:milk_bucket"],
+                            inBiomeTypes: ["Swamp"],
+                            insideBlock: "minecraft:water",
+                            chance: 0.05
+                        }
+                    ]
+                },
+
+
                 // Starter sets
                 {
                     __comment: "You can add starting item sets to the default set, as well as the peaceful, easy, normal, and hard difficulty sets",

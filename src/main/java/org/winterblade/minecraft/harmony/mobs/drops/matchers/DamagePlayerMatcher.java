@@ -5,7 +5,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.drops.matchers.BaseDamageEntityMatcher;
 
@@ -43,8 +43,8 @@ public class DamagePlayerMatcher extends BaseDamageEntityMatcher implements IMob
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseDropMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
-        if(evt.getSource() == null) return BaseDropMatchResult.True;
+    public BaseMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
+        if(evt.getSource() == null) return BaseMatchResult.True;
         return damageEntity(evt.getSource().getEntity());
     }
 }

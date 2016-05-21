@@ -16,7 +16,7 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
 import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
-import org.winterblade.minecraft.harmony.mobs.MobShedRegistry;
+import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 /**
@@ -61,7 +61,7 @@ public class EventHandler {
         if(evt.phase != TickEvent.Phase.END || evt.world.isRemote) return;
 
         try {
-            MobShedRegistry.handleSheds(evt);
+            MobTickRegistry.handleTick(evt);
 
             // We should (hopefully) be done dealing with the explosion by this point...
             BlockDropRegistry.clearExplodedList();

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.winterblade.minecraft.harmony.api.drops.BaseDropMatchResult;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 
 import java.util.List;
 
@@ -18,11 +18,11 @@ public abstract class BaseBiomeMatcher {
         this.biomeIds = Lists.newArrayList(biomeIds);
     }
 
-    protected BaseDropMatchResult matches(Entity entity) {
+    protected BaseMatchResult matches(Entity entity) {
         return matches(entity.getEntityWorld(), entity.getPosition());
     }
 
-    protected BaseDropMatchResult matches(World world, BlockPos pos) {
-        return new BaseDropMatchResult(biomeIds.contains(world.getBiomeGenForCoords(pos).getBiomeName()));
+    protected BaseMatchResult matches(World world, BlockPos pos) {
+        return new BaseMatchResult(biomeIds.contains(world.getBiomeGenForCoords(pos).getBiomeName()));
     }
 }
