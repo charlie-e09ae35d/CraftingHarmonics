@@ -28,16 +28,23 @@ repositories {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
-version = "1.9.0-1.3.13"
-group= "org.winterblade.minecraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+apply from: 'config.gradle'
+
+subprojects {
+    apply from: rootProject.file('config.gradle')
+}
+
 archivesBaseName = "craftingharmonics"
 
-// java version
+// Java Version
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-ext {
-    repo = "http://maven.winterblade.org/content/repositories/MinecraftDev/"
+minecraft {
+    version = project.forgeVersion
+    runDir = "run"
+    mappings = project.mappings
+    replace '@VERSION@', project.version
 }
 
 // Define our integrations
@@ -48,19 +55,6 @@ def integrations = [
 ]
 
 subprojects.each { subproject -> evaluationDependsOn( subproject.path ) }
-
-minecraft {
-    version = "1.9.4-12.17.0.1909-1.9.4"
-    runDir = "run"
-    mappings = "snapshot_20160518"
-    replace '@VERSION@', project.version
-}
-
-/// /Add "embedded" configuration
-configurations {
-    embed
-    compile.extendsFrom(embed)
-}
 
 dependencies {
     // Our API

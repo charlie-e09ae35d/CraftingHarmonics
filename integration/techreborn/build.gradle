@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
 
@@ -20,27 +20,17 @@ repositories {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-
-version = "1.9.0-1.3.13"
-group= "org.winterblade.minecraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "craftingharmonics-integration-" + project.projectDir.name
 
-task hello << {task -> println "I'm $task.project.archivesBaseName" }
-
-// java version
+// Java Version
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 minecraft {
-    version = "1.9-12.16.1.1887"
+    version = project.forgeVersion
     runDir = "run"
-    mappings = "snapshot_20160506"
+    mappings = project.mappings
     replace '@VERSION@', project.version
-}
-
-configurations {
-    embed
-    compile.extendsFrom(embed)
 }
 
 dependencies {
