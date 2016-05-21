@@ -3,7 +3,6 @@ package org.winterblade.minecraft.harmony.mobs.effects;
 import com.google.common.collect.Lists;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -12,12 +11,11 @@ import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
-import org.winterblade.minecraft.harmony.scripting.deserializers.BaseComponentDeserializer;
+import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMatchingDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.ItemStackDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.PotionDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -88,7 +86,7 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
     }
 
     @ScriptObjectDeserializer(deserializes = MobPotionEffect.class)
-    public static class Deserializer extends BaseComponentDeserializer<MobPotionEffect, IMobPotionEffectMatcher> {
+    public static class Deserializer extends BaseMatchingDeserializer<EntityLivingBase, PotionEffect, IMobPotionEffectMatcher, MobPotionEffect> {
         private static final PotionDeserializer POTION_DESERIALIZER = new PotionDeserializer();
         private static final ItemStackDeserializer ITEM_STACK_DESERIALIZER = new ItemStackDeserializer();
 
@@ -100,7 +98,7 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
         }
 
         @Override
-        protected void update(ScriptObjectMirror mirror, MobPotionEffect output, List<IMobPotionEffectMatcher> iMobPotionEffectMatchers) {
+        protected void update(ScriptObjectMirror mirror, MobPotionEffect output) {
             // Our base potion
             output.what = (Potion) POTION_DESERIALIZER.Deserialize(mirror.get("what"));
 

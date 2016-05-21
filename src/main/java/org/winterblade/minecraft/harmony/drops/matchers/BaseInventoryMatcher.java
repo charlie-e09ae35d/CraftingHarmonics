@@ -55,6 +55,9 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
             matchingItems.put(i, item);
         }
 
+        // If we didn't match anything...
+        if(matchingItems.size() <= 0) return BaseMatchResult.False;
+
         Map<Integer, ItemStack> affectedItems = new HashMap<>();
 
         int dropsRemaining = drop.stackSize;

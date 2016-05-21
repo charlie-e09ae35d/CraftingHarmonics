@@ -1,10 +1,7 @@
 package org.winterblade.minecraft.harmony.scripting.deserializers;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import jdk.nashorn.api.scripting.ScriptUtils;
-import jdk.nashorn.internal.runtime.ScriptObject;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
-import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 
 import java.util.List;
 

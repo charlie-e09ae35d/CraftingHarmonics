@@ -37,9 +37,9 @@ public abstract class BaseMirroredDeserializer implements IScriptObjectDeseriali
     protected <T> T[] convertArrayWithDeserializer(ScriptObjectMirror mirror, String key, IScriptObjectDeserializer deserializer, Class<T> toClass) {
         try {
             Object[] items = (Object[]) ScriptUtils.convert(mirror.get(key), Object[].class);
-            T[] output = (T[]) Array.newInstance(toClass, items.length);
+            T[] output = (T[]) Array.newInstance(toClass, items != null ? items.length : 0);
 
-            for (int i = 0; i < items.length; i++) {
+            for (int i = 0; i < output.length; i++) {
                 try {
                     output[i] = (T) deserializer.Deserialize(items[i]);
                 } catch (Exception e) {

@@ -19,7 +19,7 @@ public class MobDropDeserializer extends BaseDropDeserializer<LivingDropsEvent, 
     }
 
     @Override
-    protected void update(ScriptObjectMirror mirror, MobDrop drop) {
+    protected void updateExtraProps(ScriptObjectMirror mirror, MobDrop drop) {
         if(mirror.containsKey("lootingMultiplier")) {
             drop.setLootingMultiplier((Double) mirror.get("lootingMultiplier"));
         }
