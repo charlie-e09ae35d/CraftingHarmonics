@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.callbacks.mobs;
 
+import com.mojang.authlib.GameProfile;
 import io.netty.buffer.ByteBuf;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
@@ -9,6 +10,8 @@ import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.winterblade.minecraft.harmony.api.IEntityCallback;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -16,12 +19,14 @@ import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMirroredDes
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
 import javax.annotation.Nullable;
+import java.util.UUID;
 
 /**
  * Created by Matt on 5/22/2016.
  */
 public class CommandCallback implements IEntityCallback {
     private String command;
+    private String name;
 
     @Override
     public void apply(EntityLivingBase target, World world) {
@@ -34,7 +39,7 @@ public class CommandCallback implements IEntityCallback {
                         .getMinecraftServerInstance()
                         .getCommandManager()
                         .executeCommand(
-                            new CommandCallbackSender(target), specificCommand
+                            new CommandCallbackSender(target, name), specificCommand
                         );
 
         // TODO: "onError" callback.
@@ -49,6 +54,7 @@ public class CommandCallback implements IEntityCallback {
             CommandCallback output = new CommandCallback();
 
             output.command = mirror.get("command").toString();
+            output.name = mirror.containsKey("name") ? mirror.get("name").toString() : null;
 
             return output;
         }
@@ -59,10 +65,13 @@ public class CommandCallback implements IEntityCallback {
      */
     private static class CommandCallbackSender extends CommandBlockBaseLogic
     {
+        private final String sender;
         private final EntityLivingBase wrappedEntity;
 
-        CommandCallbackSender(EntityLivingBase wrappedEntity) {
+        CommandCallbackSender(EntityLivingBase wrappedEntity, @Nullable String name) {
             this.wrappedEntity = wrappedEntity;
+
+            sender = name;
         }
 
         @Override
@@ -130,6 +139,14 @@ public class CommandCallback implements IEntityCallback {
         @Override
         public MinecraftServer getServer() {
             return FMLCommonHandler.instance().getMinecraftServerInstance();
+        }
+
+        /**
+         * Get the name of this object. For players this returns their username
+         */
+        @Override
+        public String getName() {
+            return sender != null ? sender : super.getName();
         }
     }
 }
