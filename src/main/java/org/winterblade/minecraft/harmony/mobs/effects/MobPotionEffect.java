@@ -74,13 +74,16 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
                 // Now perform our updates:
                 if(result.getCallback() != null) result.getCallback().run();
 
+//                PotionEffect cur = entity.getActivePotionEffect(matcher.getWhat());
+//                if(cur != null) {
+//                    // TODO: onNew
+//                } else {
+//                    // TODO: onExtend
+//                }
+//                // TODO: onApply
+
                 // Do the effect:
-                PotionEffect cur = entity.getActivePotionEffect(matcher.getWhat());
-                if(cur != null) {
-                    cur.combine(effect);
-                } else {
-                    entity.addPotionEffect(effect);
-                }
+                entity.addPotionEffect(effect);
             }
         }
     }
