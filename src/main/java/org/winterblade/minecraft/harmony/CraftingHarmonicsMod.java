@@ -25,6 +25,7 @@ import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapedComponentRec
 import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapelessComponentRecipe;
 import org.winterblade.minecraft.harmony.proxies.CommonProxy;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
+import org.winterblade.minecraft.harmony.scripting.ScriptInteropRegistry;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -39,7 +40,7 @@ import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
  * Created by Matt on 4/5/2016.
  */
 @Mod(modid = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.MODID, version = org.winterblade.minecraft.harmony.CraftingHarmonicsMod.VERSION,
-    dependencies = "required-after:NashornLib@[1.9.0-1.8.77-1.2.2,)")
+    dependencies = "required-after:NashornLib@[1.9.0-1.8.77-1.3.0,)")
 public class CraftingHarmonicsMod {
     public static final String MODID = "craftingharmonics";
     public static final String VERSION = "@VERSION@";
@@ -66,6 +67,7 @@ public class CraftingHarmonicsMod {
         // Load all recipe operations (thanks mezz, who thanks cpw... so also thanks cpw)
         RecipeOperationRegistry.CreateDeserializers(AnnotationUtil.getRecipeOperations(event.getAsmData()));
         ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
+        ScriptInteropRegistry.registerInterops(AnnotationUtil.getInteropClasses(event.getAsmData()));
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");

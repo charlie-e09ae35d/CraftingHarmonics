@@ -37,7 +37,9 @@ public class CommandCallback implements IEntityCallback {
                             new CommandCallbackSender(target), specificCommand
                         );
 
+        // TODO: "onError" callback.
         LogHelper.info("Ran '" + specificCommand + "' from '" + target.getName() + "'.  Result code: " + result);
+        
     }
 
     @ScriptObjectDeserializer(deserializes = CommandCallback.class)

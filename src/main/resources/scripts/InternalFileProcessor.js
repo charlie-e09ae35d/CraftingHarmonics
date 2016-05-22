@@ -1,6 +1,21 @@
 // For our actual recipes object
 var module = { exports: {} };
 
+var interop = {};
+
+function __CraftingHarmonicsInternalAddInterop(javaClass, interopPath) {
+    var interopEntry = interop;
+
+    // Build up to our proper interop path:
+    for(var i = 0; i < interopPath.length - 1; i++) {
+        if(!interopEntry[interopPath[i]]) interopEntry[interopPath[i]] = {};
+        interopEntry = interopEntry[interopPath[i]];
+    }
+
+    // Assign it:
+    interopEntry[interopPath[interopPath.length-1]] = Java.type(javaClass);
+}
+
 var __CraftingHarmonicsInternal_Internal = function() {
     var ch = this;
 
