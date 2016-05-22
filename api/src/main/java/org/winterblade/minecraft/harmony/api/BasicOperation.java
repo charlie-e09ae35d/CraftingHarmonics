@@ -185,6 +185,25 @@ public abstract class BasicOperation implements IOperation {
         return !onceOnly();
     }
 
+    /**
+     * Should the operation be initialized/applied/undone/etc on the client
+     *
+     * @return True if it should, false otherwise.  Defaults to true.
+     */
+    @Override
+    public boolean isClientOperation() {
+        return true;
+    }
+
+    /**
+     * Should the operation be initialized/applied/undone/etc on the server
+     *
+     * @return True if it should, false otherwise.  Defaults to true.
+     */
+    @Override
+    public boolean isServerOperation() {
+        return true;
+    }
 
     @Override
     public String toString() {

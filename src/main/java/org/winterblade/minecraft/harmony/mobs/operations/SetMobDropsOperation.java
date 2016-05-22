@@ -46,4 +46,14 @@ public class SetMobDropsOperation extends BasicOperation {
     public void undo() {
         MobDropRegistry.remove(ticket);
     }
+
+    /**
+     * Should the operation be initialized/applied/undone/etc on the client
+     *
+     * @return True if it should, false otherwise.  Defaults to true.
+     */
+    @Override
+    public boolean isClientOperation() {
+        return false;
+    }
 }
