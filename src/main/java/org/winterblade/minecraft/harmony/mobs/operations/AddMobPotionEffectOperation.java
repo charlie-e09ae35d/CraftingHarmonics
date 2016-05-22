@@ -39,6 +39,6 @@ public class AddMobPotionEffectOperation extends BasicOperation {
 
     @Override
     public void undo() {
-        MobTickRegistry.applyPotionEffect(ticket);
+        MobTickRegistry.removePotionEffect(ticket);
     }
 }
