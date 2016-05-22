@@ -10,7 +10,9 @@ import net.minecraft.potion.PotionEffect;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
+import org.winterblade.minecraft.harmony.api.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
+import org.winterblade.minecraft.harmony.callbacks.mobs.EntityCallbackDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMatchingDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.ItemStackDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.PotionDeserializer;
@@ -30,6 +32,7 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
     private boolean showParticles;
     private int duration;
     private ItemStack[] cures;
+    private IEntityCallback[] applyCallbacks;
 
     public Potion getWhat() {
         return what;
@@ -49,6 +52,14 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
 
     public ItemStack[] getCures() {
         return cures != null ? cures : new ItemStack[0];
+    }
+
+    public void doApply(boolean isNew, EntityLivingBase entity) {
+        if(applyCallbacks != null) {
+            for(IEntityCallback callback : applyCallbacks) {
+                callback.apply(entity, entity.getEntityWorld());
+            }
+        }
     }
 
     public static class Handler extends BaseEventMatch.BaseMatchHandler<MobPotionEffect> {
@@ -74,13 +85,8 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
                 // Now perform our updates:
                 if(result.getCallback() != null) result.getCallback().run();
 
-//                PotionEffect cur = entity.getActivePotionEffect(matcher.getWhat());
-//                if(cur != null) {
-//                    // TODO: onNew
-//                } else {
-//                    // TODO: onExtend
-//                }
-//                // TODO: onApply
+                // Apply our callbacks
+                matcher.doApply(entity.getActivePotionEffect(matcher.getWhat()) != null, entity);
 
                 // Do the effect:
                 entity.addPotionEffect(effect);
@@ -92,6 +98,7 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
     public static class Deserializer extends BaseMatchingDeserializer<EntityLivingBase, PotionEffect, IMobPotionEffectMatcher, MobPotionEffect> {
         private static final PotionDeserializer POTION_DESERIALIZER = new PotionDeserializer();
         private static final ItemStackDeserializer ITEM_STACK_DESERIALIZER = new ItemStackDeserializer();
+        private static final EntityCallbackDeserializer ENTITY_CALLBACK_DESERIALIZER = new EntityCallbackDeserializer();
 
         public Deserializer() {super(IMobPotionEffectMatcher.class);}
 
@@ -112,6 +119,7 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
             output.amplifier = mirror.containsKey("amplifier") ? (int) ScriptUtils.convert(mirror.get("amplifier"), Integer.class) : 0;
             output.showParticles = mirror.containsKey("showParticles") && (boolean) ScriptUtils.convert(mirror.get("showParticles"), Boolean.class);
             output.cures = convertArrayWithDeserializer(mirror, "cures", ITEM_STACK_DESERIALIZER, ItemStack.class);
+            output.applyCallbacks = convertArrayWithDeserializer(mirror, "onApplied", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
         }
     }
 }
