@@ -6,6 +6,8 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.*;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
+import javax.annotation.Nullable;
+
 import static org.objectweb.asm.Opcodes.*;
 
 /**
@@ -46,6 +48,10 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
                 case "updatePotionEffects":
                 case "func_70679_bo":
                     patchUpdatePotionEffects(methodNode);
+                    break;
+                case "clearActivePotions":
+                case "func_70674_bp":
+                    patchClearActivePotions(methodNode);
                     break;
             }
         }
@@ -91,71 +97,114 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
         }
         catch(Exception e) {
             LogHelper.error("Unable to patch removeActivePotionEffect", e);
-            return;
         }
     }
 
     private void patchCurePotionEffects(MethodNode methodNode) {
-        LogHelper.info(" - Patching curePotionEffects...");
+        patchMethodAfterFinishedPotion(methodNode, "curePotionEffects", "potionCuredHook");
+    }
 
+    private void patchUpdatePotionEffects(MethodNode methodNode) {
+        patchMethodAfterFinishedPotion(methodNode, "updatePotionEffects", "potionExpiredHook");
+    }
+
+    private void patchClearActivePotions(MethodNode methodNode) {
+        LogHelper.info(" - Patching clearActivePotions...");
+
+        // This one's a bit different, since we have to split apart the existing definition...
+        // This happens right after iterator.next(), and it basically creates a new PotionEffect variable off that
+        // which we pass in to our hook before giving it over to the actual method it was intended for.
         try {
             AbstractInsnNode targetNode = null;
             AbstractInsnNode[] insnNodes = methodNode.instructions.toArray();
             for (int i = 0; i < insnNodes.length; i++) {
                 AbstractInsnNode instruction = insnNodes[i];
-                if (instruction.getOpcode() != PUTFIELD || !((FieldInsnNode) instruction).desc.equals("Z")) continue;
+                if (instruction.getOpcode() != CHECKCAST || !((TypeInsnNode) instruction).desc.equals(potionEffectName)) continue;
                 targetNode = insnNodes[i + 1];
-                break;
             }
 
             if (targetNode == null) {
-                LogHelper.error("Unable to patch curePotionEffects; couldn't find line to replace.");
+                LogHelper.error("Unable to patch clearActivePotions; couldn't find line to target.");
                 return;
             }
 
             InsnList toInsert = new InsnList();
+            // There's going to be an extra copy  of 'this' floating around on the stack for a minute...
+            toInsert.add(new VarInsnNode(ASTORE, 2)); // Store the effect we just popped
+
+            // Pass it to our hook
             toInsert.add(new VarInsnNode(ALOAD, 0));
-            toInsert.add(new VarInsnNode(ALOAD, 3));
+            toInsert.add(new VarInsnNode(ALOAD, 2));
             toInsert.add(new MethodInsnNode(INVOKESTATIC,
                     "org/winterblade/minecraft/harmony/mobs/effects/MobPotionEffect",
                     "potionCuredHook",
                     "(L" + elbName + ";L" + potionEffectName + ";)V",
                     false));
+
+            // Now load it back up to make the state all fine again
+            toInsert.add(new VarInsnNode(ALOAD, 2));
+            // The copy of 'this' from above finally gets used around here...
+
             methodNode.instructions.insertBefore(targetNode, toInsert);
         } catch(Exception e) {
-            LogHelper.error("Unable to patch curePotionEffects...",e);
+            LogHelper.error("Unable to patch clearActivePotions...",e);
         }
     }
 
-    private void patchUpdatePotionEffects(MethodNode methodNode) {
-        LogHelper.info(" - Patching updatePotionEffects...");
+    /**
+     * Patch the given method with the specified hook
+     * @param methodNode    The method to operate on
+     * @param name          The name of the method (for logging)
+     * @param hook          The hook to insert
+     */
+    private void patchMethodAfterFinishedPotion(MethodNode methodNode, String name, String hook) {
+        LogHelper.info(" - Patching " + name + "...");
 
         try {
-            AbstractInsnNode targetNode = null;
-            AbstractInsnNode[] insnNodes = methodNode.instructions.toArray();
-            for (int i = 0; i < insnNodes.length; i++) {
-                AbstractInsnNode instruction = insnNodes[i];
-                if (instruction.getOpcode() != INVOKEVIRTUAL || !((MethodInsnNode) instruction).name.equals(onFinishedPotionEffectName)) continue;
-                targetNode = insnNodes[i + 1];
-                break;
-            }
+            AbstractInsnNode targetNode = targetAfterFinishedPotionEffect(methodNode);
 
             if (targetNode == null) {
-                LogHelper.error("Unable to patch updatePotionEffects; couldn't find line to replace.");
+                LogHelper.error("Unable to patch " + name + "; couldn't find line to target.");
                 return;
             }
 
-            InsnList toInsert = new InsnList();
-            toInsert.add(new VarInsnNode(ALOAD, 0));
-            toInsert.add(new VarInsnNode(ALOAD, 3));
-            toInsert.add(new MethodInsnNode(INVOKESTATIC,
-                    "org/winterblade/minecraft/harmony/mobs/effects/MobPotionEffect",
-                    "potionExpiredHook",
-                    "(L" + elbName + ";L" + potionEffectName + ";)V",
-                    false));
-            methodNode.instructions.insertBefore(targetNode, toInsert);
+            insertHook(methodNode, targetNode, hook);
         } catch(Exception e) {
-            LogHelper.error("Unable to patch curePotionEffects...",e);
+            LogHelper.error("Unable to patch " + name + "...",e);
         }
+    }
+
+    /**
+     * Inserts a given hook, passing the Entity and the effect.
+     * @param methodNode    The method to operate on
+     * @param targetNode    The spot to insert the hook before
+     * @param hookName      The name of the hook to call
+     */
+    private void insertHook(MethodNode methodNode, AbstractInsnNode targetNode, String hookName) {
+        InsnList toInsert = new InsnList();
+        toInsert.add(new VarInsnNode(ALOAD, 0));
+        toInsert.add(new VarInsnNode(ALOAD, 3));
+        toInsert.add(new MethodInsnNode(INVOKESTATIC,
+                "org/winterblade/minecraft/harmony/mobs/effects/MobPotionEffect",
+                hookName,
+                "(L" + elbName + ";L" + potionEffectName + ";)V",
+                false));
+        methodNode.instructions.insertBefore(targetNode, toInsert);
+    }
+
+    /**
+     * Gets a target node one line after 'onFinishedPotionEffect'
+     * @param methodNode    The method to look through
+     * @return              The target node, or null if it wasn't found.
+     */
+    @Nullable
+    private AbstractInsnNode targetAfterFinishedPotionEffect(MethodNode methodNode) {
+        AbstractInsnNode[] insnNodes = methodNode.instructions.toArray();
+        for (int i = 0; i < insnNodes.length; i++) {
+            AbstractInsnNode instruction = insnNodes[i];
+            if (instruction.getOpcode() != INVOKEVIRTUAL || !((MethodInsnNode) instruction).name.equals(onFinishedPotionEffectName)) continue;
+            return insnNodes[i + 1];
+        }
+        return null;
     }
 }
