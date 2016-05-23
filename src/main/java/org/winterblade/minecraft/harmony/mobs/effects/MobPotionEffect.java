@@ -5,7 +5,6 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -124,18 +123,23 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
         }
     }
 
-    public static PotionEffect potionEffectHook(EntityLivingBase entity, PotionEffect effect) {
+    public static void potionExpiredHook(EntityLivingBase entity, PotionEffect effect) {
         // Check if we need to handle for this entity...
-        if(!potionHandlers.containsKey(entity)) return effect;
+        if(!potionHandlers.containsKey(entity)) return;
 
         // Now check if we need to handle for this effect...
         Map<Potion, HarmonyPotionEffect> effectMap = potionHandlers.get(entity);
-        if(!effectMap.containsKey(effect.getPotion())) return effect;
+        if(!effectMap.containsKey(effect.getPotion())) return;
 
         // Handle it and clean up...
         effectMap.remove(effect.getPotion()).onRemoved(entity, false);
         if(effectMap.size() <= 0) potionHandlers.remove(entity);
 
+        return;
+    }
+
+    public static PotionEffect potionRemovedHook(EntityLivingBase entity, PotionEffect effect) {
+        potionCuredHook(entity, effect);
         return effect;
     }
 
@@ -199,15 +203,6 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
             this.expiredCallbacks = expiredCallbacks;
             this.curedCallbacks = curedCallbacks;
             this.removedCallbacks = removedCallbacks;
-        }
-        @Override
-        public boolean onUpdate(EntityLivingBase entityIn) {
-            if(super.onUpdate(entityIn)) return true;
-
-            // Call our callbacks...
-            onRemoved(entityIn, false);
-
-            return false;
         }
 
         public void onRemoved(EntityLivingBase entity, boolean wasCured) {

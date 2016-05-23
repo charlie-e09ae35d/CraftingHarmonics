@@ -13,6 +13,7 @@ import static org.objectweb.asm.Opcodes.*;
  */
 public class PotionRemovedHookTransformer implements IClassTransformer {
     private String activePotionsFieldName;
+    private String onFinishedPotionEffectName;
     private final String potionEffectName = "net/minecraft/potion/PotionEffect";
     private final String elbName = "net/minecraft/entity/EntityLivingBase";
 
@@ -22,7 +23,7 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
 
         boolean dev = name.equals(transformedName);
 
-        LogHelper.info("Applying potion removed hook to " + transformedName + " (" + name + ")...");
+        LogHelper.info("Applying potion hooks to " + transformedName + "...");
 
         ClassNode classNode = new ClassNode();
         ClassReader reader = new ClassReader(basicClass);
@@ -30,6 +31,7 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
 
         // Declare a few names:
         activePotionsFieldName = dev ? "activePotionsMap" : "field_70713_bf";
+        onFinishedPotionEffectName = dev ? "onFinishedPotionEffect" : "func_70688_c";
 
         for(MethodNode methodNode : classNode.methods)
         {
@@ -39,8 +41,11 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
                     patchRemoveActivePotionEffect(methodNode);
                     break;
                 case "curePotionEffects":
-                // case "???":
                     patchCurePotionEffects(methodNode);
+                    break;
+                case "updatePotionEffects":
+                case "func_70679_bo":
+                    patchUpdatePotionEffects(methodNode);
                     break;
             }
         }
@@ -49,17 +54,17 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
             classNode.accept(classWriter);
 
-            LogHelper.info("Writing updated " + transformedName);
+            LogHelper.info("Finished updating " + transformedName);
             return classWriter.toByteArray();
         }
         catch (Exception e) {
-            LogHelper.info("Unable to write updated " + transformedName, e);
+            LogHelper.error("Unable to write updated " + transformedName, e);
             return basicClass;
         }
     }
 
     private void patchRemoveActivePotionEffect(MethodNode methodNode) {
-        LogHelper.info("Patching removeActivePotionEffect...");
+        LogHelper.info(" - Patching removeActivePotionEffect...");
 
         // Blow up the method.
         methodNode.instructions.clear();
@@ -68,7 +73,7 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
          * Add our hook:
          *
          * This is just turning the function into:
-         *      return MobPotionEffect.potionEffectHook(this.activePotionsMap.remove(potion));
+         *      return MobPotionEffect.potionRemovedHook(this.activePotionsMap.remove(potion));
          */
         try {
             methodNode.instructions.add(new VarInsnNode(ALOAD, 0));
@@ -79,21 +84,19 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
             methodNode.instructions.add(new TypeInsnNode(CHECKCAST, potionEffectName));
             methodNode.instructions.add(new MethodInsnNode(INVOKESTATIC,
                     "org/winterblade/minecraft/harmony/mobs/effects/MobPotionEffect",
-                    "potionEffectHook",
+                    "potionRemovedHook",
                     "(L" + elbName + ";L" + potionEffectName + ";)L" + potionEffectName + ";",
                     false));
             methodNode.instructions.add(new InsnNode(ARETURN));
         }
         catch(Exception e) {
-            LogHelper.info("Unable to patch removeActivePotionEffect", e);
+            LogHelper.error("Unable to patch removeActivePotionEffect", e);
             return;
         }
-
-        LogHelper.info("Done patching removeActivePotionEffect...");
     }
 
     private void patchCurePotionEffects(MethodNode methodNode) {
-        LogHelper.info("Patching curePotionEffects...");
+        LogHelper.info(" - Patching curePotionEffects...");
 
         try {
             AbstractInsnNode targetNode = null;
@@ -106,7 +109,7 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
             }
 
             if (targetNode == null) {
-                LogHelper.warn("Unable to patch curePotionEffects; couldn't find line to replace.");
+                LogHelper.error("Unable to patch curePotionEffects; couldn't find line to replace.");
                 return;
             }
 
@@ -120,9 +123,39 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
                     false));
             methodNode.instructions.insertBefore(targetNode, toInsert);
         } catch(Exception e) {
-            LogHelper.warn("Unable to patch curePotionEffects...",e);
+            LogHelper.error("Unable to patch curePotionEffects...",e);
         }
+    }
 
-        LogHelper.info("Done patching curePotionEffects...");
+    private void patchUpdatePotionEffects(MethodNode methodNode) {
+        LogHelper.info(" - Patching updatePotionEffects...");
+
+        try {
+            AbstractInsnNode targetNode = null;
+            AbstractInsnNode[] insnNodes = methodNode.instructions.toArray();
+            for (int i = 0; i < insnNodes.length; i++) {
+                AbstractInsnNode instruction = insnNodes[i];
+                if (instruction.getOpcode() != INVOKEVIRTUAL || !((MethodInsnNode) instruction).name.equals(onFinishedPotionEffectName)) continue;
+                targetNode = insnNodes[i + 1];
+                break;
+            }
+
+            if (targetNode == null) {
+                LogHelper.error("Unable to patch updatePotionEffects; couldn't find line to replace.");
+                return;
+            }
+
+            InsnList toInsert = new InsnList();
+            toInsert.add(new VarInsnNode(ALOAD, 0));
+            toInsert.add(new VarInsnNode(ALOAD, 3));
+            toInsert.add(new MethodInsnNode(INVOKESTATIC,
+                    "org/winterblade/minecraft/harmony/mobs/effects/MobPotionEffect",
+                    "potionExpiredHook",
+                    "(L" + elbName + ";L" + potionEffectName + ";)V",
+                    false));
+            methodNode.instructions.insertBefore(targetNode, toInsert);
+        } catch(Exception e) {
+            LogHelper.error("Unable to patch curePotionEffects...",e);
+        }
     }
 }
