@@ -68,6 +68,11 @@ dependencies {
 
 //Add dependencies to the JAR
 jar {
+    manifest {
+        attributes 'FMLCorePlugin': 'org.winterblade.minecraft.harmony.asm.HarmonyPreloader',
+                   'FMLCorePluginContainsFMLMod': 'true'
+    }
+
     dependsOn integrations.collect { ':integration:'+ it + ':jar'}
     from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
     from project(":api").sourceSets.main.output

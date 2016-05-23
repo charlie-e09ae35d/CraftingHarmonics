@@ -5,6 +5,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
@@ -18,12 +19,17 @@ import org.winterblade.minecraft.harmony.scripting.deserializers.ItemStackDeseri
 import org.winterblade.minecraft.harmony.scripting.deserializers.PotionDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
+import java.util.WeakHashMap;
 
 /**
  * Created by Matt on 5/20/2016.
  */
 public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffect, IMobPotionEffectMatcher> {
+    private static WeakHashMap<EntityLivingBase, Map<Potion, HarmonyPotionEffect>> potionHandlers = new WeakHashMap<>();
+
     /*
      * Serialized properties
      */
@@ -36,6 +42,8 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
     private IEntityCallback[] newCallbacks;
     private IEntityCallback[] extendedCallbacks;
     private IEntityCallback[] expiredCallbacks;
+    private IEntityCallback[] removedCallbacks;
+    private IEntityCallback[] curedCallbacks;
 
     public Potion getWhat() {
         return what;
@@ -85,9 +93,11 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
             // Now, actually calculate out our drop rates...
             for (MobPotionEffect matcher : this.getMatchers()) {
                 // Wrap this in our class, so we can callback when it's expired
-                PotionEffect effect = new PotionEffectWithExpiredCallback(matcher.getWhat(), matcher.getDuration(),
+                HarmonyPotionEffect effect = new HarmonyPotionEffect(matcher.getWhat(), matcher.getDuration(),
                         matcher.getAmplifier(), false, matcher.isShowParticles(),
-                        matcher.expiredCallbacks != null ? matcher.expiredCallbacks : new IEntityCallback[0]);
+                        matcher.expiredCallbacks != null ? matcher.expiredCallbacks : new IEntityCallback[0],
+                        matcher.curedCallbacks != null ? matcher.curedCallbacks : new IEntityCallback[0],
+                        matcher.removedCallbacks != null ? matcher.removedCallbacks : new IEntityCallback[0]);
                 effect.setCurativeItems(Lists.newArrayList(matcher.getCures()));
 
                 // Check if this drop matches:
@@ -101,12 +111,30 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
                 if(result.getCallback() != null) result.getCallback().run();
 
                 // Apply our callbacks
-                matcher.doApply(entity.getActivePotionEffect(matcher.getWhat()) != null, entity);
+                matcher.doApply(entity.getActivePotionEffect(matcher.getWhat()) == null, entity);
 
                 // Do the effect:
                 entity.addPotionEffect(effect);
+
+                if(!potionHandlers.containsKey(entity)) potionHandlers.put(entity, new HashMap<>());
+                potionHandlers.get(entity).put(matcher.getWhat(), effect);
             }
         }
+    }
+
+    public static PotionEffect potionEffectHook(EntityLivingBase entity, PotionEffect effect) {
+        // Check if we need to handle for this entity...
+        if(!potionHandlers.containsKey(entity)) return effect;
+
+        // Now check if we need to handle for this effect...
+        Map<Potion, HarmonyPotionEffect> effectMap = potionHandlers.get(entity);
+        if(!effectMap.containsKey(effect.getPotion())) return effect;
+
+        // Handle it and clean up...
+        effectMap.remove(effect.getPotion()).onRemoved(entity);
+        if(effectMap.size() <= 0) potionHandlers.remove(entity);
+
+        return effect;
     }
 
     @ScriptObjectDeserializer(deserializes = MobPotionEffect.class)
@@ -138,16 +166,24 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
             output.extendedCallbacks = convertArrayWithDeserializer(mirror, "onExtended", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
             output.applyCallbacks = convertArrayWithDeserializer(mirror, "onApplied", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
             output.expiredCallbacks = convertArrayWithDeserializer(mirror, "onExpired", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.curedCallbacks = convertArrayWithDeserializer(mirror, "onCured", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.removedCallbacks = convertArrayWithDeserializer(mirror, "onRemoved", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
         }
     }
 
-    private static class PotionEffectWithExpiredCallback extends PotionEffect {
-
+    public static class HarmonyPotionEffect extends PotionEffect {
         private final IEntityCallback[] expiredCallbacks;
+        private final IEntityCallback[] curedCallbacks;
+        private final IEntityCallback[] removedCallbacks;
+        private boolean expired = false;
 
-        public PotionEffectWithExpiredCallback(Potion potionIn, int durationIn, int amplifierIn, boolean ambientIn, boolean showParticlesIn, IEntityCallback[] expiredCallbacks) {
+        public HarmonyPotionEffect(Potion potionIn, int durationIn, int amplifierIn, boolean ambientIn,
+                                   boolean showParticlesIn, IEntityCallback[] expiredCallbacks,
+                                   IEntityCallback[] curedCallbacks, IEntityCallback[] removedCallbacks) {
             super(potionIn, durationIn, amplifierIn, ambientIn, showParticlesIn);
             this.expiredCallbacks = expiredCallbacks;
+            this.curedCallbacks = curedCallbacks;
+            this.removedCallbacks = removedCallbacks;
         }
 
         @Override
@@ -159,7 +195,31 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
                 callback.apply(entityIn, entityIn.getEntityWorld());
             }
 
+            expired = true;
             return false;
+        }
+
+        public void onRemoved(EntityLivingBase entity) {
+            // If we didn't expire, then we're being removed...?
+            if(!expired) {
+                for(IEntityCallback callback : curedCallbacks) {
+                    callback.apply(entity, entity.getEntityWorld());
+                }
+            }
+
+            for(IEntityCallback callback : removedCallbacks) {
+                callback.apply(entity, entity.getEntityWorld());
+            }
+        }
+
+        /**
+         * Write a custom potion effect to a potion item's NBT data.
+         *
+         * @param nbt
+         */
+        @Override
+        public NBTTagCompound writeCustomPotionEffectToNBT(NBTTagCompound nbt) {
+            return super.writeCustomPotionEffectToNBT(nbt);
         }
     }
 }
