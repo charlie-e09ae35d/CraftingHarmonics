@@ -1,6 +1,5 @@
 package org.winterblade.minecraft.harmony.callbacks.mobs;
 
-import com.mojang.authlib.GameProfile;
 import io.netty.buffer.ByteBuf;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
@@ -10,8 +9,6 @@ import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.winterblade.minecraft.harmony.api.IEntityCallback;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -19,7 +16,6 @@ import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMirroredDes
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 /**
  * Created by Matt on 5/22/2016.

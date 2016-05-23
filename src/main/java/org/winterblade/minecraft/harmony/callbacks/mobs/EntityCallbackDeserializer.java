@@ -19,7 +19,8 @@ public class EntityCallbackDeserializer implements IScriptObjectDeserializer {
         // Method callback
         if(ScriptFunction.class.isAssignableFrom(input.getClass())) {
             try {
-                return ScriptUtils.convert(input, IEntityCallback.class);
+                // Wrap it so we can pass interops instead of base objects
+                return new FunctionCallback((FunctionCallback.JSCallback) ScriptUtils.convert(input, FunctionCallback.JSCallback.class));
             } catch (Exception e) {
                 LogHelper.error("Unable to convert given callback function into IEntityCallback", e);
                 return null;

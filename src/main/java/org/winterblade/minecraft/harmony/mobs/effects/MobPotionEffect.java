@@ -33,6 +33,9 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
     private int duration;
     private ItemStack[] cures;
     private IEntityCallback[] applyCallbacks;
+    private IEntityCallback[] newCallbacks;
+    private IEntityCallback[] extendedCallbacks;
+    private IEntityCallback[] expiredCallbacks;
 
     public Potion getWhat() {
         return what;
@@ -55,6 +58,16 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
     }
 
     public void doApply(boolean isNew, EntityLivingBase entity) {
+        if(isNew && newCallbacks != null) {
+            for(IEntityCallback callback : newCallbacks) {
+                callback.apply(entity, entity.getEntityWorld());
+            }
+        } else if(!isNew && extendedCallbacks != null){
+            for(IEntityCallback callback : extendedCallbacks) {
+                callback.apply(entity, entity.getEntityWorld());
+            }
+        }
+
         if(applyCallbacks != null) {
             for(IEntityCallback callback : applyCallbacks) {
                 callback.apply(entity, entity.getEntityWorld());
@@ -71,8 +84,10 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
         public void apply(Random rand, EntityLivingBase entity) {
             // Now, actually calculate out our drop rates...
             for (MobPotionEffect matcher : this.getMatchers()) {
-                PotionEffect effect = new PotionEffect(matcher.getWhat(), matcher.getDuration(), matcher.getAmplifier(),
-                        false, matcher.isShowParticles());
+                // Wrap this in our class, so we can callback when it's expired
+                PotionEffect effect = new PotionEffectWithExpiredCallback(matcher.getWhat(), matcher.getDuration(),
+                        matcher.getAmplifier(), false, matcher.isShowParticles(),
+                        matcher.expiredCallbacks != null ? matcher.expiredCallbacks : new IEntityCallback[0]);
                 effect.setCurativeItems(Lists.newArrayList(matcher.getCures()));
 
                 // Check if this drop matches:
@@ -119,7 +134,32 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
             output.amplifier = mirror.containsKey("amplifier") ? (int) ScriptUtils.convert(mirror.get("amplifier"), Integer.class) : 0;
             output.showParticles = mirror.containsKey("showParticles") && (boolean) ScriptUtils.convert(mirror.get("showParticles"), Boolean.class);
             output.cures = convertArrayWithDeserializer(mirror, "cures", ITEM_STACK_DESERIALIZER, ItemStack.class);
+            output.newCallbacks = convertArrayWithDeserializer(mirror, "onNew", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.extendedCallbacks = convertArrayWithDeserializer(mirror, "onExtended", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
             output.applyCallbacks = convertArrayWithDeserializer(mirror, "onApplied", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.expiredCallbacks = convertArrayWithDeserializer(mirror, "onExpired", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+        }
+    }
+
+    private static class PotionEffectWithExpiredCallback extends PotionEffect {
+
+        private final IEntityCallback[] expiredCallbacks;
+
+        public PotionEffectWithExpiredCallback(Potion potionIn, int durationIn, int amplifierIn, boolean ambientIn, boolean showParticlesIn, IEntityCallback[] expiredCallbacks) {
+            super(potionIn, durationIn, amplifierIn, ambientIn, showParticlesIn);
+            this.expiredCallbacks = expiredCallbacks;
+        }
+
+        @Override
+        public boolean onUpdate(EntityLivingBase entityIn) {
+            if(super.onUpdate(entityIn)) return true;
+
+            // If we're expired, run our callbacks:
+            for(IEntityCallback callback : expiredCallbacks) {
+                callback.apply(entityIn, entityIn.getEntityWorld());
+            }
+
+            return false;
         }
     }
 }
