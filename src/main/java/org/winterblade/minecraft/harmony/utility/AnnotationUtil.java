@@ -4,6 +4,7 @@ import net.minecraftforge.fml.common.discovery.ASMDataTable;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.api.ScriptInterop;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import javax.annotation.Nonnull;
@@ -23,6 +24,10 @@ public class AnnotationUtil {
 
     public static Map<String, Class<Object>> getComponentClasses(@Nonnull ASMDataTable asmDataTable) {
         return getClassMap(asmDataTable, Component.class, Object.class, null);
+    }
+
+    public static Map<String, Class<Object>> getInteropClasses(@Nonnull ASMDataTable asmDataTable) {
+        return getClassMap(asmDataTable, ScriptInterop.class, Object.class, null);
     }
 
     @SuppressWarnings("unchecked")

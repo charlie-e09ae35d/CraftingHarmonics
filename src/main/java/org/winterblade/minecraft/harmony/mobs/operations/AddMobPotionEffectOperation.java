@@ -39,6 +39,16 @@ public class AddMobPotionEffectOperation extends BasicOperation {
 
     @Override
     public void undo() {
-        MobTickRegistry.applyPotionEffect(ticket);
+        MobTickRegistry.removePotionEffect(ticket);
+    }
+
+    /**
+     * Should the operation be initialized/applied/undone/etc on the client
+     *
+     * @return True if it should, false otherwise.  Defaults to true.
+     */
+    @Override
+    public boolean isClientOperation() {
+        return false;
     }
 }

@@ -33,6 +33,25 @@ public class RecipeOperationRegistry {
         }
     }
 
+    public static BasicOperation createOperation(String type, ScriptObjectMirror operation) {
+        type = type.toLowerCase();
+        if(!deserializerMap.containsKey(type)) {
+            return null;
+        }
+
+        Class source = deserializerMap.get(type);
+        BasicOperation inst;
+        try {
+            inst = (BasicOperation)source.newInstance();
+        } catch (Exception e) {
+            return null;
+        }
+
+        if(!inst.convert(NashornConfigProcessor.getInstance().nashorn,operation)) return null;
+
+        return inst;
+    }
+
     /**
      * Called from our internal scripts in order to create the operation.
      * @param setName      The name of the set to add it to.
@@ -41,21 +60,11 @@ public class RecipeOperationRegistry {
      * @return          True if the operation processed fine; false otherwise.
      */
     public static boolean CreateOperationInSet(String setName, String type, ScriptObjectMirror operation) {
-        type = type.toLowerCase();
-        if(!deserializerMap.containsKey(type)) {
+        BasicOperation inst = createOperation(type, operation);
+        if(inst == null) {
             LogHelper.warn("Unknown recipe operation type '" + type + "' for set '" + setName + "'.  Are you missing an addon?");
             return false;
         }
-
-        Class source = deserializerMap.get(type);
-        BasicOperation inst;
-        try {
-            inst = (BasicOperation)source.newInstance();
-        } catch (Exception e) {
-            LogHelper.error("Unable to create instance of " + source.getCanonicalName(),e);
-            return false;
-        }
-        if(!inst.convert(NashornConfigProcessor.getInstance().nashorn,operation)) return false;
 
         CraftingHarmonicsMod.AddOperationToSet(setName, inst);
 

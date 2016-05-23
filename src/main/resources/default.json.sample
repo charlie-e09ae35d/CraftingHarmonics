@@ -769,7 +769,8 @@
                             damagePlayer: 1.0,
                             playerDamageType: "magic",
                             playerDamageIsUnblockable: true,
-                            playerDamageIsAbsolute: true
+                            playerDamageIsAbsolute: true,
+                            cooldown: 900 // Also make sure they can only trigger this once every 45 seconds.
                         },
                         {
                             // Note: This just makes sure that the moon is the correct phase.  Combine with time of day matchers to make sure it's only night.
@@ -833,10 +834,46 @@
                             what: "minecraft:luck",
                             amplifier: 0, // The 'level' to add of the potion.  Defaults to 0. (in this case, 0 is Luck 1, and 1 is Luck 2)
                             showParticles: false, // If effect particles should be shown while this is active.  Defaults to false; I hate potion particles.
-                            duration: 200,  // The duration in ticks of the effect (200 = 10 seconds).  If not specified, this defaults to the number of ticks between checks +1.
+                            duration: 600,  // The duration in ticks of the effect (600 = 30 seconds).  If not specified, this defaults to the number of ticks between checks +1.
                                             // If you make this longer than the number of seconds, you can end up stacking effects
-                            cures: [], // A list of consumables that can cure this effect.  By default this will be nothing.
+                            cures: ["minecraft:milk_bucket"], // A list of consumables that can cure this effect.  By default this will be nothing.
+                            cooldown: 800, // Make sure it's only applied every 40 seconds as well.
+                            // We also have event callbacks when these occur:
+                            onNew: [ // Called when a new potion is applied
+                                // These can be either an object...
+                                {
+                                    type: "runPlayerCommand",
+                                    command: "/say @p You've got some extra luck.",
+                                    name: "The Server" // For commands that show a name, you can set the name here.
+                                }
+                            ],
+                            onExtended: [ // Called when an existing effect's duration is extended
+                                // Or functions, which get passed the entity being effected, and the world
+                                function(entity, world) {
+                                    console.log(entity.getName() + "'s luck was extended.");
+                                }
+                            ],
+                            onApplied: [ // Called every time the potion is either first applied or when its duration is extended (after onNew/onExtended both have been called)
+                            ],
 
+                            // All three of these rely on a coremod (because I haven't been bothered to PR it to Forge proper), so, they may fail if the coremod fails.
+                            // You will get errors in the console log near the very beginning if this is the case, but the game should not crash, please report any errors to me.
+                            onExpired: [ // Called when the duration expires without being cured
+                                // Note: if your duration and cooldown are exactly the same, this will be called right before its renewed
+                                function(entity, world) {
+                                    console.log(entity.getName() + "'s luck expired.");
+                                }
+                            ],
+                            onCured: [ // Called when the potion is cured with a curative item.
+                                function(entity, world) {
+                                    console.log(entity.getName() + "'s luck was cured.");
+                                }
+                            ],
+                            onRemoved: [ // Called when the potion is removed, either by expiring, or being cured.
+                                function(entity, world) {
+                                    console.log(entity.getName() + "'s luck was removed.");
+                                }
+                            ]
                         },
                         {
                             // Gives a chance of soul sand dissolving and causing a momentary wither effect
