@@ -8,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.Side;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
@@ -131,10 +133,23 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
         if(!effectMap.containsKey(effect.getPotion())) return effect;
 
         // Handle it and clean up...
-        effectMap.remove(effect.getPotion()).onRemoved(entity);
+        effectMap.remove(effect.getPotion()).onRemoved(entity, false);
         if(effectMap.size() <= 0) potionHandlers.remove(entity);
 
         return effect;
+    }
+
+    public static void potionCuredHook(EntityLivingBase entity, PotionEffect effect) {
+        // Check if we need to handle for this entity...
+        if(!potionHandlers.containsKey(entity)) return;
+
+        // Now check if we need to handle for this effect...
+        Map<Potion, HarmonyPotionEffect> effectMap = potionHandlers.get(entity);
+        if(!effectMap.containsKey(effect.getPotion())) return;
+
+        // Handle it and clean up...
+        effectMap.remove(effect.getPotion()).onRemoved(entity, true);
+        if(effectMap.size() <= 0) potionHandlers.remove(entity);
     }
 
     @ScriptObjectDeserializer(deserializes = MobPotionEffect.class)
@@ -185,24 +200,26 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
             this.curedCallbacks = curedCallbacks;
             this.removedCallbacks = removedCallbacks;
         }
-
         @Override
         public boolean onUpdate(EntityLivingBase entityIn) {
             if(super.onUpdate(entityIn)) return true;
 
-            // If we're expired, run our callbacks:
-            for(IEntityCallback callback : expiredCallbacks) {
-                callback.apply(entityIn, entityIn.getEntityWorld());
-            }
+            // Call our callbacks...
+            onRemoved(entityIn, false);
 
-            expired = true;
             return false;
         }
 
-        public void onRemoved(EntityLivingBase entity) {
-            // If we didn't expire, then we're being removed...?
-            if(!expired) {
-                for(IEntityCallback callback : curedCallbacks) {
+        public void onRemoved(EntityLivingBase entity, boolean wasCured) {
+            // Only call our update on the server...
+            if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || expired) return;
+
+            if(wasCured) {
+                for (IEntityCallback callback : curedCallbacks) {
+                    callback.apply(entity, entity.getEntityWorld());
+                }
+            } else {
+                for (IEntityCallback callback : expiredCallbacks) {
                     callback.apply(entity, entity.getEntityWorld());
                 }
             }
@@ -210,16 +227,6 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
             for(IEntityCallback callback : removedCallbacks) {
                 callback.apply(entity, entity.getEntityWorld());
             }
-        }
-
-        /**
-         * Write a custom potion effect to a potion item's NBT data.
-         *
-         * @param nbt
-         */
-        @Override
-        public NBTTagCompound writeCustomPotionEffectToNBT(NBTTagCompound nbt) {
-            return super.writeCustomPotionEffectToNBT(nbt);
         }
     }
 }
