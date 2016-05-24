@@ -7,15 +7,14 @@ import net.minecraft.world.biome.Biome;
 /**
  * Created by Matt on 5/23/2016.
  */
-public abstract class BaseIsRainingMatcher extends BaseWeatherMatcher {
-
-    protected BaseIsRainingMatcher(WeatherMatcher matcher) {
+public abstract class BaseIsStormingMatcher extends BaseWeatherMatcher {
+    protected BaseIsStormingMatcher(WeatherMatcher matcher) {
         super(matcher);
     }
 
     @Override
     protected boolean isOccurring(World inWorld) {
-        return inWorld.isRaining();
+        return inWorld.isThundering();
     }
 
     @Override
@@ -27,5 +26,4 @@ public abstract class BaseIsRainingMatcher extends BaseWeatherMatcher {
     protected boolean isOccuringAtPosition(World inWorld, BlockPos atPos) {
         return inWorld.isRainingAt(atPos);
     }
-
 }

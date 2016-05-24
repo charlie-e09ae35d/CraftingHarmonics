@@ -25,7 +25,7 @@ public abstract class BaseWeatherMatcher {
 
     protected BaseMatchResult matches(World world, BlockPos pos) {
         // If the rain state doesn't match what we're expecting...
-        if(isOccuring(world) != presence) return BaseMatchResult.False;
+        if(isOccurring(world) != presence) return BaseMatchResult.False;
 
         // If we're not looking for a correct biome or block
         if(!onlyOnTarget && !onlyInBiome) return BaseMatchResult.True;
@@ -39,7 +39,7 @@ public abstract class BaseWeatherMatcher {
         return canOccurInBiome(world.getBiomeGenForCoords(pos)) == presence ? BaseMatchResult.True : BaseMatchResult.False;
     }
 
-    protected abstract boolean isOccuring(World inWorld);
+    protected abstract boolean isOccurring(World inWorld);
 
     protected abstract boolean canOccurInBiome(Biome biome);
 
