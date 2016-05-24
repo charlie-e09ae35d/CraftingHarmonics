@@ -8,6 +8,16 @@
             valid.
         </li>
         <li>
+            Adding support for 'isRaining', 'isStorming', and 'isSnowing' matchers for setBlockDrops, setMobDrops,
+            addMobShed, and addMobPotionEffect.  These can be configured not only to check for the presecne of the
+            weather in the world, but also if the target is in the right biome, or if the weather is happening at their
+            position (ie: not underground when raining).
+        </li>
+        <li>
+            Adding support for 'playerHasAchievement', 'minStat', and 'maxStat' matchers for setBlockDrops, setMobDrops,
+            addMobShed, and addMobPotionEffect.
+        </li>
+        <li>
             Adding multiple callbacks for addMobPotionEffect operations.  You may now specify a set of events for:
             <ul>
                 <li>onNew: When the potion is first applied to the entity by the operation.</li>
@@ -54,6 +64,10 @@
         <li>
             Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/69">issue #69</a> where
             addMobPotionEffect operations weren't getting removed, but re-added.
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/75">issue #75</a> where
+            using composite matchers addMobPotionEffect operations would cause an NPE.
         </li>
     </ul>
 </div>

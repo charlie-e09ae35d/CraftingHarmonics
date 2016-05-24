@@ -8,7 +8,7 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
 import org.winterblade.minecraft.harmony.blocks.BlockCountMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseNearbyBlockMatcher;
+import org.winterblade.minecraft.harmony.common.matchers.BaseNearbyBlockMatcher;
 
 /**
  * Created by Matt on 5/21/2016.

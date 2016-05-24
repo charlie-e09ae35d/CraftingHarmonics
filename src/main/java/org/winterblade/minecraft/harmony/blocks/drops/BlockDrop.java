@@ -2,7 +2,7 @@ package org.winterblade.minecraft.harmony.blocks.drops;
 
 import net.minecraftforge.event.world.BlockEvent;
 import org.winterblade.minecraft.harmony.api.blocks.IBlockDropMatcher;
-import org.winterblade.minecraft.harmony.drops.BaseDrop;
+import org.winterblade.minecraft.harmony.common.drops.BaseDrop;
 
 /**
  * Created by Matt on 5/12/2016.

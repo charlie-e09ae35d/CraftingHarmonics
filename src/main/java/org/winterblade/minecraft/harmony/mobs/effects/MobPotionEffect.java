@@ -14,7 +14,7 @@ import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
-import org.winterblade.minecraft.harmony.callbacks.mobs.EntityCallbackDeserializer;
+import org.winterblade.minecraft.harmony.common.callbacks.mobs.EntityCallbackDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMatchingDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.ItemStackDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.PotionDeserializer;

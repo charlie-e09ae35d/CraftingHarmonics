@@ -770,7 +770,8 @@
                             playerDamageType: "magic",
                             playerDamageIsUnblockable: true,
                             playerDamageIsAbsolute: true,
-                            cooldown: 900 // Also make sure they can only trigger this once every 45 seconds.
+                            cooldown: 900, // Also make sure they can only trigger this once every 45 seconds.
+                            playerHasAchievement: "achievement.openInventory" // Make sure they've opened their inventory since the last time their achievements decided to reset...
                         },
                         {
                             // Note: This just makes sure that the moon is the correct phase.  Combine with time of day matchers to make sure it's only night.
@@ -788,15 +789,30 @@
                             min: 1,
                             max: 1,
                             // If this piece of dirt is around at least 3 other pieces of sand, drop sand...
-                            aroundBlocks: { what: ["minecraft:sand"], min: 3, dist: 1}
+                            aroundBlocks: { what: ["minecraft:sand"], min: 3, dist: 1},
+                            isRaining: { presence: false }
                         },
                         {
                             // If the scoreboard entry 'testObj' is between 500 and 5000... drop clay?
                             what: "minecraft:clay",
                             min: 1,
                             max: 1,
-                            minScore: {name: "testObj", value: 500},
-                            maxScore: {name: "testObj", value: 5000}
+                            or: [
+                                {
+                                    minScore: {name: "testObj", value: 500},
+                                    maxScore: {name: "testObj", value: 5000}
+                                },
+                                {
+                                    // This object has three properties:
+                                    // - presence: If we should be checking for rain or a lack of; defaults to true
+                                    // - onlyInBiome: Checks to make sure it can rain here; defaults to false
+                                    //      This means that it can be raining anywhere in the world and it will still match.
+                                    // - onlyOnTarget: Checks to see if rain is hitting the block/mob in question; defaults to false
+                                    // Remember that setting presence to false will negate these checks, so:
+                                    // isRaining: { presence: false, onlyOnTarget: true } would ensure that it's not raining on the target.
+                                    isRaining: { onlyOnTarget: true }
+                                }
+                            ]
                         }
                     ],
                     // You can specify 'exclude' the same as with mob drops, though it's probably less useful here.
@@ -890,7 +906,17 @@
                             // Makes players move slowly in near pitch darkness
                             what: "minecraft:slowness",
                             amplifier: 1,
-                            maxLightLevel: 3
+                            or: [
+                                {
+                                    maxLightLevel: 3
+                                },
+                                {
+                                    // For a brief time when they've walked between 16m and 32m...
+                                    // Note: SSP has some problems showing updates, but the value still gets checked fine.
+                                    minStat: { name: "stat.walkOneCm", value: 1600 },
+                                    maxStat: { name: "stat.walkOneCm", value: 3200 }
+                                }
+                            ]
                         },
                         {
                             // 5% Chance of poison when swimming in swampy biomes

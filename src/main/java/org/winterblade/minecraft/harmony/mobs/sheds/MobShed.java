@@ -1,12 +1,11 @@
 package org.winterblade.minecraft.harmony.mobs.sheds;
 
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
-import org.winterblade.minecraft.harmony.drops.BaseDrop;
+import org.winterblade.minecraft.harmony.common.drops.BaseDrop;
 
 import java.util.Random;
 

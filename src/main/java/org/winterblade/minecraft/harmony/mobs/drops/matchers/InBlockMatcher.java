@@ -8,7 +8,7 @@ import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.blocks.BlockMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseBlockMatcher;
+import org.winterblade.minecraft.harmony.common.matchers.BaseBlockMatcher;
 
 import javax.annotation.Nullable;
 
