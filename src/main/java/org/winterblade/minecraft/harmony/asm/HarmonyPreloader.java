@@ -13,6 +13,7 @@ import java.util.Map;
 @IFMLLoadingPlugin.SortingIndex(1001)
 @IFMLLoadingPlugin.TransformerExclusions(value = "org.winterblade.harmony.asm.")
 @IFMLLoadingPlugin.DependsOn( "forge" )
+@IFMLLoadingPlugin.MCVersion(value = "1.9.4")
 public class HarmonyPreloader extends DummyModContainer implements IFMLLoadingPlugin {
     ModMetadata metadata = new ModMetadata();
 
