@@ -34,7 +34,7 @@ archivesBaseName = "craftingharmonics-integration-" + project.projectDir.name
 
 dependencies {
     compile project(":api")
-    deobfCompile "com.wayoftime.bloodmagic:BloodMagic:1.9-2.0.0-35"
+    deobfCompile "com.wayoftime.bloodmagic:BloodMagic:1.9.4-2.0.0-39"
 }
 
 //Add dependencies to the JAR
