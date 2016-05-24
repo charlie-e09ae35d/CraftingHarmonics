@@ -430,6 +430,24 @@
                     with: "bloodmagic:ItemComponent:8", // Binding component
                     catalyst: "minecraft:diamond_shovel"
                 },
+                {
+                    __comment: "You can add alchemy table recipes...",
+                    __result: "Soul sand plus any glass and a diamond, with some LP equals a nether star",
+                    type: "BloodMagic.addAlchemyTable",
+                    output: "minecraft:nether_star",
+                    with: ["minecraft:soul_sand","<blockGlass>","minecraft:diamond"], // Both proper names and ore dictionaries are allowed here
+                    lpCost: 1000, // If this is zero, you don't need an orb in the table
+                    minTier: 4, // At least a tier 4 orb is required
+                    time: 200 // 10s
+                },
+                {
+                    __comment: "And remove them",
+                    type: "BloodMagic.removeAlchemyTable",
+                    what: "minecraft:gravel",
+                    with: ["<cobblestone>"] // This is optional, and can be one or more of the items needed to make the thing; ore dictionaries are supported
+                },
+
+
 
                 // Harvest levels
                 {
