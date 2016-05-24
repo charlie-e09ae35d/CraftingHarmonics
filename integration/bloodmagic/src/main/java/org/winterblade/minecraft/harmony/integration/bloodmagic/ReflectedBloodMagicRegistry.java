@@ -3,9 +3,11 @@ package org.winterblade.minecraft.harmony.integration.bloodmagic;
 import WayofTime.bloodmagic.api.ItemStackWrapper;
 import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyArrayEffect;
 import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyCircleRenderer;
+import WayofTime.bloodmagic.api.recipe.AlchemyTableRecipe;
 import WayofTime.bloodmagic.api.recipe.TartaricForgeRecipe;
 import WayofTime.bloodmagic.api.registry.AlchemyArrayRecipeRegistry;
 import WayofTime.bloodmagic.api.registry.AlchemyArrayRecipeRegistry.AlchemyArrayRecipe;
+import WayofTime.bloodmagic.api.registry.AlchemyTableRecipeRegistry;
 import WayofTime.bloodmagic.api.registry.AltarRecipeRegistry;
 import WayofTime.bloodmagic.api.registry.TartaricForgeRecipeRegistry;
 import com.google.common.collect.BiMap;
@@ -25,12 +27,14 @@ public class ReflectedBloodMagicRegistry {
     private static BiMap<List<ItemStack>, AltarRecipeRegistry.AltarRecipe> altarRecipes;
     private static List<TartaricForgeRecipe> tartaricForgeRecipes;
     private static BiMap<List<ItemStack>, AlchemyArrayRecipe> alchemyArrayRecipes;
+    private static List<AlchemyTableRecipe> alchemyTableRecipes = new ArrayList<>();
 
     static {
         // I really wish mod authors would better support removing recipes from their mods...
         altarRecipes = ObfuscationReflectionHelper.getPrivateValue(AltarRecipeRegistry.class, null, "recipes");
         tartaricForgeRecipes = ObfuscationReflectionHelper.getPrivateValue(TartaricForgeRecipeRegistry.class, null, "recipeList");
         alchemyArrayRecipes = ObfuscationReflectionHelper.getPrivateValue(AlchemyArrayRecipeRegistry.class, null, "recipes");
+        alchemyTableRecipes = ObfuscationReflectionHelper.getPrivateValue(AlchemyTableRecipeRegistry.class, null, "recipeList");
     }
 
     private ReflectedBloodMagicRegistry() {}
@@ -154,5 +158,30 @@ public class ReflectedBloodMagicRegistry {
             this.effect = effect;
             this.renderer = renderer;
         }
+    }
+
+    /*
+     * Alchemy table stuff
+     */
+    public static void addAlchemyTableRecipe(AlchemyTableRecipe recipe) {
+        AlchemyTableRecipeRegistry.registerRecipe(recipe);
+    }
+
+    public static void removeAlchemyTableRecipe(AlchemyTableRecipe recipe) {
+        alchemyTableRecipes.remove(recipe);
+    }
+
+    public static List<AlchemyTableRecipe> removeAlchemyTableRecipes(ItemStack output) {
+        List<AlchemyTableRecipe> removed = new ArrayList<>();
+
+        for(Iterator<AlchemyTableRecipe> it = alchemyTableRecipes.iterator(); it.hasNext(); ) {
+            AlchemyTableRecipe recipe = it.next();
+            if(!recipe.getRecipeOutput().isItemEqualIgnoreDurability(output)) continue;
+
+            removed.add(recipe);
+            it.remove();
+        }
+
+        return removed;
     }
 }
