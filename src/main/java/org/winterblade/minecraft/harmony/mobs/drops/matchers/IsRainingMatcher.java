@@ -15,7 +15,7 @@ import org.winterblade.minecraft.harmony.drops.matchers.BaseIsRainingMatcher;
 @Component(properties = {"isRaining"})
 @PrioritizedObject(priority = Priority.HIGHER)
 public class IsRainingMatcher extends BaseIsRainingMatcher implements IMobDropMatcher {
-    public IsRainingMatcher(RainMatcher matcher) {
+    public IsRainingMatcher(WeatherMatcher matcher) {
         super(matcher);
     }
 
