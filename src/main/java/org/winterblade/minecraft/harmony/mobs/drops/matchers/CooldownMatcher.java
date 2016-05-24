@@ -7,7 +7,7 @@ import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseCooldownMatcher;
+import org.winterblade.minecraft.harmony.common.matchers.BaseCooldownMatcher;
 
 /**
  * Created by Matt on 5/22/2016.

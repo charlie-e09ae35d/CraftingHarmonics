@@ -7,7 +7,7 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.blocks.IBlockDropMatcher;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseDimensionMatcher;
+import org.winterblade.minecraft.harmony.common.matchers.BaseDimensionMatcher;
 
 /**
  * Created by Matt on 5/12/2016.

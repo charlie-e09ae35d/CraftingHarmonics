@@ -7,7 +7,7 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseBiomeTypeMatcher;
+import org.winterblade.minecraft.harmony.common.matchers.BaseBiomeTypeMatcher;
 
 /**
  * Created by Matt on 5/11/2016.

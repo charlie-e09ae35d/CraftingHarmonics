@@ -7,7 +7,7 @@ import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseMoonPhaseMatcher;
+import org.winterblade.minecraft.harmony.common.matchers.BaseMoonPhaseMatcher;
 
 /**
  * Created by Matt on 5/21/2016.

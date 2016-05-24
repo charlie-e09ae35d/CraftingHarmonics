@@ -7,7 +7,7 @@ import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseNearbyMobMatcher;
+import org.winterblade.minecraft.harmony.common.matchers.BaseNearbyMobMatcher;
 import org.winterblade.minecraft.harmony.mobs.MobCountMatcher;
 
 /**

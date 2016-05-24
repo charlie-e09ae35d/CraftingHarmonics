@@ -9,7 +9,7 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.blocks.IBlockDropMatcher;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseInventoryMatcher;
+import org.winterblade.minecraft.harmony.common.matchers.BaseInventoryMatcher;
 
 /**
  * Created by Matt on 5/13/2016.

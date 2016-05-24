@@ -2,7 +2,7 @@ package org.winterblade.minecraft.harmony.mobs.drops;
 
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
-import org.winterblade.minecraft.harmony.drops.BaseDrop;
+import org.winterblade.minecraft.harmony.common.drops.BaseDrop;
 
 /**
  * Created by Matt on 5/4/2016.

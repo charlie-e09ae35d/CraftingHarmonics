@@ -1,6 +1,5 @@
 package org.winterblade.minecraft.harmony.mobs.sheds.matchers;
 
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.Component;
@@ -9,7 +8,7 @@ import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
 import org.winterblade.minecraft.harmony.blocks.BlockMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseAboveBlockMatcher;
+import org.winterblade.minecraft.harmony.common.matchers.BaseAboveBlockMatcher;
 
 import javax.annotation.Nullable;
 

@@ -10,7 +10,7 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseHeldEquipmentMatcher;
+import org.winterblade.minecraft.harmony.common.matchers.BaseHeldEquipmentMatcher;
 
 /**
  * Created by Matt on 5/7/2016.
