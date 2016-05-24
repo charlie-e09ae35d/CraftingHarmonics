@@ -171,17 +171,96 @@ public class ReflectedBloodMagicRegistry {
         alchemyTableRecipes.remove(recipe);
     }
 
-    public static List<AlchemyTableRecipe> removeAlchemyTableRecipes(ItemStack output) {
-        List<AlchemyTableRecipe> removed = new ArrayList<>();
+    public static List<AlchemyTableRecipe> findMatchingAlchemyTableRecipes(ItemStack output, @Nullable Object[] inputs) {
+        List<AlchemyTableRecipe> matches = new ArrayList<>();
 
-        for(Iterator<AlchemyTableRecipe> it = alchemyTableRecipes.iterator(); it.hasNext(); ) {
-            AlchemyTableRecipe recipe = it.next();
-            if(!recipe.getRecipeOutput().isItemEqualIgnoreDurability(output)) continue;
+        if(inputs == null) inputs = new Object[0];
 
-            removed.add(recipe);
-            it.remove();
+        for (AlchemyTableRecipe recipe : alchemyTableRecipes) {
+            if (!matchAlchemyTableRecipe(recipe, output, inputs)) continue;
+            matches.add(recipe);
         }
 
-        return removed;
+        return matches;
+    }
+
+    /**
+     * Match an alchemy table recipe on the given output/input combo
+     * @param recipe    The recipe to match
+     * @param output    The output to look for
+     * @param inputs    The input array to go through; can be partial/non-existent
+     * @return          True if the recipe matches the required components; false otherwise.
+     */
+    private static boolean matchAlchemyTableRecipe(AlchemyTableRecipe recipe, ItemStack output, Object[] inputs) {
+        if(!recipe.getRecipeOutput().isItemEqualIgnoreDurability(output)) return false;
+
+        ArrayList<Object> recipeInputs = recipe.getInput();
+
+        for (Object input : inputs) {
+            boolean matched = false;
+
+            for (Object recipeInput : recipeInputs) {
+                if (!recipeInputsMatch(input, recipeInput)) continue;
+                matched = true;
+                break;
+            }
+
+            if (!matched) return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks to see if the two sources match
+     * @param toCheck    The input to check
+     * @param against    The value to check against
+     * @return           True if the inputs match, checking ore-dictionaries
+     */
+    private static boolean recipeInputsMatch(Object toCheck, Object against) {
+        // TODO: Abstract this a bit more and then put it in ItemUtility
+        if(against == null) return false;
+
+        if(toCheck instanceof ItemStack) {
+            // If we're checking an ore-dict list:
+            if(against instanceof List<?>) {
+                for(Object i : (List<?>)against) {
+                    // Just to double check...
+                    if(!(i instanceof ItemStack)) return false;
+                    if(((ItemStack) i).isItemEqualIgnoreDurability((ItemStack)toCheck)) return true;
+                }
+
+                // If we got here without matching, we're not a match.
+                return false;
+            }
+
+            // If we're checking just a single item
+            if(against instanceof ItemStack) {
+                return ((ItemStack) against).isItemEqualIgnoreDurability((ItemStack)toCheck);
+            }
+
+            // What?
+            return false;
+        }
+
+        if(toCheck instanceof String) {
+            List<ItemStack> ores = OreDictionary.getOres((String) toCheck);
+
+            for(ItemStack sourceItem : ores) {
+                if (against instanceof List<?>) {
+                    // Find at least one match in the two lists...
+                    for(Object i : (List<?>)against) {
+                        // Just to double check...
+                        if(!(i instanceof ItemStack)) return false;
+                        if(((ItemStack) i).isItemEqualIgnoreDurability(sourceItem)) return true;
+                    }
+                } else if(against instanceof ItemStack) {
+                    if(((ItemStack) against).isItemEqualIgnoreDurability(sourceItem)) return true;
+                }
+            }
+            return false;
+        }
+
+        return false;
     }
 }
