@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.integration.bloodmagic.operations;
 
+import WayofTime.bloodmagic.api.recipe.AlchemyTableCustomRecipe;
 import WayofTime.bloodmagic.api.recipe.AlchemyTableRecipe;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
@@ -37,7 +38,7 @@ public class AddAlchemyTableRecipe extends BasicOperation {
     @Override
     public void init() throws OperationException {
         if(with == null || with.length <= 0) throw new OperationException("Alchemy table recipes require at least one input.");
-        recipe = new AlchemyTableRecipe(output, lpCost, time, minTier, RecipeInput.getFacsimileItems(with));
+        recipe = new AlchemyTableCustomRecipe(output, lpCost, time, minTier, RecipeInput.getFacsimileItems(with));
     }
 
     /**
