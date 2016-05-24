@@ -12,6 +12,6 @@ import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 public class PotionDeserializer implements IScriptObjectDeserializer {
     @Override
     public Object Deserialize(Object input) {
-        return Potion.REGISTRY.getObject(new ResourceLocation(input.toString()));
+        return input != null ? Potion.REGISTRY.getObject(new ResourceLocation(input.toString())) : null;
     }
 }

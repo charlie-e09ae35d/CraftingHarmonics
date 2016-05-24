@@ -7,8 +7,8 @@ import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseScoreboardMatcher;
-import org.winterblade.minecraft.harmony.dto.NameValuePair;
+import org.winterblade.minecraft.harmony.common.matchers.BaseScoreboardMatcher;
+import org.winterblade.minecraft.harmony.common.dto.NameValuePair;
 
 /**
  * Created by Matt on 5/21/2016.

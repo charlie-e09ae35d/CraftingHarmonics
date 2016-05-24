@@ -430,6 +430,24 @@
                     with: "bloodmagic:ItemComponent:8", // Binding component
                     catalyst: "minecraft:diamond_shovel"
                 },
+                {
+                    __comment: "You can add alchemy table recipes...",
+                    __result: "Soul sand plus any glass and a diamond, with some LP equals a nether star",
+                    type: "BloodMagic.addAlchemyTable",
+                    output: "minecraft:nether_star",
+                    with: ["minecraft:soul_sand","<blockGlass>","minecraft:diamond"], // Both proper names and ore dictionaries are allowed here
+                    lpCost: 1000, // If this is zero, you don't need an orb in the table
+                    minTier: 4, // At least a tier 4 orb is required
+                    time: 200 // 10s
+                },
+                {
+                    __comment: "And remove them",
+                    type: "BloodMagic.removeAlchemyTable",
+                    what: "minecraft:gravel",
+                    with: ["<cobblestone>"] // This is optional, and can be one or more of the items needed to make the thing; ore dictionaries are supported
+                },
+
+
 
                 // Harvest levels
                 {
@@ -769,7 +787,9 @@
                             damagePlayer: 1.0,
                             playerDamageType: "magic",
                             playerDamageIsUnblockable: true,
-                            playerDamageIsAbsolute: true
+                            playerDamageIsAbsolute: true,
+                            cooldown: 900, // Also make sure they can only trigger this once every 45 seconds.
+                            playerHasAchievement: "achievement.openInventory" // Make sure they've opened their inventory since the last time their achievements decided to reset...
                         },
                         {
                             // Note: This just makes sure that the moon is the correct phase.  Combine with time of day matchers to make sure it's only night.
@@ -787,15 +807,30 @@
                             min: 1,
                             max: 1,
                             // If this piece of dirt is around at least 3 other pieces of sand, drop sand...
-                            aroundBlocks: { what: ["minecraft:sand"], min: 3, dist: 1}
+                            aroundBlocks: { what: ["minecraft:sand"], min: 3, dist: 1},
+                            isRaining: { presence: false }
                         },
                         {
                             // If the scoreboard entry 'testObj' is between 500 and 5000... drop clay?
                             what: "minecraft:clay",
                             min: 1,
                             max: 1,
-                            minScore: {name: "testObj", value: 500},
-                            maxScore: {name: "testObj", value: 5000}
+                            or: [
+                                {
+                                    minScore: {name: "testObj", value: 500},
+                                    maxScore: {name: "testObj", value: 5000}
+                                },
+                                {
+                                    // This object has three properties:
+                                    // - presence: If we should be checking for rain or a lack of; defaults to true
+                                    // - onlyInBiome: Checks to make sure it can rain here; defaults to false
+                                    //      This means that it can be raining anywhere in the world and it will still match.
+                                    // - onlyOnTarget: Checks to see if rain is hitting the block/mob in question; defaults to false
+                                    // Remember that setting presence to false will negate these checks, so:
+                                    // isRaining: { presence: false, onlyOnTarget: true } would ensure that it's not raining on the target.
+                                    isRaining: { onlyOnTarget: true }
+                                }
+                            ]
                         }
                     ],
                     // You can specify 'exclude' the same as with mob drops, though it's probably less useful here.
@@ -833,10 +868,46 @@
                             what: "minecraft:luck",
                             amplifier: 0, // The 'level' to add of the potion.  Defaults to 0. (in this case, 0 is Luck 1, and 1 is Luck 2)
                             showParticles: false, // If effect particles should be shown while this is active.  Defaults to false; I hate potion particles.
-                            duration: 200,  // The duration in ticks of the effect (200 = 10 seconds).  If not specified, this defaults to the number of ticks between checks +1.
+                            duration: 600,  // The duration in ticks of the effect (600 = 30 seconds).  If not specified, this defaults to the number of ticks between checks +1.
                                             // If you make this longer than the number of seconds, you can end up stacking effects
-                            cures: [], // A list of consumables that can cure this effect.  By default this will be nothing.
+                            cures: ["minecraft:milk_bucket"], // A list of consumables that can cure this effect.  By default this will be nothing.
+                            cooldown: 800, // Make sure it's only applied every 40 seconds as well.
+                            // We also have event callbacks when these occur:
+                            onNew: [ // Called when a new potion is applied
+                                // These can be either an object...
+                                {
+                                    type: "runPlayerCommand",
+                                    command: "/say @p You've got some extra luck.",
+                                    name: "The Server" // For commands that show a name, you can set the name here.
+                                }
+                            ],
+                            onExtended: [ // Called when an existing effect's duration is extended
+                                // Or functions, which get passed the entity being effected, and the world
+                                function(entity, world) {
+                                    console.log(entity.getName() + "'s luck was extended.");
+                                }
+                            ],
+                            onApplied: [ // Called every time the potion is either first applied or when its duration is extended (after onNew/onExtended both have been called)
+                            ],
 
+                            // All three of these rely on a coremod (because I haven't been bothered to PR it to Forge proper), so, they may fail if the coremod fails.
+                            // You will get errors in the console log near the very beginning if this is the case, but the game should not crash, please report any errors to me.
+                            onExpired: [ // Called when the duration expires without being cured
+                                // Note: if your duration and cooldown are exactly the same, this will be called right before its renewed
+                                function(entity, world) {
+                                    console.log(entity.getName() + "'s luck expired.");
+                                }
+                            ],
+                            onCured: [ // Called when the potion is cured with a curative item.
+                                function(entity, world) {
+                                    console.log(entity.getName() + "'s luck was cured.");
+                                }
+                            ],
+                            onRemoved: [ // Called when the potion is removed, either by expiring, or being cured.
+                                function(entity, world) {
+                                    console.log(entity.getName() + "'s luck was removed.");
+                                }
+                            ]
                         },
                         {
                             // Gives a chance of soul sand dissolving and causing a momentary wither effect
@@ -853,7 +924,17 @@
                             // Makes players move slowly in near pitch darkness
                             what: "minecraft:slowness",
                             amplifier: 1,
-                            maxLightLevel: 3
+                            or: [
+                                {
+                                    maxLightLevel: 3
+                                },
+                                {
+                                    // For a brief time when they've walked between 16m and 32m...
+                                    // Note: SSP has some problems showing updates, but the value still gets checked fine.
+                                    minStat: { name: "stat.walkOneCm", value: 1600 },
+                                    maxStat: { name: "stat.walkOneCm", value: 3200 }
+                                }
+                            ]
                         },
                         {
                             // 5% Chance of poison when swimming in swampy biomes

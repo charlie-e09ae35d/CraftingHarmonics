@@ -53,4 +53,16 @@ public interface IOperation extends Comparable<IOperation> {
      * @return  True if the operation should undo now; false otherwise.
      */
     boolean shouldUndo();
+
+    /**
+     * Should the operation be initialized/applied/undone/etc on the client
+     * @return  True if it should, false otherwise.  Defaults to true.
+     */
+    boolean isClientOperation();
+
+    /**
+     * Should the operation be initialized/applied/undone/etc on the server
+     * @return  True if it should, false otherwise.  Defaults to true.
+     */
+    boolean isServerOperation();
 }

@@ -8,7 +8,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import org.winterblade.minecraft.harmony.api.*;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
-import org.winterblade.minecraft.harmony.drops.matchers.BaseInventoryMatcher;
+import org.winterblade.minecraft.harmony.common.matchers.BaseInventoryMatcher;
 
 /**
  * Created by Matt on 5/21/2016.

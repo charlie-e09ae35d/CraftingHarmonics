@@ -6,7 +6,7 @@ import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.drops.IBaseDropMatcher;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
-import org.winterblade.minecraft.harmony.drops.BaseDrop;
+import org.winterblade.minecraft.harmony.common.drops.BaseDrop;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 
 /**

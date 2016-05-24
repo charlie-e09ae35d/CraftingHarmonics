@@ -5,7 +5,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
-import org.winterblade.minecraft.harmony.drops.BaseDropHandler;
+import org.winterblade.minecraft.harmony.common.drops.BaseDropHandler;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;

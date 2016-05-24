@@ -1,4 +1,85 @@
 <div>
+    <h2>Version 1.4.2</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Adding the ability to add/remove recipes from Blood Magic's Alchemy Table using the following operations:
+            <ul>
+                <li>BloodMagic.addAlchemyTable</li>
+                <li>BloodMagic.removeAlchemyTable</li>
+            </ul>
+        </li>
+        <li>
+            Adding support for 'cooldown' matcher for setBlockDrops, setMobDrops, addMobShed, and addMobPotionEffect.
+            This will allow you to specify a set number of ticks (minimum) that have to pass between the entry being
+            valid.
+        </li>
+        <li>
+            Adding support for 'isRaining', 'isStorming', and 'isSnowing' matchers for setBlockDrops, setMobDrops,
+            addMobShed, and addMobPotionEffect.  These can be configured not only to check for the presecne of the
+            weather in the world, but also if the target is in the right biome, or if the weather is happening at their
+            position (ie: not underground when raining).
+        </li>
+        <li>
+            Adding support for 'playerHasAchievement', 'minStat', and 'maxStat' matchers for setBlockDrops, setMobDrops,
+            addMobShed, and addMobPotionEffect.
+        </li>
+        <li>
+            Adding multiple callbacks for addMobPotionEffect operations.  You may now specify a set of events for:
+            <ul>
+                <li>onNew: When the potion is first applied to the entity by the operation.</li>
+                <li>onExtended: When an existing potion's duration is extended by the operation</li>
+                <li>
+                    onApplied: When either a new potion is applied or the duration is extended by the operation;
+                    this is called after onNew/onExtended are called, and is intended for any shared code you would
+                    want to run.
+                </li>
+                <li>onExpired: When the potion created by this operation is removed because its duration is 0 or less.</li>
+                <li>onCured: When the potion created by this operation is cured by using a curative item (or through a command).</li>
+                <li>
+                    onRemoved: When the potion created by this operation is removed by expiring/being cured; this is
+                    called after onExpired/onCured are called, and is intended for any shared code you would want to run.
+                </li>
+            </ul><br />
+            Each of these can take an array of callbacks to run when the event occurs.  At current, only two types
+            of callbacks are supported:
+            <ul>
+                <li>
+                    Running a command: You may run a command by passing in an object that looks like the below<br />
+                    <br />
+                    <pre>{
+    type: "runPlayerCommand",
+    command: "/say @p You've got some extra luck.",
+    name: "The Server"
+}</pre><br />
+                </li>
+                <li>
+                    Running a JavaScript function: You may also pass in a raw JavaScript function.  The functionality
+                    for this is currently limited to logging, but will be expanded in a future release.
+                    An example of this would be:<br />
+                    <pre>function(entity, world) {
+    console.log(entity.getName() + "'s luck expired.");
+}</pre>
+                </li>
+            </ul>
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/68">issue #68</a> where
+            many of the drop entries were being duplicated in SSP, because the handlers were being registered on
+            both the client and server.
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/69">issue #69</a> where
+            addMobPotionEffect operations weren't getting removed, but re-added.
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/75">issue #75</a> where
+            using composite matchers addMobPotionEffect operations would cause an NPE.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
     <h2>Version 1.4.1</h2>
     <h4>Features</h4>
     <ul>

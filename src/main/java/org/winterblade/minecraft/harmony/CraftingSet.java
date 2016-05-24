@@ -81,9 +81,14 @@ public class CraftingSet {
      */
     void init() {
         ProgressManager.ProgressBar setProgress = ProgressManager.push("Initializing", operations.size());
+        Side curSide = FMLCommonHandler.instance().getEffectiveSide();
 
         for(IOperation op : operations) {
             setProgress.step(op.toString());
+
+            // If we're not supposed to run here...
+            if((curSide == Side.CLIENT && !op.isClientOperation())
+                    || (curSide == Side.SERVER && !op.isServerOperation())) continue;
 
             try {
                 op.runInit();
@@ -100,12 +105,15 @@ public class CraftingSet {
 
     void apply() {
         ProgressManager.ProgressBar setProgress = ProgressManager.push("Applying", operations.size());
+        Side curSide = FMLCommonHandler.instance().getEffectiveSide();
 
         for(IOperation op : operations) {
             setProgress.step(op.toString());
 
-            // Skip sided only operations that we're not on the right side of...
-            if(!op.shouldApply()) continue;
+            // If we're not supposed to run here...
+            if((curSide == Side.CLIENT && !op.isClientOperation())
+                    || (curSide == Side.SERVER && !op.isServerOperation())
+                    || !op.shouldApply()) continue;
 
             try {
                 op.runApply();
@@ -122,11 +130,14 @@ public class CraftingSet {
         // Reverse the sort order... badly.
         List<IOperation> revserseOps = new ArrayList<>(operations);
         Collections.reverse(revserseOps);
+        Side curSide = FMLCommonHandler.instance().getEffectiveSide();
 
         // Undo the operations in the opposite way we applied them:
         for(IOperation op : revserseOps) {
-            // Skip sided only operations that we're not on the right side of...
-            if(!op.shouldUndo()) continue;
+            // If we're not supposed to run here...
+            if((curSide == Side.CLIENT && !op.isClientOperation())
+                    || (curSide == Side.SERVER && !op.isServerOperation())
+                    || !op.shouldUndo()) continue;
 
             try {
                 op.runUndo();
