@@ -6,7 +6,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
-import org.winterblade.minecraft.harmony.mobs.effects.MobPotionEffect;
+import org.winterblade.minecraft.harmony.entities.effects.MobPotionEffect;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
 import javax.annotation.Nullable;
