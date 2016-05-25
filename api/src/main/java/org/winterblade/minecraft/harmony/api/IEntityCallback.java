@@ -1,6 +1,6 @@
 package org.winterblade.minecraft.harmony.api;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
 /**
@@ -8,5 +8,5 @@ import net.minecraft.world.World;
  */
 @FunctionalInterface
 public interface IEntityCallback {
-    void apply(EntityLivingBase target, World world);
+    void apply(Entity target, World world);
 }

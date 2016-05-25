@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
 import net.minecraft.util.math.BlockPos;
@@ -25,8 +26,8 @@ public class CommandCallback implements IEntityCallback {
     private String name;
 
     @Override
-    public void apply(EntityLivingBase target, World world) {
-        if(target.getEntityWorld().isRemote) return;
+    public void apply(Entity target, World world) {
+        if(target.getEntityWorld().isRemote || EntityPlayerMP.class.isAssignableFrom(target.getClass())) return;
 
         String specificCommand = command.replaceAll("@p", target.getName());
 
@@ -35,7 +36,7 @@ public class CommandCallback implements IEntityCallback {
                         .getMinecraftServerInstance()
                         .getCommandManager()
                         .executeCommand(
-                            new CommandCallbackSender(target, name), specificCommand
+                            new CommandCallbackSender((EntityPlayerMP)target, name), specificCommand
                         );
 
         // TODO: "onError" callback.
