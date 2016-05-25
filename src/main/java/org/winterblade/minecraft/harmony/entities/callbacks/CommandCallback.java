@@ -1,7 +1,6 @@
 package org.winterblade.minecraft.harmony.entities.callbacks;
 
 import io.netty.buffer.ByteBuf;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -11,22 +10,32 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.IEntityCallback;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
-import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMirroredDeserializer;
-import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
 import javax.annotation.Nullable;
 
 /**
  * Created by Matt on 5/22/2016.
  */
+@Component(properties = {"command", "name"})
 public class CommandCallback implements IEntityCallback {
-    private String command;
-    private String name;
+    private final String command;
+    private final String name;
+
+    public CommandCallback(String command) {
+        this(command, null);
+    }
+
+    public CommandCallback(String command, @Nullable String name) {
+        this.command = command;
+        this.name = name;
+    }
+
 
     @Override
-    public void apply(Entity target, World world) {
+    public void apply(Entity target) {
         if(target.getEntityWorld().isRemote || EntityPlayerMP.class.isAssignableFrom(target.getClass())) return;
 
         String specificCommand = command.replaceAll("@p", target.getName());
@@ -42,19 +51,6 @@ public class CommandCallback implements IEntityCallback {
         // TODO: "onError" callback.
         LogHelper.info("Ran '" + specificCommand + "' from '" + target.getName() + "'.  Result code: " + result);
         
-    }
-
-    @ScriptObjectDeserializer(deserializes = CommandCallback.class)
-    public static class Deserializer extends BaseMirroredDeserializer {
-        @Override
-        protected Object DeserializeMirror(ScriptObjectMirror mirror) {
-            CommandCallback output = new CommandCallback();
-
-            output.command = mirror.get("command").toString();
-            output.name = mirror.containsKey("name") ? mirror.get("name").toString() : null;
-
-            return output;
-        }
     }
 
     /**

@@ -7,23 +7,23 @@ import javax.annotation.Nonnull;
 /**
  * Created by Matt on 5/10/2016.
  */
-public class BaseMatcherData <T> implements Comparable<BaseMatcherData> {
+public class BasePrioritizedData<T> implements Comparable<BasePrioritizedData> {
     private final T matcher;
     private final Priority priority;
 
-    public BaseMatcherData(T matcher, Priority priority) {
+    public BasePrioritizedData(T matcher, Priority priority) {
         this.matcher = matcher;
         this.priority = priority;
     }
 
     @Override
-    public int compareTo(@Nonnull BaseMatcherData o) {
+    public int compareTo(@Nonnull BasePrioritizedData o) {
         // Sort by priority, then by name.
         if(priority != o.priority) return priority.ordinal() - o.priority.ordinal();
         return matcher.getClass().getName().compareTo(o.matcher.getClass().getName());
     }
 
-    public T getMatcher() {
+    public T get() {
         return matcher;
     }
 

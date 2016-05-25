@@ -113,7 +113,7 @@ public class ComponentRegistry {
     @SuppressWarnings("unchecked")
     public <T> List<T> getComponentsOf(Class<T> cls) {
         String name = cls.getName();
-        return (List<T>) componentImpls.get(name);
+        return componentImpls.containsKey(name) ? (List<T>) componentImpls.get(name) : new ArrayList<>();
     }
 
     /**

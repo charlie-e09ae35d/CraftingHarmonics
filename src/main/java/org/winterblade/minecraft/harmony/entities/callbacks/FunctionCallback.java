@@ -1,7 +1,7 @@
 package org.winterblade.minecraft.harmony.entities.callbacks;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
+import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.IEntityCallback;
 import org.winterblade.minecraft.harmony.scripting.wrappers.entity.InteropEntity;
 import org.winterblade.minecraft.harmony.scripting.wrappers.world.InteropWorld;
@@ -9,6 +9,7 @@ import org.winterblade.minecraft.harmony.scripting.wrappers.world.InteropWorld;
 /**
  * Created by Matt on 5/22/2016.
  */
+@Component(properties = {"function"})
 public class FunctionCallback implements IEntityCallback {
     private final JSCallback callback;
 
@@ -17,8 +18,8 @@ public class FunctionCallback implements IEntityCallback {
     }
 
     @Override
-    public void apply(Entity target, World world) {
-        callback.apply(new InteropEntity(target), new InteropWorld(world));
+    public void apply(Entity target) {
+        callback.apply(new InteropEntity(target), new InteropWorld(target.getEntityWorld()));
     }
 
     @FunctionalInterface

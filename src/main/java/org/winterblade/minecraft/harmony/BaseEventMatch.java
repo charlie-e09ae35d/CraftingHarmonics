@@ -1,12 +1,11 @@
 package org.winterblade.minecraft.harmony;
 
 import com.google.common.collect.Lists;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.IMobMatcher;
-import org.winterblade.minecraft.harmony.utility.BaseMatcherData;
+import org.winterblade.minecraft.harmony.utility.BasePrioritizedData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.Random;
  * Created by Matt on 5/20/2016.
  */
 public class BaseEventMatch<TEvt, TResult, TMatcher extends IMobMatcher<TEvt, TResult>> {
-    private final PriorityQueue<BaseMatcherData<TMatcher>> matchers = new PriorityQueue<>();
+    private final PriorityQueue<BasePrioritizedData<TMatcher>> matchers = new PriorityQueue<>();
 
     /**
      * Determine if the input event matches our target.
@@ -29,8 +28,8 @@ public class BaseEventMatch<TEvt, TResult, TMatcher extends IMobMatcher<TEvt, TR
         List<Runnable> callbacks = new ArrayList<>();
 
         // Iterate our matchers, finding the first one that fails.
-        for(BaseMatcherData<TMatcher> matcher : matchers) {
-            BaseMatchResult matchResult = matcher.getMatcher().isMatch(evt, result);
+        for(BasePrioritizedData<TMatcher> matcher : matchers) {
+            BaseMatchResult matchResult = matcher.get().isMatch(evt, result);
             if(!matchResult.isMatch()) return BaseMatchResult.False;
             if(matchResult.getCallback() != null) callbacks.add(matchResult.getCallback());
         }
@@ -45,7 +44,7 @@ public class BaseEventMatch<TEvt, TResult, TMatcher extends IMobMatcher<TEvt, TR
      * @param priority    The priority to add it at
      */
     public void addMatcher(TMatcher matcher, Priority priority) {
-        matchers.add(new BaseMatcherData<>(matcher, priority));
+        matchers.add(new BasePrioritizedData<>(matcher, priority));
     }
 
     public static abstract class BaseMatchHandler<T> {

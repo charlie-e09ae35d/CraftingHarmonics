@@ -16,7 +16,7 @@ import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
-import org.winterblade.minecraft.harmony.entities.callbacks.EntityCallbackDeserializer;
+import org.winterblade.minecraft.harmony.entities.callbacks.EntityCallbackContainer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMatchingDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.ItemStackDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.PotionDeserializer;
@@ -71,17 +71,17 @@ public class MobPotionEffect extends BaseEventMatch<Entity, IEntityMatcherData, 
     public void doApply(boolean isNew, EntityLivingBase entity) {
         if(isNew && newCallbacks != null) {
             for(IEntityCallback callback : newCallbacks) {
-                callback.apply(entity, entity.getEntityWorld());
+                callback.apply(entity);
             }
         } else if(!isNew && extendedCallbacks != null){
             for(IEntityCallback callback : extendedCallbacks) {
-                callback.apply(entity, entity.getEntityWorld());
+                callback.apply(entity);
             }
         }
 
         if(applyCallbacks != null) {
             for(IEntityCallback callback : applyCallbacks) {
-                callback.apply(entity, entity.getEntityWorld());
+                callback.apply(entity);
             }
         }
     }
@@ -162,7 +162,7 @@ public class MobPotionEffect extends BaseEventMatch<Entity, IEntityMatcherData, 
     public static class Deserializer extends BaseMatchingDeserializer<Entity, IEntityMatcherData, IEntityMatcher, MobPotionEffect> {
         private static final PotionDeserializer POTION_DESERIALIZER = new PotionDeserializer();
         private static final ItemStackDeserializer ITEM_STACK_DESERIALIZER = new ItemStackDeserializer();
-        private static final EntityCallbackDeserializer ENTITY_CALLBACK_DESERIALIZER = new EntityCallbackDeserializer();
+        private static final EntityCallbackContainer.Deserializer ENTITY_CALLBACK_DESERIALIZER = new EntityCallbackContainer.Deserializer();
 
         public Deserializer() {super(IEntityMatcher.class);}
 
@@ -213,16 +213,16 @@ public class MobPotionEffect extends BaseEventMatch<Entity, IEntityMatcherData, 
 
             if(wasCured) {
                 for (IEntityCallback callback : curedCallbacks) {
-                    callback.apply(entity, entity.getEntityWorld());
+                    callback.apply(entity);
                 }
             } else {
                 for (IEntityCallback callback : expiredCallbacks) {
-                    callback.apply(entity, entity.getEntityWorld());
+                    callback.apply(entity);
                 }
             }
 
             for(IEntityCallback callback : removedCallbacks) {
-                callback.apply(entity, entity.getEntityWorld());
+                callback.apply(entity);
             }
         }
     }
