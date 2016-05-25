@@ -4,14 +4,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
+import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
+import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.matchers.BaseHeldEquipmentMatcher;
 
 /**
@@ -19,7 +19,7 @@ import org.winterblade.minecraft.harmony.common.matchers.BaseHeldEquipmentMatche
  */
 @Component(properties = {"mobHasOffhand", "mobOffhandNbt", "mobOffhandFuzzyNbt"})
 @PrioritizedObject(priority = Priority.HIGH)
-public class MobHasOffhandMatcher extends BaseHeldEquipmentMatcher implements IMobPotionEffectMatcher {
+public class MobHasOffhandMatcher extends BaseHeldEquipmentMatcher implements IEntityMatcher {
     private final static ItemStack dummy = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation("minecraft:cobblestone")), 1);
 
     public MobHasOffhandMatcher(ItemStack item) {
@@ -38,11 +38,11 @@ public class MobHasOffhandMatcher extends BaseHeldEquipmentMatcher implements IM
      * Should return true if this matcher matches the given event
      *
      * @param entity The event to match
-     * @param drop             The dropped item; this can be modified.
+     * @param metadata Event metadata.
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase entity, PotionEffect drop) {
+    public BaseMatchResult isMatch(EntityLivingBase entity, IEntityMatcherData metadata) {
         dummy.stackSize = 1;
         return matches(entity, dummy);
     }

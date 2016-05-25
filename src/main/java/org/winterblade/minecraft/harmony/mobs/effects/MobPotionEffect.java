@@ -13,7 +13,8 @@ import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.IEntityCallback;
-import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
+import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
+import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.callbacks.mobs.EntityCallbackDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMatchingDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.ItemStackDeserializer;
@@ -28,7 +29,7 @@ import java.util.WeakHashMap;
 /**
  * Created by Matt on 5/20/2016.
  */
-public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffect, IMobPotionEffectMatcher> {
+public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, IEntityMatcherData, IEntityMatcher> {
     private static WeakHashMap<EntityLivingBase, Map<Potion, HarmonyPotionEffect>> potionHandlers = new WeakHashMap<>();
 
     /*
@@ -102,7 +103,7 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
                 effect.setCurativeItems(Lists.newArrayList(matcher.getCures()));
 
                 // Check if this drop matches:
-                BaseMatchResult result = matcher.matches(entity, effect);
+                BaseMatchResult result = matcher.matches(entity, new BaseEntityMatcherData());
                 if(!result.isMatch()) continue;
 
                 // Make sure we have sane drop amounts:
@@ -157,12 +158,12 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, PotionEffe
     }
 
     @ScriptObjectDeserializer(deserializes = MobPotionEffect.class)
-    public static class Deserializer extends BaseMatchingDeserializer<EntityLivingBase, PotionEffect, IMobPotionEffectMatcher, MobPotionEffect> {
+    public static class Deserializer extends BaseMatchingDeserializer<EntityLivingBase, IEntityMatcherData, IEntityMatcher, MobPotionEffect> {
         private static final PotionDeserializer POTION_DESERIALIZER = new PotionDeserializer();
         private static final ItemStackDeserializer ITEM_STACK_DESERIALIZER = new ItemStackDeserializer();
         private static final EntityCallbackDeserializer ENTITY_CALLBACK_DESERIALIZER = new EntityCallbackDeserializer();
 
-        public Deserializer() {super(IMobPotionEffectMatcher.class);}
+        public Deserializer() {super(IEntityMatcher.class);}
 
         @Override
         protected MobPotionEffect newInstance() {

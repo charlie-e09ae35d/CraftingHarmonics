@@ -1,12 +1,12 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.PotionEffect;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
+import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
+import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.blocks.BlockMatcher;
 import org.winterblade.minecraft.harmony.common.matchers.BaseAboveBlockMatcher;
 
@@ -17,13 +17,13 @@ import javax.annotation.Nullable;
  */
 @Component(properties = {"aboveBlock"})
 @PrioritizedObject(priority = Priority.HIGH)
-public class AboveBlockMatcher extends BaseAboveBlockMatcher implements IMobPotionEffectMatcher {
+public class AboveBlockMatcher extends BaseAboveBlockMatcher implements IEntityMatcher {
     public AboveBlockMatcher(@Nullable BlockMatcher matcher) {
         super(matcher);
     }
 
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase entity, PotionEffect drop) {
+    public BaseMatchResult isMatch(EntityLivingBase entity, IEntityMatcherData metadata) {
         return matches(entity.getEntityWorld(), entity.getPosition());
     }
 }

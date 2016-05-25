@@ -11,7 +11,7 @@ import java.util.List;
  * Basic AND boolean matcher
  * @param <TEvt>          The event to match (ie: EntityLiving)
  * @param <TResult>       The result of the match (ie: ItemStack)
- * @param <TMatcher>      The matcher to use (ie: IMobPotionEffectMatcher)
+ * @param <TMatcher>      The matcher to use (ie: IEntityMatcher)
  * @param <TComposite>    The composite item (ie: MobPotionEffect)
  */
 public abstract class BaseAndMatcher <TEvt, TResult, TMatcher extends IMobMatcher<TEvt,TResult>, TComposite extends BaseEventMatch<TEvt, TResult, TMatcher>> {

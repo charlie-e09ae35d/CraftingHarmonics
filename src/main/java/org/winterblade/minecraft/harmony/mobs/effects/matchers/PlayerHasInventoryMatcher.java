@@ -4,10 +4,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import org.winterblade.minecraft.harmony.api.*;
-import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
+import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
+import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.matchers.BaseInventoryMatcher;
 
 /**
@@ -15,7 +15,7 @@ import org.winterblade.minecraft.harmony.common.matchers.BaseInventoryMatcher;
  */
 @Component(properties = {"playerHasInventory", "consumeInventory", "damageInventoryPer", "nbtInventory", "fuzzyNbtInventory"})
 @PrioritizedObject(priority = Priority.MEDIUM)
-public class PlayerHasInventoryMatcher extends BaseInventoryMatcher implements IMobPotionEffectMatcher {
+public class PlayerHasInventoryMatcher extends BaseInventoryMatcher implements IEntityMatcher {
     private static final ItemStack dummy = new ItemStack(Item.REGISTRY.getObject(new ResourceLocation("minecraft:cobblestone")), 1);
 
     public PlayerHasInventoryMatcher(ItemStack item) {
@@ -82,11 +82,11 @@ public class PlayerHasInventoryMatcher extends BaseInventoryMatcher implements I
      * Should return true if this matcher matches the given event
      *
      * @param entityLivingBase  The event to match
-     * @param potionEffect      The dropped requiredItem; this can be modified.
+     * @param metadata          Event metadata.
      * @return                  True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase entityLivingBase, PotionEffect potionEffect) {
+    public BaseMatchResult isMatch(EntityLivingBase entityLivingBase, IEntityMatcherData metadata) {
         // Make sure we have an appropriate stack size first
         dummy.stackSize = 1;
         return matches(entityLivingBase, dummy);

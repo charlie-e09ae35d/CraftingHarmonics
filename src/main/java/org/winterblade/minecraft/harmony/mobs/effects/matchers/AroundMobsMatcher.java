@@ -1,12 +1,12 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.PotionEffect;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
+import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
+import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.matchers.BaseNearbyMobMatcher;
 import org.winterblade.minecraft.harmony.mobs.MobCountMatcher;
 
@@ -15,7 +15,7 @@ import org.winterblade.minecraft.harmony.mobs.MobCountMatcher;
  */
 @Component(properties = {"aroundMobs"})
 @PrioritizedObject(priority = Priority.LOWER)
-public class AroundMobsMatcher extends BaseNearbyMobMatcher implements IMobPotionEffectMatcher {
+public class AroundMobsMatcher extends BaseNearbyMobMatcher implements IEntityMatcher {
     public AroundMobsMatcher(MobCountMatcher matcher) {
         super(matcher.getWhat(), matcher.getDist(), matcher.getMin(), matcher.getMax());
     }
@@ -28,7 +28,7 @@ public class AroundMobsMatcher extends BaseNearbyMobMatcher implements IMobPotio
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase entity, PotionEffect drop) {
+    public BaseMatchResult isMatch(EntityLivingBase entity, IEntityMatcherData metadata) {
         return matches(entity.getEntityWorld(), entity.getPosition());
     }
 }

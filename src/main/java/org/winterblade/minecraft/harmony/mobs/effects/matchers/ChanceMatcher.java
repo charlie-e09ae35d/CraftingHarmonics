@@ -1,12 +1,12 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.PotionEffect;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
+import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
+import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.matchers.BaseChanceMatcher;
 
 /**
@@ -14,7 +14,7 @@ import org.winterblade.minecraft.harmony.common.matchers.BaseChanceMatcher;
  */
 @Component(properties = {"chance"})
 @PrioritizedObject(priority = Priority.HIGHEST)
-public class ChanceMatcher extends BaseChanceMatcher implements IMobPotionEffectMatcher {
+public class ChanceMatcher extends BaseChanceMatcher implements IEntityMatcher {
     public ChanceMatcher(float chance) {
         super(chance);
     }
@@ -26,7 +26,7 @@ public class ChanceMatcher extends BaseChanceMatcher implements IMobPotionEffect
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase evt, PotionEffect drop) {
+    public BaseMatchResult isMatch(EntityLivingBase evt, IEntityMatcherData metadata) {
         return match(evt.getEntityWorld().rand);
     }
 }

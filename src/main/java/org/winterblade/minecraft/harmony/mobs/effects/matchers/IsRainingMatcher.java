@@ -1,12 +1,12 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.potion.PotionEffect;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.mobs.effects.IMobPotionEffectMatcher;
+import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
+import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.matchers.BaseIsRainingMatcher;
 
 /**
@@ -14,7 +14,7 @@ import org.winterblade.minecraft.harmony.common.matchers.BaseIsRainingMatcher;
  */
 @Component(properties = {"isRaining"})
 @PrioritizedObject(priority = Priority.HIGHER)
-public class IsRainingMatcher extends BaseIsRainingMatcher implements IMobPotionEffectMatcher {
+public class IsRainingMatcher extends BaseIsRainingMatcher implements IEntityMatcher {
     public IsRainingMatcher(WeatherMatcher matcher) {
         super(matcher);
     }
@@ -23,11 +23,11 @@ public class IsRainingMatcher extends BaseIsRainingMatcher implements IMobPotion
      * Should return true if this matcher matches the given event
      *
      * @param event             The event to match
-     * @param drop              The dropped item; this can be modified.
+     * @param metadata          Event metadata.
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase event, PotionEffect drop) {
+    public BaseMatchResult isMatch(EntityLivingBase event, IEntityMatcherData metadata) {
         return matches(event.getEntityWorld(), event.getPosition());
     }
 }
