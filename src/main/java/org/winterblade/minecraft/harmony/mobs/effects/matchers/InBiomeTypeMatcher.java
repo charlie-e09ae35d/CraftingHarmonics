@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
@@ -25,7 +26,7 @@ public class InBiomeTypeMatcher extends BaseBiomeTypeMatcher implements IEntityM
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase entity, IEntityMatcherData metadata) {
+    public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
         return matches(entity);
     }
 }

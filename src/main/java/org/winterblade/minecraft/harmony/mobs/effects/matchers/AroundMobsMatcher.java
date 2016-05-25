@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
@@ -24,11 +25,11 @@ public class AroundMobsMatcher extends BaseNearbyMobMatcher implements IEntityMa
      * Should return true if this matcher matches the given event
      *
      * @param entity The event to match
-     * @param drop             The dropped item; this can be modified.
+     * @param metadata The event metadata.
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase entity, IEntityMatcherData metadata) {
+    public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
         return matches(entity.getEntityWorld(), entity.getPosition());
     }
 }

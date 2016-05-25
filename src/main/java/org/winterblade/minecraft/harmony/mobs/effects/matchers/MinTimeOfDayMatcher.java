@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
@@ -18,7 +19,7 @@ public class MinTimeOfDayMatcher extends BaseTimeOfDayMatcher implements IEntity
     public MinTimeOfDayMatcher(long minTime) {super(minTime, Long.MAX_VALUE);}
 
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase entity, IEntityMatcherData metadata) {
+    public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
         return matches(entity.getEntityWorld());
     }
 }

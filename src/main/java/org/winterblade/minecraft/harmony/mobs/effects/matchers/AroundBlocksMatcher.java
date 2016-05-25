@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
@@ -21,7 +22,7 @@ public class AroundBlocksMatcher extends BaseNearbyBlockMatcher implements IEnti
     }
 
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase entityLiving, IEntityMatcherData metadata) {
-        return matches(entityLiving.getEntityWorld(), entityLiving.getPosition());
+    public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
+        return matches(entity.getEntityWorld(), entity.getPosition());
     }
 }

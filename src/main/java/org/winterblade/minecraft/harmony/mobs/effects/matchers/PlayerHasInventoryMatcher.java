@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -81,14 +82,14 @@ public class PlayerHasInventoryMatcher extends BaseInventoryMatcher implements I
     /**
      * Should return true if this matcher matches the given event
      *
-     * @param entityLivingBase  The event to match
+     * @param entity  The event to match
      * @param metadata          Event metadata.
      * @return                  True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase entityLivingBase, IEntityMatcherData metadata) {
+    public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
         // Make sure we have an appropriate stack size first
         dummy.stackSize = 1;
-        return matches(entityLivingBase, dummy);
+        return matches(entity, dummy);
     }
 }

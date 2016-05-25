@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
@@ -23,12 +24,13 @@ public class MaxMobHealthMatcher implements IEntityMatcher {
     /**
      * Should return true if this matcher matches the given event
      *
-     * @param entityLiving The event to match
+     * @param entity The event to match
      * @param metadata     Event metadata.
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase entityLiving, IEntityMatcherData metadata) {
-        return new BaseMatchResult(entityLiving.getHealth() <= health);
+    public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
+        if(!EntityLivingBase.class.isAssignableFrom(entity.getClass())) return BaseMatchResult.False;
+        return new BaseMatchResult(((EntityLivingBase)entity).getHealth() <= health);
     }
 }

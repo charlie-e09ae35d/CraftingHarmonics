@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
@@ -14,7 +15,7 @@ import org.winterblade.minecraft.harmony.mobs.effects.MobPotionEffect;
  */
 @Component(properties = {"or"})
 @PrioritizedObject(priority = Priority.MEDIUM)
-public class OrMatcher extends BaseOrMatcher<EntityLivingBase, IEntityMatcherData, IEntityMatcher, MobPotionEffect> implements IEntityMatcher {
+public class OrMatcher extends BaseOrMatcher<Entity, IEntityMatcherData, IEntityMatcher, MobPotionEffect> implements IEntityMatcher {
     public OrMatcher(MobPotionEffect[] composites) {
         super(composites);
     }

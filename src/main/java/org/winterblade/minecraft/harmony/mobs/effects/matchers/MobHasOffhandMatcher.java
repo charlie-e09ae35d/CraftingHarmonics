@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -42,7 +43,7 @@ public class MobHasOffhandMatcher extends BaseHeldEquipmentMatcher implements IE
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase entity, IEntityMatcherData metadata) {
+    public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
         dummy.stackSize = 1;
         return matches(entity, dummy);
     }

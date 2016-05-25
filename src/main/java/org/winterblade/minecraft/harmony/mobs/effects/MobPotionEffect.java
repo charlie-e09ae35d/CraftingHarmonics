@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.mobs.effects;
 import com.google.common.collect.Lists;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -29,7 +30,7 @@ import java.util.WeakHashMap;
 /**
  * Created by Matt on 5/20/2016.
  */
-public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, IEntityMatcherData, IEntityMatcher> {
+public class MobPotionEffect extends BaseEventMatch<Entity, IEntityMatcherData, IEntityMatcher> {
     private static WeakHashMap<EntityLivingBase, Map<Potion, HarmonyPotionEffect>> potionHandlers = new WeakHashMap<>();
 
     /*
@@ -158,7 +159,7 @@ public class MobPotionEffect extends BaseEventMatch<EntityLivingBase, IEntityMat
     }
 
     @ScriptObjectDeserializer(deserializes = MobPotionEffect.class)
-    public static class Deserializer extends BaseMatchingDeserializer<EntityLivingBase, IEntityMatcherData, IEntityMatcher, MobPotionEffect> {
+    public static class Deserializer extends BaseMatchingDeserializer<Entity, IEntityMatcherData, IEntityMatcher, MobPotionEffect> {
         private static final PotionDeserializer POTION_DESERIALIZER = new PotionDeserializer();
         private static final ItemStackDeserializer ITEM_STACK_DESERIALIZER = new ItemStackDeserializer();
         private static final EntityCallbackDeserializer ENTITY_CALLBACK_DESERIALIZER = new EntityCallbackDeserializer();

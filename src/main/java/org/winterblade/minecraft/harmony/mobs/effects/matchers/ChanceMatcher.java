@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
@@ -22,11 +23,11 @@ public class ChanceMatcher extends BaseChanceMatcher implements IEntityMatcher {
     /**
      * Should return true if this matcher matches the given event
      *
-     * @param evt The event to match
+     * @param entity The event to match
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase evt, IEntityMatcherData metadata) {
-        return match(evt.getEntityWorld().rand);
+    public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
+        return match(entity.getEntityWorld().rand);
     }
 }

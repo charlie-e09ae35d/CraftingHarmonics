@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
@@ -20,7 +21,7 @@ public class IsStormingMatcher extends BaseIsStormingMatcher implements IEntityM
     }
 
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase entityLivingBase, IEntityMatcherData metadata) {
+    public BaseMatchResult isMatch(Entity entityLivingBase, IEntityMatcherData metadata) {
         return matches(entityLivingBase.getEntityWorld(), entityLivingBase.getPosition());
     }
 }

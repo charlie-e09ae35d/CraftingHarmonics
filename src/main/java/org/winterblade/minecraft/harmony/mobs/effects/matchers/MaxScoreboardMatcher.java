@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.effects.matchers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
@@ -19,7 +20,7 @@ public class MaxScoreboardMatcher extends BaseScoreboardMatcher implements IEnti
     public MaxScoreboardMatcher(NameValuePair<Integer> score) {super(score.getName(), Integer.MIN_VALUE, score.getValue());}
 
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase evt, IEntityMatcherData metadata) {
-        return matches(evt.getEntityWorld(), evt);
+    public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
+        return matches(entity.getEntityWorld(), entity);
     }
 }
