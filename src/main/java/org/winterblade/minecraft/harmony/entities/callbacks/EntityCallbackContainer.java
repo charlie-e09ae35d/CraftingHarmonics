@@ -10,35 +10,33 @@ import org.winterblade.minecraft.harmony.api.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
-import org.winterblade.minecraft.harmony.api.entities.IEntityTargetModifier;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.effects.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
+import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
 import org.winterblade.minecraft.harmony.utility.BasePrioritizedData;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
-import java.util.*;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
 
 /**
  * Created by Matt on 5/24/2016.
  */
 public class EntityCallbackContainer implements IEntityCallback {
     private final PriorityQueue<BasePrioritizedData<IEntityMatcher>> matchers = new PriorityQueue<>();
-    private final PriorityQueue<BasePrioritizedData<IEntityTargetModifier>> modifiers = new PriorityQueue<>();
     private final List<IEntityCallback> callbacks = new ArrayList<>();
 
     private void addMatcher(IEntityMatcher matcher, Priority priority) {
         matchers.add(new BasePrioritizedData<>(matcher, priority));
     }
 
-    private void addTargetModifier(IEntityTargetModifier modifier, Priority priority) {
-        modifiers.add(new BasePrioritizedData<>(modifier, priority));
-    }
-
-    private void addCallback(IEntityCallback callback) {
-        callbacks.add(callback);
+    private void addCallback(@Nullable IEntityCallback callback) {
+        if(callback != null) callbacks.add(callback);
     }
 
     @Override
@@ -56,27 +54,9 @@ public class EntityCallbackContainer implements IEntityCallback {
         // Run our matcher callbacks...
         matcherCallbacks.forEach(Runnable::run);
 
-        // If we're not modified, just run it on the target...
-        if(modifiers.size() <= 0) {
-            runOn(source);
-            return;
-        }
-
-        Set<Entity> targets = new HashSet<>();
-
-        for(BasePrioritizedData<IEntityTargetModifier> modifier : modifiers) {
-            targets.addAll(modifier.get().getTargets(source));
-        }
-
-        for(Entity target : targets) {
-            runOn(target);
-        }
-    }
-
-    private void runOn(Entity target) {
-        // Run the actual callbacks...
+        // Run our callbacks
         for(IEntityCallback callback : callbacks) {
-            callback.apply(target);
+            callback.apply(source);
         }
     }
 
@@ -112,30 +92,29 @@ public class EntityCallbackContainer implements IEntityCallback {
                 mirror = ScriptUtils.wrap((ScriptObject) input);
             }
 
-            // Get our registry data...
-            ComponentRegistry registry = ComponentRegistry.compileRegistryFor(new Class[]{
-                    IEntityCallback.class,
-                    IEntityMatcher.class,
-                    IEntityTargetModifier.class}, mirror);
+            // Make sure we have callbacks:
+            if(!mirror.containsKey("then")) {
+                LogHelper.warn("Callback set contains no callbacks.");
+                return null;
+            }
 
-            List<IEntityMatcher> matchers = registry.getComponentsOf(IEntityMatcher.class);
-            List<IEntityCallback> callbacks = registry.getComponentsOf(IEntityCallback.class);
-            List<IEntityTargetModifier> modifiers = registry.getComponentsOf(IEntityTargetModifier.class);
-
-            for (IEntityCallback callback : callbacks) {
+            // Add them to the container...
+            IEntityCallback[] callbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "then", null, IEntityCallback.class);
+            for(IEntityCallback callback : callbacks) {
                 container.addCallback(callback);
             }
+
+            // Get our registry data...
+            ComponentRegistry registry = ComponentRegistry.compileRegistryFor(new Class[]{
+                    IEntityMatcher.class}, mirror);
+
+            // And find our matchers...
+            List<IEntityMatcher> matchers = registry.getComponentsOf(IEntityMatcher.class);
 
             for(IEntityMatcher matcher : matchers) {
                 PrioritizedObject priorityAnno = matcher.getClass().getAnnotation(PrioritizedObject.class);
                 Priority priority = priorityAnno != null ? priorityAnno.priority() : Priority.MEDIUM;
                 container.addMatcher(matcher, priority);
-            }
-
-            for(IEntityTargetModifier modifier : modifiers) {
-                PrioritizedObject priorityAnno = modifier.getClass().getAnnotation(PrioritizedObject.class);
-                Priority priority = priorityAnno != null ? priorityAnno.priority() : Priority.MEDIUM;
-                container.addTargetModifier(modifier, priority);
             }
 
             return container;

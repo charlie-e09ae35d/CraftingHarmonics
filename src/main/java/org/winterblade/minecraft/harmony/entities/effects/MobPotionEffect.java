@@ -17,6 +17,7 @@ import org.winterblade.minecraft.harmony.api.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.entities.callbacks.EntityCallbackContainer;
+import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
 import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMatchingDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.ItemStackDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.PotionDeserializer;
@@ -182,13 +183,13 @@ public class MobPotionEffect extends BaseEventMatch<Entity, IEntityMatcherData, 
 
             output.amplifier = mirror.containsKey("amplifier") ? (int) ScriptUtils.convert(mirror.get("amplifier"), Integer.class) : 0;
             output.showParticles = mirror.containsKey("showParticles") && (boolean) ScriptUtils.convert(mirror.get("showParticles"), Boolean.class);
-            output.cures = convertArrayWithDeserializer(mirror, "cures", ITEM_STACK_DESERIALIZER, ItemStack.class);
-            output.newCallbacks = convertArrayWithDeserializer(mirror, "onNew", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
-            output.extendedCallbacks = convertArrayWithDeserializer(mirror, "onExtended", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
-            output.applyCallbacks = convertArrayWithDeserializer(mirror, "onApplied", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
-            output.expiredCallbacks = convertArrayWithDeserializer(mirror, "onExpired", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
-            output.curedCallbacks = convertArrayWithDeserializer(mirror, "onCured", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
-            output.removedCallbacks = convertArrayWithDeserializer(mirror, "onRemoved", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.cures = DeserializerHelpers.convertArrayWithDeserializer(mirror, "cures", ITEM_STACK_DESERIALIZER, ItemStack.class);
+            output.newCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onNew", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.extendedCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onExtended", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.applyCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onApplied", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.expiredCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onExpired", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.curedCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onCured", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.removedCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onRemoved", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
         }
     }
 
