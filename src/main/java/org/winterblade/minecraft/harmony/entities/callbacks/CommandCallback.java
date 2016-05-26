@@ -10,10 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.winterblade.minecraft.harmony.api.Component;
+import org.winterblade.minecraft.harmony.api.EntityCallback;
 import org.winterblade.minecraft.harmony.api.IEntityCallback;
-import org.winterblade.minecraft.harmony.api.IEntityCallbackContainer;
-import org.winterblade.minecraft.harmony.api.TypedObject;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import javax.annotation.Nullable;
@@ -21,20 +19,10 @@ import javax.annotation.Nullable;
 /**
  * Created by Matt on 5/22/2016.
  */
-@TypedObject(name = "runPlayerCommand", properties = {"command", "name"})
+@EntityCallback(name = "runPlayerCommand")
 public class CommandCallback implements IEntityCallback {
-    private final String command;
-    private final String name;
-
-    public CommandCallback(String command) {
-        this(command, null);
-    }
-
-    public CommandCallback(String command, @Nullable String name) {
-        this.command = command;
-        this.name = name;
-    }
-
+    private String command;
+    private String name;
 
     @Override
     public void apply(Entity target) {

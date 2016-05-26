@@ -1,18 +1,19 @@
 package org.winterblade.minecraft.harmony.entities.callbacks;
 
 import net.minecraft.entity.Entity;
-import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.IEntityCallbackContainer;
-import org.winterblade.minecraft.harmony.api.TypedObject;
+import org.winterblade.minecraft.harmony.api.EntityCallback;
 import org.winterblade.minecraft.harmony.scripting.wrappers.entity.InteropEntity;
 import org.winterblade.minecraft.harmony.scripting.wrappers.world.InteropWorld;
 
 /**
  * Created by Matt on 5/22/2016.
  */
-@TypedObject(name = "function", properties = {"function"})
+@EntityCallback(name = "function")
 public class FunctionCallback implements IEntityCallbackContainer {
-    private final JSCallback callback;
+    private JSCallback callback;
+
+    public FunctionCallback() {}
 
     public FunctionCallback(JSCallback callback) {
         this.callback = callback;
