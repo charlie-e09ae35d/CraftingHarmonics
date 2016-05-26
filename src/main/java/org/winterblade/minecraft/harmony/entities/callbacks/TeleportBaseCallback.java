@@ -1,41 +1,20 @@
 package org.winterblade.minecraft.harmony.entities.callbacks;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.server.FMLServerHandler;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
  * Created by Matt on 5/26/2016.
  */
-public abstract class TeleportBaseCallback extends BaseEntityCallback {
-    /*
-         * Serialized properties
-         */
-    protected int dimension = Integer.MIN_VALUE;
-
-    /**
-     * Allows the instance to do any last minute updating it needs to, if necessary
-     *
-     * @param mirror The mirror to update from
-     */
-    @Override
-    protected void finishDeserialization(ScriptObjectMirror mirror) throws RuntimeException {
-        if(dimension != Integer.MIN_VALUE && !DimensionManager.isDimensionRegistered(dimension)) {
-            throw new RuntimeException("Unable to create teleporter to dimension " + dimension + ", as it isn't registered.");
-        }
-    }
-
-    @Override
-    protected final void applyTo(Entity target) {
-        int targetDim = dimension == Integer.MIN_VALUE ? target.dimension : dimension;
-        applyTeleport(target, targetDim);
-    }
-
-    protected abstract void applyTeleport(Entity target, int targetDim);
+public abstract class TeleportBaseCallback extends BaseEntityAndDimensionCallback {
+    private IEntityCallbackContainer[] onSuccess;
+    private IEntityCallbackContainer[] onFailure;
+    private IEntityCallbackContainer[] onComplete;
 
     /**
      * Teleport the given target to the specified dimension and {@link Vec3d} position.
@@ -60,6 +39,8 @@ public abstract class TeleportBaseCallback extends BaseEntityCallback {
         // If we're a simple transfer...
         if(prevDim == dimension) {
             target.setPositionAndUpdate(x, y, z);
+            runCallbacks(onSuccess, target);
+            runCallbacks(onComplete, target);
             return;
         }
 
@@ -69,6 +50,8 @@ public abstract class TeleportBaseCallback extends BaseEntityCallback {
         WorldServer destServer = DimensionManager.getWorld(dimension);
         if(destServer == null) {
             LogHelper.info("Cannot teleport '{}' to non-existent dimension {}.", target.getName(), dimension);
+            runCallbacks(onFailure, target);
+            runCallbacks(onComplete, target);
             return;
         }
 
@@ -83,5 +66,8 @@ public abstract class TeleportBaseCallback extends BaseEntityCallback {
             destServer.spawnEntityInWorld(target);
             destServer.updateEntityWithOptionalForce(target, false);
         }
+
+        runCallbacks(onSuccess, target);
+        runCallbacks(onComplete, target);
     }
 }

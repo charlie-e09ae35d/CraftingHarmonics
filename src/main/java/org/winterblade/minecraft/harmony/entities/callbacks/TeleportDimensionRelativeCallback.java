@@ -18,7 +18,7 @@ public class TeleportDimensionRelativeCallback extends TeleportBaseCallback {
     private double scaling = 1.0;
 
     @Override
-    protected void applyTeleport(Entity target, int targetDim) {
+    protected void applyWithTargetDimension(Entity target, int targetDim) {
         // Get their current position...
         Vec3d pos = target.getPositionVector();
 

@@ -12,7 +12,7 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 @EntityCallback(name = "teleportBed")
 public class TeleportBedCallback extends TeleportBaseCallback {
     @Override
-    protected void applyTeleport(Entity target, int targetDim) {
+    protected void applyWithTargetDimension(Entity target, int targetDim) {
         if(!EntityPlayerMP.class.isAssignableFrom(target.getClass())) {
             LogHelper.warn("Not teleporting target ({}) to their bed, as they aren't a player.", target.getClass().getName());
             return;

@@ -16,7 +16,7 @@ public class TeleportAbsoluteCallback extends TeleportBaseCallback {
     private double z;
 
     @Override
-    protected void applyTeleport(Entity target, int targetDim) {
+    protected void applyWithTargetDimension(Entity target, int targetDim) {
         teleport(target, targetDim, x, y, z);
     }
 }

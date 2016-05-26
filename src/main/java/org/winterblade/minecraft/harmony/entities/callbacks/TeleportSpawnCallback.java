@@ -13,7 +13,7 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 @EntityCallback(name = "teleportSpawn")
 public class TeleportSpawnCallback extends TeleportBaseCallback {
     @Override
-    protected void applyTeleport(Entity target, int targetDim) {
+    protected void applyWithTargetDimension(Entity target, int targetDim) {
         // Current dimension:
         if(target.getEntityWorld().provider.getDimension() != targetDim) {
             BlockPos spawn = target.getEntityWorld().getSpawnPoint();
