@@ -168,7 +168,7 @@ public class MobPotionEffect extends BaseEventMatch<Entity, IEntityMatcherData, 
         public Deserializer() {super(IEntityMatcher.class);}
 
         @Override
-        protected MobPotionEffect newInstance() {
+        protected MobPotionEffect newInstance(String type) {
             return new MobPotionEffect();
         }
 

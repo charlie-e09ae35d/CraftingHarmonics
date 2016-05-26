@@ -40,18 +40,12 @@ public class EntityCallbackContainer implements IEntityCallbackContainer {
 
     @Override
     public void apply(Entity source) {
-        List<Runnable> matcherCallbacks = new ArrayList<>();
+        // Figure out if we match
+        BaseMatchResult result = BaseEntityMatcherData.match(source, matchers);
+        if(!result.isMatch()) return;
 
-        // Match us...
-        IEntityMatcherData metadata = new BaseEntityMatcherData();
-        for(BasePrioritizedData<IEntityMatcher> matcher : matchers) {
-            BaseMatchResult matchResult = matcher.get().isMatch(source, metadata);
-            if(!matchResult.isMatch()) return;
-            if(matchResult.getCallback() != null) matcherCallbacks.add(matchResult.getCallback());
-        }
-
-        // Run our matcher callbacks...
-        matcherCallbacks.forEach(Runnable::run);
+        // Run our matcher callbacks (if they exist...)
+        result.runIfMatch();
 
         // Run our callbacks
         for(IEntityCallback callback : callbacks) {

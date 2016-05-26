@@ -14,7 +14,7 @@ public class BlockDropDeserializer extends BaseDropDeserializer<BlockEvent.Harve
     public BlockDropDeserializer() {super(IBlockDropMatcher.class);}
 
     @Override
-    protected BlockDrop newInstance() {
+    protected BlockDrop newInstance(String type) {
         return new BlockDrop();
     }
 

@@ -30,4 +30,8 @@ public class BaseMatchResult {
     public Runnable getCallback() {
         return callback;
     }
+
+    public void runIfMatch() {
+        if(isMatch() && callback != null) callback.run();
+    }
 }

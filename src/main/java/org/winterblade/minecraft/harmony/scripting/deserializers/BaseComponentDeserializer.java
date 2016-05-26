@@ -12,11 +12,13 @@ public abstract class BaseComponentDeserializer <T, TComponent> extends BaseMirr
         this.componentClass = componentClass;
     }
 
-    protected abstract T newInstance();
+    protected abstract T newInstance(String type);
 
     @Override
     protected Object DeserializeMirror(ScriptObjectMirror mirror) {
-        T output = newInstance();
+        T output = newInstance(mirror.containsKey("type") ? mirror.get("type").toString() : "");
+
+        if(output == null) return null;
 
         // Get our registry data...
         ComponentRegistry registry = ComponentRegistry.compileRegistryFor(new Class[]{
