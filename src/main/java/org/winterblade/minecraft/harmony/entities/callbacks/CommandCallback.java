@@ -27,7 +27,7 @@ public class CommandCallback extends BaseEntityCallback {
     @Override
     public void applyTo(Entity target) {
         if(target.getEntityWorld().isRemote) return;
-        if(EntityPlayerMP.class.isAssignableFrom(target.getClass())) {
+        if(!EntityPlayerMP.class.isAssignableFrom(target.getClass())) {
             LogHelper.info("Not running player command '{}' on target as target is not a player ({})", command, target.getClass().getName());
             return;
         }
