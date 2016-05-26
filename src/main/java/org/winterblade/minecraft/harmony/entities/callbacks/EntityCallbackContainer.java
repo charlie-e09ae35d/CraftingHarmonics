@@ -6,6 +6,8 @@ import jdk.nashorn.internal.runtime.ScriptFunction;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.entity.Entity;
 import org.winterblade.minecraft.harmony.api.*;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;

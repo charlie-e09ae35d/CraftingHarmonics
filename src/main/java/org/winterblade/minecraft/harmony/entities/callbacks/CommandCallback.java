@@ -10,8 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.winterblade.minecraft.harmony.api.EntityCallback;
-import org.winterblade.minecraft.harmony.api.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import javax.annotation.Nullable;

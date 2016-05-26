@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.api;
+package org.winterblade.minecraft.harmony.api.entities;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

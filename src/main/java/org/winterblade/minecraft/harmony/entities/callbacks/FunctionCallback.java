@@ -1,8 +1,8 @@
 package org.winterblade.minecraft.harmony.entities.callbacks;
 
 import net.minecraft.entity.Entity;
-import org.winterblade.minecraft.harmony.api.IEntityCallbackContainer;
-import org.winterblade.minecraft.harmony.api.EntityCallback;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.scripting.wrappers.entity.InteropEntity;
 import org.winterblade.minecraft.harmony.scripting.wrappers.world.InteropWorld;
 

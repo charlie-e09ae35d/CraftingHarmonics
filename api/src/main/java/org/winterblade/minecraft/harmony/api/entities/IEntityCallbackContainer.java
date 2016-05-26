@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.api;
+package org.winterblade.minecraft.harmony.api.entities;
 
 /**
  * Container for running callbacks; if implementing a callback that has its own callbacks, it should implement this

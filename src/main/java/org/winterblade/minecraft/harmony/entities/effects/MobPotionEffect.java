@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
-import org.winterblade.minecraft.harmony.api.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.entities.callbacks.EntityCallbackContainer;
