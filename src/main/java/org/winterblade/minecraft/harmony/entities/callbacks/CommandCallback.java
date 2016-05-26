@@ -26,7 +26,11 @@ public class CommandCallback extends BaseEntityCallback {
 
     @Override
     public void applyTo(Entity target) {
-        if(target.getEntityWorld().isRemote || EntityPlayerMP.class.isAssignableFrom(target.getClass())) return;
+        if(target.getEntityWorld().isRemote) return;
+        if(EntityPlayerMP.class.isAssignableFrom(target.getClass())) {
+            LogHelper.info("Not running player command '{}' on target as target is not a player ({})", command, target.getClass().getName());
+            return;
+        }
 
         String specificCommand = command.replaceAll("@p", target.getName());
 
@@ -39,8 +43,7 @@ public class CommandCallback extends BaseEntityCallback {
                         );
 
         // TODO: "onError" callback.
-        LogHelper.info("Ran '" + specificCommand + "' from '" + target.getName() + "'.  Result code: " + result);
-        
+        LogHelper.info("Ran '{}' from '{}'.  Result code: {}", specificCommand, target.getName(), result);
     }
 
     /**
