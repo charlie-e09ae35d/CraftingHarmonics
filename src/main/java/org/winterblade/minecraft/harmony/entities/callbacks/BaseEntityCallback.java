@@ -25,23 +25,23 @@ import java.util.PriorityQueue;
  * Created by Matt on 5/26/2016.
  */
 public abstract class BaseEntityCallback implements IEntityCallback {
-    private static final Map<String,Class<IEntityCallback>> callbackMap = new HashMap<>();
+    private static final Map<String, Class<BaseEntityCallback>> callbackMap = new HashMap<>();
     private final PriorityQueue<BasePrioritizedData<IEntityMatcher>> matchers = new PriorityQueue<>();
 
     /**
      * Add the classes that we should register for entity callbacks.
      * @param callbackClasses    A map of the callback names to their respective classes.
      */
-    public static void addCallbacks(Map<String,Class<IEntityCallback>> callbackClasses) {
-        for(Map.Entry<String, Class<IEntityCallback>> entry : callbackClasses.entrySet()) {
+    public static void registerCallbacks(Map<String, Class<BaseEntityCallback>> callbackClasses) {
+        for(Map.Entry<String, Class<BaseEntityCallback>> entry : callbackClasses.entrySet()) {
             EntityCallback anno = entry.getValue().getAnnotation(EntityCallback.class);
 
             if(!anno.dependsOn().equals("") && !Loader.isModLoaded(anno.dependsOn())) {
-                LogHelper.warn("Entity callback '%s' depends on '%s', which is not loaded.", anno.name(), anno.dependsOn());
+                LogHelper.warn("Entity callback '{}' depends on '{}', which is not loaded.", anno.name(), anno.dependsOn());
                 continue;
             }
 
-            LogHelper.info("Registering entity callback '%s'.", anno.name());
+            LogHelper.info("Registering entity callback '{}'.", anno.name());
             callbackMap.put(anno.name().toLowerCase(), entry.getValue());
         }
     }
@@ -83,7 +83,7 @@ public abstract class BaseEntityCallback implements IEntityCallback {
 
     @ScriptObjectDeserializer(deserializes = BaseEntityCallback.class)
     public static class Deserializer extends BaseComponentDeserializer<BaseEntityCallback, IEntityMatcher> {
-        protected Deserializer() {
+        public Deserializer() {
             super(IEntityMatcher.class);
         }
 
@@ -92,13 +92,13 @@ public abstract class BaseEntityCallback implements IEntityCallback {
             type = type.toLowerCase();
 
             if(!callbackMap.containsKey(type)) {
-                LogHelper.error("Error creating entity callback of type '%s': The type is not registered.", type);
+                LogHelper.error("Error creating entity callback of type '{}': The type is not registered.", type);
                 return null;
             }
             try {
                 return (BaseEntityCallback) callbackMap.get(type).newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
-                LogHelper.error("Error creating entity callback of type '%s'.", type, e);
+                LogHelper.error("Error creating entity callback of type '{}'.", type, e);
                 return null;
             }
         }

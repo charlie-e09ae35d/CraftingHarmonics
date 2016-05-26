@@ -20,12 +20,12 @@ import javax.annotation.Nullable;
  * Created by Matt on 5/22/2016.
  */
 @EntityCallback(name = "runPlayerCommand")
-public class CommandCallback implements IEntityCallback {
+public class CommandCallback extends BaseEntityCallback {
     private String command;
     private String name;
 
     @Override
-    public void apply(Entity target) {
+    public void applyTo(Entity target) {
         if(target.getEntityWorld().isRemote || EntityPlayerMP.class.isAssignableFrom(target.getClass())) return;
 
         String specificCommand = command.replaceAll("@p", target.getName());

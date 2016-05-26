@@ -16,6 +16,7 @@ import net.minecraftforge.oredict.RecipeSorter;
 import org.winterblade.minecraft.harmony.api.IOperation;
 import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
+import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
@@ -68,6 +69,7 @@ public class CraftingHarmonicsMod {
         RecipeOperationRegistry.CreateDeserializers(AnnotationUtil.getRecipeOperations(event.getAsmData()));
         ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
         ScriptInteropRegistry.registerInterops(AnnotationUtil.getInteropClasses(event.getAsmData()));
+        BaseEntityCallback.registerCallbacks(AnnotationUtil.getEntityCallbacks(event.getAsmData()));
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");

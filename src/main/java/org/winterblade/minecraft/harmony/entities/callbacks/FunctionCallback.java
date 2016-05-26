@@ -10,7 +10,7 @@ import org.winterblade.minecraft.harmony.scripting.wrappers.world.InteropWorld;
  * Created by Matt on 5/22/2016.
  */
 @EntityCallback(name = "function")
-public class FunctionCallback implements IEntityCallbackContainer {
+public class FunctionCallback extends BaseEntityCallback {
     private JSCallback callback;
 
     public FunctionCallback() {}
@@ -20,7 +20,7 @@ public class FunctionCallback implements IEntityCallbackContainer {
     }
 
     @Override
-    public void apply(Entity target) {
+    public void applyTo(Entity target) {
         callback.apply(new InteropEntity(target), new InteropWorld(target.getEntityWorld()));
     }
 

@@ -5,10 +5,11 @@ import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptFunction;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.entity.Entity;
-import org.winterblade.minecraft.harmony.api.*;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
+import org.winterblade.minecraft.harmony.api.PrioritizedObject;
+import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
-import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.effects.BaseEntityMatcherData;
@@ -55,6 +56,8 @@ public class EntityCallbackContainer implements IEntityCallbackContainer {
 
     @ScriptObjectDeserializer(deserializes = IEntityCallbackContainer.class)
     public static class Deserializer implements IScriptObjectDeserializer {
+        private static final BaseEntityCallback.Deserializer CALLBACK_DESERIALIZER = new BaseEntityCallback.Deserializer();
+
         @Override
         public Object Deserialize(Object input) {
             EntityCallbackContainer container = new EntityCallbackContainer();
@@ -87,12 +90,19 @@ public class EntityCallbackContainer implements IEntityCallbackContainer {
 
             // Make sure we have callbacks:
             if(!mirror.containsKey("then")) {
-                LogHelper.warn("Callback set contains no callbacks.");
-                return null;
+                // Check if this is a single callback with no matchers...
+                if(!mirror.containsKey("type")) {
+                    LogHelper.warn("Callback set contains no callbacks.");
+                    return null;
+                }
+
+                // Just deserialize the callback itself...
+                container.addCallback(DeserializerHelpers.convertWithDeserializer(mirror, CALLBACK_DESERIALIZER, IEntityCallback.class));
+                return container;
             }
 
             // Add them to the container...
-            IEntityCallback[] callbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "then", null, IEntityCallback.class);
+            IEntityCallback[] callbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "then", CALLBACK_DESERIALIZER, IEntityCallback.class);
             for(IEntityCallback callback : callbacks) {
                 container.addCallback(callback);
             }

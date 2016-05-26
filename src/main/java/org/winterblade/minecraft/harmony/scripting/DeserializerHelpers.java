@@ -17,6 +17,11 @@ public class DeserializerHelpers {
             Object val = mirror.get(key);
             T[] output;
 
+            // If we don't anything to deserialize...
+            if(val == null) {
+                return ObjectArrays.newArray(toClass, 0);
+            }
+
             if(ScriptObjectMirror.class.isAssignableFrom(val.getClass())) {
                 ScriptObjectMirror valMirror = (ScriptObjectMirror) val;
 
@@ -59,8 +64,10 @@ public class DeserializerHelpers {
      */
     @Nullable
     public static <T> T convertWithDeserializer(Object input, IScriptObjectDeserializer deserializer, Class<T> toClass) {
+        if(input == null) return null;
         try {
             Object out = deserializer.Deserialize(input);
+            if(out == null) return null;
             return toClass.isAssignableFrom(out.getClass()) ? toClass.cast(out) : null;
         } catch (Exception e) {
             LogHelper.error("Error deserializing element of " + toClass.getName(), e);
