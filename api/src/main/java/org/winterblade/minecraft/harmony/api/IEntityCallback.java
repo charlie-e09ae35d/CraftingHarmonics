@@ -2,12 +2,10 @@ package org.winterblade.minecraft.harmony.api;
 
 import net.minecraft.entity.Entity;
 
-import java.util.Set;
-
 /**
- * Created by Matt on 5/22/2016.
+ * The actual callback for a method; needs to be annotated with @TypedObject.  See {@link TypedObject} for more
+ * information on what you need to do.
  */
 public interface IEntityCallback {
     void apply(Entity target);
 }
-

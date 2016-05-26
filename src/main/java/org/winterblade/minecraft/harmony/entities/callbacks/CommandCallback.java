@@ -12,6 +12,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.TypedObject;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import javax.annotation.Nullable;
@@ -19,7 +21,7 @@ import javax.annotation.Nullable;
 /**
  * Created by Matt on 5/22/2016.
  */
-@Component(properties = {"command", "name"})
+@TypedObject(name = "runPlayerCommand", properties = {"command", "name"})
 public class CommandCallback implements IEntityCallback {
     private final String command;
     private final String name;

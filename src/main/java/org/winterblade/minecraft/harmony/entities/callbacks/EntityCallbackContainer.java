@@ -5,10 +5,7 @@ import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptFunction;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.entity.Entity;
-import org.winterblade.minecraft.harmony.api.BaseMatchResult;
-import org.winterblade.minecraft.harmony.api.IEntityCallback;
-import org.winterblade.minecraft.harmony.api.PrioritizedObject;
-import org.winterblade.minecraft.harmony.api.Priority;
+import org.winterblade.minecraft.harmony.api.*;
 import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -27,7 +24,7 @@ import java.util.PriorityQueue;
 /**
  * Created by Matt on 5/24/2016.
  */
-public class EntityCallbackContainer implements IEntityCallback {
+public class EntityCallbackContainer implements IEntityCallbackContainer {
     private final PriorityQueue<BasePrioritizedData<IEntityMatcher>> matchers = new PriorityQueue<>();
     private final List<IEntityCallback> callbacks = new ArrayList<>();
 
@@ -60,7 +57,7 @@ public class EntityCallbackContainer implements IEntityCallback {
         }
     }
 
-    @ScriptObjectDeserializer(deserializes = IEntityCallback.class)
+    @ScriptObjectDeserializer(deserializes = IEntityCallbackContainer.class)
     public static class Deserializer implements IScriptObjectDeserializer {
         @Override
         public Object Deserialize(Object input) {
@@ -74,7 +71,7 @@ public class EntityCallbackContainer implements IEntityCallback {
                     container.addCallback(fn);
                     return container;
                 } catch (Exception e) {
-                    LogHelper.error("Unable to convert given callback function into IEntityCallback", e);
+                    LogHelper.error("Unable to convert given callback function into IEntityCallbackContainer", e);
                     return null;
                 }
             }
