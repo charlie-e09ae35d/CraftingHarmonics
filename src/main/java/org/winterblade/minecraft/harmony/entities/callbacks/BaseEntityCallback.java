@@ -8,6 +8,7 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.effects.BaseEntityMatcherData;
@@ -79,6 +80,14 @@ public abstract class BaseEntityCallback implements IEntityCallback {
      */
     protected void finishDeserialization(ScriptObjectMirror mirror) throws RuntimeException {
         // Does nothing.
+    }
+
+    protected void runCallbacks(IEntityCallbackContainer[] callbacks, Entity target) {
+        if(callbacks == null) return;
+
+        for(IEntityCallbackContainer callback : callbacks) {
+            callback.apply(target);
+        }
     }
 
     @ScriptObjectDeserializer(deserializes = BaseEntityCallback.class)
