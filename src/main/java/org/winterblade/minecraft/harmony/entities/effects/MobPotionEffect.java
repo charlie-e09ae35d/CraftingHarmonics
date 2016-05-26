@@ -7,15 +7,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
+import org.winterblade.minecraft.harmony.entities.callbacks.ApplyPotionCallback;
 import org.winterblade.minecraft.harmony.entities.callbacks.EntityCallbackContainer;
 import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
 import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMatchingDeserializer;
@@ -23,17 +21,12 @@ import org.winterblade.minecraft.harmony.scripting.deserializers.ItemStackDeseri
 import org.winterblade.minecraft.harmony.scripting.deserializers.PotionDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
-import java.util.WeakHashMap;
 
 /**
  * Created by Matt on 5/20/2016.
  */
 public class MobPotionEffect extends BaseEventMatch<Entity, IEntityMatcherData, IEntityMatcher> {
-    private static WeakHashMap<EntityLivingBase, Map<Potion, HarmonyPotionEffect>> potionHandlers = new WeakHashMap<>();
-
     /*
      * Serialized properties
      */
@@ -97,7 +90,7 @@ public class MobPotionEffect extends BaseEventMatch<Entity, IEntityMatcherData, 
             // Now, actually calculate out our drop rates...
             for (MobPotionEffect matcher : this.getMatchers()) {
                 // Wrap this in our class, so we can callback when it's expired
-                HarmonyPotionEffect effect = new HarmonyPotionEffect(matcher.getWhat(), matcher.getDuration(),
+                ApplyPotionCallback.HarmonyPotionEffect effect = new ApplyPotionCallback.HarmonyPotionEffect(matcher.getWhat(), matcher.getDuration(),
                         matcher.getAmplifier(), false, matcher.isShowParticles(),
                         matcher.expiredCallbacks != null ? matcher.expiredCallbacks : new IEntityCallbackContainer[0],
                         matcher.curedCallbacks != null ? matcher.curedCallbacks : new IEntityCallbackContainer[0],
@@ -120,43 +113,9 @@ public class MobPotionEffect extends BaseEventMatch<Entity, IEntityMatcherData, 
                 // Do the effect:
                 entity.addPotionEffect(effect);
 
-                if(!potionHandlers.containsKey(entity)) potionHandlers.put(entity, new HashMap<>());
-                potionHandlers.get(entity).put(matcher.getWhat(), effect);
+                ApplyPotionCallback.registerHandler(entity, matcher.getWhat(), effect);
             }
         }
-    }
-
-    public static void potionExpiredHook(EntityLivingBase entity, PotionEffect effect) {
-        // Check if we need to handle for this entity...
-        if(!potionHandlers.containsKey(entity)) return;
-
-        // Now check if we need to handle for this effect...
-        Map<Potion, HarmonyPotionEffect> effectMap = potionHandlers.get(entity);
-        if(!effectMap.containsKey(effect.getPotion())) return;
-
-        // Handle it and clean up...
-        effectMap.remove(effect.getPotion()).onRemoved(entity, false);
-        if(effectMap.size() <= 0) potionHandlers.remove(entity);
-
-        return;
-    }
-
-    public static PotionEffect potionRemovedHook(EntityLivingBase entity, PotionEffect effect) {
-        potionCuredHook(entity, effect);
-        return effect;
-    }
-
-    public static void potionCuredHook(EntityLivingBase entity, PotionEffect effect) {
-        // Check if we need to handle for this entity...
-        if(!potionHandlers.containsKey(entity)) return;
-
-        // Now check if we need to handle for this effect...
-        Map<Potion, HarmonyPotionEffect> effectMap = potionHandlers.get(entity);
-        if(!effectMap.containsKey(effect.getPotion())) return;
-
-        // Handle it and clean up...
-        effectMap.remove(effect.getPotion()).onRemoved(entity, true);
-        if(effectMap.size() <= 0) potionHandlers.remove(entity);
     }
 
     @ScriptObjectDeserializer(deserializes = MobPotionEffect.class)
@@ -193,38 +152,4 @@ public class MobPotionEffect extends BaseEventMatch<Entity, IEntityMatcherData, 
         }
     }
 
-    public static class HarmonyPotionEffect extends PotionEffect {
-        private final IEntityCallbackContainer[] expiredCallbacks;
-        private final IEntityCallbackContainer[] curedCallbacks;
-        private final IEntityCallbackContainer[] removedCallbacks;
-        private boolean expired = false;
-
-        public HarmonyPotionEffect(Potion potionIn, int durationIn, int amplifierIn, boolean ambientIn,
-                                   boolean showParticlesIn, IEntityCallbackContainer[] expiredCallbacks,
-                                   IEntityCallbackContainer[] curedCallbacks, IEntityCallbackContainer[] removedCallbacks) {
-            super(potionIn, durationIn, amplifierIn, ambientIn, showParticlesIn);
-            this.expiredCallbacks = expiredCallbacks;
-            this.curedCallbacks = curedCallbacks;
-            this.removedCallbacks = removedCallbacks;
-        }
-
-        public void onRemoved(EntityLivingBase entity, boolean wasCured) {
-            // Only call our update on the server...
-            if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || expired) return;
-
-            if(wasCured) {
-                for (IEntityCallbackContainer callback : curedCallbacks) {
-                    callback.apply(entity);
-                }
-            } else {
-                for (IEntityCallbackContainer callback : expiredCallbacks) {
-                    callback.apply(entity);
-                }
-            }
-
-            for(IEntityCallbackContainer callback : removedCallbacks) {
-                callback.apply(entity);
-            }
-        }
-    }
 }

@@ -89,7 +89,7 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
             methodNode.instructions.add(new MethodInsnNode(INVOKEINTERFACE, "java/util/Map", "remove", "(Ljava/lang/Object;)Ljava/lang/Object;", true));
             methodNode.instructions.add(new TypeInsnNode(CHECKCAST, potionEffectName));
             methodNode.instructions.add(new MethodInsnNode(INVOKESTATIC,
-                    "org/winterblade/minecraft/harmony/entities/effects/MobPotionEffect",
+                    "org/winterblade/minecraft/harmony/entities/callbacks/ApplyPotionCallback",
                     "potionRemovedHook",
                     "(L" + elbName + ";L" + potionEffectName + ";)L" + potionEffectName + ";",
                     false));
@@ -136,7 +136,7 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
             toInsert.add(new VarInsnNode(ALOAD, 0));
             toInsert.add(new VarInsnNode(ALOAD, 2));
             toInsert.add(new MethodInsnNode(INVOKESTATIC,
-                    "org/winterblade/minecraft/harmony/entities/effects/MobPotionEffect",
+                    "org/winterblade/minecraft/harmony/entities/callbacks/ApplyPotionCallback",
                     "potionCuredHook",
                     "(L" + elbName + ";L" + potionEffectName + ";)V",
                     false));
@@ -185,7 +185,7 @@ public class PotionRemovedHookTransformer implements IClassTransformer {
         toInsert.add(new VarInsnNode(ALOAD, 0));
         toInsert.add(new VarInsnNode(ALOAD, 3));
         toInsert.add(new MethodInsnNode(INVOKESTATIC,
-                "org/winterblade/minecraft/harmony/entities/effects/MobPotionEffect",
+                "org/winterblade/minecraft/harmony/entities/callbacks/ApplyPotionCallback",
                 hookName,
                 "(L" + elbName + ";L" + potionEffectName + ";)V",
                 false));

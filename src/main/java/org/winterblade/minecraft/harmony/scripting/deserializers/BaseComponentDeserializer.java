@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.scripting.deserializers;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 
 import java.util.List;
@@ -27,7 +28,12 @@ public abstract class BaseComponentDeserializer <T, TComponent> extends BaseMirr
         List<TComponent> components = registry.getComponentsOf(componentClass);
 
         // Allow the actual deserializer to do its work:
-        update(mirror, output, components);
+        try {
+            update(mirror, output, components);
+        } catch(Exception ex) {
+            LogHelper.error("Unable to deserialize object due to an error.", ex);
+            return null;
+        }
 
         return output;
     }

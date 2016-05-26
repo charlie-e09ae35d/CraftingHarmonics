@@ -77,7 +77,7 @@ public abstract class BaseEntityCallback implements IEntityCallback {
      * Allows the instance to do any last minute updating it needs to, if necessary
      * @param mirror    The mirror to update from
      */
-    private void finishDeserialization(ScriptObjectMirror mirror) {
+    protected void finishDeserialization(ScriptObjectMirror mirror) throws RuntimeException {
         // Does nothing.
     }
 
