@@ -17,6 +17,8 @@ public class SetTimeCallback extends BaseEntityAndDimensionCallback {
      * Serialized properties
      */
     private int time;
+    private IEntityCallbackContainer[] onSuccess;
+    private IEntityCallbackContainer[] onFailure;
     private IEntityCallbackContainer[] onComplete;
 
     @Override
@@ -24,6 +26,8 @@ public class SetTimeCallback extends BaseEntityAndDimensionCallback {
         WorldServer worldServer = DimensionManager.getWorld(targetDim);
         if(worldServer == null) {
             LogHelper.error("Attempted to set the time for a world (" + targetDim + ") that doesn't exist.");
+            runCallbacks(onFailure, target);
+            runCallbacks(onComplete, target);
             return;
         }
 
@@ -37,6 +41,7 @@ public class SetTimeCallback extends BaseEntityAndDimensionCallback {
 
         // Actually set the time now...
         worldServer.setWorldTime(newTime);
+        runCallbacks(onSuccess, target);
         runCallbacks(onComplete, target);
     }
 }

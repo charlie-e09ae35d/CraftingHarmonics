@@ -16,6 +16,8 @@ public class AddTimeCallback extends BaseEntityAndDimensionCallback {
      * Serialized properties
      */
     private int time;
+    private IEntityCallbackContainer[] onSuccess;
+    private IEntityCallbackContainer[] onFailure;
     private IEntityCallbackContainer[] onComplete;
 
     @Override
@@ -23,11 +25,14 @@ public class AddTimeCallback extends BaseEntityAndDimensionCallback {
         WorldServer worldServer = DimensionManager.getWorld(targetDim);
         if(worldServer == null) {
             LogHelper.error("Attempted to set the time for a world (" + targetDim + ") that doesn't exist.");
+            runCallbacks(onFailure, target);
+            runCallbacks(onComplete, target);
             return;
         }
 
         // Actually set the time now...
         worldServer.setWorldTime(worldServer.getWorldTime() + time);
+        runCallbacks(onSuccess, target);
         runCallbacks(onComplete, target);
     }
 }

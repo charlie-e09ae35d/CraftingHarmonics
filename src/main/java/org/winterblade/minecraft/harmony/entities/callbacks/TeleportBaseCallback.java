@@ -13,8 +13,8 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
  */
 public abstract class TeleportBaseCallback extends BaseEntityAndDimensionCallback {
     private IEntityCallbackContainer[] onSuccess;
-    private IEntityCallbackContainer[] onFailure;
-    private IEntityCallbackContainer[] onComplete;
+    protected IEntityCallbackContainer[] onFailure;
+    protected IEntityCallbackContainer[] onComplete;
 
     /**
      * Teleport the given target to the specified dimension and {@link Vec3d} position.

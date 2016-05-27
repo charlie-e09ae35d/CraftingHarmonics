@@ -26,6 +26,8 @@ public class TeleportSpawnCallback extends TeleportBaseCallback {
 
         if(server == null) {
             LogHelper.warn("Destination dimension {} didn't exist; not teleporting.", dimension);
+            runCallbacks(onFailure, target);
+            runCallbacks(onComplete, target);
             return;
         }
 

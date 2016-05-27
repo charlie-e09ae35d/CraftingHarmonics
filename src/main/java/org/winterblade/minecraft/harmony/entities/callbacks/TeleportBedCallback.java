@@ -15,6 +15,8 @@ public class TeleportBedCallback extends TeleportBaseCallback {
     protected void applyWithTargetDimension(Entity target, int targetDim) {
         if(!EntityPlayerMP.class.isAssignableFrom(target.getClass())) {
             LogHelper.warn("Not teleporting target ({}) to their bed, as they aren't a player.", target.getClass().getName());
+            runCallbacks(onFailure, target);
+            runCallbacks(onComplete, target);
             return;
         }
 
