@@ -13,6 +13,7 @@ import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,8 +57,6 @@ public class ApplyPotionCallback extends BaseEntityCallback {
         // Handle it and clean up...
         effectMap.remove(effect.getPotion()).onRemoved(entity, false);
         if(effectMap.size() <= 0) potionHandlers.remove(entity);
-
-        return;
     }
 
     /**
@@ -166,21 +165,13 @@ public class ApplyPotionCallback extends BaseEntityCallback {
      * @param entity    The entity to apply it to
      */
     private void doApply(boolean isNew, EntityLivingBase entity) {
-        if(isNew && onNew != null) {
-            for(IEntityCallbackContainer callback : onNew) {
-                callback.apply(entity);
-            }
-        } else if(!isNew && onExtended != null){
-            for(IEntityCallbackContainer callback : onExtended) {
-                callback.apply(entity);
-            }
+        if(isNew) {
+            runCallbacks(onNew, entity);
+        } else {
+            runCallbacks(onExtended, entity);
         }
 
-        if(onApplied != null) {
-            for(IEntityCallbackContainer callback : onApplied) {
-                callback.apply(entity);
-            }
-        }
+        runCallbacks(onApplied, entity);
     }
 
     /**
@@ -217,18 +208,12 @@ public class ApplyPotionCallback extends BaseEntityCallback {
             if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || expired) return;
 
             if(wasCured) {
-                for (IEntityCallbackContainer callback : curedCallbacks) {
-                    callback.apply(entity);
-                }
+                MobTickRegistry.addCallbackSet(entity, curedCallbacks);
             } else {
-                for (IEntityCallbackContainer callback : expiredCallbacks) {
-                    callback.apply(entity);
-                }
+                MobTickRegistry.addCallbackSet(entity, expiredCallbacks);
             }
 
-            for(IEntityCallbackContainer callback : removedCallbacks) {
-                callback.apply(entity);
-            }
+            MobTickRegistry.addCallbackSet(entity, removedCallbacks);
         }
     }
 }

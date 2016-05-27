@@ -12,6 +12,7 @@ import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.effects.BaseEntityMatcherData;
+import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.scripting.deserializers.BaseComponentDeserializer;
 import org.winterblade.minecraft.harmony.utility.BasePrioritizedData;
@@ -85,11 +86,7 @@ public abstract class BaseEntityCallback implements IEntityCallback {
     protected void runCallbacks(IEntityCallbackContainer[] callbacks, Entity target) {
         if(callbacks == null) return;
 
-        // TODO: Don't actually call these here, add them to a queue on the world tick handler
-        // That way we avoid the possibility of updating an iterator (ie: potions) inside another iterator
-        for(IEntityCallbackContainer callback : callbacks) {
-            callback.apply(target);
-        }
+        MobTickRegistry.addCallbackSet(target, callbacks);
     }
 
     @ScriptObjectDeserializer(deserializes = BaseEntityCallback.class)

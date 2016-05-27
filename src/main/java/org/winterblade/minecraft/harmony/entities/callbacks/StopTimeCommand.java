@@ -77,6 +77,8 @@ public class StopTimeCommand extends BaseEntityAndDimensionCallback {
         runCallbacks(onTimeStopStart, target);
         runCallbacks(onComplete, target);
         worldServer.getGameRules().setOrCreateGameRule("doDaylightCycle", "false");
+
+        // TODO: Also prevent sleeping.
     }
 
     /**

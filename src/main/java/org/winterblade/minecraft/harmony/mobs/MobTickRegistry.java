@@ -1,16 +1,20 @@
 package org.winterblade.minecraft.harmony.mobs;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EntitySelectors;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.effects.MobPotionEffect;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by Matt on 5/10/2016.
@@ -24,6 +28,9 @@ public class MobTickRegistry {
     // Tick handlers
     private static TickHandler<MobShed, MobShed.Handler> shedHandler;
     private static TickHandler<MobPotionEffect, MobPotionEffect.Handler> potionEffectHandler;
+
+    // Queued callbacks; this is a concurrent queue because we may add to it while processing it.
+    private static Queue<EntityCallbackData> entityCallbackQueue = new ConcurrentLinkedQueue<>();
 
     public static void init() {
         inited = true;
@@ -58,6 +65,33 @@ public class MobTickRegistry {
 
             if(shedsActive) shedHandler.handle(rand, entity, entityName, entityClassName);
             if(potionsActive) potionEffectHandler.handle(rand, entity, entityName, entityClassName);
+        }
+    }
+
+    /**
+     * Add a set of callbacks to the callback queue
+     * @param target        The target of the operation
+     * @param callbacks     The callbacks
+     */
+    public static void addCallbackSet(Entity target, IEntityCallbackContainer[] callbacks) {
+        entityCallbackQueue.add(new EntityCallbackData(target, callbacks));
+    }
+
+    /**
+     * Process the current callback queue
+     */
+    public static void processCallbackQueue() {
+        for (Iterator<EntityCallbackData> iterator = entityCallbackQueue.iterator(); iterator.hasNext(); ) {
+            EntityCallbackData callbackData = iterator.next();
+            iterator.remove();
+
+            try {
+                callbackData.runCallbacks();
+            } catch (Exception ex) {
+                LogHelper.error("Error processing entity callbacks.", ex);
+            }
+
+            // TODO: Make this have a configurable limiter on the number of callbacks
         }
     }
 
@@ -206,6 +240,25 @@ public class MobTickRegistry {
 
         boolean isActiveThisTick(TickEvent.WorldTickEvent evt) {
             return isActive() && (evt.world.getTotalWorldTime() % freq) == 0;
+        }
+    }
+
+    private static class EntityCallbackData {
+        private final WeakReference<Entity> targetRef;
+        private final IEntityCallbackContainer[] callbacks;
+
+        EntityCallbackData(Entity target, IEntityCallbackContainer[] callbacks) {
+            targetRef = new WeakReference<>(target);
+            this.callbacks = callbacks;
+        }
+
+        public void runCallbacks() {
+            Entity target = targetRef.get();
+            if(target == null) return;
+
+            for(IEntityCallbackContainer callback : callbacks) {
+                callback.apply(target);
+            }
         }
     }
 }
