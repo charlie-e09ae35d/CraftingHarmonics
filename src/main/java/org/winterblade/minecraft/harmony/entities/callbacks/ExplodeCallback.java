@@ -9,21 +9,10 @@ import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
  * Created by Matt on 5/26/2016.
  */
 @EntityCallback(name = "explode")
-public class ExplodeCallback extends BaseEntityCallback {
+public class ExplodeCallback extends VectorBaseCallback {
     /*
      * Serialized properties
      */
-    // Offset coords:
-    private double x;
-    private double y;
-    private double z;
-
-    // Vector coordinates
-    private double magnitude = Double.MIN_VALUE;
-    private float yaw;
-    private float pitch;
-
-    // Actual properties of the explosion
     private float strength;
     private boolean isSmoking;
 
@@ -39,14 +28,8 @@ public class ExplodeCallback extends BaseEntityCallback {
 
     @Override
     protected void applyTo(Entity target) {
-        // Relative coordinates:
-        if (magnitude == Double.MIN_VALUE) {
-            target.getEntityWorld().createExplosion(target, target.posX + x, target.posY + y, target.posZ + z, strength, isSmoking);
-            return;
-        }
-
-        //
-        Vec3d pos = target.getLookVec().rotatePitch((float) (pitch*Math.PI)).rotateYaw((float) (yaw*Math.PI)).scale(magnitude).add(target.getPositionVector());
+        Vec3d pos = getPosition(target);
         target.getEntityWorld().createExplosion(target, pos.xCoord + x, pos.yCoord + y, pos.zCoord + z, strength, isSmoking);
     }
+
 }
