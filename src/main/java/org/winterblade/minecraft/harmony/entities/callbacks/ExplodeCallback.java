@@ -4,6 +4,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 
 /**
  * Created by Matt on 5/26/2016.
@@ -15,6 +16,7 @@ public class ExplodeCallback extends VectorBaseCallback {
      */
     private float strength;
     private boolean isSmoking;
+    private IEntityCallbackContainer[] onComplete;
 
     /**
      * Allows the instance to do any last minute updating it needs to, if necessary
@@ -30,6 +32,7 @@ public class ExplodeCallback extends VectorBaseCallback {
     protected void applyTo(Entity target) {
         Vec3d pos = getPosition(target);
         target.getEntityWorld().createExplosion(target, pos.xCoord + x, pos.yCoord + y, pos.zCoord + z, strength, isSmoking);
+        runCallbacks(onComplete, target);
     }
 
 }
