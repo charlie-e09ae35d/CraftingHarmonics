@@ -19,7 +19,7 @@ public class BasePrioritizedData<T> implements Comparable<BasePrioritizedData> {
     @Override
     public int compareTo(@Nonnull BasePrioritizedData o) {
         // Sort by priority, then by name.
-        if(priority != o.priority) return priority.ordinal() - o.priority.ordinal();
+        if(priority != o.priority) return priority.compareTo(o.priority) < 0 ? 1 : -1;
         return matcher.getClass().getName().compareTo(o.matcher.getClass().getName());
     }
 
