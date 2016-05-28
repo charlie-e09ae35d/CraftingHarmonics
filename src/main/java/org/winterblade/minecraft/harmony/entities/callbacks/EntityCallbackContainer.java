@@ -5,35 +5,32 @@ import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptFunction;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.effects.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
-import org.winterblade.minecraft.harmony.utility.BasePrioritizedData;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
+import java.util.Random;
 
 /**
  * Created by Matt on 5/24/2016.
  */
-public class EntityCallbackContainer implements IEntityCallbackContainer {
-    private final PriorityQueue<BasePrioritizedData<IEntityMatcher>> matchers = new PriorityQueue<>();
+public class EntityCallbackContainer extends BaseEventMatch<Entity, IEntityMatcherData, IEntityMatcher> implements IEntityCallbackContainer {
     private final List<IEntityCallback> callbacks = new ArrayList<>();
-
-    private void addMatcher(IEntityMatcher matcher, Priority priority) {
-        matchers.add(new BasePrioritizedData<>(matcher, priority));
-    }
 
     private void addCallback(@Nullable IEntityCallback callback) {
         if(callback != null) callbacks.add(callback);
@@ -42,7 +39,7 @@ public class EntityCallbackContainer implements IEntityCallbackContainer {
     @Override
     public void apply(Entity source) {
         // Figure out if we match
-        BaseMatchResult result = BaseEntityMatcherData.match(source, matchers);
+        BaseMatchResult result = matches(source, new BaseEntityMatcherData());
         if(!result.isMatch()) return;
 
         // Run our matcher callbacks (if they exist...)
@@ -121,6 +118,16 @@ public class EntityCallbackContainer implements IEntityCallbackContainer {
             }
 
             return container;
+        }
+    }
+
+    public static class Handler extends BaseEventMatch.BaseMatchHandler<IEntityCallbackContainer> {
+        @Override
+        public void apply(Random rand, EntityLivingBase entity) {
+            // Easy enough... just apply all the callback containers we have:
+            for(IEntityCallbackContainer callbackContainer : matchers) {
+                callbackContainer.apply(entity); // Because apply does check matchers as well.
+            }
         }
     }
 }

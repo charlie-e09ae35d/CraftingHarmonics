@@ -8,6 +8,7 @@ import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.entities.callbacks.EntityCallbackContainer;
 import org.winterblade.minecraft.harmony.entities.effects.MobPotionEffect;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
@@ -28,6 +29,7 @@ public class MobTickRegistry {
     // Tick handlers
     private static TickHandler<MobShed, MobShed.Handler> shedHandler;
     private static TickHandler<MobPotionEffect, MobPotionEffect.Handler> potionEffectHandler;
+    private static TickHandler<IEntityCallbackContainer, EntityCallbackContainer.Handler> effectHandler;
 
     // Queued callbacks; this is a concurrent queue because we may add to it while processing it.
     private static Queue<EntityCallbackData> entityCallbackQueue = new ConcurrentLinkedQueue<>();
@@ -37,6 +39,7 @@ public class MobTickRegistry {
 
         shedHandler = new TickHandler<>(MobShed.Handler.class, CraftingHarmonicsMod.getConfigManager().getShedSeconds());
         potionEffectHandler = new TickHandler<>(MobPotionEffect.Handler.class, CraftingHarmonicsMod.getConfigManager().getPotionEffectTicks());
+        effectHandler = new TickHandler<>(EntityCallbackContainer.Handler.class, CraftingHarmonicsMod.getConfigManager().getEventTicks());
     }
 
     /**
@@ -51,9 +54,10 @@ public class MobTickRegistry {
         // Figure out what we're doing...
         boolean shedsActive = shedHandler.isActiveThisTick(evt);
         boolean potionsActive = potionEffectHandler.isActiveThisTick(evt);
+        boolean effectsActive = effectHandler.isActiveThisTick(evt);
 
         // If we're not doing anything...
-        if(!shedsActive && !potionsActive) return;
+        if(!shedsActive && !potionsActive && !effectsActive) return;
 
         Random rand = evt.world.rand;
         // Doing it this way to avoid doing modulo for potentially thousands of entities in a LivingUpdate event.
@@ -65,6 +69,7 @@ public class MobTickRegistry {
 
             if(shedsActive) shedHandler.handle(rand, entity, entityName, entityClassName);
             if(potionsActive) potionEffectHandler.handle(rand, entity, entityName, entityClassName);
+            if(effectsActive) effectHandler.handle(rand, entity, entityName, entityClassName);
         }
     }
 
@@ -99,7 +104,7 @@ public class MobTickRegistry {
      * Updates if we're actually active overall right now...
      */
     private static void calcActive() {
-        isActive = shedHandler.isActive() || potionEffectHandler.isActive();
+        isActive = shedHandler.isActive() || potionEffectHandler.isActive() || effectHandler.isActive();
     }
 
     /**
@@ -145,6 +150,26 @@ public class MobTickRegistry {
         potionEffectHandler.remove(ticket);
         calcActive();
     }
+
+    /*
+     * Entity Effects
+     */
+
+    public static UUID registerEntityEffects(String[] what, IEntityCallbackContainer[] effects) {
+        if(!inited) init();
+        return effectHandler.registerHandler(what, effects);
+    }
+
+    public static void applyEntityEffects(UUID ticket) {
+        effectHandler.apply(ticket);
+        calcActive();
+    }
+
+    public static void removeEntityEffects(UUID ticket) {
+        effectHandler.remove(ticket);
+        calcActive();
+    }
+
 
     /**
      * Tick handler
