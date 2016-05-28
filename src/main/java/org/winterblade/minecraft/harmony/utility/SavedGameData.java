@@ -6,6 +6,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.storage.MapStorage;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
+import org.winterblade.minecraft.harmony.entities.callbacks.StopTimeCommand;
 
 import java.util.*;
 
@@ -122,6 +123,8 @@ public class SavedGameData extends WorldSavedData {
                 appliedPlayers.put(opId, new HashSet<>(tag.getCompoundTag(opId).getKeySet()));
             }
         }
+
+        StopTimeCommand.deserializeTimeStops(nbt);
     }
 
     /**
@@ -152,6 +155,7 @@ public class SavedGameData extends WorldSavedData {
             appliedPlayersTag.setTag(entry.getKey(), opTag);
         }
         nbt.setTag("AppliedPlayers", appliedPlayersTag);
+        nbt.setTag(StopTimeCommand.RUNNING_TIME_STOPS, StopTimeCommand.serializeTimeStops());
         return nbt;
     }
 }

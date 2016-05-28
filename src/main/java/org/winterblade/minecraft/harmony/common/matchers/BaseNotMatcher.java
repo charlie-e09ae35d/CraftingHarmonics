@@ -8,7 +8,7 @@ import org.winterblade.minecraft.harmony.api.entities.IMobMatcher;
  * Basic NOT boolean matcher
  * @param <TEvt>          The event to match (ie: EntityLiving)
  * @param <TResult>       The result of the match (ie: ItemStack)
- * @param <TMatcher>      The matcher to use (ie: IMobPotionEffectMatcher)
+ * @param <TMatcher>      The matcher to use (ie: IEntityMatcher)
  * @param <TComposite>    The composite item (ie: MobPotionEffect)
  */
 public abstract class BaseNotMatcher<TEvt, TResult, TMatcher extends IMobMatcher<TEvt,TResult>, TComposite extends BaseEventMatch<TEvt, TResult, TMatcher>> {

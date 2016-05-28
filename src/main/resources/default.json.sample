@@ -870,14 +870,14 @@
                             showParticles: false, // If effect particles should be shown while this is active.  Defaults to false; I hate potion particles.
                             duration: 600,  // The duration in ticks of the effect (600 = 30 seconds).  If not specified, this defaults to the number of ticks between checks +1.
                                             // If you make this longer than the number of seconds, you can end up stacking effects
-                            cures: ["minecraft:milk_bucket"], // A list of consumables that can cure this effect.  By default this will be nothing.
+                            cures: "minecraft:milk_bucket", // A list of consumables that can cure this effect.  By default this will be nothing.
                             cooldown: 800, // Make sure it's only applied every 40 seconds as well.
                             // We also have event callbacks when these occur:
                             onNew: [ // Called when a new potion is applied
                                 // These can be either an object...
                                 {
                                     type: "runPlayerCommand",
-                                    command: "/say @p You've got some extra luck.",
+                                    command: "/tell @p You've got some extra luck.",
                                     name: "The Server" // For commands that show a name, you can set the name here.
                                 }
                             ],
@@ -901,11 +901,70 @@
                             onCured: [ // Called when the potion is cured with a curative item.
                                 function(entity, world) {
                                     console.log(entity.getName() + "'s luck was cured.");
+                                },
+                                {
+                                    // Cause an explosion five blocks behind the player
+                                    type: "explode",
+
+                                    // Explosions can be specified in terms of look vectors:
+                                    magnitude: 5, // 5 blocks out...
+                                    yaw: 1.0, // Counter-clockwise in terms of PI on a circle, so, 1.0 will be directly behind the entity.
+                                    pitch: 0.0, // Also in terms of PI
+
+                                    // Or you could specify a relative offset from the source in terms of x/y/z.
+                                    // Specifying neither will cause an explosion on the source.
+
+                                    strength: 1.0,
+                                    isSmoking: true
                                 }
                             ],
                             onRemoved: [ // Called when the potion is removed, either by expiring, or being cured.
                                 function(entity, world) {
                                     console.log(entity.getName() + "'s luck was removed.");
+                                },
+                                {
+                                    type: "applyPotion",
+                                    what: "minecraft:unluck",
+                                    duration: 100,
+
+                                    // Callbacks can have their own matchers and their own callbacks, in case you
+                                    // need to do something else when one is actually applied.
+                                    chance: 0.5,
+                                    onApplied: [
+                                        {
+                                            type: "runPlayerCommand",
+                                            command: "/tell @p You start to feel a little unlucky though...",
+                                            name: "The Server"
+                                        }
+                                    ]
+                                },
+                                {
+                                    // Set's doDaylightCycle to false for the specified number of ticks.
+                                    // May have more effects in the future such as extending potion effects/etc.
+                                    // But these will be configurable, and set to false by default.
+                                    type: "stopTime",
+
+                                    // Every time stop must have a unique ID in order to persist between saves.
+                                    id: "playerLuckTimeStop",
+
+                                    // 300 ticks long.
+                                    duration: 300,
+
+                                    onTimeStopStart: [
+                                        function(entity, world) {
+                                            console.log("Time slows to a standstill.");
+                                        }
+                                    ],
+                                    onTimeStopExtended: [
+                                        function(entity, world) {
+                                            console.log("Something continues to hold time back.");
+                                        }
+                                    ],
+                                    onTimeStopEnd: [
+                                        function(entity, world) {
+                                            console.log("Time resumes its flow.");
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -944,6 +1003,53 @@
                             inBiomeTypes: ["Swamp"],
                             insideBlock: "minecraft:water",
                             chance: 0.05
+                        }
+                    ]
+                },
+
+                // Entity events
+                {
+                    __comment: "Similar to potion effects, you can also just register a generic effect on an entity",
+                    type: "addEntityEvent",
+                    what: ["net.minecraft.entity.player.EntityPlayerMP"],
+                    events: [
+                        // Events can be just a regular callback, with matchers...
+                        {
+                            // We're going to make lightning strike the player once every 30 seconds if they're holding an iron sword in a storm
+                            type: "smite",
+                            mobHasMainhand: "minecraft:iron_sword",
+                            isStorming: { onlyOnTarget: true },
+                            cooldown: 600
+                        },
+
+                        // Or a bit more extended:
+                        {
+                            aroundMobs: { what: ["Ocelot"], min: 1, dist: 10 },
+                            cooldown: 1200,
+                            then: [
+                                {
+                                    // Will always fire once a minute when around an ocelot
+                                    type: "runPlayerCommand",
+                                    command: "/tell @p Oooh, look!  A kitty!  Be careful he doesn't bite your hat."
+                                },
+                                {
+                                    // Will only run if its matchers match:
+                                    type: "heal",
+                                    amount: 1.0,
+
+                                    // 50% chance of gaining 1hp
+                                    chance: 0.5,
+
+                                    // This will only run if the event was matched:
+                                    // Each 'on...' callback is actually an entire event object, so you can continue to nest them, add more matchers, etc.
+                                    onComplete: [
+                                        {
+                                            type: "runPlayerCommand",
+                                            command: "/tell @p It made you feel a little better too."
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 },

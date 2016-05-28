@@ -5,7 +5,10 @@ import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.ScriptInterop;
+import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,6 +31,10 @@ public class AnnotationUtil {
 
     public static Map<String, Class<Object>> getInteropClasses(@Nonnull ASMDataTable asmDataTable) {
         return getClassMap(asmDataTable, ScriptInterop.class, Object.class, null);
+    }
+
+    public static Map<String, Class<BaseEntityCallback>> getEntityCallbacks(ASMDataTable asmDataTable) {
+        return getClassMap(asmDataTable, EntityCallback.class, BaseEntityCallback.class, "name");
     }
 
     @SuppressWarnings("unchecked")

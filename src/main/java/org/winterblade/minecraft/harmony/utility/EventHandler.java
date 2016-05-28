@@ -14,6 +14,7 @@ import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.CraftingSet;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
+import org.winterblade.minecraft.harmony.entities.callbacks.StopTimeCommand;
 import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
@@ -54,6 +55,12 @@ public class EventHandler {
         if(evt.phase != TickEvent.Phase.END) return;
 
         CraftingHarmonicsMod.checkDifficultyChanged();
+
+        try {
+            MobTickRegistry.processCallbackQueue();
+        } catch (Exception ex) {
+            LogHelper.error("Error handling server tick; please report this along with your config file.", ex);
+        }
     }
 
     @SubscribeEvent
@@ -62,6 +69,7 @@ public class EventHandler {
 
         try {
             MobTickRegistry.handleTick(evt);
+            StopTimeCommand.checkTimeStops(evt.world);
 
             // We should (hopefully) be done dealing with the explosion by this point...
             BlockDropRegistry.clearExplodedList();

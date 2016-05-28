@@ -13,7 +13,7 @@ public class MobShedDeserializer extends BaseDropDeserializer<EntityLivingBase, 
     public MobShedDeserializer() {super(IMobShedMatcher.class);}
 
     @Override
-    protected MobShed newInstance() {
+    protected MobShed newInstance(String type) {
         return new MobShed();
     }
 }
