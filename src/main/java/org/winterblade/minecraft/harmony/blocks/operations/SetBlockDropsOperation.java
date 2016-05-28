@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
-import org.winterblade.minecraft.harmony.blocks.BlockStateMatcher;
+import org.winterblade.minecraft.harmony.common.blocks.BlockStateMatcher;
 import org.winterblade.minecraft.harmony.blocks.drops.BlockDrop;
 import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;

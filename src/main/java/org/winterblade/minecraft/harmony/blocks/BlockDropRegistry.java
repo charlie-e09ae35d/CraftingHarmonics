@@ -8,6 +8,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.blocks.drops.BlockDrop;
+import org.winterblade.minecraft.harmony.common.blocks.BlockStateMatcher;
 import org.winterblade.minecraft.harmony.common.drops.BaseDropHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
