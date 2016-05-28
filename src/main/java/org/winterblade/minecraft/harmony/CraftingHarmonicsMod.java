@@ -319,4 +319,9 @@ public class CraftingHarmonicsMod {
     public static SavedGameData getSavedGameData() {
         return savedGameData;
     }
+
+    public static void updateSavedData() {
+        if(savedGameData == null) return;
+        savedGameData.markDirty();
+    }
 }

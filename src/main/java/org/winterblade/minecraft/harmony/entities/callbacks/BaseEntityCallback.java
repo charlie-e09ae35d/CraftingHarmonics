@@ -30,6 +30,9 @@ public abstract class BaseEntityCallback implements IEntityCallback {
     private static final Map<String, Class<BaseEntityCallback>> callbackMap = new HashMap<>();
     private final PriorityQueue<BasePrioritizedData<IEntityMatcher>> matchers = new PriorityQueue<>();
 
+    // Serialized property for every callback; only used by some.
+    protected String id;
+
     /**
      * Add the classes that we should register for entity callbacks.
      * @param callbackClasses    A map of the callback names to their respective classes.
