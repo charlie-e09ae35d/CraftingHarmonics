@@ -51,7 +51,8 @@ minecraft {
 def integrations = [
         'ticon',
         'bloodmagic',
-        'techreborn'
+        'techreborn',
+        'abyssalcraft'
 ]
 
 subprojects.each { subproject -> evaluationDependsOn( subproject.path ) }
