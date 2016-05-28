@@ -7,7 +7,7 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
-import org.winterblade.minecraft.harmony.blocks.BlockMatcher;
+import org.winterblade.minecraft.harmony.common.blocks.BlockMatcher;
 import org.winterblade.minecraft.harmony.common.matchers.BaseBlockMatcher;
 
 import javax.annotation.Nullable;

@@ -5,11 +5,9 @@ import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyArrayEffect;
 import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyCircleRenderer;
 import WayofTime.bloodmagic.api.recipe.AlchemyTableRecipe;
 import WayofTime.bloodmagic.api.recipe.TartaricForgeRecipe;
-import WayofTime.bloodmagic.api.registry.AlchemyArrayRecipeRegistry;
+import WayofTime.bloodmagic.api.registry.*;
 import WayofTime.bloodmagic.api.registry.AlchemyArrayRecipeRegistry.AlchemyArrayRecipe;
-import WayofTime.bloodmagic.api.registry.AlchemyTableRecipeRegistry;
-import WayofTime.bloodmagic.api.registry.AltarRecipeRegistry;
-import WayofTime.bloodmagic.api.registry.TartaricForgeRecipeRegistry;
+import WayofTime.bloodmagic.api.ritual.imperfect.ImperfectRitual;
 import com.google.common.collect.BiMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -17,7 +15,10 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 /**
@@ -262,5 +263,33 @@ public class ReflectedBloodMagicRegistry {
         }
 
         return false;
+    }
+
+    /*
+     * Imperfect rituals
+     */
+
+    /**
+     * Registers the given impefect ritual
+     * @param ritual    The ritual to register
+     */
+    public static void registerImperfectRitual(ImperfectRitual ritual, String id) {
+        ImperfectRitualRegistry.registerRitual(ritual, id, false);
+    }
+
+    /**
+     * Enables the given impefect ritual
+     * @param ritual    The ritual to enable
+     */
+    public static void enableImperfectRitual(ImperfectRitual ritual) {
+        ImperfectRitualRegistry.enabledRituals.put(ritual, true);
+    }
+
+    /**
+     * Disables the given impefect ritual
+     * @param ritual    The ritual to disable
+     */
+    public static void disableImperfectRitual(ImperfectRitual ritual) {
+        ImperfectRitualRegistry.enabledRituals.put(ritual, false);
     }
 }

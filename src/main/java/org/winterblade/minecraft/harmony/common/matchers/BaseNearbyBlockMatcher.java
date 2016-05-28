@@ -4,7 +4,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.winterblade.minecraft.harmony.blocks.BlockMatcher;
+import org.winterblade.minecraft.harmony.common.blocks.BlockMatcher;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
