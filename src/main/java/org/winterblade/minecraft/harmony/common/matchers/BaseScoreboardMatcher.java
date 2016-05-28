@@ -81,9 +81,18 @@ public class BaseScoreboardMatcher {
      * @return              The number of points they have.
      */
     private int getPoints(Scoreboard scoreboard, ScoreObjective objective, String player) {
-        // We do it this way to prevent creating the entry:
         Score score = scoreboard.getObjectivesForEntity(player).get(objective);
-        return score != null ? score.getScorePoints() : 0;
+
+        // If we found it...
+        if(score != null) return score.getScorePoints();
+
+        // If we need to create it...
+        if(data.isCreate()) {
+            scoreboard.getOrCreateScore(player, objective).setScorePoints(data.getDefaultValue());
+        }
+
+        // Return the default value, since we couldn't find it...
+        return data.getDefaultValue();
     }
 
     /**
@@ -141,6 +150,8 @@ public class BaseScoreboardMatcher {
         private int min = Integer.MIN_VALUE;
         private int max = Integer.MAX_VALUE;
         private String player = "";
+        private boolean create = false;
+        private int defaultValue = 0;
 
         public String getName() {
             return this.name;
@@ -167,6 +178,13 @@ public class BaseScoreboardMatcher {
             if(max == Integer.MAX_VALUE) max = value;
             return this;
         }
+
+        public boolean isCreate() {
+            return create;
+        }
+
+        public int getDefaultValue() {
+            return defaultValue;
         }
     }
 }
