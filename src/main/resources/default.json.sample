@@ -446,7 +446,35 @@
                     what: "minecraft:gravel",
                     with: ["<cobblestone>"] // This is optional, and can be one or more of the items needed to make the thing; ore dictionaries are supported
                 },
-
+                {
+                    __comment: "You can create your own imperfect rituals",
+                    __result: "Gives the user regen 1 for 2:00 at the cost of 100 LP",
+                    type: "BloodMagic.addImperfectRitual",
+                    name: "Regen Ritual",
+                    capstone: { // The block that sits on top of the ritual stone; in this case, podzol
+                        block: "minecraft:dirt",
+                        state: {
+                            variant: "podzol"
+                        }
+                    },
+                    lpCost: 100, // Use 100 LP.  This will be consumed on right-click regardless of if anything happens or not.
+                    lightShow: true, // Now with 100% more lightning.
+                    onActivate: [
+                        {
+                            type: "applyPotion",
+                            what: "minecraft:regeneration",
+                            duration: 20*60*2, // 20 ticks * 60 seconds * 2 minutes
+                            onApplied: [
+                                {
+                                    // Prevent them from abusing it to get more LP though:
+                                    type: "applyPotion",
+                                    what: "bloodmagic:soulFray",
+                                    duration: 2400
+                                }
+                            ]
+                        },
+                    ]
+                },
 
 
                 // Harvest levels
