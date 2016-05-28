@@ -111,7 +111,8 @@ public class BaseScoreboardMatcher {
             else if(!matches && !any) return BaseMatchResult.False;
         }
 
-        return BaseMatchResult.True;
+        // Also check all online players...
+        return checkOnlineForScoreboard(scoreboard, objective, any);
     }
 
     /**
@@ -132,7 +133,7 @@ public class BaseScoreboardMatcher {
             else if(!matches && !any) return BaseMatchResult.False;
         }
 
-        return BaseMatchResult.True;
+        return any ? BaseMatchResult.False : BaseMatchResult.True;
     }
 
     private enum ScoreMatcherMode {
