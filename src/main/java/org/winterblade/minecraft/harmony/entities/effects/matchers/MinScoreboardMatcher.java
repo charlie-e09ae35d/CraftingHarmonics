@@ -8,7 +8,6 @@ import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.common.matchers.BaseScoreboardMatcher;
-import org.winterblade.minecraft.harmony.common.dto.NameValuePair;
 
 /**
  * Created by Matt on 5/21/2016.
@@ -16,7 +15,9 @@ import org.winterblade.minecraft.harmony.common.dto.NameValuePair;
 @Component(properties = {"minScore"})
 @PrioritizedObject(priority = Priority.HIGH)
 public class MinScoreboardMatcher extends BaseScoreboardMatcher implements IEntityMatcher {
-    public MinScoreboardMatcher(NameValuePair<Integer> score) {super(score.getName(), score.getValue(), Integer.MAX_VALUE);}
+    public MinScoreboardMatcher(ScoreboardMatchData score) {
+        super(score.getName(), score.getValue(), Integer.MAX_VALUE, score.getPlayer());
+    }
 
     @Override
     public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {

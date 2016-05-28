@@ -8,7 +8,6 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
 import org.winterblade.minecraft.harmony.common.matchers.BaseScoreboardMatcher;
-import org.winterblade.minecraft.harmony.common.dto.NameValuePair;
 
 /**
  * Created by Matt on 5/21/2016.
@@ -16,7 +15,9 @@ import org.winterblade.minecraft.harmony.common.dto.NameValuePair;
 @Component(properties = {"maxScore"})
 @PrioritizedObject(priority = Priority.HIGH)
 public class MaxScoreboardMatcher extends BaseScoreboardMatcher implements IMobShedMatcher {
-    public MaxScoreboardMatcher(NameValuePair<Integer> score) {super(score.getName(), Integer.MIN_VALUE, score.getValue());}
+    public MaxScoreboardMatcher(ScoreboardMatchData score) {
+        super(score.getName(), Integer.MIN_VALUE, score.getValue(), score.getPlayer());
+    }
 
     @Override
     public BaseMatchResult isMatch(EntityLivingBase evt, ItemStack drop) {
