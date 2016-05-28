@@ -10,17 +10,17 @@ import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
 import org.winterblade.minecraft.harmony.common.matchers.BaseScoreboardMatcher;
 
 /**
- * Created by Matt on 5/21/2016.
+ * Created by Matt on 5/28/2016.
  */
-@Component(properties = {"maxScore"})
+@Component(properties = {"isScore"})
 @PrioritizedObject(priority = Priority.HIGH)
-public class MaxScoreboardMatcher extends BaseScoreboardMatcher implements IMobShedMatcher {
-    public MaxScoreboardMatcher(ScoreboardMatchData score) {
-        super(score.withMaxValue());
+public class IsScoreboardMatcher extends BaseScoreboardMatcher implements IMobShedMatcher {
+    public IsScoreboardMatcher(ScoreboardMatchData score) {
+        super(score.withMinValue().withMaxValue());
     }
 
     @Override
-    public BaseMatchResult isMatch(EntityLivingBase evt, ItemStack drop) {
-        return matches(evt.getEntityWorld(), evt);
+    public BaseMatchResult isMatch(EntityLivingBase entity, ItemStack drop) {
+        return matches(entity.getEntityWorld(), entity);
     }
 }

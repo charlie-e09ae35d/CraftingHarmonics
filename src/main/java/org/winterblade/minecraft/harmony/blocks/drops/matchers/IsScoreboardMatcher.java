@@ -10,13 +10,13 @@ import org.winterblade.minecraft.harmony.api.blocks.IBlockDropMatcher;
 import org.winterblade.minecraft.harmony.common.matchers.BaseScoreboardMatcher;
 
 /**
- * Created by Matt on 5/16/2016.
+ * Created by Matt on 5/28/2016.
  */
-@Component(properties = {"minScore"})
+@Component(properties = {"isScore"})
 @PrioritizedObject(priority = Priority.HIGH)
-public class MinScoreboardMatcher extends BaseScoreboardMatcher implements IBlockDropMatcher {
-    public MinScoreboardMatcher(ScoreboardMatchData score) {
-        super(score.withMinValue());
+public class IsScoreboardMatcher extends BaseScoreboardMatcher implements IBlockDropMatcher {
+    public IsScoreboardMatcher(ScoreboardMatchData score) {
+        super(score.withMinValue().withMaxValue());
     }
 
     @Override

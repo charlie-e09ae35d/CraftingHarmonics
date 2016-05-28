@@ -12,6 +12,35 @@
             between the event code running.  By default, this is 5 to help with TPS.
         </li>
         <li>
+            Added two new scoreboard matchers ('isScore' and 'rangeScore') to allow users to more easily match
+            scores.
+        </li>
+        <li>
+            Added an optional 'player' specifier to all scoreboard matchers, which allows the following:
+            <ul>
+                <li>Not specified / empty string: The current player/entity must match the criteria.</li>
+                <li>'All': All players must match the criteria.</li>
+                <li>'AllOnline': All online players must match the criteria.</li>
+                <li>'Any': Any player must match the criteria.</li>
+                <li>'AnyOnline': Any online player must match the criteria.</li>
+                <li>Any other string: The specified player (or dummy entry) must match the criteria.</li>
+            </ul>
+        </li>
+        <li>
+            Added two additional (optional) parameters for all scoreboard matchers:
+            <ul>
+                <li>
+                    defaultValue: If the an entity doesn't have a scoreboard entry, use this value as the default
+                    value; this defaults to 0.  This is useful if you need to test within a given range
+                    that includes 0, but don't want entities who have no score at all to match.
+                </li>
+                <li>
+                    create: If an entity doesn't have a scoreboard entry, create it if this is flagged as true; this
+                    defaults to false.
+                </li>
+            </ul>
+        </li>
+        <li>
             Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/88">issue #88</a> where
             matchers were being checked in the opposite order they should've been, causing more expensive
             checks to be run first.
