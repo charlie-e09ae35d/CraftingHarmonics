@@ -16,7 +16,7 @@ import org.winterblade.minecraft.harmony.common.matchers.BaseScoreboardMatcher;
 @PrioritizedObject(priority = Priority.HIGH)
 public class MinScoreboardMatcher extends BaseScoreboardMatcher implements IMobShedMatcher {
     public MinScoreboardMatcher(ScoreboardMatchData score) {
-        super(score.getName(), score.getValue(), Integer.MAX_VALUE, score.getPlayer());
+        super(score.withMinValue());
     }
 
     @Override

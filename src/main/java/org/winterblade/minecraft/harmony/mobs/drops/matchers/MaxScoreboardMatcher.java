@@ -16,7 +16,7 @@ import org.winterblade.minecraft.harmony.common.matchers.BaseScoreboardMatcher;
 @PrioritizedObject(priority = Priority.HIGH)
 public class MaxScoreboardMatcher extends BaseScoreboardMatcher implements IMobDropMatcher {
     public MaxScoreboardMatcher(ScoreboardMatchData score) {
-        super(score.getName(), Integer.MIN_VALUE, score.getValue(), score.getPlayer());
+        super(score.withMaxValue());
     }
 
     @Override

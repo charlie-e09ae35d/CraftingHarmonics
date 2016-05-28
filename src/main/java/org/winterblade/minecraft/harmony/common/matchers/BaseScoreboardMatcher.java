@@ -16,18 +16,12 @@ import java.util.Collection;
  * Created by Matt on 5/16/2016.
  */
 public class BaseScoreboardMatcher {
-    private final String name;
-    private final String player;
+    private final ScoreboardMatchData data;
     private final ScoreMatcherMode mode;
-    private final int min;
-    private final int max;
 
-    public BaseScoreboardMatcher(String name, int min, int max, String player) {
-        this.name = name;
-        this.min = min;
-        this.max = max;
-        this.player = player != null ? player : "";
-        switch (this.player.toUpperCase()) {
+    public BaseScoreboardMatcher(ScoreboardMatchData data) {
+        this.data = data;
+        switch (data.getPlayer().toUpperCase()) {
             case "ALL":
                 mode = ScoreMatcherMode.ALL;
                 break;
@@ -41,7 +35,7 @@ public class BaseScoreboardMatcher {
                 mode = ScoreMatcherMode.ANYONLINE;
                 break;
             default:
-                mode = this.player.equals("") ? ScoreMatcherMode.CURRENT : ScoreMatcherMode.SPECIFIC;
+                mode = data.getPlayer().equals("") ? ScoreMatcherMode.CURRENT : ScoreMatcherMode.SPECIFIC;
         }
     }
 
@@ -51,7 +45,7 @@ public class BaseScoreboardMatcher {
         Scoreboard scoreboard = world.getScoreboard();
         if(scoreboard == null) return BaseMatchResult.False;
 
-        ScoreObjective objective = scoreboard.getObjective(name);
+        ScoreObjective objective = scoreboard.getObjective(data.getName());
         if(objective == null) return BaseMatchResult.False;
 
         // If we have a special mode:
@@ -66,7 +60,7 @@ public class BaseScoreboardMatcher {
                 return checkOnlineForScoreboard(scoreboard, objective, true);
         }
 
-        int points = getPoints(scoreboard, objective, mode == ScoreMatcherMode.SPECIFIC ? player : entity.getName());
+        int points = getPoints(scoreboard, objective, mode == ScoreMatcherMode.SPECIFIC ? data.getPlayer() : entity.getName());
         return checkPoints(points) ? BaseMatchResult.True : BaseMatchResult.False;
     }
 
@@ -76,7 +70,7 @@ public class BaseScoreboardMatcher {
      * @return          True if they're within the values, false otherwise
      */
     private boolean checkPoints(int points) {
-        return min <= points && points <= max;
+        return data.getMin() <= points && points <= data.getMax();
     }
 
     /**
@@ -142,20 +136,37 @@ public class BaseScoreboardMatcher {
     }
 
     public static class ScoreboardMatchData {
-        public String name;
-        public int value;
-        public String player;
+        private String name = "";
+        private int value = 0;
+        private int min = Integer.MIN_VALUE;
+        private int max = Integer.MAX_VALUE;
+        private String player = "";
 
         public String getName() {
-            return name;
-        }
-
-        public int getValue() {
-            return value;
+            return this.name;
         }
 
         public String getPlayer() {
-            return player;
+            return this.player;
+        }
+
+        public int getMin() {
+            return min;
+        }
+
+        public int getMax() {
+            return max;
+        }
+
+        public ScoreboardMatchData withMinValue() {
+            if(min == Integer.MIN_VALUE) min = value;
+            return this;
+        }
+
+        public ScoreboardMatchData withMaxValue() {
+            if(max == Integer.MAX_VALUE) max = value;
+            return this;
+        }
         }
     }
 }
