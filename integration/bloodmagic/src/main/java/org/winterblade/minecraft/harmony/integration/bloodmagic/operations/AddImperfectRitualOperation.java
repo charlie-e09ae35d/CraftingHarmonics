@@ -11,6 +11,8 @@ import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.common.blocks.BlockMatcher;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.integration.bloodmagic.ReflectedBloodMagicRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +20,13 @@ import java.util.List;
 /**
  * Created by Matt on 5/28/2016.
  */
-@Operation(name = "addImperfectRitual", dependsOn = "BloodMagic")
+@Operation(name = "BloodMagic.addImperfectRitual", dependsOn = "BloodMagic")
 public class AddImperfectRitualOperation extends BasicOperation {
     /*
      * Serialized properties
      */
     private String name;
-    private BlockMatcher block;
+    private BlockMatcher capstone;
     private IEntityCallbackContainer[] onActivate;
     private int lpCost;
     private boolean lightShow;
@@ -51,18 +53,22 @@ public class AddImperfectRitualOperation extends BasicOperation {
      */
     @Override
     public void init() throws OperationException {
-        if(block == null) throw new OperationException("Imperfect ritual must have a valid block to activate.");
+        if(capstone == null) throw new OperationException("Imperfect ritual must have a valid capstone to activate.");
+        if(name == null || name.equals("")) throw new OperationException("Imperfect ritual must have a valid name.");
         if(onActivate == null || onActivate.length <= 0) throw new OperationException("Imperfect ritual must have at least one onActivate callback.");
         rituals.clear();
 
         // Get all matching states...
-        ImmutableList<IBlockState> validStates = block.getBlock().getBlockState().getValidStates();
+        ImmutableList<IBlockState> validStates = capstone.getBlock().getBlockState().getValidStates();
 
         for(IBlockState state : validStates) {
-            if(!block.matches(state)) continue;
-            BlockStack blockStack = new BlockStack(block.getBlock(), block.getBlock().getMetaFromState(state));
-            rituals.add(new CallbackDrivenImperfectRitual(name, blockStack, lpCost, lightShow,
-                    "craftingharmonics.bloodmagic.imperfect_ritual."+block.getBlock().getUnlocalizedName(), onActivate));
+            String ritualName = name + " - " + state.toString();
+            if(!capstone.matches(state)) continue;
+            BlockStack blockStack = new BlockStack(capstone.getBlock(), capstone.getBlock().getMetaFromState(state));
+            CallbackDrivenImperfectRitual ritual = new CallbackDrivenImperfectRitual(ritualName, blockStack, lpCost, lightShow,
+                    "craftingharmonics.bloodmagic.imperfect_ritual." + capstone.getBlock().getUnlocalizedName(), onActivate);
+            rituals.add(ritual);
+            ReflectedBloodMagicRegistry.registerImperfectRitual(ritual, ritualName);
         }
     }
 
@@ -71,7 +77,10 @@ public class AddImperfectRitualOperation extends BasicOperation {
      */
     @Override
     public void apply() {
-        
+        LogHelper.info("Adding Blood Magic '{}' imperfect ritual", name);
+        for(ImperfectRitual ritual : rituals) {
+            ReflectedBloodMagicRegistry.enableImperfectRitual(ritual);
+        }
     }
 
     /**
@@ -79,7 +88,9 @@ public class AddImperfectRitualOperation extends BasicOperation {
      */
     @Override
     public void undo() {
-
+        for(ImperfectRitual ritual : rituals) {
+            ReflectedBloodMagicRegistry.disableImperfectRitual(ritual);
+        }
     }
 
     public static class CallbackDrivenImperfectRitual extends ImperfectRitual {
