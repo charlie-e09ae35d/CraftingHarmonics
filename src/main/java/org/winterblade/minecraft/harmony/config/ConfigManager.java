@@ -26,6 +26,7 @@ public class ConfigManager {
     private int shedSeconds;
     private int dayTickLength;
     private int potionEffectTicks;
+    private int eventTicks;
 
     /**
      * Generates a new config manager using the config path
@@ -57,6 +58,9 @@ public class ConfigManager {
 
         potionEffectTicks = configMain.getInt("TicksBetweenPotionEffects",Configuration.CATEGORY_GENERAL,
                 5, 1, 2000000, "The number of game ticks between calculating if a mob should get a potion effect (if potion effects are configured).");
+
+        eventTicks = configMain.getInt("TicksBetweenEntityEvents",Configuration.CATEGORY_GENERAL,
+                5, 1, 2000000, "The number of game ticks between running entity events (if entity events are configured).");
 
         // Just in case another mod is modifying this:
         dayTickLength = configMain.getInt("DayTickLength", Configuration.CATEGORY_GENERAL,
@@ -158,5 +162,9 @@ public class ConfigManager {
 
     public int getDayTickLength() {
         return dayTickLength;
+    }
+
+    public int getEventTicks() {
+        return eventTicks;
     }
 }

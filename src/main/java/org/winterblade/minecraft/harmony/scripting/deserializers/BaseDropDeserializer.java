@@ -20,7 +20,7 @@ abstract class BaseDropDeserializer <TEvt, TMatcher extends IBaseDropMatcher<TEv
         super(matcherClass);
     }
 
-    protected abstract T newInstance();
+    protected abstract T newInstance(String type);
 
     protected void updateExtraProps(ScriptObjectMirror mirror, T output) {
         // If no updates are required, don't make them override it.

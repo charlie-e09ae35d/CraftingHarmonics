@@ -3,6 +3,8 @@ var module = { exports: {} };
 
 var interop = {};
 
+var SetManager = Java.type('org.winterblade.minecraft.harmony.SetManager');
+
 function __CraftingHarmonicsInternalAddInterop(javaClass, interopPath) {
     var interopEntry = interop;
 
@@ -18,8 +20,6 @@ function __CraftingHarmonicsInternalAddInterop(javaClass, interopPath) {
 
 var __CraftingHarmonicsInternal_Internal = function() {
     var ch = this;
-
-    ch.RecipeOperationRegistry = Java.type('org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry');
 
     // This will run in order to actually get our recipe data into something sensible
     this.FileProcessor = function(filename, exports) {
@@ -46,6 +46,7 @@ var __CraftingHarmonicsInternal_Internal = function() {
             var set = sets[i];
 
             print("Found set '" + set.name + "'.");
+            var opSet = SetManager.registerSet(set.name);
 
             if(!set.operations || !(set.operations instanceof Array)) {
                 print("Set has no operations array on it.");
@@ -61,10 +62,15 @@ var __CraftingHarmonicsInternal_Internal = function() {
                     continue;
                 }
 
-                if(!ch.RecipeOperationRegistry.CreateOperationInSet(set.name,op.type, op)) {
-                    print("Invalid operation: #" + j + " in set.");
+                if(!opSet.addOperation(op)) {
+                    print("Unable to create operation: #" + j + " (" + op.type + ") in set.");
                 }
             }
+
+            // Deal with set metadata:
+            if(set.duration) opSet.setDuration(set.duration);
+            if(set.cooldown) opSet.setCooldown(set.cooldown);
+            if(set.removesSets) opSet.setRemovedSets(set.removesSets);
         }
     };
 }

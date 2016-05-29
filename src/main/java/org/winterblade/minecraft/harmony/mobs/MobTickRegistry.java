@@ -1,16 +1,21 @@
 package org.winterblade.minecraft.harmony.mobs;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EntitySelectors;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
-import org.winterblade.minecraft.harmony.mobs.effects.MobPotionEffect;
+import org.winterblade.minecraft.harmony.entities.callbacks.EntityCallbackContainer;
+import org.winterblade.minecraft.harmony.entities.effects.MobPotionEffect;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by Matt on 5/10/2016.
@@ -24,12 +29,17 @@ public class MobTickRegistry {
     // Tick handlers
     private static TickHandler<MobShed, MobShed.Handler> shedHandler;
     private static TickHandler<MobPotionEffect, MobPotionEffect.Handler> potionEffectHandler;
+    private static TickHandler<IEntityCallbackContainer, EntityCallbackContainer.Handler> effectHandler;
+
+    // Queued callbacks; this is a concurrent queue because we may add to it while processing it.
+    private static Queue<EntityCallbackData> entityCallbackQueue = new ConcurrentLinkedQueue<>();
 
     public static void init() {
         inited = true;
 
         shedHandler = new TickHandler<>(MobShed.Handler.class, CraftingHarmonicsMod.getConfigManager().getShedSeconds());
         potionEffectHandler = new TickHandler<>(MobPotionEffect.Handler.class, CraftingHarmonicsMod.getConfigManager().getPotionEffectTicks());
+        effectHandler = new TickHandler<>(EntityCallbackContainer.Handler.class, CraftingHarmonicsMod.getConfigManager().getEventTicks());
     }
 
     /**
@@ -44,9 +54,10 @@ public class MobTickRegistry {
         // Figure out what we're doing...
         boolean shedsActive = shedHandler.isActiveThisTick(evt);
         boolean potionsActive = potionEffectHandler.isActiveThisTick(evt);
+        boolean effectsActive = effectHandler.isActiveThisTick(evt);
 
         // If we're not doing anything...
-        if(!shedsActive && !potionsActive) return;
+        if(!shedsActive && !potionsActive && !effectsActive) return;
 
         Random rand = evt.world.rand;
         // Doing it this way to avoid doing modulo for potentially thousands of entities in a LivingUpdate event.
@@ -58,6 +69,34 @@ public class MobTickRegistry {
 
             if(shedsActive) shedHandler.handle(rand, entity, entityName, entityClassName);
             if(potionsActive) potionEffectHandler.handle(rand, entity, entityName, entityClassName);
+            if(effectsActive) effectHandler.handle(rand, entity, entityName, entityClassName);
+        }
+    }
+
+    /**
+     * Add a set of callbacks to the callback queue
+     * @param target        The target of the operation
+     * @param callbacks     The callbacks
+     */
+    public static void addCallbackSet(Entity target, IEntityCallbackContainer[] callbacks) {
+        entityCallbackQueue.add(new EntityCallbackData(target, callbacks));
+    }
+
+    /**
+     * Process the current callback queue
+     */
+    public static void processCallbackQueue() {
+        for (Iterator<EntityCallbackData> iterator = entityCallbackQueue.iterator(); iterator.hasNext(); ) {
+            EntityCallbackData callbackData = iterator.next();
+            iterator.remove();
+
+            try {
+                callbackData.runCallbacks();
+            } catch (Exception ex) {
+                LogHelper.error("Error processing entity callbacks.", ex);
+            }
+
+            // TODO: Make this have a configurable limiter on the number of callbacks
         }
     }
 
@@ -65,7 +104,7 @@ public class MobTickRegistry {
      * Updates if we're actually active overall right now...
      */
     private static void calcActive() {
-        isActive = shedHandler.isActive() || potionEffectHandler.isActive();
+        isActive = shedHandler.isActive() || potionEffectHandler.isActive() || effectHandler.isActive();
     }
 
     /**
@@ -111,6 +150,26 @@ public class MobTickRegistry {
         potionEffectHandler.remove(ticket);
         calcActive();
     }
+
+    /*
+     * Entity Effects
+     */
+
+    public static UUID registerEntityEffects(String[] what, IEntityCallbackContainer[] effects) {
+        if(!inited) init();
+        return effectHandler.registerHandler(what, effects);
+    }
+
+    public static void applyEntityEffects(UUID ticket) {
+        effectHandler.apply(ticket);
+        calcActive();
+    }
+
+    public static void removeEntityEffects(UUID ticket) {
+        effectHandler.remove(ticket);
+        calcActive();
+    }
+
 
     /**
      * Tick handler
@@ -193,11 +252,13 @@ public class MobTickRegistry {
         public void apply(UUID ticket) {
             isActive = true;
             activeHandlers.add(ticket);
+            cache.clear();
         }
 
         public void remove(UUID ticket) {
             activeHandlers.remove(ticket);
             if(activeHandlers.size() <= 0) isActive = false;
+            cache.clear();
         }
 
         boolean isActive() {
@@ -206,6 +267,25 @@ public class MobTickRegistry {
 
         boolean isActiveThisTick(TickEvent.WorldTickEvent evt) {
             return isActive() && (evt.world.getTotalWorldTime() % freq) == 0;
+        }
+    }
+
+    private static class EntityCallbackData {
+        private final WeakReference<Entity> targetRef;
+        private final IEntityCallbackContainer[] callbacks;
+
+        EntityCallbackData(Entity target, IEntityCallbackContainer[] callbacks) {
+            targetRef = new WeakReference<>(target);
+            this.callbacks = callbacks;
+        }
+
+        public void runCallbacks() {
+            Entity target = targetRef.get();
+            if(target == null) return;
+
+            for(IEntityCallbackContainer callback : callbacks) {
+                callback.apply(target);
+            }
         }
     }
 }

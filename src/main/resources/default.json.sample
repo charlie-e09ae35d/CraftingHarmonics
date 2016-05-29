@@ -446,7 +446,35 @@
                     what: "minecraft:gravel",
                     with: ["<cobblestone>"] // This is optional, and can be one or more of the items needed to make the thing; ore dictionaries are supported
                 },
-
+                {
+                    __comment: "You can create your own imperfect rituals",
+                    __result: "Gives the user regen 1 for 2:00 at the cost of 100 LP",
+                    type: "BloodMagic.addImperfectRitual",
+                    name: "Regen Ritual",
+                    capstone: { // The block that sits on top of the ritual stone; in this case, podzol
+                        block: "minecraft:dirt",
+                        state: {
+                            variant: "podzol"
+                        }
+                    },
+                    lpCost: 100, // Use 100 LP.  This will be consumed on right-click regardless of if anything happens or not.
+                    lightShow: true, // Now with 100% more lightning.
+                    onActivate: [
+                        {
+                            type: "applyPotion",
+                            what: "minecraft:regeneration",
+                            duration: 20*60*2, // 20 ticks * 60 seconds * 2 minutes
+                            onApplied: [
+                                {
+                                    // Prevent them from abusing it to get more LP though:
+                                    type: "applyPotion",
+                                    what: "bloodmagic:soulFray",
+                                    duration: 2400
+                                }
+                            ]
+                        },
+                    ]
+                },
 
 
                 // Harvest levels
@@ -811,14 +839,29 @@
                             isRaining: { presence: false }
                         },
                         {
-                            // If the scoreboard entry 'testObj' is between 500 and 5000... drop clay?
                             what: "minecraft:clay",
                             min: 1,
                             max: 1,
                             or: [
                                 {
+                                    // Checks if the person breaking the block has the scoreboard 'testObj' between 500 and 5000:
+                                    // This could be simplified using a rangeScore (see below)
                                     minScore: {name: "testObj", value: 500},
                                     maxScore: {name: "testObj", value: 5000}
+                                },
+                                {
+                                    // Checks to see if anybody online right now has the 'testObj' score at 200:
+                                    isScore: {name: "testObj", value: 200, player: "ANYONLINE"}
+                                },
+                                {
+                                    // Checks to see if every player who has an entry for this score is between 50 and 125.
+                                    // If a player doesn't have the score, it will be created, with a default value of -100.
+                                    // Note: the scoreboard objective itself still has to exist
+                                    // Also note: defaultValue isn't exclusive to create: true; for instance, if you needed to check
+                                    // a range of  -50 to 50, and didn't want people without the score to match, you could set
+                                    // defaultValue to anything outside the range. By default, defaultValue is 0 and create is false.
+                                    // Lastly: player, defaultValue, and create can be used with minScore, maxScore and isScore as well.
+                                    rangeScore: {name: "testObj", min: 50, max: 125, player: "ALL", defaultValue: -100, create: true}
                                 },
                                 {
                                     // This object has three properties:
@@ -870,14 +913,14 @@
                             showParticles: false, // If effect particles should be shown while this is active.  Defaults to false; I hate potion particles.
                             duration: 600,  // The duration in ticks of the effect (600 = 30 seconds).  If not specified, this defaults to the number of ticks between checks +1.
                                             // If you make this longer than the number of seconds, you can end up stacking effects
-                            cures: ["minecraft:milk_bucket"], // A list of consumables that can cure this effect.  By default this will be nothing.
+                            cures: "minecraft:milk_bucket", // A list of consumables that can cure this effect.  By default this will be nothing.
                             cooldown: 800, // Make sure it's only applied every 40 seconds as well.
                             // We also have event callbacks when these occur:
                             onNew: [ // Called when a new potion is applied
                                 // These can be either an object...
                                 {
                                     type: "runPlayerCommand",
-                                    command: "/say @p You've got some extra luck.",
+                                    command: "/tell @p You've got some extra luck.",
                                     name: "The Server" // For commands that show a name, you can set the name here.
                                 }
                             ],
@@ -901,11 +944,70 @@
                             onCured: [ // Called when the potion is cured with a curative item.
                                 function(entity, world) {
                                     console.log(entity.getName() + "'s luck was cured.");
+                                },
+                                {
+                                    // Cause an explosion five blocks behind the player
+                                    type: "explode",
+
+                                    // Explosions can be specified in terms of look vectors:
+                                    magnitude: 5, // 5 blocks out...
+                                    yaw: 1.0, // Counter-clockwise in terms of PI on a circle, so, 1.0 will be directly behind the entity.
+                                    pitch: 0.0, // Also in terms of PI
+
+                                    // Or you could specify a relative offset from the source in terms of x/y/z.
+                                    // Specifying neither will cause an explosion on the source.
+
+                                    strength: 1.0,
+                                    isSmoking: true
                                 }
                             ],
                             onRemoved: [ // Called when the potion is removed, either by expiring, or being cured.
                                 function(entity, world) {
                                     console.log(entity.getName() + "'s luck was removed.");
+                                },
+                                {
+                                    type: "applyPotion",
+                                    what: "minecraft:unluck",
+                                    duration: 100,
+
+                                    // Callbacks can have their own matchers and their own callbacks, in case you
+                                    // need to do something else when one is actually applied.
+                                    chance: 0.5,
+                                    onApplied: [
+                                        {
+                                            type: "runPlayerCommand",
+                                            command: "/tell @p You start to feel a little unlucky though...",
+                                            name: "The Server"
+                                        }
+                                    ]
+                                },
+                                {
+                                    // Set's doDaylightCycle to false for the specified number of ticks.
+                                    // May have more effects in the future such as extending potion effects/etc.
+                                    // But these will be configurable, and set to false by default.
+                                    type: "stopTime",
+
+                                    // Every time stop must have a unique ID in order to persist between saves.
+                                    id: "playerLuckTimeStop",
+
+                                    // 300 ticks long.
+                                    duration: 300,
+
+                                    onTimeStopStart: [
+                                        function(entity, world) {
+                                            console.log("Time slows to a standstill.");
+                                        }
+                                    ],
+                                    onTimeStopExtended: [
+                                        function(entity, world) {
+                                            console.log("Something continues to hold time back.");
+                                        }
+                                    ],
+                                    onTimeStopEnd: [
+                                        function(entity, world) {
+                                            console.log("Time resumes its flow.");
+                                        }
+                                    ]
                                 }
                             ]
                         },
@@ -944,6 +1046,53 @@
                             inBiomeTypes: ["Swamp"],
                             insideBlock: "minecraft:water",
                             chance: 0.05
+                        }
+                    ]
+                },
+
+                // Entity events
+                {
+                    __comment: "Similar to potion effects, you can also just register a generic effect on an entity",
+                    type: "addEntityEvent",
+                    what: ["net.minecraft.entity.player.EntityPlayerMP"],
+                    events: [
+                        // Events can be just a regular callback, with matchers...
+                        {
+                            // We're going to make lightning strike the player once every 30 seconds if they're holding an iron sword in a storm
+                            type: "smite",
+                            mobHasMainhand: "minecraft:iron_sword",
+                            isStorming: { onlyOnTarget: true },
+                            cooldown: 600
+                        },
+
+                        // Or a bit more extended:
+                        {
+                            aroundMobs: { what: ["Ocelot"], min: 1, dist: 10 },
+                            cooldown: 1200,
+                            then: [
+                                {
+                                    // Will always fire once a minute when around an ocelot
+                                    type: "runPlayerCommand",
+                                    command: "/tell @p Oooh, look!  A kitty!  Be careful he doesn't bite your hat."
+                                },
+                                {
+                                    // Will only run if its matchers match:
+                                    type: "heal",
+                                    amount: 1.0,
+
+                                    // 50% chance of gaining 1hp
+                                    chance: 0.5,
+
+                                    // This will only run if the event was matched:
+                                    // Each 'on...' callback is actually an entire event object, so you can continue to nest them, add more matchers, etc.
+                                    onComplete: [
+                                        {
+                                            type: "runPlayerCommand",
+                                            command: "/tell @p It made you feel a little better too."
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 },
@@ -1164,6 +1313,54 @@
                     type: "TechReborn.removeRollingMachine",
                     what: "techreborn:part:13"
                 },
+
+
+                /*
+                * AbyssalCraft integration
+                */
+
+                // Crystallizer
+                {
+                    __comment: "You can add recipes to the crystallizer",
+                    __result: "Nether star crystallizes into a diamond and soul sand",
+                    type: "AbyssalCraft.addCrystallization",
+                    with: "minecraft:nether_star",
+                    output: ["minecraft:diamond", "minecraft:soul_sand"], // Only the first output is required.
+                },
+                {
+                    __comment: "And remove them",
+                    __result: "Makes it to where you can no longer crystallize lapis ore",
+                    type: "AbyssalCraft.removeCrystallization",
+                    with: "minecraft:lapis_ore"
+                },
+                {
+                    __comment: "Also, specified by the output",
+                    __result: "Makes it to where you can no longer crystallize anything into abyssalnite shards",
+                    type: "AbyssalCraft.removeCrystallization",
+                    what: "abyssalcraft:crystalshard:12"
+                },
+
+                // Transmutation
+                {
+                    __comment: "You can also add recipes to the transmutator",
+                    __result: "Allows you to transmute iron into gold.",
+                    type: "AbyssalCraft.addTransmutation",
+                    with: "minecraft:iron_ingot",
+                    output: "minecraft:gold_ingot",
+                },
+                {
+                    __comment: "And remove them",
+                    __result: "Makes it to where you can no longer transmute seeds",
+                    type: "AbyssalCraft.removeTransmutation",
+                    with: "minecraft:wheat_seeds"
+                },
+                {
+                    __comment: "Also, specified by the output",
+                    __result: "Makes it to where you can no longer transmute anything into seeds",
+                    type: "AbyssalCraft.removeTransmutation",
+                    what: "minecraft:wheat_seeds"
+                },
+
             ]
         },
         {
@@ -1199,6 +1396,32 @@
                     with: [
                         "minecraft:apple",
                         "<nuggetGold>"
+                    ]
+                }
+            ]
+        },
+        {
+            // Custom sets can also have some various other things:
+            name: "custom2",
+            duration: 200, // This will cause it to remove itself after 200 ticks (roughly 10s)
+            cooldown: 400, // And can only be applied once every 400 ticks
+            removesSets: ["custom"], // It will also remove the 'custom' set when it's applied
+            operations: [
+                // Teleports everybody back to world spawn, and applies regen 2.
+                {
+                    type: "addEntityEvent",
+                    what: ["net.minecraft.entity.player.EntityPlayerMP"],
+                    events: [
+                        {
+                            type: "teleportSpawn",
+                            dimension: 0,
+                            cooldown: 300 // Make sure it only happens once.
+                        },
+                        {
+                            type: "applyPotion",
+                            what: "minecraft:regeneration",
+                            amplifier: 2,
+                        }
                     ]
                 }
             ]

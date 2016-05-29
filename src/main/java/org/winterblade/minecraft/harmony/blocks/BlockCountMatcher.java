@@ -2,15 +2,16 @@ package org.winterblade.minecraft.harmony.blocks;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
+import org.winterblade.minecraft.harmony.common.blocks.BlockMatcher;
+import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
 import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMirroredDeserializer;
-import org.winterblade.minecraft.harmony.scripting.deserializers.BlockMatcherDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
 /**
  * Created by Matt on 5/16/2016.
  */
 public class BlockCountMatcher {
-    private static final BlockMatcherDeserializer BLOCK_MATCHER_DESERIALIZER = new BlockMatcherDeserializer();
+    private static final BlockMatcher.BlockMatcherDeserializer BLOCK_MATCHER_DESERIALIZER = new BlockMatcher.BlockMatcherDeserializer();
     private BlockMatcher[] what;
     private int dist;
     private int min;
@@ -44,7 +45,7 @@ public class BlockCountMatcher {
             }
 
             // Copy over all our matchers...
-            matcher.what = convertArrayWithDeserializer(mirror, "what", BLOCK_MATCHER_DESERIALIZER, BlockMatcher.class);
+            matcher.what = DeserializerHelpers.convertArrayWithDeserializer(mirror, "what", BLOCK_MATCHER_DESERIALIZER, BlockMatcher.class);
 
             // Then the rest of our properties...
             matcher.dist = (int) ScriptUtils.convert(mirror.get("dist"), Integer.class);

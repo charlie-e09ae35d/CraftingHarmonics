@@ -6,6 +6,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.storage.MapStorage;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
+import org.winterblade.minecraft.harmony.SetManager;
+import org.winterblade.minecraft.harmony.entities.callbacks.StopTimeCommand;
 
 import java.util.*;
 
@@ -59,7 +61,7 @@ public class SavedGameData extends WorldSavedData {
      */
     public void addSet(String set) {
         // If we added, then mark it dirty
-        if(!loadedSets.add(set)) markDirty();
+        if(loadedSets.add(set)) markDirty();
     }
 
     /**
@@ -68,7 +70,7 @@ public class SavedGameData extends WorldSavedData {
      */
     public void removeSet(String set) {
         // If we removed, then mark it dirty
-        if(!loadedSets.remove(set)) markDirty();
+        if(loadedSets.remove(set)) markDirty();
     }
 
     /**
@@ -122,6 +124,9 @@ public class SavedGameData extends WorldSavedData {
                 appliedPlayers.put(opId, new HashSet<>(tag.getCompoundTag(opId).getKeySet()));
             }
         }
+
+        StopTimeCommand.deserializeTimeStops(nbt);
+        SetManager.deserializeSavedGameData(nbt);
     }
 
     /**
@@ -152,6 +157,9 @@ public class SavedGameData extends WorldSavedData {
             appliedPlayersTag.setTag(entry.getKey(), opTag);
         }
         nbt.setTag("AppliedPlayers", appliedPlayersTag);
+        nbt.setTag(StopTimeCommand.RUNNING_TIME_STOPS, StopTimeCommand.serializeTimeStops());
+        nbt.setTag(SetManager.SETS_TO_EXPIRE_TAG_NAME, SetManager.serializeSetsToExpire());
+        nbt.setTag(SetManager.SETS_ON_COOLDOWN_TAG_NAME, SetManager.serializeSetsOnCooldown());
         return nbt;
     }
 }

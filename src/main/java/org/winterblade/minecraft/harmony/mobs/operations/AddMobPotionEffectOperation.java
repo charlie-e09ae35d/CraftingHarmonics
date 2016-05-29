@@ -6,7 +6,7 @@ import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
-import org.winterblade.minecraft.harmony.mobs.effects.MobPotionEffect;
+import org.winterblade.minecraft.harmony.entities.effects.MobPotionEffect;
 
 import java.util.UUID;
 

@@ -14,7 +14,7 @@ public class MobDropDeserializer extends BaseDropDeserializer<LivingDropsEvent, 
     public MobDropDeserializer() {super(IMobDropMatcher.class);}
 
     @Override
-    protected MobDrop newInstance() {
+    protected MobDrop newInstance(String type) {
         return new MobDrop();
     }
 

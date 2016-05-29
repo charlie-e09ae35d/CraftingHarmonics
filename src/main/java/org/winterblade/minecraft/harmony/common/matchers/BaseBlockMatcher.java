@@ -3,7 +3,7 @@ package org.winterblade.minecraft.harmony.common.matchers;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
-import org.winterblade.minecraft.harmony.blocks.BlockMatcher;
+import org.winterblade.minecraft.harmony.common.blocks.BlockMatcher;
 
 import javax.annotation.Nullable;
 
