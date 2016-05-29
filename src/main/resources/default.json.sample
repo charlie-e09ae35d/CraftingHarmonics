@@ -1313,6 +1313,54 @@
                     type: "TechReborn.removeRollingMachine",
                     what: "techreborn:part:13"
                 },
+
+
+                /*
+                * AbyssalCraft integration
+                */
+
+                // Crystallizer
+                {
+                    __comment: "You can add recipes to the crystallizer",
+                    __result: "Nether star crystallizes into a diamond and soul sand",
+                    type: "AbyssalCraft.addCrystallization",
+                    with: "minecraft:nether_star",
+                    output: ["minecraft:diamond", "minecraft:soul_sand"], // Only the first output is required.
+                },
+                {
+                    __comment: "And remove them",
+                    __result: "Makes it to where you can no longer crystallize lapis ore",
+                    type: "AbyssalCraft.removeCrystallization",
+                    with: "minecraft:lapis_ore"
+                },
+                {
+                    __comment: "Also, specified by the output",
+                    __result: "Makes it to where you can no longer crystallize anything into abyssalnite shards",
+                    type: "AbyssalCraft.removeCrystallization",
+                    what: "abyssalcraft:crystalshard:12"
+                },
+
+                // Transmutation
+                {
+                    __comment: "You can also add recipes to the transmutator",
+                    __result: "Allows you to transmute iron into gold.",
+                    type: "AbyssalCraft.addTransmutation",
+                    with: "minecraft:iron_ingot",
+                    output: "minecraft:gold_ingot",
+                },
+                {
+                    __comment: "And remove them",
+                    __result: "Makes it to where you can no longer transmute seeds",
+                    type: "AbyssalCraft.removeTransmutation",
+                    with: "minecraft:wheat_seeds"
+                },
+                {
+                    __comment: "Also, specified by the output",
+                    __result: "Makes it to where you can no longer transmute anything into seeds",
+                    type: "AbyssalCraft.removeTransmutation",
+                    what: "minecraft:wheat_seeds"
+                },
+
             ]
         },
         {

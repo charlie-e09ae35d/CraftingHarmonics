@@ -1,5 +1,6 @@
 include 'api'
 include 'integration'
-include 'integration:ticon'
+include 'integration:abyssalcraft'
 include 'integration:bloodmagic'
 include 'integration:techreborn'
+include 'integration:ticon'
