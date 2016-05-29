@@ -22,23 +22,30 @@ public class MobShed extends BaseDrop<EntityLivingBase, IMobShedMatcher> {
         public void apply(Random rand, EntityLivingBase entity) {
             // Now, actually calculate out our drop rates...
             for (MobShed drop : this.getMatchers()) {
-                int min = drop.getMin();
-                int max = drop.getMax();
+                ItemStack dropStack;
+                BaseMatchResult result;
 
-                // Figure out how many to give:
-                int qty;
-                if (min != max) {
-                    int delta = Math.abs(drop.getMax() - drop.getMin());
-                    qty = rand.nextInt(delta) + min;
-                } else {
-                    qty = min;
-                }
+                do {
+                    int min = drop.getMin();
+                    int max = drop.getMax();
 
-                // Do the drop!
-                ItemStack dropStack = ItemStack.copyItemStack(drop.getWhat());
+                    // Figure out how many to give:
+                    int qty;
+                    if (min != max) {
+                        int delta = Math.abs(drop.getMax() - drop.getMin());
+                        qty = rand.nextInt(delta) + min;
+                    } else {
+                        qty = min;
+                    }
 
-                // Check if this drop matches:
-                BaseMatchResult result = drop.matches(entity, dropStack);
+                    // Do the drop!
+                    dropStack = ItemStack.copyItemStack(drop.getWhat());
+
+                    // Check if this drop matches:
+                    result = drop.matches(entity, dropStack);
+                    if(result.isMatch()) return;
+                    drop = (MobShed) drop.getAltMatch();
+                } while(drop != null);
                 if(!result.isMatch()) continue;
 
                 // Make sure we have sane drop amounts:
