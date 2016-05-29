@@ -656,7 +656,13 @@
                             what: "minecraft:diamond",
                             min: 1,
                             max: 1,
-                            attackerHasPotionEffect: "minecraft:luck"
+                            attackerHasPotionEffect: "minecraft:luck",
+                            // If not, they drop sticks...
+                            otherwise: {
+                                what: "minecraft:stick",
+                                min: 1,
+                                max: 1
+                            }
                         }
                     ]
                 },
@@ -898,6 +904,28 @@
                         }
                     ]
                 },
+                {
+                    // You can also specify an 'otherwise' which will be matched and applied if the original drop isn't matched:
+                    type: "setBlockDrops",
+                    what: ["minecraft:gravel"],
+                    replace: true,
+                    drops: [
+                        {
+                            // Give a 50% chance of getting sand...
+                            what: "minecraft:sand",
+                            min: 1,
+                            max: 1,
+                            chance: 0.5,
+                            otherwise: {
+                                // Otherwise, drop gravel.
+                                what: "minecraft:gravel",
+                                min: 1,
+                                max: 1
+                                // You could also continue chaining more matchers/otherwise combos here.
+                            }
+                        }
+                    ]
+                },
 
 
                 // You can also apply potion effects to entities based on certain conditions, including just if a set is active..
@@ -1046,6 +1074,21 @@
                             inBiomeTypes: ["Swamp"],
                             insideBlock: "minecraft:water",
                             chance: 0.05
+                        },
+                        {
+                            // Gives varying levels of regeneration based on the light level...
+                            what: "minecraft:regeneration",
+                            amplifier: 2,
+                            minLightLevel: 15,
+                            otherwise: {
+                                what: "minecraft:regeneration",
+                                amplifier: 1,
+                                minLightLevel: 13,
+                                otherwise: {
+                                    what: "minecraft:regeneration",
+                                    minLightLevel: 11
+                                }
+                            }
                         }
                     ]
                 },
@@ -1090,7 +1133,12 @@
                                             type: "runPlayerCommand",
                                             command: "/tell @p It made you feel a little better too."
                                         }
-                                    ]
+                                    ],
+
+                                    otherwise: {
+                                        type: "runPlayerCommand",
+                                        command: "/tell @p You feel good; not great, but good."
+                                    }
                                 }
                             ]
                         }
