@@ -142,7 +142,7 @@ public class EntityCallbackContainer extends BaseEventMatch<Entity, IEntityMatch
         }
     }
 
-    public static class Handler extends BaseEventMatch.BaseMatchHandler<IEntityCallbackContainer> {
+    public static class Handler extends BaseEventMatch.BaseMatchHandler<IEntityCallbackContainer, EntityLivingBase> {
         @Override
         public void apply(Random rand, EntityLivingBase entity) {
             // Easy enough... just apply all the callback containers we have:
