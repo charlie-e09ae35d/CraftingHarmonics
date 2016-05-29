@@ -26,7 +26,7 @@ public class ApplySetCommand extends SubCommand {
 
     @Override
     public String getHelpText() {
-        return "Ass a set to the currently loaded sets.";
+        return "Apply a set to the currently loaded sets.";
     }
 
     /**
