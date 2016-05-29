@@ -20,6 +20,7 @@ public class OperationSet {
     private final String setName;
     private final boolean isBaseSet;
     private int duration;
+    private boolean isInitialized = false;
 
     OperationSet(String setName) {
         this.setName = setName;
@@ -73,21 +74,18 @@ public class OperationSet {
      * @return          True if the operation processed fine; false otherwise.
      */
     public boolean addOperation(ScriptObjectMirror operation) {
+        if(isInitialized) {
+            LogHelper.error("Operations cannot be added after sets have been initialized.");
+            return false;
+        }
+
         if(!operation.containsKey("type")) {
             LogHelper.warn("All operation objects must contain a 'type' entry.");
             return false;
         }
 
-        return addOperation(operation.get("type").toString(), operation);
-    }
+        String type = operation.get("type").toString();
 
-    /**
-     * Called from our internal scripts in order to create the operation.
-     * @param type      The type of the operation
-     * @param operation A script object
-     * @return          True if the operation processed fine; false otherwise.
-     */
-    public boolean addOperation(String type, ScriptObjectMirror operation) {
         BasicOperation inst = SetManager.createOperation(type, operation);
         if(inst == null) {
             LogHelper.warn("Unknown recipe operation type '" + type + "' for set '" + setName + "'.  Are you missing an addon?");
@@ -123,6 +121,7 @@ public class OperationSet {
      * Initializes the operations
      */
     void init() {
+        isInitialized = true;
         ProgressManager.ProgressBar setProgress = ProgressManager.push("Initializing", operations.size());
         Side curSide = FMLCommonHandler.instance().getEffectiveSide();
 
