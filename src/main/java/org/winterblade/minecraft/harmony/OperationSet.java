@@ -21,6 +21,8 @@ public class OperationSet {
     private final boolean isBaseSet;
     private int duration;
     private boolean isInitialized = false;
+    private int cooldown;
+    private String[] removedSets;
 
     OperationSet(String setName) {
         this.setName = setName;
@@ -96,11 +98,51 @@ public class OperationSet {
     }
 
     /**
+     * Gets the duration for the set
+     * @return  The duration
+     */
+    public int getDuration() {
+        return duration;
+    }
+
+    /**
      * Called to set the duration of this operation
      * @param duration    The duration to set
      */
     public void setDuration(int duration) {
         this.duration = duration;
+    }
+
+    /**
+     * Gets the cooldown for the set
+     * @return  The cooldown
+     */
+    public int getCooldown() {
+        return cooldown;
+    }
+
+    /**
+     * Called to set the cooldown of this operation
+     * @param cooldown    The cooldown to set
+     */
+    public void setCooldown(int cooldown) {
+        this.cooldown = cooldown;
+    }
+
+    /**
+     * Gets the sets to be removed when this one is applied
+     * @return  The sets to remove:
+     */
+    public String[] getRemovedSets() {
+        return removedSets != null ? removedSets : new String[0];
+    }
+
+    /**
+     * Set the sets to remove when this one is applied
+     * @param removedSets    The sets to remove
+     */
+    public void setRemovedSets(String[] removedSets) {
+        this.removedSets = removedSets;
     }
 
     /**

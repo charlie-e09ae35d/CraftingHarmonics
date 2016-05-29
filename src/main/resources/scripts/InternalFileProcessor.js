@@ -66,6 +66,11 @@ var __CraftingHarmonicsInternal_Internal = function() {
                     print("Unable to create operation: #" + j + " (" + op.type + ") in set.");
                 }
             }
+
+            // Deal with set metadata:
+            if(set.duration) opSet.setDuration(set.duration);
+            if(set.cooldown) opSet.setCooldown(set.cooldown);
+            if(set.removesSets) opSet.setRemovedSets(set.removesSets);
         }
     };
 }
