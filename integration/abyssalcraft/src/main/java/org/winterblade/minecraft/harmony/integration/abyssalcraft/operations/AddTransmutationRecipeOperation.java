@@ -18,19 +18,19 @@ import java.util.Map;
 /**
  * Created by Matt on 5/28/2016.
  */
-@Operation(name = "AbyssalCraft.addCrystallizer", dependsOn = "abyssalcraft")
-public class AddCrystallizerRecipeOperation extends BasicOperation {
+@Operation(name = "AbyssalCraft.addTransmutation", dependsOn = "abyssalcraft")
+public class AddTransmutationRecipeOperation extends BasicOperation {
     /*
      * Serialized properties
      */
     private RecipeInput with;
-    private ItemStack[] output;
+    private ItemStack output;
     private float xp;
 
     /*
      * Computed properties
      */
-    private Map<ItemStack, ItemStack[]> recipes = new HashMap<>();
+    private Map<ItemStack, ItemStack> recipes = new HashMap<>();
 
     /**
      * Called to initialize the set
@@ -39,9 +39,9 @@ public class AddCrystallizerRecipeOperation extends BasicOperation {
      */
     @Override
     public void init() throws OperationException {
-        if(with == null) throw new OperationException("AbyssalCraft crystallization recipe must have an input ('with').");
-        if(output == null || output.length <= 0) throw new OperationException("AbyssalCraft crystallization recipe must have at least one output ('output': []).");
-        if(2 < output.length) throw new OperationException("AbyssalCraft crystallization recipes can have at most 2 outputs.");
+        if(with == null || output == null) {
+            throw new OperationException("AbyssalCraft transmutation recipes must have one input ('with') and one output ('output').");
+        }
 
         List<ItemStack> inputs = new ArrayList<>();
 
@@ -53,7 +53,7 @@ public class AddCrystallizerRecipeOperation extends BasicOperation {
         }
 
         if(inputs.size() <= 0) {
-            throw new OperationException("AbyssalCraft crystallization recipe must have a valid input.");
+            throw new OperationException("AbyssalCraft transmutation recipes must have a valid input.");
         }
 
         recipes.clear();
@@ -61,6 +61,7 @@ public class AddCrystallizerRecipeOperation extends BasicOperation {
         for(ItemStack input : inputs) {
             recipes.put(input, output);
         }
+
     }
 
     /**
@@ -68,10 +69,10 @@ public class AddCrystallizerRecipeOperation extends BasicOperation {
      */
     @Override
     public void apply() {
-        LogHelper.info("Adding AbyssalCraft crystallization producing '" + ItemUtility.outputItemName(output[0]) + "'.");
-        for(Map.Entry<ItemStack, ItemStack[]> entry : recipes.entrySet()) {
-            AbyssalCraftUtilities.crystallizationList.put(entry.getKey(), entry.getValue());
-            AbyssalCraftUtilities.crystallizerXpList.put(entry.getKey(), xp);
+        LogHelper.info("Adding AbyssalCraft transmutation recipe producing '" + ItemUtility.outputItemName(output) + "'.");
+        for(Map.Entry<ItemStack, ItemStack> entry : recipes.entrySet()) {
+            AbyssalCraftUtilities.transmutationList.put(entry.getKey(), entry.getValue());
+            AbyssalCraftUtilities.transmutationXpList.put(entry.getKey(), xp);
         }
     }
 
@@ -81,8 +82,8 @@ public class AddCrystallizerRecipeOperation extends BasicOperation {
     @Override
     public void undo() {
         for(ItemStack key : recipes.keySet()) {
-            AbyssalCraftUtilities.crystallizationList.remove(key);
-            AbyssalCraftUtilities.crystallizerXpList.remove(key);
+            AbyssalCraftUtilities.transmutationList.remove(key);
+            AbyssalCraftUtilities.transmutationXpList.remove(key);
         }
     }
 }
