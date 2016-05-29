@@ -5,6 +5,8 @@ import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.IMobMatcher;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 import java.util.List;
 
@@ -32,6 +34,26 @@ public abstract class BaseMatchingDeserializer
         }
 
         update(mirror, output);
+
+        // If we have an alt match...
+        if (!mirror.containsKey("otherwise")) return;
+
+        Object altMatchData = mirror.get("otherwise");
+
+        // Check if we can deserialize it:
+        if (!ScriptObjectMirror.class.isAssignableFrom(altMatchData.getClass())) return;
+
+        ScriptObjectMirror altMatchMirror = (ScriptObjectMirror)altMatchData;
+
+        // Try to deserialize it:
+        try {
+            T altMatch = newInstance(altMatchMirror.containsKey("type") ? altMatchMirror.get("type").toString() : "");
+            NashornConfigProcessor.getInstance().nashorn.parseScriptObject(altMatchMirror, altMatch);
+            output.setAltMatch(altMatch);
+        } catch(Exception ex) {
+            LogHelper.warn("Unable to deserialize 'otherwise' for this object.");
+        }
+
     }
 
     protected abstract void update(ScriptObjectMirror mirror, T output);

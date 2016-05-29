@@ -7,6 +7,7 @@ import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.IMobMatcher;
 import org.winterblade.minecraft.harmony.utility.BasePrioritizedData;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -17,6 +18,7 @@ import java.util.Random;
  */
 public class BaseEventMatch<TEvt, TResult, TMatcher extends IMobMatcher<TEvt, TResult>> {
     private final PriorityQueue<BasePrioritizedData<TMatcher>> matchers = new PriorityQueue<>();
+    private BaseEventMatch<TEvt, TResult, TMatcher> altMatch;
 
     /**
      * Determine if the input event matches our target.
@@ -45,6 +47,19 @@ public class BaseEventMatch<TEvt, TResult, TMatcher extends IMobMatcher<TEvt, TR
      */
     public void addMatcher(TMatcher matcher, Priority priority) {
         matchers.add(new BasePrioritizedData<>(matcher, priority));
+    }
+
+    public <T extends BaseEventMatch<TEvt, TResult, TMatcher>> void setAltMatch(T altMatch) {
+        this.altMatch = altMatch;
+    }
+
+    /**
+     * Returns the alternate match if there is one
+     * @return  The alt match, or null if there isn't one.
+     */
+    @Nullable
+    public BaseEventMatch<TEvt, TResult, TMatcher> getAltMatch() {
+        return altMatch;
     }
 
     public static abstract class BaseMatchHandler<T> {

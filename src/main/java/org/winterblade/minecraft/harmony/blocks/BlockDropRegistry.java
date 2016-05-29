@@ -80,31 +80,40 @@ public class BlockDropRegistry {
             Random rand = evt.getWorld().rand;
             for(BlockDrop drop : handler.getDrops()) {
                 if(drop == null) continue;
-                int min = drop.getMin();
-                int max = drop.getMax();
 
-                // Figure out how many to give:
-                int qty;
-                if(min != max) {
-                    int delta = Math.abs(drop.getMax() - drop.getMin());
-                    qty = rand.nextInt(delta) + min;
-                } else {
-                    qty = min;
-                }
+                ItemStack dropStack;
+                BaseMatchResult result;
 
-                // Do the drop!
-                ItemStack dropStack = ItemStack.copyItemStack(drop.getWhat());
+                do {
+                    int min = drop.getMin();
+                    int max = drop.getMax();
 
-                // Update the stack size:
-                try {
-                    dropStack.stackSize = Math.toIntExact(qty + Math.round(evt.getFortuneLevel() * drop.getFortuneMultiplier()));
-                } catch(ArithmeticException e) {
-                    // You'd have to try really hard to do this, but... just in case...
-                    dropStack.stackSize = 64;
-                }
+                    // Figure out how many to give:
+                    int qty;
+                    if (min != max) {
+                        int delta = Math.abs(drop.getMax() - drop.getMin());
+                        qty = rand.nextInt(delta) + min;
+                    } else {
+                        qty = min;
+                    }
 
-                // Check if this drop matches:
-                BaseMatchResult result = drop.matches(evt, dropStack);
+                    // Do the drop!
+                    dropStack = ItemStack.copyItemStack(drop.getWhat());
+
+                    // Update the stack size:
+                    try {
+                        dropStack.stackSize = Math.toIntExact(qty + Math.round(evt.getFortuneLevel() * drop.getFortuneMultiplier()));
+                    } catch (ArithmeticException e) {
+                        // You'd have to try really hard to do this, but... just in case...
+                        dropStack.stackSize = 64;
+                    }
+
+                    // Check if this drop matches:
+                    result = drop.matches(evt, dropStack);
+                    if(result.isMatch()) break;
+                    drop = (BlockDrop) drop.getAltMatch();
+                } while(drop != null);
+
                 if(!result.isMatch()) continue;
 
                 // Make sure we have sane drop amounts:
