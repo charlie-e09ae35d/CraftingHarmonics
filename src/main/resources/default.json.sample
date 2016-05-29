@@ -1399,6 +1399,32 @@
                     ]
                 }
             ]
+        },
+        {
+            // Custom sets can also have some various other things:
+            name: "custom2",
+            duration: 200, // This will cause it to remove itself after 200 ticks (roughly 10s)
+            cooldown: 400, // And can only be applied once every 400 ticks
+            removesSets: ["custom"], // It will also remove the 'custom' set when it's applied
+            operations: [
+                // Teleports everybody back to world spawn, and applies regen 2.
+                {
+                    type: "addEntityEvent",
+                    what: ["net.minecraft.entity.player.EntityPlayerMP"],
+                    events: [
+                        {
+                            type: "teleportSpawn",
+                            dimension: 0,
+                            cooldown: 300 // Make sure it only happens once.
+                        },
+                        {
+                            type: "applyPotion",
+                            what: "minecraft:regeneration",
+                            amplifier: 2,
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

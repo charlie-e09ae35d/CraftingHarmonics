@@ -55,9 +55,22 @@
             More to come later.
         </li>
         <li>
+            Added support for a few new bits of top level information for sets:
+            <ul>
+                <li>duration: A number of ticks for which the set should be applied.</li>
+                <li>cooldown: A number of ticks after the set has been removed during which it can't be re-applied.</li>
+                <li>removesSets: An array of set names that should be removed when this set is applied.</li>
+            </ul><br />
+            See 'custom2' in default.json.sample for more details.
+        </li>
+        <li>
             Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/88">issue #88</a> where
             matchers were being checked in the opposite order they should've been, causing more expensive
             checks to be run first.
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/89">issue #89</a> where
+            applied sets were being saved when they shouldn't, and not being saved when they should.
         </li>
     </ul>
 </div>

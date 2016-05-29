@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
-import org.winterblade.minecraft.harmony.CraftingSet;
+import org.winterblade.minecraft.harmony.OperationSet;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
 import org.winterblade.minecraft.harmony.entities.callbacks.StopTimeCommand;
@@ -43,7 +43,7 @@ public class EventHandler {
             CraftingHarmonicsMod.applyBaseSets();
         } else {
             // Apply our per-player operations...
-            CraftingSet.runPerPlayerOperations(player);
+            OperationSet.runPerPlayerOperations(player);
         }
 
         PacketHandler.synchronizeConfig(NashornConfigProcessor.getInstance().getCache(), player);
@@ -54,9 +54,8 @@ public class EventHandler {
     public void onServerTick(TickEvent.ServerTickEvent evt) {
         if(evt.phase != TickEvent.Phase.END) return;
 
-        CraftingHarmonicsMod.checkDifficultyChanged();
-
         try {
+            CraftingHarmonicsMod.checkServerTick();
             MobTickRegistry.processCallbackQueue();
         } catch (Exception ex) {
             LogHelper.error("Error handling server tick; please report this along with your config file.", ex);

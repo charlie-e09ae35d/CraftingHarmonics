@@ -13,23 +13,21 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
-import org.winterblade.minecraft.harmony.api.IOperation;
-import org.winterblade.minecraft.harmony.commands.CommandHandler;
-import org.winterblade.minecraft.harmony.config.ConfigManager;
-import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
-import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
-import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
-import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
-import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapelessComponentRecipe;
+import org.winterblade.minecraft.harmony.commands.CommandHandler;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.config.ConfigManager;
+import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
+import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
+import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.proxies.CommonProxy;
+import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.scripting.ScriptInteropRegistry;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
-import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.utility.SavedGameData;
 
 import java.util.*;
@@ -53,7 +51,7 @@ public class CraftingHarmonicsMod {
             serverSide = "org.winterblade.minecraft.harmony.proxies.ServerProxy")
     private static CommonProxy proxy;
 
-    private final static Map<String, CraftingSet> craftingSets = new HashMap<>();
+    private final static Map<String, OperationSet> craftingSets = new HashMap<>();
     private final static Set<String> initializedSets = new HashSet<>();
     private final static Set<String> appliedSets = new HashSet<>();
 
@@ -66,7 +64,7 @@ public class CraftingHarmonicsMod {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         // Load all recipe operations (thanks mezz, who thanks cpw... so also thanks cpw)
-        RecipeOperationRegistry.CreateDeserializers(AnnotationUtil.getRecipeOperations(event.getAsmData()));
+        SetManager.CreateDeserializers(AnnotationUtil.getRecipeOperations(event.getAsmData()));
         ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
         ScriptInteropRegistry.registerInterops(AnnotationUtil.getInteropClasses(event.getAsmData()));
         BaseEntityCallback.registerCallbacks(AnnotationUtil.getEntityCallbacks(event.getAsmData()));
@@ -112,14 +110,15 @@ public class CraftingHarmonicsMod {
     }
 
     /**
-     * Adds an operation to a set; creates the set if it doesn't exist.
-     * @param setName   The set name to add to.
-     * @param operation The operation to add.
+     * Gets or creates the given set
+     * @param setName    The set name to get/create
+     * @return           The set
      */
-    public static void AddOperationToSet(String setName, IOperation operation) {
-        if(!craftingSets.containsKey(setName)) craftingSets.put(setName, new CraftingSet(setName));
-
-        craftingSets.get(setName).addOperation(operation);
+    public static OperationSet getOrCreateSet(String setName) {
+        if(craftingSets.containsKey(setName)) return craftingSets.get(setName);
+        OperationSet set = new OperationSet(setName);
+        craftingSets.put(setName, set);
+        return set;
     }
 
     /**
@@ -134,7 +133,7 @@ public class CraftingHarmonicsMod {
      * Initialize all the sets we have now; is idempotent
      */
     public static void initSets() {
-        for(Map.Entry<String, CraftingSet> set : craftingSets.entrySet()) {
+        for(Map.Entry<String, OperationSet> set : craftingSets.entrySet()) {
             // Init sets once:
             if(initializedSets.contains(set.getKey())) continue;
 
@@ -172,7 +171,7 @@ public class CraftingHarmonicsMod {
      * @return      True if the set was applied; false otherwise
      */
     public static boolean applySet(String set) {
-        if(appliedSets.contains(set) || !craftingSets.containsKey(set)) return false;
+        if(appliedSets.contains(set) || !craftingSets.containsKey(set) || SetManager.isSetOnCooldown(set)) return false;
 
         craftingSets.get(set).apply();
         appliedSets.add(set);
@@ -269,24 +268,30 @@ public class CraftingHarmonicsMod {
     /**
      * Checks to see if the difficulty has changed, and reload the configs if so
      */
-    public static void checkDifficultyChanged() {
+    public static void checkServerTick() {
         EnumDifficulty curDifficulty = getDifficulty();
-        if(curDifficulty == prevDifficulty) return;
+        boolean updatedConfigs = false;
 
-        boolean removedConfigs = false;
+        // Check if we need to update our difficulty...
+        if(curDifficulty != prevDifficulty) {
+            // Unload the previous difficulty, if we had one loaded:
+            if (prevDifficulty != null) {
+                updatedConfigs = undoSet(getDifficultyName(prevDifficulty));
+            }
 
-        // Unload the previous difficulty, if we had one loaded:
-        if(prevDifficulty != null) {
-            removedConfigs = undoSet(getDifficultyName(prevDifficulty));
-        }
+            prevDifficulty = curDifficulty;
 
-        prevDifficulty = curDifficulty;
-        if(applySets(new String[] { getDifficultyName(curDifficulty)}) || removedConfigs) {
+            // Apply our new difficulty sets as well...
+            updatedConfigs = applySets(new String[] { getDifficultyName(curDifficulty)}) || updatedConfigs;
+
             LogHelper.info("Difficulty set; reloading configs...");
-
-            // Re-sync the applied configs.
-            syncAllConfigs(FMLCommonHandler.instance().getMinecraftServerInstance());
         }
+
+        // Also run an update on the set manager to see if it needs to update anything...
+        updatedConfigs = SetManager.update() || updatedConfigs;
+
+        // If we've updated, go ahead and sync everything...
+        if(updatedConfigs) syncAllConfigs(FMLCommonHandler.instance().getMinecraftServerInstance());
     }
 
     /**
