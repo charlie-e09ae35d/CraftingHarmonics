@@ -32,6 +32,7 @@ public abstract class BaseEntityCallback implements IEntityCallback {
 
     // Serialized property for every callback; only used by some.
     protected String id;
+    private EntityCallbackContainer altMatch;
 
     /**
      * Add the classes that we should register for entity callbacks.
@@ -55,7 +56,13 @@ public abstract class BaseEntityCallback implements IEntityCallback {
     public void apply(Entity target) {
         // Figure out if we match
         BaseMatchResult result = BaseEntityMatcherData.match(target, matchers);
-        if(!result.isMatch()) return;
+        if(!result.isMatch()) {
+            if (altMatch == null) return;
+
+            // Run them if so:
+            altMatch.apply(target);
+            return;
+        }
 
         // Run our matcher callbacks (if they exist...)
         result.runIfMatch();
@@ -92,8 +99,14 @@ public abstract class BaseEntityCallback implements IEntityCallback {
         MobTickRegistry.addCallbackSet(target, callbacks);
     }
 
+    public void setAltMatch(EntityCallbackContainer altMatch) {
+        this.altMatch = altMatch;
+    }
+
     @ScriptObjectDeserializer(deserializes = BaseEntityCallback.class)
     public static class Deserializer extends BaseComponentDeserializer<BaseEntityCallback, IEntityMatcher> {
+        private static final EntityCallbackContainer.Deserializer OTHERWISE_DESERIAlIZER = new EntityCallbackContainer.Deserializer();
+
         public Deserializer() {
             super(IEntityMatcher.class);
         }
@@ -107,7 +120,7 @@ public abstract class BaseEntityCallback implements IEntityCallback {
                 return null;
             }
             try {
-                return (BaseEntityCallback) callbackMap.get(type).newInstance();
+                return callbackMap.get(type).newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 LogHelper.error("Error creating entity callback of type '{}'.", type, e);
                 return null;
@@ -116,7 +129,7 @@ public abstract class BaseEntityCallback implements IEntityCallback {
 
         @Override
         protected void update(ScriptObjectMirror mirror, BaseEntityCallback output, List<IEntityMatcher> matchers) {
-            for(IEntityMatcher matcher : matchers) {
+            for (IEntityMatcher matcher : matchers) {
                 PrioritizedObject priorityAnno = matcher.getClass().getAnnotation(PrioritizedObject.class);
                 Priority priority = priorityAnno != null ? priorityAnno.priority() : Priority.MEDIUM;
                 output.addMatcher(matcher, priority);
@@ -125,6 +138,18 @@ public abstract class BaseEntityCallback implements IEntityCallback {
             // Deserialize the rest with the default serializer
             NashornConfigProcessor.getInstance().nashorn.parseScriptObject(mirror, output);
             output.finishDeserialization(mirror);
+
+            // If we have an alt match...
+            if (!mirror.containsKey("otherwise")) return;
+
+            Object altMatchData = mirror.get("otherwise");
+
+            // Try to deserialize it:
+            try {
+                output.setAltMatch((EntityCallbackContainer) OTHERWISE_DESERIAlIZER.Deserialize(altMatchData));
+            } catch (Exception ex) {
+                LogHelper.warn("Unable to deserialize 'otherwise' for this object.");
+            }
         }
     }
 }
