@@ -1,9 +1,11 @@
 package org.winterblade.minecraft.harmony;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.relauncher.Side;
+import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.IOperation;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
@@ -12,13 +14,14 @@ import java.util.*;
 /**
  * Created by Matt on 4/5/2016.
  */
-public class CraftingSet {
+public class OperationSet {
     private final static Set<BasePerPlayerOperation> activePerPlayerOperations = new HashSet<>();
     private final List<IOperation> operations = new ArrayList<>();
     private final String setName;
     private final boolean isBaseSet;
+    private int duration;
 
-    public CraftingSet(String setName) {
+    OperationSet(String setName) {
         this.setName = setName;
         switch (setName) {
             case "default":
@@ -37,7 +40,7 @@ public class CraftingSet {
      * Add a per-player operation to run on the player when they connect
      * @param operation    The operation to add
      */
-    public static void addPerPlayerOperation(BasePerPlayerOperation operation) {
+    static void addPerPlayerOperation(BasePerPlayerOperation operation) {
         activePerPlayerOperations.add(operation);
     }
 
@@ -45,7 +48,7 @@ public class CraftingSet {
      * Remove a per-player operation to run on the player when they connect
      * @param operation    The operation to remove
      */
-    public static void removePerPlayerOperation(BasePerPlayerOperation operation) {
+    static void removePerPlayerOperation(BasePerPlayerOperation operation) {
         activePerPlayerOperations.remove(operation);
     }
 
@@ -63,17 +66,57 @@ public class CraftingSet {
         }
     }
 
+
+    /**
+     * Called from our internal scripts in order to create the operation.
+     * @param operation A script object
+     * @return          True if the operation processed fine; false otherwise.
+     */
+    public boolean addOperation(ScriptObjectMirror operation) {
+        if(!operation.containsKey("type")) {
+            LogHelper.warn("All operation objects must contain a 'type' entry.");
+            return false;
+        }
+
+        return addOperation(operation.get("type").toString(), operation);
+    }
+
+    /**
+     * Called from our internal scripts in order to create the operation.
+     * @param type      The type of the operation
+     * @param operation A script object
+     * @return          True if the operation processed fine; false otherwise.
+     */
+    public boolean addOperation(String type, ScriptObjectMirror operation) {
+        BasicOperation inst = SetManager.createOperation(type, operation);
+        if(inst == null) {
+            LogHelper.warn("Unknown recipe operation type '" + type + "' for set '" + setName + "'.  Are you missing an addon?");
+            return false;
+        }
+
+        return addOperation(inst);
+    }
+
+    /**
+     * Called to set the duration of this operation
+     * @param duration    The duration to set
+     */
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
     /**
      * Adds an operation to the set.
      * @param operation The operation.
      */
-    public void addOperation(IOperation operation) {
+    boolean addOperation(IOperation operation) {
         // Make sure we're not trying to add something to a non-base set.
         if(operation.baseSetOnly() && !isBaseSet) {
             LogHelper.error("The operation '" + operation.toString() + "' can only be added to a base set; it cannot be added here.");
-            return;
+            return false;
         }
-        operations.add(operation);
+
+        return operations.add(operation);
     }
 
     /**
@@ -126,7 +169,7 @@ public class CraftingSet {
         ProgressManager.pop(setProgress);
     }
 
-    public void undo() {
+    void undo() {
         // Reverse the sort order... badly.
         List<IOperation> revserseOps = new ArrayList<>(operations);
         Collections.reverse(revserseOps);

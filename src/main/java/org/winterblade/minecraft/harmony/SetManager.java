@@ -1,11 +1,10 @@
-package org.winterblade.minecraft.harmony.crafting;
+package org.winterblade.minecraft.harmony;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraftforge.fml.common.Loader;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
-import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.api.Operation;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 import java.util.Map;
@@ -14,7 +13,7 @@ import java.util.TreeMap;
 /**
  * Created by Matt on 4/8/2016.
  */
-public class RecipeOperationRegistry {
+public class SetManager {
     private final static Map<String, Class<BasicOperation>> deserializerMap = new TreeMap<>();
 
     public static void CreateDeserializers(Map<String, Class<BasicOperation>> deserializers) {
@@ -53,21 +52,9 @@ public class RecipeOperationRegistry {
     }
 
     /**
-     * Called from our internal scripts in order to create the operation.
-     * @param setName      The name of the set to add it to.
-     * @param type      The type of the operation
-     * @param operation A script object
-     * @return          True if the operation processed fine; false otherwise.
+     * Called from our internal scripts in order to create a set
      */
-    public static boolean CreateOperationInSet(String setName, String type, ScriptObjectMirror operation) {
-        BasicOperation inst = createOperation(type, operation);
-        if(inst == null) {
-            LogHelper.warn("Unknown recipe operation type '" + type + "' for set '" + setName + "'.  Are you missing an addon?");
-            return false;
-        }
-
-        CraftingHarmonicsMod.AddOperationToSet(setName, inst);
-
-        return true;
+    public static OperationSet registerSet(String setName) {
+        return CraftingHarmonicsMod.getOrCreateSet(setName);
     }
 }

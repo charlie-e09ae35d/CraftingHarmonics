@@ -38,7 +38,7 @@ public abstract class BasePerPlayerOperation extends BasicOperation {
         if(FMLCommonHandler.instance().getMinecraftServerInstance() == null) return;
 
         // Register the operation
-        CraftingSet.addPerPlayerOperation(this);
+        OperationSet.addPerPlayerOperation(this);
 
         // ... and run it on all connected players
         PlayerList playerList = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();
@@ -53,7 +53,7 @@ public abstract class BasePerPlayerOperation extends BasicOperation {
         if(FMLCommonHandler.instance().getMinecraftServerInstance() == null) return;
 
         // Remove the registration...
-        CraftingSet.removePerPlayerOperation(this);
+        OperationSet.removePerPlayerOperation(this);
 
         // ... and undo it on everybody connected
         PlayerList playerList = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList();

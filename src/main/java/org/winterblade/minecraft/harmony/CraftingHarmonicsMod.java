@@ -20,7 +20,6 @@ import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
 import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
-import org.winterblade.minecraft.harmony.crafting.RecipeOperationRegistry;
 import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapelessComponentRecipe;
@@ -53,7 +52,7 @@ public class CraftingHarmonicsMod {
             serverSide = "org.winterblade.minecraft.harmony.proxies.ServerProxy")
     private static CommonProxy proxy;
 
-    private final static Map<String, CraftingSet> craftingSets = new HashMap<>();
+    private final static Map<String, OperationSet> craftingSets = new HashMap<>();
     private final static Set<String> initializedSets = new HashSet<>();
     private final static Set<String> appliedSets = new HashSet<>();
 
@@ -66,7 +65,7 @@ public class CraftingHarmonicsMod {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         // Load all recipe operations (thanks mezz, who thanks cpw... so also thanks cpw)
-        RecipeOperationRegistry.CreateDeserializers(AnnotationUtil.getRecipeOperations(event.getAsmData()));
+        SetManager.CreateDeserializers(AnnotationUtil.getRecipeOperations(event.getAsmData()));
         ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
         ScriptInteropRegistry.registerInterops(AnnotationUtil.getInteropClasses(event.getAsmData()));
         BaseEntityCallback.registerCallbacks(AnnotationUtil.getEntityCallbacks(event.getAsmData()));
@@ -112,12 +111,24 @@ public class CraftingHarmonicsMod {
     }
 
     /**
+     * Gets or creates the given set
+     * @param setName    The set name to get/create
+     * @return           The set
+     */
+    public static OperationSet getOrCreateSet(String setName) {
+        if(craftingSets.containsKey(setName)) return craftingSets.get(setName);
+        OperationSet set = new OperationSet(setName);
+        craftingSets.put(setName, set);
+        return set;
+    }
+
+    /**
      * Adds an operation to a set; creates the set if it doesn't exist.
      * @param setName   The set name to add to.
      * @param operation The operation to add.
      */
     public static void AddOperationToSet(String setName, IOperation operation) {
-        if(!craftingSets.containsKey(setName)) craftingSets.put(setName, new CraftingSet(setName));
+        if(!craftingSets.containsKey(setName)) craftingSets.put(setName, new OperationSet(setName));
 
         craftingSets.get(setName).addOperation(operation);
     }
@@ -134,7 +145,7 @@ public class CraftingHarmonicsMod {
      * Initialize all the sets we have now; is idempotent
      */
     public static void initSets() {
-        for(Map.Entry<String, CraftingSet> set : craftingSets.entrySet()) {
+        for(Map.Entry<String, OperationSet> set : craftingSets.entrySet()) {
             // Init sets once:
             if(initializedSets.contains(set.getKey())) continue;
 
