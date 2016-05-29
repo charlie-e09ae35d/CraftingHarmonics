@@ -207,6 +207,11 @@ public class OperationSet {
             }
         }
 
+        // Remove any operations now...
+        if(0 < getRemovedSets().length) {
+            CraftingHarmonicsMod.undoSets(getRemovedSets());
+        }
+
         ProgressManager.pop(setProgress);
     }
 
