@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * Created by Matt on 5/28/2016.
  */
-@Operation(name = "AbyssalCraft.addCrystallizer")
+@Operation(name = "AbyssalCraft.addCrystallizer", dependsOn = "abyssalcraft")
 public class AddCrystallizerRecipeOperation extends BasicOperation {
     /*
      * Serialized properties
