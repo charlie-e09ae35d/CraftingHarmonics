@@ -1,7 +1,6 @@
 package org.winterblade.minecraft.harmony.messaging;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -41,8 +40,6 @@ public class PacketHandler {
      * @param
      */
     public static void synchronizeConfig(Map<String,String> config, EntityPlayerMP player) {
-        // DO NOT SYNC ON INTEGRATED SERVER.
-        if(FMLCommonHandler.instance().getMinecraftServerInstance().isSinglePlayer()) return;
         wrapper.sendTo(new ConfigSyncMessage(config, CraftingHarmonicsMod.getAppliedSets()), player);
     }
 }
