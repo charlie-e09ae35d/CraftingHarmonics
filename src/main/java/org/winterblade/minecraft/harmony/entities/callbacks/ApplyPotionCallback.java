@@ -32,7 +32,7 @@ public class ApplyPotionCallback extends BaseEntityCallback {
     private Potion what;
     private int amplifier;
     private boolean showParticles;
-    private int duration = 1;
+    private int duration;
     private ItemStack[] cures;
     private IEntityCallbackContainer[] onApplied;
     private IEntityCallbackContainer[] onNew;
