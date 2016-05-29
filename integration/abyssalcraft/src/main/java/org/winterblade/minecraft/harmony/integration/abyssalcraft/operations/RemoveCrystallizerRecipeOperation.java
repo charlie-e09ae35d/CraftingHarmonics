@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Created by Matt on 5/28/2016.
  */
-@Operation(name = "AbyssalCraft.removeCrystallizer", dependsOn = "abyssalcraft")
+@Operation(name = "AbyssalCraft.removeCrystallization", dependsOn = "abyssalcraft")
 public class RemoveCrystallizerRecipeOperation extends BasicOperation {
     /*
      * Serialized properties
