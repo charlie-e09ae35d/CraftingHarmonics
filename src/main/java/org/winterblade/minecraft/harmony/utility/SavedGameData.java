@@ -60,7 +60,7 @@ public class SavedGameData extends WorldSavedData {
      */
     public void addSet(String set) {
         // If we added, then mark it dirty
-        if(!loadedSets.add(set)) markDirty();
+        if(loadedSets.add(set)) markDirty();
     }
 
     /**
@@ -69,7 +69,7 @@ public class SavedGameData extends WorldSavedData {
      */
     public void removeSet(String set) {
         // If we removed, then mark it dirty
-        if(!loadedSets.remove(set)) markDirty();
+        if(loadedSets.remove(set)) markDirty();
     }
 
     /**
