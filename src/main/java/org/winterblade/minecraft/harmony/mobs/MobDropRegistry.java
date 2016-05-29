@@ -82,31 +82,38 @@ public class MobDropRegistry {
             // Now, actually calculate out our drop rates...
             Random rand = evt.getEntity().getEntityWorld().rand;
             for(MobDrop drop : handler.getDrops()) {
-                int min = drop.getMin();
-                int max = drop.getMax();
+                ItemStack dropStack;
+                BaseMatchResult result;
 
-                // Figure out how many to give:
-                int qty;
-                if(min != max) {
-                    int delta = Math.abs(drop.getMax() - drop.getMin());
-                    qty = rand.nextInt(delta) + min;
-                } else {
-                    qty = min;
-                }
+                do {
+                    int min = drop.getMin();
+                    int max = drop.getMax();
 
-                // Do the drop!
-                ItemStack dropStack = ItemStack.copyItemStack(drop.getWhat());
+                    // Figure out how many to give:
+                    int qty;
+                    if (min != max) {
+                        int delta = Math.abs(drop.getMax() - drop.getMin());
+                        qty = rand.nextInt(delta) + min;
+                    } else {
+                        qty = min;
+                    }
 
-                // Update the stack size:
-                try {
-                    dropStack.stackSize = Math.toIntExact(qty + Math.round(evt.getLootingLevel() * drop.getLootingMultiplier()));
-                } catch(ArithmeticException e) {
-                    // You'd have to try really hard to do this, but... just in case...
-                    dropStack.stackSize = 64;
-                }
+                    // Do the drop!
+                    dropStack = ItemStack.copyItemStack(drop.getWhat());
 
-                // Check if this drop matches:
-                BaseMatchResult result = drop.matches(evt, dropStack);
+                    // Update the stack size:
+                    try {
+                        dropStack.stackSize = Math.toIntExact(qty + Math.round(evt.getLootingLevel() * drop.getLootingMultiplier()));
+                    } catch (ArithmeticException e) {
+                        // You'd have to try really hard to do this, but... just in case...
+                        dropStack.stackSize = 64;
+                    }
+
+                    // Check if this drop matches:
+                    result = drop.matches(evt, dropStack);
+                    if(result.isMatch()) break;
+                    drop = (MobDrop) drop.getAltMatch();
+                } while(drop != null);
                 if(!result.isMatch()) continue;
 
                 // Make sure we have sane drop amounts:
