@@ -14,21 +14,21 @@ import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import org.winterblade.minecraft.harmony.api.IOperation;
-import org.winterblade.minecraft.harmony.commands.CommandHandler;
-import org.winterblade.minecraft.harmony.config.ConfigManager;
-import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
-import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
-import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
-import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapelessComponentRecipe;
+import org.winterblade.minecraft.harmony.commands.CommandHandler;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.config.ConfigManager;
+import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
+import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
+import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
+import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.proxies.CommonProxy;
+import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.scripting.ScriptInteropRegistry;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
-import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.utility.SavedGameData;
 
 import java.util.*;
@@ -183,7 +183,7 @@ public class CraftingHarmonicsMod {
      * @return      True if the set was applied; false otherwise
      */
     public static boolean applySet(String set) {
-        if(appliedSets.contains(set) || !craftingSets.containsKey(set)) return false;
+        if(appliedSets.contains(set) || !craftingSets.containsKey(set) || SetManager.isSetOnCooldown(set)) return false;
 
         craftingSets.get(set).apply();
         appliedSets.add(set);
@@ -280,24 +280,30 @@ public class CraftingHarmonicsMod {
     /**
      * Checks to see if the difficulty has changed, and reload the configs if so
      */
-    public static void checkDifficultyChanged() {
+    public static void checkServerTick() {
         EnumDifficulty curDifficulty = getDifficulty();
-        if(curDifficulty == prevDifficulty) return;
+        boolean updatedConfigs = false;
 
-        boolean removedConfigs = false;
+        // Check if we need to update our difficulty...
+        if(curDifficulty != prevDifficulty) {
+            // Unload the previous difficulty, if we had one loaded:
+            if (prevDifficulty != null) {
+                updatedConfigs = undoSet(getDifficultyName(prevDifficulty));
+            }
 
-        // Unload the previous difficulty, if we had one loaded:
-        if(prevDifficulty != null) {
-            removedConfigs = undoSet(getDifficultyName(prevDifficulty));
-        }
+            prevDifficulty = curDifficulty;
 
-        prevDifficulty = curDifficulty;
-        if(applySets(new String[] { getDifficultyName(curDifficulty)}) || removedConfigs) {
+            // Apply our new difficulty sets as well...
+            updatedConfigs = applySets(new String[] { getDifficultyName(curDifficulty)}) || updatedConfigs;
+
             LogHelper.info("Difficulty set; reloading configs...");
-
-            // Re-sync the applied configs.
-            syncAllConfigs(FMLCommonHandler.instance().getMinecraftServerInstance());
         }
+
+        // Also run an update on the set manager to see if it needs to update anything...
+        updatedConfigs = SetManager.update() || updatedConfigs;
+
+        // If we've updated, go ahead and sync everything...
+        if(updatedConfigs) syncAllConfigs(FMLCommonHandler.instance().getMinecraftServerInstance());
     }
 
     /**

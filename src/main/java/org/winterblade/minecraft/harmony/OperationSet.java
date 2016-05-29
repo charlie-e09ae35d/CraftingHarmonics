@@ -212,6 +212,10 @@ public class OperationSet {
             CraftingHarmonicsMod.undoSets(getRemovedSets());
         }
 
+        if(0 < getDuration()) {
+            SetManager.setWithDurationApplied(setName, getDuration());
+        }
+
         ProgressManager.pop(setProgress);
     }
 
@@ -234,6 +238,10 @@ public class OperationSet {
             catch(Exception ex) {
                 LogHelper.error("Error undoing operation.", ex);
             }
+        }
+
+        if(0 < getCooldown()) {
+            SetManager.setWithCooldownRemoved(setName, getCooldown());
         }
     }
 }

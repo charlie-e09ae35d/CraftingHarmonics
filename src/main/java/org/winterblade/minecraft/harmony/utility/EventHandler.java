@@ -54,9 +54,8 @@ public class EventHandler {
     public void onServerTick(TickEvent.ServerTickEvent evt) {
         if(evt.phase != TickEvent.Phase.END) return;
 
-        CraftingHarmonicsMod.checkDifficultyChanged();
-
         try {
+            CraftingHarmonicsMod.checkServerTick();
             MobTickRegistry.processCallbackQueue();
         } catch (Exception ex) {
             LogHelper.error("Error handling server tick; please report this along with your config file.", ex);
