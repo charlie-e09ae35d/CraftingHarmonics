@@ -40,7 +40,15 @@ public class EntityCallbackContainer extends BaseEventMatch<Entity, IEntityMatch
     public void apply(Entity source) {
         // Figure out if we match
         BaseMatchResult result = matches(source, new BaseEntityMatcherData());
-        if(!result.isMatch()) return;
+
+        // If we didn't match, check for alt matches...
+        if(!result.isMatch()) {
+            if (getAltMatch() == null) return;
+
+            // Run them if so:
+            ((EntityCallbackContainer)getAltMatch()).apply(source);
+            return;
+        }
 
         // Run our matcher callbacks (if they exist...)
         result.runIfMatch();
@@ -115,6 +123,19 @@ public class EntityCallbackContainer extends BaseEventMatch<Entity, IEntityMatch
                 PrioritizedObject priorityAnno = matcher.getClass().getAnnotation(PrioritizedObject.class);
                 Priority priority = priorityAnno != null ? priorityAnno.priority() : Priority.MEDIUM;
                 container.addMatcher(matcher, priority);
+            }
+
+
+            // If we have an alt match...
+            if (!mirror.containsKey("otherwise")) return container;
+
+            Object altMatchData = mirror.get("otherwise");
+
+            // Try to deserialize it:
+            try {
+                container.setAltMatch((EntityCallbackContainer) Deserialize(altMatchData));
+            } catch (Exception ex) {
+                LogHelper.warn("Unable to deserialize 'otherwise' for this object.");
             }
 
             return container;
