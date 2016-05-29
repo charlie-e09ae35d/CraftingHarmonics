@@ -252,11 +252,13 @@ public class MobTickRegistry {
         public void apply(UUID ticket) {
             isActive = true;
             activeHandlers.add(ticket);
+            cache.clear();
         }
 
         public void remove(UUID ticket) {
             activeHandlers.remove(ticket);
             if(activeHandlers.size() <= 0) isActive = false;
+            cache.clear();
         }
 
         boolean isActive() {
