@@ -14,6 +14,7 @@ import org.winterblade.minecraft.harmony.api.questing.QuestProvider;
 import org.winterblade.minecraft.harmony.api.questing.QuestStatus;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -24,11 +25,11 @@ import java.util.stream.Collectors;
  */
 @QuestProvider
 public class BetterQuestingQuestProvider implements IQuestProvider {
-    private static LoadingCache<String, QuestInstance> questCache = CacheBuilder.newBuilder().build(
+    private static LoadingCache<String, Integer> questCache = CacheBuilder.newBuilder().build(
             // If we haven't loaded it in the pre-load, it doesn't exist.
-            new CacheLoader<String, QuestInstance>() {
+            new CacheLoader<String, Integer>() {
                 @Override
-                public QuestInstance load(String key) throws Exception {
+                public Integer load(String key) throws Exception {
                     return null;
                 }
             }
@@ -73,18 +74,13 @@ public class BetterQuestingQuestProvider implements IQuestProvider {
      */
     @Override
     public QuestStatus getQuestStatus(String name, EntityPlayerMP player) {
-        QuestInstance questInstance;
-
-        try {
-            questInstance = questCache.get(name);
-        } catch (ExecutionException e) {
-            return QuestStatus.INVALID;
-        }
-
+        QuestInstance questInstance = getQuestByName(name);
         if(questInstance == null) return QuestStatus.INVALID;
 
-        if(questInstance.HasClaimed(player.getPersistentID())) return QuestStatus.CLOSED;
-        if(questInstance.isComplete(player.getPersistentID())) return QuestStatus.COMPLETE;
+        boolean isComplete = questInstance.isComplete(player.getPersistentID());
+
+        if(isComplete && questInstance.HasClaimed(player.getPersistentID())) return QuestStatus.CLOSED;
+        if(isComplete) return QuestStatus.COMPLETE;
         if(questInstance.isUnlocked(player.getPersistentID())) return QuestStatus.ACTIVE;
 
         return QuestStatus.LOCKED;
@@ -166,13 +162,8 @@ public class BetterQuestingQuestProvider implements IQuestProvider {
      */
     @Override
     public boolean completeQuest(String name, EntityPlayerMP player) {
-        QuestInstance questInstance;
-
-        try {
-            questInstance = questCache.get(name);
-        } catch (ExecutionException e) {
-            return false;
-        }
+        QuestInstance questInstance = getQuestByName(name);
+        if(questInstance == null) return false;
 
         questInstance.setComplete(player.getPersistentID(), player.getEntityWorld().getTotalWorldTime());
         return true;
@@ -187,13 +178,8 @@ public class BetterQuestingQuestProvider implements IQuestProvider {
      */
     @Override
     public boolean resetQuest(String name, EntityPlayerMP player) {
-        QuestInstance questInstance;
-
-        try {
-            questInstance = questCache.get(name);
-        } catch (ExecutionException e) {
-            return false;
-        }
+        QuestInstance questInstance = getQuestByName(name);
+        if(questInstance == null) return false;
 
         // Check if we're in a party...
         PartyInstance party = PartyManager.GetParty(player.getPersistentID());
@@ -220,11 +206,31 @@ public class BetterQuestingQuestProvider implements IQuestProvider {
             // If trying to access this normally, you get a NoSuchFieldError.  Reflectively?  Oh, it works fine.
             ConcurrentHashMap<Integer, QuestInstance> questDB = (ConcurrentHashMap<Integer, QuestInstance>) QuestDatabase.class.getField("questDB").get(null);
             for (Map.Entry<Integer, QuestInstance> quest : questDB.entrySet()) {
-                questCache.put(quest.getValue().name, quest.getValue());
+                questCache.put(quest.getValue().name, quest.getValue().questID);
             }
         } catch(Exception | NoSuchFieldError e) {
             // What?
             LogHelper.warn("Something went terribly wrong.", e);
         }
+    }
+
+    /**
+     * Gets the quest name from our cache by name
+     * @param name    The name of the quest to get
+     * @return        The quest, or null if it wasn't found.
+     */
+    @Nullable
+    private QuestInstance getQuestByName(String name) {
+        int questId;
+
+        try {
+            questId = questCache.get(name);
+        } catch (ExecutionException e) {
+            return null;
+        }
+
+        if(questId < 0) return null;
+
+        return QuestDatabase.getQuestByID(questId);
     }
 }
