@@ -23,7 +23,7 @@ public abstract class BaseQuestStatusMatcher {
     protected BaseMatchResult matches(Entity entity) {
         // Allows for checking drops if any/all players are on the quest, even if the current target isn't a player...
         if(mode == PlayerMatcherMode.CURRENT
-                && (entity == null || EntityPlayerMP.class.isAssignableFrom(entity.getClass()))) return BaseMatchResult.False;
+                && (entity == null || !EntityPlayerMP.class.isAssignableFrom(entity.getClass()))) return BaseMatchResult.False;
 
         switch (mode) {
             case CURRENT:

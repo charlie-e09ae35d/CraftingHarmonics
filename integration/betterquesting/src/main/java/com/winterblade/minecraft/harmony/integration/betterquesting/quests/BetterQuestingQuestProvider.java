@@ -12,11 +12,10 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import org.winterblade.minecraft.harmony.api.questing.IQuestProvider;
 import org.winterblade.minecraft.harmony.api.questing.QuestProvider;
 import org.winterblade.minecraft.harmony.api.questing.QuestStatus;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -214,10 +213,18 @@ public class BetterQuestingQuestProvider implements IQuestProvider {
     /**
      * Used to reset the internal caches for this provider, if any.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void resetCache() {
-        for(Map.Entry<Integer, QuestInstance> quest : QuestDatabase.questDB.entrySet()) {
-            questCache.put(quest.getValue().name, quest.getValue());
+        try {
+            // If trying to access this normally, you get a NoSuchFieldError.  Reflectively?  Oh, it works fine.
+            ConcurrentHashMap<Integer, QuestInstance> questDB = (ConcurrentHashMap<Integer, QuestInstance>) QuestDatabase.class.getField("questDB").get(null);
+            for (Map.Entry<Integer, QuestInstance> quest : questDB.entrySet()) {
+                questCache.put(quest.getValue().name, quest.getValue());
+            }
+        } catch(Exception | NoSuchFieldError e) {
+            // What?
+            LogHelper.warn("Something went terribly wrong.", e);
         }
     }
 }
