@@ -72,7 +72,14 @@ public class QuestRegistry implements IQuestProvider {
      */
     @Override
     public boolean isHardcoreModeEnabled() {
-        return providers.values().stream().anyMatch(IQuestProvider::isHardcoreModeEnabled);
+        return providers.values().stream().anyMatch((provider) -> {
+            try {
+                return provider.isHardcoreModeEnabled();
+            } catch (Exception e) {
+                LogHelper.warn("Unable to check if hardcore mode is on for provider '{}'.", provider.getName(), e);
+                return false;
+            }
+        });
     }
 
     /**
@@ -107,7 +114,14 @@ public class QuestRegistry implements IQuestProvider {
      */
     @Override
     public boolean inParty(EntityPlayerMP player) {
-        return providers.values().stream().anyMatch(p -> p.inParty(player));
+        return providers.values().stream().anyMatch(p -> {
+            try {
+                return p.inParty(player);
+            } catch (Exception e) {
+                LogHelper.warn("Error checking if {} is in a party in provider '{}'.", player.getName(), p.getName(), e);
+                return false;
+            }
+        });
     }
 
     /**
@@ -119,7 +133,14 @@ public class QuestRegistry implements IQuestProvider {
      */
     @Override
     public boolean hasSharedLives(EntityPlayerMP player) {
-        return providers.values().stream().anyMatch(p -> p.hasSharedLives(player));
+        return providers.values().stream().anyMatch(p -> {
+            try {
+                return p.hasSharedLives(player);
+            } catch (Exception e) {
+                LogHelper.warn("Error checking if {} is using shared lives in provider '{}'.", player.getName(), p.getName(), e);
+                return false;
+            }
+        });
     }
 
     /**
@@ -131,7 +152,14 @@ public class QuestRegistry implements IQuestProvider {
      */
     @Override
     public boolean hasSharedLoot(EntityPlayerMP player) {
-        return providers.values().stream().anyMatch(p -> p.hasSharedLoot(player));
+        return providers.values().stream().anyMatch(p -> {
+            try {
+                return p.hasSharedLoot(player);
+            } catch (Exception e) {
+                LogHelper.warn("Error checking if {} is using shared loot in provider '{}'.", player.getName(), p.getName(), e);
+                return false;
+            }
+        });
     }
 
     /**
@@ -145,7 +173,11 @@ public class QuestRegistry implements IQuestProvider {
     public int giveLives(EntityPlayerMP player, int lives) {
         int livesGiven = 0;
         for(IQuestProvider provider : providers.values()) {
-            livesGiven += provider.giveLives(player, lives);
+            try {
+                livesGiven += provider.giveLives(player, lives);
+            } catch (Exception e) {
+                LogHelper.warn("Unable to give lives in provider '{}'", provider.getName(), e);
+            }
         }
         return livesGiven;
     }
@@ -161,7 +193,12 @@ public class QuestRegistry implements IQuestProvider {
     public int takeLives(EntityPlayerMP player, int lives) {
         int livesTaken = 0;
         for(IQuestProvider provider : providers.values()) {
-            livesTaken += provider.takeLives(player, lives);
+            try {
+                livesTaken += provider.takeLives(player, lives);
+            }
+            catch (Exception e) {
+                LogHelper.warn("Unable to take lives in provider '{}'", provider.getName(), e);
+            }
         }
         return livesTaken;
     }
@@ -175,7 +212,14 @@ public class QuestRegistry implements IQuestProvider {
      */
     @Override
     public boolean completeQuest(String name, EntityPlayerMP player) {
-        return providers.values().stream().anyMatch(p -> p.completeQuest(name, player));
+        return providers.values().stream().anyMatch(p -> {
+            try {
+                return p.completeQuest(name, player);
+            } catch (Exception e) {
+                LogHelper.warn("Unable to complete quest '{}' in provider '{}'", name, p.getName(), e);
+                return false;
+            }
+        });
     }
 
     /**
@@ -187,7 +231,14 @@ public class QuestRegistry implements IQuestProvider {
      */
     @Override
     public boolean resetQuest(String name, EntityPlayerMP player) {
-        return providers.values().stream().anyMatch(p -> p.resetQuest(name, player));
+        return providers.values().stream().anyMatch(p -> {
+            try {
+                return p.resetQuest(name, player);
+            } catch (Exception e) {
+                LogHelper.warn("Unable to reset quest '{}' in provider '{}'", name, p.getName(), e);
+                return false;
+            }
+        });
     }
 
     /**
@@ -195,6 +246,12 @@ public class QuestRegistry implements IQuestProvider {
      */
     @Override
     public void resetCache() {
-        providers.values().forEach(IQuestProvider::resetCache);
+        providers.values().forEach((provider) -> {
+            try {
+                provider.resetCache();
+            } catch (Exception e) {
+                LogHelper.warn("Error resetting the quest cache for '{}'.", provider.getName(), e);
+            }
+        });
     }
 }
