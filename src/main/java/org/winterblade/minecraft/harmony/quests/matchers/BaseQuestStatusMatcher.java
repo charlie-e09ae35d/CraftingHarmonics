@@ -12,14 +12,16 @@ import org.winterblade.minecraft.harmony.quests.QuestRegistry;
  * Created by Matt on 5/30/2016.
  */
 public abstract class BaseQuestStatusMatcher {
-    private final QuestStatusMatchData data;
+    protected final QuestStatusMatchData data;
 
     protected BaseQuestStatusMatcher(QuestStatusMatchData data) {
         this.data = data;
     }
 
     protected BaseMatchResult matches(Entity entity) {
-        if(entity == null || EntityPlayerMP.class.isAssignableFrom(entity.getClass())) return BaseMatchResult.False;
+        // Allows for checking drops if any/all players are on the quest, even if the current target isn't a player...
+        if(data.getMode() == PlayerMatcherMode.CURRENT
+                && (entity == null || EntityPlayerMP.class.isAssignableFrom(entity.getClass()))) return BaseMatchResult.False;
 
         switch (data.getMode()) {
             case CURRENT:
