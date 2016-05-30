@@ -27,11 +27,20 @@ public interface IQuestProvider {
     QuestStatus getQuestStatus(String name, EntityPlayerMP player);
 
     /**
-     * Give a life (if such a thing is supported) to the given player.
+     * Give a number of lives (if such a thing is supported) to the given player.
      * @param player    The player to grant a life to.
-     * @return          True if a life was granted; false otherwise.
+     * @param lives     The number of lives to grant.
+     * @return          The number of lives granted.
      */
-    boolean giveLife(EntityPlayerMP player);
+    int giveLives(EntityPlayerMP player, int lives);
+
+    /**
+     * Take a number of lives (if such a thing is supported) from the given player.
+     * @param player    The player to take a life from.
+     * @param lives     The number of lives to take.
+     * @return          The number of lives taken.
+     */
+    int takeLives(EntityPlayerMP player, int lives);
 
     /**
      * Completes the given quest objectives for the player.
@@ -48,4 +57,9 @@ public interface IQuestProvider {
      * @return          True if the quest was reset, false otherwise.
      */
     boolean resetQuest(String name, EntityPlayerMP player);
+
+    /**
+     * Used to reset the internal caches for this provider, if any.
+     */
+    void resetCache();
 }
