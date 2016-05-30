@@ -82,6 +82,45 @@ public class BetterQuestingQuestProvider implements IQuestProvider {
     }
 
     /**
+     * Checks to see if the given player is in a group
+     *
+     * @param player The player to check
+     * @return True if the player is; false otherwise.  Should return false if the underlying provider
+     * doesn't support groups.
+     */
+    @Override
+    public boolean inParty(EntityPlayerMP player) {
+        return PartyManager.GetParty(player.getPersistentID()) != null;
+    }
+
+    /**
+     * Checks to see if the given player is in a group that is sharing lives
+     *
+     * @param player The player to check
+     * @return True if the player is; false otherwise.  Should return false if the underlying provider
+     * doesn't support groups, limited lives, life sharing, or if the player isn't in a group.
+     */
+    @Override
+    public boolean hasSharedLives(EntityPlayerMP player) {
+        if (!isHardcoreModeEnabled()) return false;
+        PartyInstance party = PartyManager.GetParty(player.getPersistentID());
+        return party != null && party.lifeShare;
+    }
+
+    /**
+     * Checks to see if the given player is in a group that is sharing loot
+     *
+     * @param player The player to check
+     * @return True if the player is; false otherwise.  Should return false if the underlying provider
+     * doesn't support groups, loot sharing, or if the player isn't in a group.
+     */
+    @Override
+    public boolean hasSharedLoot(EntityPlayerMP player) {
+        PartyInstance party = PartyManager.GetParty(player.getPersistentID());
+        return party != null && party.lootShare;
+    }
+
+    /**
      * Give a number of lives (if such a thing is supported) to the given player.
      *
      * @param player The player to grant a life to.

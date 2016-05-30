@@ -27,6 +27,30 @@ public interface IQuestProvider {
     QuestStatus getQuestStatus(String name, EntityPlayerMP player);
 
     /**
+     * Checks to see if the given player is in a group
+     * @param player    The player to check
+     * @return          True if the player is; false otherwise.  Should return false if the underlying provider
+     *                  doesn't support groups.
+     */
+    boolean inParty(EntityPlayerMP player);
+
+    /**
+     * Checks to see if the given player is in a group that is sharing lives
+     * @param player    The player to check
+     * @return          True if the player is; false otherwise.  Should return false if the underlying provider
+     *                  doesn't support groups, limited lives, life sharing, or if the player isn't in a group.
+     */
+    boolean hasSharedLives(EntityPlayerMP player);
+
+    /**
+     * Checks to see if the given player is in a group that is sharing loot
+     * @param player    The player to check
+     * @return          True if the player is; false otherwise.  Should return false if the underlying provider
+     *                  doesn't support groups, loot sharing, or if the player isn't in a group.
+     */
+    boolean hasSharedLoot(EntityPlayerMP player);
+
+    /**
      * Give a number of lives (if such a thing is supported) to the given player.
      * @param player    The player to grant a life to.
      * @param lives     The number of lives to grant.
