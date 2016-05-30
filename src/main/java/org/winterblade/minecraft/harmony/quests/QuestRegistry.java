@@ -84,6 +84,8 @@ public class QuestRegistry implements IQuestProvider {
      */
     @Override
     public QuestStatus getQuestStatus(String name, EntityPlayerMP player) {
+        if(player == null) return QuestStatus.INVALID;
+
         // Return the first not-invalid status...
         for(IQuestProvider provider : providers.values()) {
             QuestStatus questStatus = provider.getQuestStatus(name, player);
