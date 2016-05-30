@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.quests;
 
+import com.google.common.cache.CacheLoader;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.Loader;
 import org.winterblade.minecraft.harmony.api.questing.IQuestProvider;
@@ -98,6 +99,8 @@ public class QuestRegistry implements IQuestProvider {
             try {
                 QuestStatus questStatus = provider.getQuestStatus(name, player);
                 if(questStatus != QuestStatus.INVALID) return questStatus;
+            } catch (CacheLoader.InvalidCacheLoadException e) {
+                LogHelper.warn("Provider '{}' has no quest named '{}'; run /ch reloadQuestCache if you just added it.", provider.getName(), name);
             } catch (Exception e) {
                 LogHelper.warn("Unable to read quest '{}' from provider '{}'.", name, provider.getName());
             }
@@ -215,6 +218,9 @@ public class QuestRegistry implements IQuestProvider {
         return providers.values().stream().anyMatch(p -> {
             try {
                 return p.completeQuest(name, player);
+            } catch (CacheLoader.InvalidCacheLoadException e) {
+                LogHelper.warn("Provider '{}' has no quest named '{}'; run /ch reloadQuestCache if you just added it.", p.getName(), name);
+                return false;
             } catch (Exception e) {
                 LogHelper.warn("Unable to complete quest '{}' in provider '{}'", name, p.getName(), e);
                 return false;
@@ -234,6 +240,9 @@ public class QuestRegistry implements IQuestProvider {
         return providers.values().stream().anyMatch(p -> {
             try {
                 return p.resetQuest(name, player);
+            } catch (CacheLoader.InvalidCacheLoadException e) {
+                LogHelper.warn("Provider '{}' has no quest named '{}'; run /ch reloadQuestCache if you just added it.", p.getName(), name);
+                return false;
             } catch (Exception e) {
                 LogHelper.warn("Unable to reset quest '{}' in provider '{}'", name, p.getName(), e);
                 return false;
