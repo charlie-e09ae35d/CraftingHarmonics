@@ -29,7 +29,7 @@ public class QuestStatusMatcher extends BaseQuestStatusMatcher implements IMobDr
      */
     @Override
     public BaseMatchResult isMatch(LivingDropsEvent event, ItemStack drop) {
-        if(event.getSource() == null && data.getMode() == PlayerMatcherMode.CURRENT) return BaseMatchResult.False;
+        if(event.getSource() == null && mode == PlayerMatcherMode.CURRENT) return BaseMatchResult.False;
         return matches(event.getSource() != null ? event.getSource().getEntity() : null);
     }
 }

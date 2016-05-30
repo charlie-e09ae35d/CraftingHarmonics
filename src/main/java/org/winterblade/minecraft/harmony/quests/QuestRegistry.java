@@ -88,8 +88,12 @@ public class QuestRegistry implements IQuestProvider {
 
         // Return the first not-invalid status...
         for(IQuestProvider provider : providers.values()) {
-            QuestStatus questStatus = provider.getQuestStatus(name, player);
-            if(questStatus != QuestStatus.INVALID) return questStatus;
+            try {
+                QuestStatus questStatus = provider.getQuestStatus(name, player);
+                if(questStatus != QuestStatus.INVALID) return questStatus;
+            } catch (Exception e) {
+                LogHelper.warn("Unable to read quest '{}' from provider '{}'.", name, provider.getName());
+            }
         }
         return QuestStatus.INVALID;
     }

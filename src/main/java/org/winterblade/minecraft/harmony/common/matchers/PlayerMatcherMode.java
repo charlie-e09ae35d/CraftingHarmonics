@@ -1,8 +1,5 @@
 package org.winterblade.minecraft.harmony.common.matchers;
 
-import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
-import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
-
 import javax.annotation.Nullable;
 
 /**
@@ -16,25 +13,19 @@ public enum PlayerMatcherMode {
     ANY,
     ANYONLINE;
 
-    @ScriptObjectDeserializer(deserializes = PlayerMatcherMode.class)
-    public static class Deserializer implements IScriptObjectDeserializer {
-
-        @Override
-        public Object Deserialize(Object input) {
-            if(!String.class.isAssignableFrom(input.getClass())) return SPECIFIC;
-
-            switch (input.toString().toUpperCase()) {
-                case "ALL":
-                    return PlayerMatcherMode.ALL;
-                case "ALLONLINE":
-                    return PlayerMatcherMode.ALLONLINE;
-                case "ANY":
-                    return PlayerMatcherMode.ANY;
-                case "ANYONLINE":
-                    return PlayerMatcherMode.ANYONLINE;
-                default:
-                    return PlayerMatcherMode.SPECIFIC;
-            }
+    public static PlayerMatcherMode convert(String player) {
+        if(player == null || player.equals("")) return CURRENT;
+        switch (player.toUpperCase()) {
+            case "ALL":
+                return ALL;
+            case "ALLONLINE":
+                return ALLONLINE;
+            case "ANY":
+                return ANY;
+            case "ANYONLINE":
+                return ANYONLINE;
+            default:
+                return SPECIFIC;
         }
     }
 

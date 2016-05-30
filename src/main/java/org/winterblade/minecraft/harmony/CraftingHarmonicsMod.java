@@ -109,6 +109,9 @@ public class CraftingHarmonicsMod {
     public void serverStarted(FMLServerStartedEvent evt) {
         savedGameData = SavedGameData.get(DimensionManager.getWorld(0));
         proxy.onStarted(evt);
+
+        // Preload caches...
+        QuestRegistry.instance.resetCache();
     }
 
     /**

@@ -13,17 +13,19 @@ import org.winterblade.minecraft.harmony.quests.QuestRegistry;
  */
 public abstract class BaseQuestStatusMatcher {
     protected final QuestStatusMatchData data;
+    protected final PlayerMatcherMode mode;
 
     protected BaseQuestStatusMatcher(QuestStatusMatchData data) {
         this.data = data;
+        mode = PlayerMatcherMode.convert(data.getPlayer());
     }
 
     protected BaseMatchResult matches(Entity entity) {
         // Allows for checking drops if any/all players are on the quest, even if the current target isn't a player...
-        if(data.getMode() == PlayerMatcherMode.CURRENT
+        if(mode == PlayerMatcherMode.CURRENT
                 && (entity == null || EntityPlayerMP.class.isAssignableFrom(entity.getClass()))) return BaseMatchResult.False;
 
-        switch (data.getMode()) {
+        switch (mode) {
             case CURRENT:
                 return matches(QuestRegistry.instance.getQuestStatus(data.getName(), (EntityPlayerMP) entity));
             case SPECIFIC:
@@ -50,10 +52,9 @@ public abstract class BaseQuestStatusMatcher {
         return status == data.getStatus() ? BaseMatchResult.True : BaseMatchResult.False;
     }
 
-    protected static class QuestStatusMatchData {
+    public static class QuestStatusMatchData {
         private String name;
         private QuestStatus status;
-        private PlayerMatcherMode mode;
         private String player;
 
         public String getName() {
@@ -62,10 +63,6 @@ public abstract class BaseQuestStatusMatcher {
 
         public QuestStatus getStatus() {
             return status;
-        }
-
-        public PlayerMatcherMode getMode() {
-            return mode.checkAgainstPlayer(getPlayer());
         }
 
         public String getPlayer() {
