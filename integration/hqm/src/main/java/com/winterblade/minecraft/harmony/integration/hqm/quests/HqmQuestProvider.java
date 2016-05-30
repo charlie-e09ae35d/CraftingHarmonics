@@ -10,6 +10,7 @@ import hardcorequesting.quests.data.QuestDataTask;
 import hardcorequesting.team.RewardSetting;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.winterblade.minecraft.harmony.api.questing.IQuestProvider;
+import org.winterblade.minecraft.harmony.api.questing.QuestProvider;
 import org.winterblade.minecraft.harmony.api.questing.QuestStatus;
 
 import javax.annotation.Nullable;
@@ -20,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by Matt on 5/29/2016.
  */
+@QuestProvider
 public class HqmQuestProvider implements IQuestProvider {
     private static LoadingCache<String, UUID> questCache = CacheBuilder.newBuilder().build(
             // If we haven't loaded it in the pre-load, it doesn't exist.
@@ -39,6 +41,16 @@ public class HqmQuestProvider implements IQuestProvider {
     @Override
     public String getName() {
         return "hqm";
+    }
+
+    /**
+     * Get a list of mod dependencies for this provider
+     *
+     * @return A string array of mod dependencies.
+     */
+    @Override
+    public String[] getDependencyList() {
+        return new String[] {"HardcoreQuesting"};
     }
 
     /**

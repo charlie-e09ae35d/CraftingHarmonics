@@ -13,6 +13,12 @@ public interface IQuestProvider {
     String getName();
 
     /**
+     * Get a list of mod dependencies for this provider
+     * @return  A string array of mod dependencies.
+     */
+    String[] getDependencyList();
+
+    /**
      * Gets if hardcore mode is enabled for the given provider.
      * @return  True if it is, false otherwise.  Should return false if the underlying provider doesn't support hardcore.
      */

@@ -46,6 +46,16 @@ public class BetterQuestingQuestProvider implements IQuestProvider {
     }
 
     /**
+     * Get a list of mod dependencies for this provider
+     *
+     * @return A string array of mod dependencies.
+     */
+    @Override
+    public String[] getDependencyList() {
+        return new String[] {"betterquesting"};
+    }
+
+    /**
      * Gets if hardcore mode is enabled for the given provider.
      *
      * @return True if it is, false otherwise.  Should return false if the underlying provider doesn't support hardcore.
