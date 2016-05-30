@@ -5,6 +5,7 @@ import betterquesting.party.PartyInstance;
 import betterquesting.party.PartyManager;
 import betterquesting.quests.QuestDatabase;
 import betterquesting.quests.QuestInstance;
+import betterquesting.quests.tasks.TaskBase;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -165,6 +166,16 @@ public class BetterQuestingQuestProvider implements IQuestProvider {
         QuestInstance questInstance = getQuestByName(name);
         if(questInstance == null) return false;
 
+        List<UUID> playerIds = getAllInvolvedPlayerIds(player);
+
+        // Complete all the tasks!
+        for(TaskBase task : questInstance.tasks) {
+            for(UUID id : playerIds) {
+                task.setCompletion(id, true);
+            }
+        }
+
+        // And actually complete the quest as well...
         questInstance.setComplete(player.getPersistentID(), player.getEntityWorld().getTotalWorldTime());
         return true;
     }
@@ -182,16 +193,14 @@ public class BetterQuestingQuestProvider implements IQuestProvider {
         if(questInstance == null) return false;
 
         // Check if we're in a party...
-        PartyInstance party = PartyManager.GetParty(player.getPersistentID());
-
-        // Figure out what we need to work on...
-        List<UUID> uuids = party != null
-                ? party.GetMembers().stream().map(p -> p.userID).collect(Collectors.toList())
-                : Collections.singletonList(player.getPersistentID());
+        List<UUID> uuids = getAllInvolvedPlayerIds(player);
 
         for(UUID id : uuids) {
             questInstance.ResetProgress(id);
+            questInstance.RemoveUserEntry(id);
         }
+
+        questInstance.UpdateClients();
 
         return true;
     }
@@ -233,4 +242,19 @@ public class BetterQuestingQuestProvider implements IQuestProvider {
 
         return QuestDatabase.getQuestByID(questId);
     }
+
+    /**
+     * Gets a list of all involved player IDs for the given quest
+     * @param player    The player to get
+     * @return          A list of player IDs; either from the party or just the player.
+     */
+    private List<UUID> getAllInvolvedPlayerIds(EntityPlayerMP player) {
+        PartyInstance party = PartyManager.GetParty(player.getPersistentID());
+
+        // Figure out what we need to work on...
+        return party != null
+                ? party.GetMembers().stream().map(p -> p.userID).collect(Collectors.toList())
+                : Collections.singletonList(player.getPersistentID());
+    }
+
 }
