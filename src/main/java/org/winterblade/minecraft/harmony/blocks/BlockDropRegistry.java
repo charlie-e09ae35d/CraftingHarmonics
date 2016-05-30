@@ -1,5 +1,8 @@
 package org.winterblade.minecraft.harmony.blocks;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
@@ -14,6 +17,8 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /**
  * Created by Matt on 5/12/2016.
@@ -22,23 +27,47 @@ public class BlockDropRegistry {
     private static final Map<UUID, DropHandler> handlers = new HashMap<>();
     private static final Set<UUID> activeHandlers = new LinkedHashSet<>();
     private static final Set<BlockPos> explodedBlocks = new HashSet<>();
+    private static final LoadingCache<IBlockState, Set<UUID>> cache = CacheBuilder.newBuilder().build(new CacheLoader<IBlockState, Set<UUID>>() {
+        @Override
+        public Set<UUID> load(IBlockState key) throws Exception {
+            if(CraftingHarmonicsMod.getConfigManager().debugBlockDropEvents()) {
+                LogHelper.info("Generating block drop handler cache for '{}' ('{}').",
+                        Block.REGISTRY.getNameForObject(key.getBlock()).toString(),
+                        key.toString());
+            }
+
+            return activeHandlers.stream().filter(id -> {
+                DropHandler handler = handlers.get(id);
+                return handler != null
+                        && handler.isMatch(Block.REGISTRY.getNameForObject(key.getBlock()).toString(), key);
+            }).collect(Collectors.toSet());
+        }
+    });
 
     public static void handleDrops(BlockEvent.HarvestDropsEvent evt) {
         IBlockState state = evt.getState();
-        Block block = state.getBlock();
-
-        String blockName = Block.REGISTRY.getNameForObject(block).toString();
 
         if(CraftingHarmonicsMod.getConfigManager().debugBlockDropEvents()) {
+            Block block = state.getBlock();
+            String blockName = Block.REGISTRY.getNameForObject(block).toString();
             LogHelper.info("Processing drops for '" + blockName + "' ('" + state.toString() + "').");
         }
 
-        // TODO: Cache these instead of running through every one
-        for(UUID id : activeHandlers) {
+        // Get our matching IDs:
+        Set<UUID> ids;
+        try {
+            // This will run through the cache if we haven't run this yet...
+            ids = cache.get(state);
+        } catch (ExecutionException e) {
+            LogHelper.warn("Unable to process drops for this block.", e);
+            return;
+        }
+
+        for(UUID id : ids) {
             DropHandler handler = handlers.get(id);
 
-            // If we don't have a handler, or the handler doesn't match:
-            if(handler == null || !handler.isMatch(blockName, state)) continue;
+            // If we don't have a handler:
+            if(handler == null) continue;
 
             // Check if we're replacing drops, and deal with it:
             if(handler.isReplace() || 0 < handler.getRemovals().length) {
@@ -138,10 +167,12 @@ public class BlockDropRegistry {
 
     public static void apply(UUID ticket) {
         activeHandlers.add(ticket);
+        cache.invalidateAll();
     }
 
     public static void remove(UUID ticket) {
         activeHandlers.remove(ticket);
+        cache.invalidateAll();
     }
 
     /**
