@@ -196,6 +196,13 @@ curseforge {
         releaseType = project.hasProperty('releaseType') ? project.releaseType : 'alpha'
         relations {
             requiredLibrary 'nashorn-scripting-library'
+
+            // Mods we have integration with:
+            optionalLibrary 'abyssalcraft'
+            optionalLibrary 'blood-magic'
+            optionalLibrary 'just-enough-items-jei'
+            optionalLibrary 'techreborn'
+            optionalLibrary 'tinkers-construct'
         }
     }
 }
