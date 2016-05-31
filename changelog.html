@@ -25,6 +25,11 @@
             Improved how mob and block drops were calculated to ease some of the burden during processing.
         </li>
         <li>
+            Teleport callbacks will actually run some safety checks on the target area prior to teleporting things, by
+            default.  Added the optional parameters 'unsafeTeleport' (defaults to false) and 'safeRadius' (defaults to
+            5 blocks) to control this functionality.
+        </li>
+        <li>
             Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/92">issue #92</a> where
             the 'teleportSpawn' callback was a bit off in doing cross-dimensional teleports.  By a lot.
         </li>
