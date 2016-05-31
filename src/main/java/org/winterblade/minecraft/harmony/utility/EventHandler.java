@@ -19,6 +19,7 @@ import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
+import org.winterblade.minecraft.harmony.tileentities.TileEntityTickRegistry;
 
 /**
  * Created by Matt on 4/13/2016.
@@ -68,6 +69,7 @@ public class EventHandler {
 
         try {
             MobTickRegistry.handleTick(evt);
+            TileEntityTickRegistry.handleTick(evt);
             StopTimeCommand.checkTimeStops(evt.world);
 
             // We should (hopefully) be done dealing with the explosion by this point...
