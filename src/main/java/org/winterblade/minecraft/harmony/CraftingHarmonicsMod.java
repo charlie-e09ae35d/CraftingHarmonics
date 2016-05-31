@@ -26,6 +26,8 @@ import org.winterblade.minecraft.harmony.proxies.CommonProxy;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.scripting.ScriptInteropRegistry;
+import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
+import org.winterblade.minecraft.harmony.tileentities.TileEntityTickRegistry;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
 import org.winterblade.minecraft.harmony.utility.SavedGameData;
@@ -68,6 +70,7 @@ public class CraftingHarmonicsMod {
         ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
         ScriptInteropRegistry.registerInterops(AnnotationUtil.getInteropClasses(event.getAsmData()));
         BaseEntityCallback.registerCallbacks(AnnotationUtil.getEntityCallbacks(event.getAsmData()));
+        BaseTileEntityCallback.registerCallbacks(AnnotationUtil.getTileEntityCallbacks(event.getAsmData()));
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");

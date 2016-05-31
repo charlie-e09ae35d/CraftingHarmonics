@@ -4,15 +4,19 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.common.Loader;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
+import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityCallback;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcher;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcherData;
+import org.winterblade.minecraft.harmony.api.tileentities.TileEntityCallback;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
+import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
@@ -22,23 +26,90 @@ import java.util.*;
  * Created by Matt on 5/29/2016.
  */
 public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEntityMatcherData, ITileEntityMatcher> implements ITileEntityCallback {
-    private static final Map<String, Class<ITileEntityCallback>> callbackMap = new HashMap<>();
+    private static final Map<String, Class<BaseTileEntityCallback>> callbackMap = new HashMap<>();
     private final List<ITileEntityCallback> callbacks = new ArrayList<>();
 
-    @Override
-    public void apply(TileEntity target) {
+    /**
+     * Add the classes that we should register for entity callbacks.
+     * @param callbackClasses    A map of the callback names to their respective classes.
+     */
+    public static void registerCallbacks(Map<String, Class<BaseTileEntityCallback>> callbackClasses) {
+        for(Map.Entry<String, Class<BaseTileEntityCallback>> entry : callbackClasses.entrySet()) {
+            TileEntityCallback anno = entry.getValue().getAnnotation(TileEntityCallback.class);
 
+            if(!anno.dependsOn().equals("") && !Loader.isModLoaded(anno.dependsOn())) {
+                LogHelper.warn("TileEntity callback '{}' depends on '{}', which is not loaded.", anno.name(), anno.dependsOn());
+                continue;
+            }
+
+            LogHelper.info("Registering TileEntity callback '{}'.", anno.name());
+            callbackMap.put(anno.name().toLowerCase(), entry.getValue());
+        }
     }
 
+    @Override
+    public final void apply(TileEntity target) {
+        LogHelper.info("Applying event for {}", target.getBlockType().getLocalizedName());
+
+        // Figure out if we match
+        Data data = new Data();
+        BaseMatchResult result = matches(target, data);
+
+        // If we didn't match, check for alt matches...
+        if(!result.isMatch()) {
+            if (getAltMatch() == null) return;
+
+            // Run them if so:
+            ((BaseTileEntityCallback)getAltMatch()).apply(target);
+            return;
+        }
+
+        // Run our matcher callbacks (if they exist...)
+        result.runIfMatch();
+
+        // Finally, actually do our thing...
+        applyTo(target, data);
+    }
+
+    /**
+     * Apply an action to the target.
+     * @param target    The target to apply to.
+     * @param data      Any event data to deal with.
+     */
+    protected void applyTo(TileEntity target, Data data) {
+        // Run our callbacks
+        for(ITileEntityCallback callback : callbacks) {
+            callback.apply(target);
+        }
+    }
+
+    /**
+     * Allows the instance to do any last minute updating it needs to, if necessary
+     * @param mirror    The mirror to update from
+     */
+    protected void finishDeserialization(ScriptObjectMirror mirror) throws RuntimeException {
+        // Does nothing.
+    }
+
+    /**
+     * Add in our callbacks
+     * @param callback    The callback to add.
+     */
     private void addCallback(ITileEntityCallback callback) {
         if(callback != null) callbacks.add(callback);
     }
 
+    /**
+     * Container for holding our callback data.
+     */
+    private static class Data implements ITileEntityMatcherData {
+
+    }
 
     @ScriptObjectDeserializer(deserializes = ITileEntityCallback.class)
     public static class Deserializer implements IScriptObjectDeserializer {
         @Override
-        public Object Deserialize(Object input) {
+        public final Object Deserialize(Object input) {
             // Method callback
             // TODO: This.
 //            if(ScriptFunction.class.isAssignableFrom(input.getClass())) {
@@ -74,7 +145,7 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
                     return null;
                 }
 
-                return deserializeCallback(mirror);
+                return deserializeCallback(mirror.get("type").toString(), mirror);
             }
 
             BaseTileEntityCallback container = new BaseTileEntityCallback();
@@ -90,6 +161,11 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
             return container;
         }
 
+        /**
+         * Register our matchers and 'otherwise' object (if any)
+         * @param mirror       The mirror to add things from
+         * @param container    The container to add them to.
+         */
         private void registerMatchersAndOtherwise(ScriptObjectMirror mirror, BaseTileEntityCallback container) {
             // Get our registry data...
             List<ITileEntityMatcher> matchers = getMatchers(mirror);
@@ -110,10 +186,15 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
             try {
                 container.setAltMatch((BaseTileEntityCallback) Deserialize(altMatchData));
             } catch (Exception ex) {
-                LogHelper.warn("Unable to deserialize 'otherwise' for this object.");
+                LogHelper.warn("Unable to deserialize 'otherwise' for this TileEntity callback.");
             }
         }
 
+        /**
+         * Get the matchers on the mirror
+         * @param mirror    The mirror to check
+         * @return          A list of matchers
+         */
         private List<ITileEntityMatcher> getMatchers(ScriptObjectMirror mirror) {
             ComponentRegistry registry = ComponentRegistry.compileRegistryFor(new Class[]{
                     ITileEntityMatcher.class}, mirror);
@@ -122,15 +203,53 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
             return registry.getComponentsOf(ITileEntityMatcher.class);
         }
 
-        private ITileEntityCallback deserializeCallback(ScriptObjectMirror mirror) {
-            return null;
+        /**
+         * Deserialize our callback classes.
+         *
+         * @param type      The type to deserialize
+         * @param mirror    The mirror to check
+         * @return          Our deserialized callback
+         */
+        private BaseTileEntityCallback deserializeCallback(String type, ScriptObjectMirror mirror) {
+            BaseTileEntityCallback output = newTypedInstance(type);
+            if(output == null) return null;
+
+            NashornConfigProcessor.getInstance().nashorn.parseScriptObject(mirror, output);
+            output.finishDeserialization(mirror);
+
+            registerMatchersAndOtherwise(mirror, output);
+
+            return output;
+        }
+
+        /**
+         * Create an instance of our type
+         * @param type    The type to create
+         * @return        The new instance, ready to be populated.
+         */
+        private BaseTileEntityCallback newTypedInstance(String type) {
+            type = type.toLowerCase();
+
+            if(!callbackMap.containsKey(type)) {
+                LogHelper.error("Error creating TileEntity callback of type '{}': The type is not registered.", type);
+                return null;
+            }
+
+            try {
+                return callbackMap.get(type).newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                LogHelper.error("Error creating TileEntity callback of type '{}'.", type, e);
+                return null;
+            }
         }
     }
 
     public static class Handler extends BaseMatchHandler<BaseTileEntityCallback,TileEntity> {
         @Override
         public void apply(Random rand, TileEntity entity) {
-            LogHelper.info("Applying event for {}", entity.getBlockType().getLocalizedName());
+            for(ITileEntityCallback callback : matchers) {
+                callback.apply(entity);
+            }
         }
     }
 }

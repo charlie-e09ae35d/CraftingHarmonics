@@ -6,13 +6,16 @@ import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.ScriptInterop;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.tileentities.TileEntityCallback;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
+import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Borrowed mostly from mezz's JEI class of the same name; modified to load the name of the operation
@@ -35,6 +38,10 @@ public class AnnotationUtil {
 
     public static Map<String, Class<BaseEntityCallback>> getEntityCallbacks(ASMDataTable asmDataTable) {
         return getClassMap(asmDataTable, EntityCallback.class, BaseEntityCallback.class, "name");
+    }
+
+    public static Map<String, Class<BaseTileEntityCallback>> getTileEntityCallbacks(ASMDataTable asmDataTable) {
+        return getClassMap(asmDataTable, TileEntityCallback.class, BaseTileEntityCallback.class, "name");
     }
 
     @SuppressWarnings("unchecked")
