@@ -14,6 +14,7 @@ import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -22,7 +23,9 @@ import java.util.stream.Collectors;
 public class MobDropRegistry {
     private static final Map<UUID, DropHandler> handlers = new HashMap<>();
     private static final Set<UUID> activeHandlers = new LinkedHashSet<>();
-    private static final LoadingCache<DropLookupKey, Set<UUID>> cache = CacheBuilder.newBuilder().build(new CacheLoader<DropLookupKey, Set<UUID>>() {
+    private static final LoadingCache<DropLookupKey, Set<UUID>> cache = CacheBuilder.newBuilder()
+            .expireAfterAccess(15, TimeUnit.MINUTES)
+            .build(new CacheLoader<DropLookupKey, Set<UUID>>() {
         @Override
         public Set<UUID> load(DropLookupKey key) throws Exception {
             if(CraftingHarmonicsMod.getConfigManager().debugMobDropEvents()) {

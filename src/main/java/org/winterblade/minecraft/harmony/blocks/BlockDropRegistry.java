@@ -18,6 +18,7 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -27,7 +28,9 @@ public class BlockDropRegistry {
     private static final Map<UUID, DropHandler> handlers = new HashMap<>();
     private static final Set<UUID> activeHandlers = new LinkedHashSet<>();
     private static final Set<BlockPos> explodedBlocks = new HashSet<>();
-    private static final LoadingCache<IBlockState, Set<UUID>> cache = CacheBuilder.newBuilder().build(new CacheLoader<IBlockState, Set<UUID>>() {
+    private static final LoadingCache<IBlockState, Set<UUID>> cache = CacheBuilder.newBuilder()
+            .expireAfterAccess(15, TimeUnit.MINUTES)
+            .build(new CacheLoader<IBlockState, Set<UUID>>() {
         @Override
         public Set<UUID> load(IBlockState key) throws Exception {
             if(CraftingHarmonicsMod.getConfigManager().debugBlockDropEvents()) {
