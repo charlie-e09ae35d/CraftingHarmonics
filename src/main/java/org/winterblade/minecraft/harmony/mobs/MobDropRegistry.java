@@ -1,16 +1,20 @@
 package org.winterblade.minecraft.harmony.mobs;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.common.drops.BaseDropHandler;
-import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
-import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /**
  * Created by Matt on 5/4/2016.
@@ -18,6 +22,21 @@ import java.util.*;
 public class MobDropRegistry {
     private static final Map<UUID, DropHandler> handlers = new HashMap<>();
     private static final Set<UUID> activeHandlers = new LinkedHashSet<>();
+    private static final LoadingCache<DropLookupKey, Set<UUID>> cache = CacheBuilder.newBuilder().build(new CacheLoader<DropLookupKey, Set<UUID>>() {
+        @Override
+        public Set<UUID> load(DropLookupKey key) throws Exception {
+            if(CraftingHarmonicsMod.getConfigManager().debugMobDropEvents()) {
+                LogHelper.info("Generating mob drop handler cache for '{}'.", key);
+            }
+
+            return activeHandlers.stream().filter(id -> {
+                DropHandler handler = handlers.get(id);
+                return handler != null
+                        && !(!handler.includePlayerDrops && key.className.equals("net.minecraft.entity.player.EntityPlayerMP"))
+                        && (handler.isMatch(key.getName()) || handler.isMatch(key.getClassName()));
+            }).collect(Collectors.toSet());
+        }
+    });
 
     /**
      * Handles a mob drop event
@@ -31,16 +50,22 @@ public class MobDropRegistry {
             LogHelper.info("Processing drops for '" + entityName + "' ('" + entityClassName + "') from damageType '"
                     + evt.getSource().getDamageType() + "'.");
         }
+        // Get our matching IDs:
+        Set<UUID> ids;
 
-        for(UUID id : activeHandlers) {
+        try {
+            // This will run through the cache if we haven't run this yet...
+            ids = cache.get(new DropLookupKey(entityName, entityClassName));
+        } catch (ExecutionException e) {
+            LogHelper.warn("Unable to process drops for mob '{}'.", entityName, e);
+            return;
+        }
+
+        for(UUID id : ids) {
             DropHandler handler = handlers.get(id);
 
-            // If we don't have a handler, or the handler doesn't match:
-            if(handler == null ||
-                    (!handler.isMatch(entityName)) && !handler.isMatch(entityClassName)) continue;
-
-            // If this is a player and we shouldn't be handling player drops...
-            if(!handler.includePlayerDrops() && evt.getEntity() instanceof EntityPlayer) continue;
+            // If we don't have a handler:
+            if(handler == null) continue;
 
             // Check if we're replacing drops, and deal with it:
             if(handler.isReplace() || 0 < handler.getRemovals().length) {
@@ -143,10 +168,12 @@ public class MobDropRegistry {
 
     public static void apply(UUID ticket) {
         activeHandlers.add(ticket);
+        cache.invalidateAll();
     }
 
     public static void remove(UUID ticket) {
         activeHandlers.remove(ticket);
+        cache.invalidateAll();
     }
 
     private static class DropHandler extends BaseDropHandler<MobDrop> {
@@ -177,6 +204,47 @@ public class MobDropRegistry {
 
         public boolean includePlayerDrops() {
             return includePlayerDrops;
+        }
+    }
+
+    private static class DropLookupKey {
+        private final String name;
+        private final String className;
+
+        private DropLookupKey(String name, String className) {
+            this.name = name;
+            this.className = className;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getClassName() {
+            return className;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            DropLookupKey that = (DropLookupKey) o;
+
+            return getName().equals(that.getName()) && getClassName().equals(that.getClassName());
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = getName().hashCode();
+            result = 31 * result + getClassName().hashCode();
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return name + "/" + className;
         }
     }
 }
