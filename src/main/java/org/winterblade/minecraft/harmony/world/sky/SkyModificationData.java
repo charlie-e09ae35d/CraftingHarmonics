@@ -82,22 +82,25 @@ public class SkyModificationData {
      * @return     The color at the point.
      */
     private Vec3d getDataAtPoint(int y) {
-        SkyColorMapData min = null, max = null;
+        SkyColorMapData lower = null, upper = null;
 
-        // Find our min and max:
+        // Find our lower and upper:
         Iterator<SkyColorMapData> iterator = skyColor.iterator();
         for (; iterator.hasNext(); ) {
             SkyColorMapData data = iterator.next();
-            if (y < data.getMinY()) break;
-            min = data;
+
+            if (y < data.getMinY()) {
+                upper = data;
+                break;
+            }
+
+            lower = data;
         }
 
-        if(iterator.hasNext()) max = iterator.next();
-
         // Well this went wrong...
-        if(min == null) return null;
+        if(lower == null) return upper != null ? upper.getAsVector() : null;
 
-        return max != null ? max.blendWith(min, y - min.getMinY()) : min.getAsVector();
+        return upper != null ? upper.blendWith(lower, y - lower.getMinY()) : lower.getAsVector();
     }
 
 }

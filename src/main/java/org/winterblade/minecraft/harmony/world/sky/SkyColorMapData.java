@@ -10,8 +10,7 @@ public class SkyColorMapData implements Comparable<SkyColorMapData> {
     private double r;
     private double g;
     private double b;
-    private boolean blend;
-    private String mode = "immediate";
+    private boolean quick;
     private double rPerTick, gPerTick, bPerTick;
 
     public int getMinY() {
@@ -30,10 +29,6 @@ public class SkyColorMapData implements Comparable<SkyColorMapData> {
         return b;
     }
 
-    public String getMode() {
-        return mode;
-    }
-
     @Override
     public int compareTo(SkyColorMapData o) {
         return this.minY - o.minY;
@@ -44,10 +39,14 @@ public class SkyColorMapData implements Comparable<SkyColorMapData> {
     }
 
     public Vec3d blendWith(SkyColorMapData other, int offset) {
+        // If we're doing a quick render:
+        if(quick) return new Vec3d(r,g,b);
+
+        // Otherwise, do all this mess...
         int d = Math.abs(minY-other.getMinY());
-        double r = (Math.abs(getR()-other.getR())/d)*offset;
-        double g = (Math.abs(getG()-other.getG())/d)*offset;
-        double b = (Math.abs(getB()-other.getB())/d)*offset;
+        double r = (((getR()-other.getR())/d)*offset)+other.getR();
+        double g = (((getG()-other.getG())/d)*offset)+other.getG();
+        double b = (((getB()-other.getB())/d)*offset)+other.getB();
         return new Vec3d(r,g,b);
     }
 
@@ -63,14 +62,20 @@ public class SkyColorMapData implements Comparable<SkyColorMapData> {
         output.minY = minY;
 
         // Figure out our transitions...
-        output.rPerTick = (r - dataAtPoint.xCoord)/ticks;
-        output.gPerTick = (g - dataAtPoint.yCoord)/ticks;
-        output.bPerTick = (b - dataAtPoint.zCoord)/ticks;
+        if(dataAtPoint != null) {
+            output.rPerTick = (r - dataAtPoint.xCoord) / ticks;
+            output.gPerTick = (g - dataAtPoint.yCoord) / ticks;
+            output.bPerTick = (b - dataAtPoint.zCoord) / ticks;
 
-        // Deal with our existing things...
-        output.r = dataAtPoint.xCoord;
-        output.g = dataAtPoint.yCoord;
-        output.b = dataAtPoint.zCoord;
+            // Deal with our existing things...
+            output.r = dataAtPoint.xCoord;
+            output.g = dataAtPoint.yCoord;
+            output.b = dataAtPoint.zCoord;
+        } else {
+            output.r = r;
+            output.g = g;
+            output.b = b;
+        }
 
         return output;
     }
