@@ -2,42 +2,66 @@ package org.winterblade.minecraft.harmony.world.sky;
 
 import net.minecraft.util.math.Vec3d;
 
+import java.util.*;
+
 /**
  * Created by Matt on 5/31/2016.
  */
 public class SkyModificationData {
     public static final SkyModificationData Default = new SkyModificationData();
 
+    // General data
+    private final int dim;
+
     // Sky colors:
-    private Vec3d skyColor;
+    private boolean hasSkyColorMod = false;
+    private final PriorityQueue<SkyColorMapData> skyColor = new PriorityQueue<>();
     private Vec3d lastProviderColor;
-    private double skyRPerTick, skyGPerTick, skyBPerTick;
     private int skyUpdateTicksRemaining;
+
+    private SkyModificationData() {dim = Integer.MIN_VALUE;}
+
+    public SkyModificationData(int dim) {
+        this.dim = dim;
+    }
 
     /**
      * Updates or replaces the sky color.
+     *
+     * @param y
      * @param providerColor    The value coming in from the provider
      * @return                 The updated value, if any, otherwise the provider color.
      */
-    public Vec3d updateSkyColor(Vec3d providerColor) {
+    public Vec3d updateSkyColor(int y, Vec3d providerColor) {
         lastProviderColor = providerColor;
-        return skyColor != null ? skyColor : providerColor;
+
+        // Quick exit
+        if(!hasSkyColorMod) return providerColor;
+
+        Vec3d data = getDataAtPoint(y);
+        return data != null ? data : providerColor;
     }
 
-    public void transitionSkyColorTo(SkyColorMapData[] newColor, int ticks) {
-        // If we have no target, go ahead and use the last provider color:
-        if(skyColor == null) skyColor = lastProviderColor;
+    public void transitionSkyColorTo(SkyColorMapData[] newColors, int ticks) {
+        hasSkyColorMod = true;
 
-        // If we're not transitioning gently:
-        if(ticks <= 0 || skyColor == null) {
-            skyColor = new Vec3d(newColor[0].getR(), newColor[0].getG(), newColor[0].getB());
+        // This part is really simple...
+        if(ticks <= 0 || lastProviderColor == null || skyColor.size() <= 0) {
+            skyColor.clear();
+            Collections.addAll(skyColor, newColors);
             return;
         }
 
-        // Linear transitions FTW!
-        skyRPerTick = (newColor[0].getR() - skyColor.xCoord)/ticks;
-        skyGPerTick = (newColor[0].getG() - skyColor.yCoord)/ticks;
-        skyBPerTick = (newColor[0].getB() - skyColor.zCoord)/ticks;
+        // This part... not so much...
+        Set<SkyColorMapData> newData = new HashSet<>();
+
+        for(SkyColorMapData data : newColors) {
+            newData.add(data.transitionFrom(getDataAtPoint(data.getMinY()), ticks));
+        }
+
+        skyColor.clear();
+        skyColor.addAll(newData);
+
         skyUpdateTicksRemaining = ticks;
     }
 
@@ -48,7 +72,32 @@ public class SkyModificationData {
         // Transition sky color if we have to...
         if(0 < skyUpdateTicksRemaining) {
             skyUpdateTicksRemaining--;
-            skyColor = skyColor.addVector(skyRPerTick, skyGPerTick, skyBPerTick);
+            skyColor.forEach(SkyColorMapData::update);
         }
     }
+
+    /**
+     * Determines the color at the given Y level
+     * @param y    The Y level
+     * @return     The color at the point.
+     */
+    private Vec3d getDataAtPoint(int y) {
+        SkyColorMapData min = null, max = null;
+
+        // Find our min and max:
+        Iterator<SkyColorMapData> iterator = skyColor.iterator();
+        for (; iterator.hasNext(); ) {
+            SkyColorMapData data = iterator.next();
+            if (y < data.getMinY()) break;
+            min = data;
+        }
+
+        if(iterator.hasNext()) max = iterator.next();
+
+        // Well this went wrong...
+        if(min == null) return null;
+
+        return max != null ? max.blendWith(min, y - min.getMinY()) : min.getAsVector();
+    }
+
 }

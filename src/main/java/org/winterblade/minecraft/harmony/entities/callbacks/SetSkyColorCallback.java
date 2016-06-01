@@ -32,7 +32,7 @@ public class SetSkyColorCallback extends BaseEntityAndDimensionCallback {
     @Override
     protected void applyWithTargetDimension(Entity target, int targetDim) {
         // TODO: Make this work on the server too. :)
-        ClientSkyModifications.transition(targetDim, transitionTime, colormap);
+        ClientSkyModifications.transitionSkyColor(targetDim, transitionTime, colormap);
         runCallbacks(onComplete, target);
     }
 

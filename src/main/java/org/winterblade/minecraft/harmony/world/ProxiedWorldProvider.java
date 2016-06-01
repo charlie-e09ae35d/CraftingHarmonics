@@ -370,7 +370,7 @@ public class ProxiedWorldProvider extends WorldProvider {
     @Override
     @SideOnly(Side.CLIENT)
     public Vec3d getSkyColor(Entity cameraEntity, float partialTicks) {
-        return ClientSkyModifications.getSkyColorFor(wrapped.getSkyColor(cameraEntity, partialTicks), wrapped.getDimension());
+        return ClientSkyModifications.getSkyColorFor(cameraEntity, wrapped.getSkyColor(cameraEntity, partialTicks), wrapped.getDimension());
     }
 
     @Override

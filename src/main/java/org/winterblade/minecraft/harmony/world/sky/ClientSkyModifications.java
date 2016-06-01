@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.world.sky;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.HashMap;
@@ -19,8 +20,18 @@ public class ClientSkyModifications {
      * @param dimension    The dimension to get it for
      * @return             The updated sky color
      */
-    public static Vec3d getSkyColorFor(Vec3d skyColor, int dimension) {
-        return getModsFor(dimension).updateSkyColor(skyColor);
+    public static Vec3d getSkyColorFor(Entity entity, Vec3d skyColor, int dimension) {
+        return getModsFor(dimension).updateSkyColor(entity.getPosition().getY(), skyColor);
+    }
+
+    /**
+     * Transition the target dimension to the given colormap
+     * @param dim          The dimension to transition
+     * @param time         The time to transition
+     * @param colormap     The color map for the dimension
+     */
+    public static void transitionSkyColor(int dim, int time, SkyColorMapData[] colormap) {
+        getOrCreateModFor(dim).transitionSkyColorTo(colormap, time);
     }
 
     /**
@@ -50,18 +61,8 @@ public class ClientSkyModifications {
         if(data != null) return data;
 
         // Create it:
-        data = new SkyModificationData();
+        data = new SkyModificationData(dimension);
         dimensionMods.put(dimension, data);
         return data;
-    }
-
-    /**
-     * Transition the target dimension to the given colormap
-     * @param dim          The dimension to transition
-     * @param time         The time to transition
-     * @param colormap     The color map for the dimension
-     */
-    public static void transition(int dim, int time, SkyColorMapData[] colormap) {
-        getOrCreateModFor(dim).transitionSkyColorTo(colormap, time);
     }
 }
