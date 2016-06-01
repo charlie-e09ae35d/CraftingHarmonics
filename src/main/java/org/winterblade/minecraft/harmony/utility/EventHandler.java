@@ -21,6 +21,7 @@ import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.world.ProxiedWorldProvider;
+import org.winterblade.minecraft.harmony.world.sky.ClientSkyModifications;
 
 /**
  * Created by Matt on 4/13/2016.
@@ -76,6 +77,17 @@ public class EventHandler {
             BlockDropRegistry.clearExplodedList();
         } catch(Exception ex) {
             LogHelper.error("Error handling world tick; please report this along with your config file.", ex);
+        }
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent evt) {
+       if(evt.phase != TickEvent.Phase.END) return;
+
+        try {
+            ClientSkyModifications.update();
+        } catch (Exception ex) {
+            LogHelper.error("Error handling client tick; please report this along with your config file.", ex);
         }
     }
 

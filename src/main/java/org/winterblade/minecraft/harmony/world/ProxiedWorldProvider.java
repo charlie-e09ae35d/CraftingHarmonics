@@ -17,6 +17,7 @@ import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.winterblade.minecraft.harmony.world.sky.ClientSkyModifications;
 
 import javax.annotation.Nullable;
 
@@ -116,13 +117,13 @@ public class ProxiedWorldProvider extends WorldProvider {
     /**
      * Return Vec3D with biome specific fog color
      *
-     * @param p_76562_1_
-     * @param p_76562_2_
+     * @param x
+     * @param z
      */
     @Override
     @SideOnly(Side.CLIENT)
-    public Vec3d getFogColor(float p_76562_1_, float p_76562_2_) {
-        return wrapped.getFogColor(p_76562_1_, p_76562_2_);
+    public Vec3d getFogColor(float x, float z) {
+        return wrapped.getFogColor(x, z);
     }
 
     /**
@@ -178,7 +179,7 @@ public class ProxiedWorldProvider extends WorldProvider {
     @Override
     @SideOnly(Side.CLIENT)
     public boolean doesXZShowFog(int x, int z) {
-        return true; //wrapped.doesXZShowFog(x, z);
+        return wrapped.doesXZShowFog(x, z);
     }
 
     @Override
@@ -369,8 +370,7 @@ public class ProxiedWorldProvider extends WorldProvider {
     @Override
     @SideOnly(Side.CLIENT)
     public Vec3d getSkyColor(Entity cameraEntity, float partialTicks) {
-        Vec3d skyColor = wrapped.getSkyColor(cameraEntity, partialTicks);
-        return skyColor.addVector(1,0,0);
+        return ClientSkyModifications.getSkyColorFor(wrapped.getSkyColor(cameraEntity, partialTicks), wrapped.getDimension());
     }
 
     @Override
