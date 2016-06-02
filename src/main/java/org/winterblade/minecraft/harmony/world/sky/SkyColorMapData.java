@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.world.sky;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -78,5 +79,34 @@ public class SkyColorMapData implements Comparable<SkyColorMapData> {
         }
 
         return output;
+    }
+
+    /**
+     * Deserialize a {@link SkyColorMapData} from the {@link ByteBuf}
+     * @param buf    The buffer to read from
+     * @return       The parsed map data
+     */
+    public static SkyColorMapData fromBytes(ByteBuf buf) {
+        SkyColorMapData output = new SkyColorMapData();
+        output.minY = buf.readInt();
+        output.r = buf.readDouble();
+        output.g = buf.readDouble();
+        output.b = buf.readDouble();
+        output.quick = buf.readBoolean();
+
+        return output;
+    }
+
+    /**
+     * Serialize the {@link SkyColorMapData} into a {@link ByteBuf}
+     * @param data The data to serialize
+     * @param buf  The buffer to serialize to
+     */
+    public static void toBytes(SkyColorMapData data, ByteBuf buf) {
+        buf.writeInt(data.getMinY());
+        buf.writeDouble(data.getR());
+        buf.writeDouble(data.getG());
+        buf.writeDouble(data.getB());
+        buf.writeBoolean(data.quick);
     }
 }
