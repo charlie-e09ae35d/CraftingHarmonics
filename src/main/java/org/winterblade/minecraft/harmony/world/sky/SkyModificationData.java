@@ -43,6 +43,13 @@ public class SkyModificationData {
     }
 
     public void transitionSkyColorTo(SkyColorMapData[] newColors, int ticks) {
+        // Check if we're not just resetting...
+        if(newColors.length <= 0) {
+            hasSkyColorMod = false;
+            skyColor.clear();
+            return;
+        }
+
         hasSkyColorMod = true;
 
         // This part is really simple...
