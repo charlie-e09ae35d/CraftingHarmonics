@@ -15,7 +15,7 @@ import org.winterblade.minecraft.harmony.common.matchers.BaseIsSleepingMatcher;
 @Component(properties = {"isSleeping"})
 @PrioritizedObject(priority = Priority.HIGHER)
 public class IsSleepingMatcher extends BaseIsSleepingMatcher implements IMobShedMatcher {
-    protected IsSleepingMatcher(boolean isSleeping) {
+    public IsSleepingMatcher(boolean isSleeping) {
         super(isSleeping);
     }
 
