@@ -22,13 +22,13 @@ import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.world.ProxiedWorldProvider;
 import org.winterblade.minecraft.harmony.world.sky.ClientSkyModifications;
+import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
 
 /**
  * Created by Matt on 4/13/2016.
  */
 public class EventHandler {
     @SubscribeEvent
-    // This is called on the server.
     public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent evt) {
         EntityPlayer basePlayer = evt.player;
 
@@ -50,6 +50,17 @@ public class EventHandler {
         }
 
         PacketHandler.synchronizeConfig(NashornConfigProcessor.getInstance().getCache(), player);
+        SkyModificationRegistry.syncPlayerWithGlobal(player);
+    }
+
+    @SubscribeEvent
+    public void onLoggedOut(PlayerEvent.PlayerLoggedOutEvent evt) {
+        EntityPlayer basePlayer = evt.player;
+
+        if(!(basePlayer instanceof EntityPlayerMP)) return;
+        EntityPlayerMP player = (EntityPlayerMP)basePlayer;
+
+        SkyModificationRegistry.clearPlayer(player);
     }
 
 

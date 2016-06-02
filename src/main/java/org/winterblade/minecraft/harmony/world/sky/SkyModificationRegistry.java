@@ -31,11 +31,30 @@ public class SkyModificationRegistry {
         if(stack == null) {
             stack = new LinkedList<>();
             globalStack.put(data.getTargetDim(), stack);
-        } else if(stack.contains(data)) {
+        } else if(stack.peek().equals(data)) {
             return;
         }
 
+        // If we have it in the list, push it up to the top...
+        if(stack.contains(data)) {
+            stack.remove(data);
+            stack.push(data);
+        }
+
         stack.push(data);
+
+        // We also need to update the player stacks:
+        for (Map.Entry<UUID, Map<Integer, Deque<Data>>> dimEntry : playerStacks.entrySet()) {
+            Deque<Data> playerStack = dimEntry.getValue().get(data.getTargetDim());
+            if(playerStack == null) {
+                playerStack = new LinkedList<>();
+                dimEntry.getValue().put(data.getTargetDim(), playerStack);
+            }
+
+            playerStack.push(data);
+        }
+
+        // And sync it out to everybody...
         PacketHandler.wrapper.sendToAll(new SkyColorSync(data.getTargetDim(), data.getTransitionTime(), data.getColormap()));
     }
 
@@ -49,8 +68,14 @@ public class SkyModificationRegistry {
         Deque<Data> dimStack = getPlayerStackFor(target, data.getTargetDim(), true);
 
         // Or just this player...
-        if(dimStack == null || dimStack.contains(data)) {
+        if(dimStack == null || dimStack.peek().equals(data)) {
             return false;
+        }
+
+        // If we have it in the list, push it up to the top...
+        if(dimStack.contains(data)) {
+            dimStack.remove(data);
+            dimStack.push(data);
         }
 
         // Save our data and send it out.
@@ -134,13 +159,41 @@ public class SkyModificationRegistry {
         if(dimStack == null) {
             if(!create) return null;
             dimStack = new LinkedList<>();
-            globalStack.put(dimension, dimStack);
+            playerDimStack.put(dimension, dimStack);
         }
 
         return dimStack;
     }
 
-    // TODO: On-login sync functions.
+    /**
+     * Sync the sky colors on login.
+     * @param target    The target to sync to
+     */
+    public static void syncPlayerWithGlobal(EntityPlayerMP target) {
+        // First, remove it from the global stack...
+        UUID playerId = target.getPersistentID();
+
+        // Clear our player stack...
+        HashMap<Integer, Deque<Data>> playerMap = new HashMap<>();
+        playerStacks.put(playerId, playerMap);
+
+        for (Map.Entry<Integer, Deque<Data>> dimEntry : globalStack.entrySet()) {
+            // Get our data from the top of the list
+            Data data = dimEntry.getValue().peek();
+            if(data == null) continue; // We don't need to sync an empty list...
+
+            playerMap.put(dimEntry.getKey(), new LinkedList<>(dimEntry.getValue()));
+            PacketHandler.wrapper.sendTo(new SkyColorSync(data.getTargetDim(), data.getTransitionTime(), data.getColormap()), target);
+        }
+    }
+
+    /**
+     * Clean up the player's list after it's no longer necessary.
+     * @param target    The target player.
+     */
+    public static void clearPlayer(EntityPlayerMP target) {
+        playerStacks.remove(target.getPersistentID());
+    }
 
     public static class Data {
         private final int targetDim;
