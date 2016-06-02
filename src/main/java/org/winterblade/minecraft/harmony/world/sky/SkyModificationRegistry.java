@@ -205,6 +205,23 @@ public class SkyModificationRegistry {
         playerStacks.remove(target.getPersistentID());
     }
 
+    /**
+     * Remove the top sky modifications
+     * @param targetDim    The dimension to modify
+     */
+    public static void removeModifications(int targetDim) {
+        Deque<Data> stack = globalStack.get(targetDim);
+        if(stack == null) return;
+        removeModification(stack.peek());
+    }
+
+    public static boolean removeModifications(int targetDim, Entity target) {
+        Deque<Data> stack = getPlayerStackFor(target, targetDim, false);
+        if(stack == null) return false;
+        removeModification(stack.peek(), target);
+        return true;
+    }
+
     public static class Data {
         private final int targetDim;
         private final int transitionTime;
