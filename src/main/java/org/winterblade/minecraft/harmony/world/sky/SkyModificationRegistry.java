@@ -6,9 +6,7 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.messaging.server.SkyColorSync;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Matt on 6/1/2016.
@@ -16,23 +14,9 @@ import java.util.UUID;
 public class SkyModificationRegistry {
     private SkyModificationRegistry() {}
 
-    private static final Map<Integer, Data> baseColors = new HashMap<>();
-    private static final Map<Integer, Data> tempColors = new HashMap<>();
-    private static final Map<UUID, Map<Integer, Data>> perPlayerColors = new HashMap<>();
-
-    /**
-     * Set the base for a given dimension; reverting will revert to this, unless given the proper option.
-     * @param data    The data to transition to.
-     */
-    public static void setDimensionBase(Data data) {
-        // If we've already applied it...
-        if(baseColors.containsKey(data.getTargetDim()) && baseColors.get(data.getTargetDim()).getHash().equals(data.getHash())) {
-            return;
-        }
-
-        baseColors.put(data.getTargetDim(), data);
-        PacketHandler.wrapper.sendToAll(new SkyColorSync(data.getTargetDim(), data.getTransitionTime(), data.getColormap()));
-    }
+    // These actually need to be stacks per dimension.
+    private static final Map<Integer, Deque<Data>> globalStack = new HashMap<>();
+    private static final Map<UUID, Map<Integer, Deque<Data>>> playerStacks = new HashMap<>();
 
     /**
      * Run a temporary modification of the sky colors for a dimension; reverting will go back to either the base from
@@ -41,11 +25,15 @@ public class SkyModificationRegistry {
      */
     public static void runModification(Data data) {
         // If we've already applied it...
-        if(tempColors.containsKey(data.getTargetDim()) && tempColors.get(data.getTargetDim()).getHash().equals(data.getHash())) {
+        Deque<Data> stack = globalStack.get(data.getTargetDim());
+        if(stack == null) {
+            stack = new LinkedList<>();
+            globalStack.put(data.getTargetDim(), stack);
+        } else if(stack.contains(data)) {
             return;
         }
 
-        tempColors.put(data.getTargetDim(), data);
+        stack.push(data);
         PacketHandler.wrapper.sendToAll(new SkyColorSync(data.getTargetDim(), data.getTransitionTime(), data.getColormap()));
     }
 
@@ -62,18 +50,26 @@ public class SkyModificationRegistry {
             return false;
         }
 
-        Map<Integer, Data> playerData = perPlayerColors.get(target.getPersistentID());
-        if (playerData == null) {
+        Map<Integer, Deque<Data>> playerDimStack = playerStacks.get(target.getPersistentID());
+
+        // If we don't have an entry for this...
+        if (playerDimStack == null) {
             // Do we need to stash a new entry?
-            playerData = new HashMap<>();
-            perPlayerColors.put(target.getPersistentID(), playerData);
-        } else if(playerData.containsKey(data.getTargetDim()) && playerData.get(data.getTargetDim()).getHash().equals(data.getHash())) {
-            // Or, if we match our current entry, just leave now...
-            return true;
+            playerDimStack = new HashMap<>();
+            playerStacks.put(target.getPersistentID(), playerDimStack);
+        }
+
+        Deque<Data> dimStack = playerDimStack.get(data.getTargetDim());
+
+        if(dimStack == null) {
+            dimStack = new LinkedList<>();
+            globalStack.put(data.getTargetDim(), dimStack);
+        } else if(dimStack.contains(data)) {
+            return false;
         }
 
         // Save our data and send it out.
-        playerData.put(data.getTargetDim(), data);
+        dimStack.push(data);
         PacketHandler.wrapper.sendTo(new SkyColorSync(data.getTargetDim(), data.getTransitionTime(), data.getColormap()), (EntityPlayerMP) target);
         return true;
     }
@@ -109,6 +105,21 @@ public class SkyModificationRegistry {
 
         public String getHash() {
             return hash;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Data data = (Data) o;
+
+            return getHash().equals(data.getHash());
+        }
+
+        @Override
+        public int hashCode() {
+            return getHash().hashCode();
         }
     }
 }
