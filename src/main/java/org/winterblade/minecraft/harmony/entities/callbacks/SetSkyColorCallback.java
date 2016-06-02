@@ -3,13 +3,10 @@ package org.winterblade.minecraft.harmony.entities.callbacks;
 import com.google.common.base.Joiner;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
-import org.winterblade.minecraft.harmony.common.utility.LogHelper;
-import org.winterblade.minecraft.harmony.messaging.PacketHandler;
-import org.winterblade.minecraft.harmony.messaging.server.SkyColorSync;
 import org.winterblade.minecraft.harmony.world.sky.SkyColorMapData;
+import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -50,22 +47,18 @@ public class SetSkyColorCallback extends BaseEntityAndDimensionCallback {
     protected void applyWithTargetDimension(Entity target, int targetDim) {
         // If we're doing it for everyone...
         if(global) {
-            PacketHandler.wrapper.sendToAll(new SkyColorSync(targetDim, transitionTime, colormap));
+            SkyModificationRegistry.runModification(new SkyModificationRegistry.Data(targetDim, transitionTime, colormap, hash));
             runCallbacks(onSuccess, target);
-            runCallbacks(onComplete, target);
-        }
-
-        // Or just this player...
-        if(!EntityPlayerMP.class.isAssignableFrom(target.getClass())) {
-            LogHelper.warn("Not setting the sky color for target ({}), as they aren't a player.", target.getName());
-            runCallbacks(onFailure, target);
             runCallbacks(onComplete, target);
             return;
         }
 
-        PacketHandler.wrapper.sendTo(new SkyColorSync(targetDim, transitionTime, colormap), (EntityPlayerMP) target);
-
-        runCallbacks(onSuccess, target);
+        // Otherwise, try to run it on the target...
+        runCallbacks(SkyModificationRegistry.runModificationOn(target,
+                new SkyModificationRegistry.Data(targetDim, transitionTime, colormap, hash))
+                    ? onSuccess
+                    : onFailure,
+                target);
         runCallbacks(onComplete, target);
     }
 
