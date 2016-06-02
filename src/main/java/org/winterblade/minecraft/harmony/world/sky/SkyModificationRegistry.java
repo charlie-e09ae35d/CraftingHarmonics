@@ -31,7 +31,11 @@ public class SkyModificationRegistry {
         if(stack == null) {
             stack = new LinkedList<>();
             globalStack.put(data.getTargetDim(), stack);
-        } else if(stack.peek().equals(data)) {
+        }
+
+        // Check if this is the top or not...
+        Data top = stack.peek();
+        if(top != null && top.equals(data)) {
             return;
         }
 
@@ -68,7 +72,13 @@ public class SkyModificationRegistry {
         Deque<Data> dimStack = getPlayerStackFor(target, data.getTargetDim(), true);
 
         // Or just this player...
-        if(dimStack == null || dimStack.peek().equals(data)) {
+        if(dimStack == null) {
+            return false;
+        }
+
+        // Check if this is the top or not...
+        Data top = dimStack.peek();
+        if(top != null && top.equals(data)) {
             return false;
         }
 
