@@ -2,10 +2,12 @@ package org.winterblade.minecraft.harmony.world.sky;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.messaging.server.SkyColorSync;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -44,27 +46,10 @@ public class SkyModificationRegistry {
      * @return                  True if the operation succeeded, false otherwise
      */
     public static boolean runModificationOn(Entity target, Data data) {
+        Deque<Data> dimStack = getPlayerStackFor(target, data.getTargetDim(), true);
+
         // Or just this player...
-        if(!EntityPlayerMP.class.isAssignableFrom(target.getClass())) {
-            LogHelper.warn("Not setting the sky color for target ({}), as they aren't a player.", target.getName());
-            return false;
-        }
-
-        Map<Integer, Deque<Data>> playerDimStack = playerStacks.get(target.getPersistentID());
-
-        // If we don't have an entry for this...
-        if (playerDimStack == null) {
-            // Do we need to stash a new entry?
-            playerDimStack = new HashMap<>();
-            playerStacks.put(target.getPersistentID(), playerDimStack);
-        }
-
-        Deque<Data> dimStack = playerDimStack.get(data.getTargetDim());
-
-        if(dimStack == null) {
-            dimStack = new LinkedList<>();
-            globalStack.put(data.getTargetDim(), dimStack);
-        } else if(dimStack.contains(data)) {
+        if(dimStack == null || dimStack.contains(data)) {
             return false;
         }
 
@@ -74,7 +59,86 @@ public class SkyModificationRegistry {
         return true;
     }
 
-    // TODO: Reset functions.
+    /**
+     * Remove a modification from the global list.
+     * @param data    The mod to remove
+     */
+    public static void removeModification(Data data) {
+        // First, remove it from the global stack...
+        Deque<Data> stack = globalStack.get(data.getTargetDim());
+        if(stack != null) {
+            stack.remove(data);
+        }
+
+        // Now, go through the active players and actually do the removal:
+        for (EntityPlayerMP player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList()) {
+            removeModification(data, player);
+        }
+    }
+
+    /**
+     * Remove a modification from the given player
+     * @param data      The mod to remove
+     * @param target    The target player
+     */
+    public static void removeModification(Data data, Entity target) {
+        Deque<Data> dimStack = getPlayerStackFor(target, data.getTargetDim(), false);
+
+        // Make sure we have a stack...
+        if(dimStack == null) return;
+
+        // Check if it's the top of the stack...
+        boolean isTop = dimStack.peek().equals(data);
+
+        // If we're not removing anything, don't bother; also, if we're not the top entry, we can leave now..
+        if(!dimStack.remove(data) || !isTop) return;
+
+        // Alright, so we took the top off, now go ahead and get the new top of the stack...
+        Data newData = dimStack.peek();
+
+        // If we don't have a data, go ahead and send out a reset packet...
+        if(newData == null) {
+            newData = new Data(data.targetDim, 0, new SkyColorMapData[0], "");
+        }
+
+        PacketHandler.wrapper.sendTo(new SkyColorSync(newData.getTargetDim(), newData.getTransitionTime(), newData.getColormap()), (EntityPlayerMP) target);
+    }
+
+    /**
+     * Gets the dimension stack for the given target
+     * @param target       The entity to target
+     * @param dimension    The dimension
+     * @param create       If the maps should be created if they don't exist
+     * @return             The stack, or null if the target is not an entity
+     */
+    @Nullable
+    private static Deque<Data> getPlayerStackFor(Entity target, int dimension, boolean create) {
+        // Or just this player...
+        if(!EntityPlayerMP.class.isAssignableFrom(target.getClass())) {
+            LogHelper.warn("Not setting the sky color for target ({}), as they aren't a player.", target.getName());
+            return null;
+        }
+
+        Map<Integer, Deque<Data>> playerDimStack = playerStacks.get(target.getPersistentID());
+
+        // If we don't have an entry for this...
+        if (playerDimStack == null) {
+            if(!create) return null;
+            // Do we need to stash a new entry?
+            playerDimStack = new HashMap<>();
+            playerStacks.put(target.getPersistentID(), playerDimStack);
+        }
+
+        Deque<Data> dimStack = playerDimStack.get(dimension);
+
+        if(dimStack == null) {
+            if(!create) return null;
+            dimStack = new LinkedList<>();
+            globalStack.put(dimension, dimStack);
+        }
+
+        return dimStack;
+    }
 
     // TODO: On-login sync functions.
 
