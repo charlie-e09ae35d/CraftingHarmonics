@@ -1,15 +1,11 @@
 package org.winterblade.minecraft.harmony.entities.callbacks;
 
-import com.google.common.base.Joiner;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.world.sky.SkyColorMapData;
 import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * Created by Matt on 5/31/2016.
@@ -40,7 +36,7 @@ public class SetSkyColorCallback extends BaseEntityAndDimensionCallback {
     protected void finishDeserialization(ScriptObjectMirror mirror) throws RuntimeException {
         if(colormap == null) throw new RuntimeException("setSkyColor's 'colormap' property must be provided.");
 
-        hash = Joiner.on("-").join(Arrays.stream(colormap).map(SkyColorMapData::toString).collect(Collectors.toList()));
+        hash = SkyColorMapData.getHash(colormap);
     }
 
     @Override

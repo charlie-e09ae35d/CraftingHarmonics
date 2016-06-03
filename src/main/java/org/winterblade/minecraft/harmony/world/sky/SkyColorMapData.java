@@ -1,7 +1,13 @@
 package org.winterblade.minecraft.harmony.world.sky;
 
+import com.google.common.base.Joiner;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Created by Matt on 5/31/2016.
@@ -41,6 +47,42 @@ public class SkyColorMapData implements Comparable<SkyColorMapData> {
         buf.writeDouble(data.getG());
         buf.writeDouble(data.getB());
         buf.writeBoolean(data.quick);
+    }
+
+    /**
+     * Deserialize from an NBT tag
+     * @param nbt    The tag to deserialize
+     */
+    public static SkyColorMapData fromNbt(NBTTagCompound nbt) {
+        SkyColorMapData output = new SkyColorMapData();
+        output.minY = nbt.getInteger("MinY");
+        output.r = nbt.getDouble("R");
+        output.g = nbt.getDouble("G");
+        output.b = nbt.getDouble("B");
+        output.quick = nbt.getBoolean("Quick");
+
+        return output;
+    }
+
+    public NBTBase toNbt() {
+        NBTTagCompound output = new NBTTagCompound();
+
+        output.setInteger("MinY", minY);
+        output.setDouble("R", r);
+        output.setDouble("G", g);
+        output.setDouble("B", b);
+        output.setBoolean("Quick", quick);
+
+        return output;
+    }
+
+    /**
+     * Translates the given colormap into a valid hash.
+     * @param colormap    The color map to parse
+     * @return            The output hash
+     */
+    public static String getHash(SkyColorMapData[] colormap) {
+        return Joiner.on("-").join(Arrays.stream(colormap).map(SkyColorMapData::toString).collect(Collectors.toList()));
     }
 
     public int getMinY() {
