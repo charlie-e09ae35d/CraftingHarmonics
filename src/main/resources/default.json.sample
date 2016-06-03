@@ -1473,6 +1473,42 @@
                     ]
                 }
             ]
+        },
+
+        // Sky color stuff
+        {
+            name: "skyTransitions",
+            operations: [
+                {
+                    type: "addEntityEvent",
+                    what: ["net.minecraft.entity.player.EntityPlayerMP"],
+                    events: [
+                        {
+                            type: "setSkyColor",
+                            aboveBlock: "minecraft:redstone_block",
+                            transitionTime: 80,
+                            global: false, // Affects only the target player
+                            colormap: [
+                                // Hex color reference: http://prideout.net/archive/colors.php
+                                { minY:   0, r: 1.0  , g: 0.753, b: 0.796 }
+                            ]
+                        },
+                        {
+                            type: "setSkyColor",
+                            aboveBlock: "minecraft:lapis_block",
+                            transitionTime: 80,
+                            global: true, // Affects all players
+                            colormap: [
+                                // Gradually darken the sky as we go further up...
+                                // Note that even though minY on the first entry is at 60, it will still be used below 60
+                                // The blending will only occur between 60 and 200.
+                                { minY:  60,  r: 0.878, g: 1.000, b: 1.000 },
+                                { minY: 200,  r: 0.255, g: 0.412, b: 0.882 }
+                            ]
+                        },
+                    ]
+                }
+            ]
         }
     ]
 }
