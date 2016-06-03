@@ -6,7 +6,6 @@ import com.google.common.cache.LoadingCache;
 import hardcorequesting.quests.Quest;
 import hardcorequesting.quests.QuestData;
 import hardcorequesting.quests.QuestingData;
-import hardcorequesting.quests.data.QuestDataTask;
 import hardcorequesting.team.RewardSetting;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.winterblade.minecraft.harmony.api.questing.IQuestProvider;
@@ -181,18 +180,15 @@ public class HqmQuestProvider implements IQuestProvider {
         UUID id = getQuestId(name);
         if(id == null) return false;
 
+        // Reset the quest itself...
+        Quest quest = Quest.getQuest(id.toString());
+        if(quest == null) return false;
+        quest.reset(QuestingData.getUserUUID(player));
+
+        // Also reset the completion indicator...
         QuestData questData = QuestingData.getQuestingData(player).getTeam().getQuestData(id.toString());
         if(questData == null) return false;
-
-        for (QuestDataTask task : questData.tasks) {
-            task.completed = false;
-        }
-
         questData.completed = false;
-        questData.claimed = false;
-        questData.available = true;
-
-        QuestingData.saveQuestingData();
 
         return true;
     }
