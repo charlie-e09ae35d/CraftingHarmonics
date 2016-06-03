@@ -54,17 +54,6 @@ public class EventHandler {
     }
 
     @SubscribeEvent
-    public void onLoggedOut(PlayerEvent.PlayerLoggedOutEvent evt) {
-        EntityPlayer basePlayer = evt.player;
-
-        if(!(basePlayer instanceof EntityPlayerMP)) return;
-        EntityPlayerMP player = (EntityPlayerMP)basePlayer;
-
-        SkyModificationRegistry.clearPlayer(player);
-    }
-
-
-    @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent evt) {
         if(evt.phase != TickEvent.Phase.END) return;
 
