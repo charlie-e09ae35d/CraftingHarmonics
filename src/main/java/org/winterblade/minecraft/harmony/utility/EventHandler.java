@@ -50,7 +50,7 @@ public class EventHandler {
         }
 
         PacketHandler.synchronizeConfig(NashornConfigProcessor.getInstance().getCache(), player);
-        SkyModificationRegistry.syncPlayerWithGlobal(player);
+        SkyModificationRegistry.resyncPlayerData(player);
     }
 
     @SubscribeEvent

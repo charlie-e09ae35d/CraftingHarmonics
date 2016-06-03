@@ -103,6 +103,55 @@ public class SkyModificationRegistry {
     }
 
     /**
+     * Remove the top sky modifications
+     * @param targetDim    The dimension to modify
+     */
+    public static void removeModifications(int targetDim) {
+        List<EntityPlayerMP> players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList();
+
+        for (EntityPlayerMP player : players) {
+            // First, get their map entry...
+            Map<Integer, Deque<Data>> playerStack = playerStacks.get(player.getPersistentID());
+            if(playerStack == null) continue;
+
+            // Then get the stack for the actual dimension...
+            Deque<Data> dimStack = getPlayerStackFor(player.getPersistentID(), targetDim, false);
+            if(dimStack == null) continue;
+
+            // Finally, check our data...
+            Data data = dimStack.peek();
+            if(data == null) continue;
+
+            // Aaaand remove it.
+            removeModification(data,player);
+        }
+    }
+
+    public static boolean removeModifications(int targetDim, Entity target) {
+        Deque<Data> stack = getPlayerStackFor(target.getPersistentID(), targetDim, false);
+        if(stack == null) return false;
+        removeModification(stack.peek(), target);
+        return true;
+    }
+
+    /**
+     * Sync the sky colors on login.
+     * @param target    The target to sync to
+     */
+    public static void resyncPlayerData(EntityPlayerMP target) {
+        Map<Integer, Deque<Data>> dimStacks = playerStacks.get(target.getPersistentID());
+
+        // If we don't have any...
+        if(dimStacks == null) return;
+
+        for (Deque<Data> dimStack : dimStacks.values()) {
+            Data data = dimStack.peek();
+            if(data == null) continue;
+            PacketHandler.wrapper.sendTo(new SkyColorSync(data.getTargetDim(), data.getTransitionTime(), data.getColormap()), target);
+        }
+    }
+
+    /**
      * Gets the dimension stack for the given target
      * @param target       The entity to target
      * @param dimension    The dimension
@@ -134,23 +183,6 @@ public class SkyModificationRegistry {
     }
 
     /**
-     * Sync the sky colors on login.
-     * @param target    The target to sync to
-     */
-    public static void syncPlayerWithGlobal(EntityPlayerMP target) {
-        Map<Integer, Deque<Data>> dimStacks = playerStacks.get(target.getPersistentID());
-
-        // If we don't have any...
-        if(dimStacks == null) return;
-
-        for (Deque<Data> dimStack : dimStacks.values()) {
-            Data data = dimStack.peek();
-            if(data == null) continue;
-            PacketHandler.wrapper.sendTo(new SkyColorSync(data.getTargetDim(), data.getTransitionTime(), data.getColormap()), target);
-        }
-    }
-
-    /**
      * Run the modification for the given UUID
      * @param target            The UUID to run it for
      * @param data              The data to transition to
@@ -176,38 +208,6 @@ public class SkyModificationRegistry {
         }
 
         dimStack.push(data);
-        return true;
-    }
-
-    /**
-     * Remove the top sky modifications
-     * @param targetDim    The dimension to modify
-     */
-    public static void removeModifications(int targetDim) {
-        List<EntityPlayerMP> players = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList();
-
-        for (EntityPlayerMP player : players) {
-            // First, get their map entry...
-            Map<Integer, Deque<Data>> playerStack = playerStacks.get(player.getPersistentID());
-            if(playerStack == null) continue;
-
-            // Then get the stack for the actual dimension...
-            Deque<Data> dimStack = getPlayerStackFor(player.getPersistentID(), targetDim, false);
-            if(dimStack == null) continue;
-
-            // Finally, check our data...
-            Data data = dimStack.peek();
-            if(data == null) continue;
-
-            // Aaaand remove it.
-            removeModification(data,player);
-        }
-    }
-
-    public static boolean removeModifications(int targetDim, Entity target) {
-        Deque<Data> stack = getPlayerStackFor(target.getPersistentID(), targetDim, false);
-        if(stack == null) return false;
-        removeModification(stack.peek(), target);
         return true;
     }
 
