@@ -188,6 +188,10 @@ public class HqmQuestProvider implements IQuestProvider {
             task.completed = false;
         }
 
+        questData.completed = false;
+        questData.claimed = false;
+        questData.available = true;
+
         QuestingData.saveQuestingData();
 
         return true;
