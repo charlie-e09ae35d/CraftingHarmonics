@@ -61,6 +61,7 @@ public class EventHandler {
         try {
             CraftingHarmonicsMod.checkServerTick();
             MobTickRegistry.processCallbackQueue();
+            TileEntityTickRegistry.processCallbackQueue();
         } catch (Exception ex) {
             LogHelper.error("Error handling server tick; please report this along with your config file.", ex);
         }

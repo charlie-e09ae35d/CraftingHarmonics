@@ -7,10 +7,11 @@ import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityCallback;
 import org.winterblade.minecraft.harmony.common.TickHandler;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.lang.ref.WeakReference;
+import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by Matt on 5/29/2016.
@@ -21,6 +22,9 @@ public class TileEntityTickRegistry {
     private static boolean inited = false;
 
     private static TileEntityTickHandler<ITileEntityCallback, BaseTileEntityCallback.Handler> eventHandler;
+
+    // Queued callbacks; this is a concurrent queue because we may add to it while processing it.
+    private static Queue<TileEntityCallbackData> callbackQueue = new ConcurrentLinkedQueue<>();
 
     public static void init() {
         inited = true;
@@ -46,7 +50,25 @@ public class TileEntityTickRegistry {
      * @param callbacks    The callbacks to run
      */
     public static void addCallbackSet(TileEntity target, ITileEntityCallback[] callbacks) {
-        // TODO: Implement me.
+        callbackQueue.add(new TileEntityCallbackData(target, callbacks));
+    }
+
+    /**
+     * Process the current callback queue
+     */
+    public static void processCallbackQueue() {
+        for (Iterator<TileEntityCallbackData> iterator = callbackQueue.iterator(); iterator.hasNext(); ) {
+            TileEntityCallbackData callbackData = iterator.next();
+            iterator.remove();
+
+            try {
+                callbackData.runCallbacks();
+            } catch (Exception ex) {
+                LogHelper.error("Error processing TileEntity callbacks.", ex);
+            }
+
+            // TODO: Make this have a configurable limiter on the number of callbacks
+        }
     }
 
     private static class TileEntityTickHandler<TMatcher, THandler extends BaseEventMatch.BaseMatchHandler<TMatcher, TileEntity>>
@@ -78,6 +100,25 @@ public class TileEntityTickRegistry {
             String entityName = entity.getBlockType().getLocalizedName();
             String entityClassName = entity.getClass().getName();
             eventHandler.handle(rand, entity, entityName, entityClassName);
+        }
+    }
+
+    private static class TileEntityCallbackData {
+        private final WeakReference<TileEntity> targetRef;
+        private final ITileEntityCallback[] callbacks;
+
+        TileEntityCallbackData(TileEntity target, ITileEntityCallback[] callbacks) {
+            targetRef = new WeakReference<>(target);
+            this.callbacks = callbacks;
+        }
+
+        public void runCallbacks() {
+            TileEntity target = targetRef.get();
+            if(target == null) return;
+
+            for(ITileEntityCallback callback : callbacks) {
+                callback.apply(target);
+            }
         }
     }
 }
