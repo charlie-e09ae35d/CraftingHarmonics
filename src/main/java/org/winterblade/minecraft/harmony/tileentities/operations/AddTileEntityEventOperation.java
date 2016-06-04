@@ -4,8 +4,8 @@ import com.google.common.base.Joiner;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
+import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityCallback;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
-import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
 import org.winterblade.minecraft.harmony.tileentities.TileEntityTickRegistry;
 
 import java.util.UUID;
@@ -19,7 +19,7 @@ public class AddTileEntityEventOperation extends BasicOperation {
     * Serialized properties
     */
     private String[] what;
-    private BaseTileEntityCallback[] events;
+    private ITileEntityCallback[] events;
 
     /*
      * Computed properties

@@ -5,6 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
+import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityCallback;
 import org.winterblade.minecraft.harmony.common.TickHandler;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class TileEntityTickRegistry {
 
     private static boolean inited = false;
 
-    private static TileEntityTickHandler<BaseTileEntityCallback, BaseTileEntityCallback.Handler> eventHandler;
+    private static TileEntityTickHandler<ITileEntityCallback, BaseTileEntityCallback.Handler> eventHandler;
 
     public static void init() {
         inited = true;
@@ -27,7 +28,7 @@ public class TileEntityTickRegistry {
         eventHandler = new TileEntityTickHandler<>(BaseTileEntityCallback.Handler.class, CraftingHarmonicsMod.getConfigManager().getEventTicks());
     }
 
-    public static UUID registerTileEntityEvents(String[] what, BaseTileEntityCallback[] events) {
+    public static UUID registerTileEntityEvents(String[] what, ITileEntityCallback[] events) {
         return eventHandler.registerHandler(what, events);
     }
 
@@ -37,6 +38,15 @@ public class TileEntityTickRegistry {
 
     public static void removeTileEntityEvents(UUID ticket) {
         eventHandler.remove(ticket);
+    }
+
+    /**
+     * Add callbacks to be run later.
+     * @param target       The target to run them on
+     * @param callbacks    The callbacks to run
+     */
+    public static void addCallbackSet(TileEntity target, ITileEntityCallback[] callbacks) {
+        // TODO: Implement me.
     }
 
     private static class TileEntityTickHandler<TMatcher, THandler extends BaseEventMatch.BaseMatchHandler<TMatcher, TileEntity>>

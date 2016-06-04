@@ -92,6 +92,17 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
     }
 
     /**
+     * Called to run callbacks on the given target
+     * @param callbacks    The callbacks to run
+     * @param target       The target to run them on.
+     */
+    protected void runCallbacks(ITileEntityCallback[] callbacks, TileEntity target) {
+        if(callbacks == null) return;
+
+        TileEntityTickRegistry.addCallbackSet(target, callbacks);
+    }
+
+    /**
      * Add in our callbacks
      * @param callback    The callback to add.
      */
@@ -102,7 +113,7 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
     /**
      * Container for holding our callback data.
      */
-    private static class Data implements ITileEntityMatcherData {
+    protected static class Data implements ITileEntityMatcherData {
 
     }
 
@@ -244,7 +255,7 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
         }
     }
 
-    public static class Handler extends BaseMatchHandler<BaseTileEntityCallback,TileEntity> {
+    public static class Handler extends BaseMatchHandler<ITileEntityCallback,TileEntity> {
         @Override
         public void apply(Random rand, TileEntity entity) {
             for(ITileEntityCallback callback : matchers) {
