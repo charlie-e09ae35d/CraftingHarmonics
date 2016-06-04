@@ -52,7 +52,9 @@ def integrations = [
         'ticon',
         'bloodmagic',
         'techreborn',
-        'abyssalcraft'
+        'abyssalcraft',
+        'betterquesting',
+        'hqm'
 ]
 
 subprojects.each { subproject -> evaluationDependsOn( subproject.path ) }
@@ -200,7 +202,9 @@ curseforge {
 
             // Mods we have integration with:
             optionalLibrary 'abyssalcraft'
+            optionalLibrary 'better-questing'
             optionalLibrary 'blood-magic'
+            optionalLibrary 'hardcore-questing-mode'
             optionalLibrary 'just-enough-items-jei'
             optionalLibrary 'techreborn'
             optionalLibrary 'tinkers-construct'
