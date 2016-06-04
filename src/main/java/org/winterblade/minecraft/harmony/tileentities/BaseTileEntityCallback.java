@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.tileentities;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
+import jdk.nashorn.internal.runtime.ScriptFunction;
 import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fml.common.Loader;
@@ -17,6 +18,7 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
+import org.winterblade.minecraft.harmony.tileentities.callbacks.FunctionCallback;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
@@ -120,18 +122,18 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
         @Override
         public final Object Deserialize(Object input) {
             // Method callback
-            // TODO: This.
-//            if(ScriptFunction.class.isAssignableFrom(input.getClass())) {
-//                try {
-//                    // Wrap it so we can pass interops instead of base objects
-//                    FunctionCallback fn = new FunctionCallback((FunctionCallback.JSCallback) ScriptUtils.convert(input, FunctionCallback.JSCallback.class));
-//                    container.addCallback(fn);
-//                    return container;
-//                } catch (Exception e) {
-//                    LogHelper.error("Unable to convert given callback function into IEntityCallbackContainer", e);
-//                    return null;
-//                }
-//            }
+            if(ScriptFunction.class.isAssignableFrom(input.getClass())) {
+                try {
+                    // Wrap it so we can pass interops instead of base objects
+                    FunctionCallback fn = new FunctionCallback((FunctionCallback.JSCallback) ScriptUtils.convert(input, FunctionCallback.JSCallback.class));
+                    BaseTileEntityCallback container = new BaseTileEntityCallback();
+                    container.addCallback(fn);
+                    return container;
+                } catch (Exception e) {
+                    LogHelper.error("Unable to convert given callback function into ITileEntityCallback", e);
+                    return null;
+                }
+            }
 
             // Make sure we can continue:
             if(!ScriptObjectMirror.class.isAssignableFrom(input.getClass()) &&
