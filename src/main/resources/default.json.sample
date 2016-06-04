@@ -656,7 +656,13 @@
                             what: "minecraft:diamond",
                             min: 1,
                             max: 1,
-                            attackerHasPotionEffect: "minecraft:luck"
+                            attackerHasPotionEffect: "minecraft:luck",
+                            // If not, they drop sticks...
+                            otherwise: {
+                                what: "minecraft:stick",
+                                min: 1,
+                                max: 1
+                            }
                         }
                     ]
                 },
@@ -898,6 +904,38 @@
                         }
                     ]
                 },
+                {
+                    // You can also specify an 'otherwise' which will be matched and applied if the original drop isn't matched:
+                    type: "setBlockDrops",
+                    what: ["minecraft:gravel"],
+                    replace: true,
+                    drops: [
+                        {
+                            // Give a 50% chance of getting sand...
+                            what: "minecraft:sand",
+                            min: 1,
+                            max: 1,
+                            chance: 0.5,
+                            questingIsHardcore: true, // only if we have a quest mod installed in hardcore mode.
+                            otherwise: {
+                                // Otherwise, drop gravel.
+                                what: "minecraft:gravel",
+                                min: 1,
+                                max: 1
+                                // You could also continue chaining more matchers/otherwise combos here.
+                            }
+                        },
+                        {
+                            what: "minecraft:flint",
+                            min: 1,
+                            max: 1,
+
+                            // Checks to see if anybody online has the quest 'Test Quest 1' available, and drops flint.
+                            // Valid statuses are 'Active', 'Locked', 'Complete', and 'Closed'
+                            questingQuestStatus: {name: "Test Quest 1", status: "ACTIVE", player: "ANY"}
+                        }
+                    ]
+                },
 
 
                 // You can also apply potion effects to entities based on certain conditions, including just if a set is active..
@@ -1046,6 +1084,21 @@
                             inBiomeTypes: ["Swamp"],
                             insideBlock: "minecraft:water",
                             chance: 0.05
+                        },
+                        {
+                            // Gives varying levels of regeneration based on the light level...
+                            what: "minecraft:regeneration",
+                            amplifier: 2,
+                            minLightLevel: 15,
+                            otherwise: {
+                                what: "minecraft:regeneration",
+                                amplifier: 1,
+                                minLightLevel: 13,
+                                otherwise: {
+                                    what: "minecraft:regeneration",
+                                    minLightLevel: 11
+                                }
+                            }
                         }
                     ]
                 },
@@ -1067,7 +1120,7 @@
 
                         // Or a bit more extended:
                         {
-                            aroundMobs: { what: ["Ocelot"], min: 1, dist: 10 },
+                            aroundMobs: { what: ["Ocelot"], min: 1, dist: 3 },
                             cooldown: 1200,
                             then: [
                                 {
@@ -1090,9 +1143,71 @@
                                             type: "runPlayerCommand",
                                             command: "/tell @p It made you feel a little better too."
                                         }
-                                    ]
+                                    ],
+
+                                    otherwise: {
+                                        type: "runPlayerCommand",
+                                        command: "/tell @p You feel good; not great, but good."
+                                    }
                                 }
                             ]
+                        },
+
+                        // We can even affect the quest system, if a quest mod is installed...
+                        {
+                            type: "questingGiveLives",
+                            lives: 1,
+                            aboveBlock: "minecraft:diamond_block",
+                            cooldown: 200,
+
+                            // onSuccess will run only if the player received as many lives as you asked to give them.
+                            onSuccess: [
+                                {
+                                    type: "runPlayerCommand",
+                                    command: "/tell @p You've gained a life."
+                                }
+                            ]
+                        },
+                        {
+                            type: "questingTakeLives",
+                            lives: 1,
+                            aboveBlock: "minecraft:soul_sand",
+                            cooldown: 200,
+
+                            // Similarly, this will only run if you were able to take the correct number of lives from a player.
+                            onSuccess: [
+                                {
+                                    type: "runPlayerCommand",
+                                    command: "/tell @p You've lost a life!"
+                                }
+                            ]
+                        },
+                        {
+                            type: "questingCompleteQuest",
+                            quest: "Test Quest 2",
+                            aboveBlock: "minecraft:gold_block"
+                        },
+                        {
+                            type: "questingResetQuest",
+                            quest: "Test Quest 2",
+                            aboveBlock: "minecraft:iron_block"
+                        },
+                    ]
+                },
+
+                // Tile Entity Events
+                {
+                    __comment: "Ticking tile entities in the game can also have events associated with them.",
+                    type: "addTileEntityEvent",
+                    what: ["net.minecraft.tileentity.TileEntityFurnace"],
+                    events: [
+                        // This is the same format as the entity events
+                        {
+                            // Cause furnaces to blow up if they get rained on.
+                            type: "explode",
+                            strength: 3,
+                            isSmoking: true,
+                            isRaining: { onlyOnTarget: true }
                         }
                     ]
                 },
@@ -1422,6 +1537,42 @@
                             what: "minecraft:regeneration",
                             amplifier: 2,
                         }
+                    ]
+                }
+            ]
+        },
+
+        // Sky color stuff
+        {
+            name: "skyTransitions",
+            operations: [
+                {
+                    type: "addEntityEvent",
+                    what: ["net.minecraft.entity.player.EntityPlayerMP"],
+                    events: [
+                        {
+                            type: "setSkyColor",
+                            aboveBlock: "minecraft:redstone_block",
+                            transitionTime: 80,
+                            global: false, // Affects only the target player
+                            colormap: [
+                                // Hex color reference: http://prideout.net/archive/colors.php
+                                { minY:   0, r: 1.0  , g: 0.753, b: 0.796 }
+                            ]
+                        },
+                        {
+                            type: "setSkyColor",
+                            aboveBlock: "minecraft:lapis_block",
+                            transitionTime: 80,
+                            global: true, // Affects all players
+                            colormap: [
+                                // Gradually darken the sky as we go further up...
+                                // Note that even though minY on the first entry is at 60, it will still be used below 60
+                                // The blending will only occur between 60 and 200.
+                                { minY:  60,  r: 0.878, g: 1.000, b: 1.000 },
+                                { minY: 200,  r: 0.255, g: 0.412, b: 0.882 }
+                            ]
+                        },
                     ]
                 }
             ]

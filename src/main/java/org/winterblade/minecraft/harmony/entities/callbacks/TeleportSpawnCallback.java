@@ -15,7 +15,7 @@ public class TeleportSpawnCallback extends TeleportBaseCallback {
     @Override
     protected void applyWithTargetDimension(Entity target, int targetDim) {
         // Current dimension:
-        if(target.getEntityWorld().provider.getDimension() != targetDim) {
+        if(target.getEntityWorld().provider.getDimension() == targetDim) {
             BlockPos spawn = target.getEntityWorld().getSpawnPoint();
             teleport(target, targetDim, spawn.getX(), spawn.getY(), spawn.getZ());
             return;

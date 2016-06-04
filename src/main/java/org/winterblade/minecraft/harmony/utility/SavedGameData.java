@@ -8,6 +8,7 @@ import net.minecraft.world.storage.MapStorage;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.SetManager;
 import org.winterblade.minecraft.harmony.entities.callbacks.StopTimeCommand;
+import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
 
 import java.util.*;
 
@@ -127,6 +128,7 @@ public class SavedGameData extends WorldSavedData {
 
         StopTimeCommand.deserializeTimeStops(nbt);
         SetManager.deserializeSavedGameData(nbt);
+        SkyModificationRegistry.deserializeSavedGameData(nbt);
     }
 
     /**
@@ -160,6 +162,7 @@ public class SavedGameData extends WorldSavedData {
         nbt.setTag(StopTimeCommand.RUNNING_TIME_STOPS, StopTimeCommand.serializeTimeStops());
         nbt.setTag(SetManager.SETS_TO_EXPIRE_TAG_NAME, SetManager.serializeSetsToExpire());
         nbt.setTag(SetManager.SETS_ON_COOLDOWN_TAG_NAME, SetManager.serializeSetsOnCooldown());
+        nbt.setTag(SkyModificationRegistry.SKY_COLOR_ROOT_DATA_TAG_NAME, SkyModificationRegistry.serializeStacks());
         return nbt;
     }
 }

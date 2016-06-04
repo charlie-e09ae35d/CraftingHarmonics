@@ -90,15 +90,23 @@ public class MobPotionEffect extends BaseEventMatch<Entity, IEntityMatcherData, 
             // Now, actually calculate out our drop rates...
             for (MobPotionEffect matcher : this.getMatchers()) {
                 // Wrap this in our class, so we can callback when it's expired
-                ApplyPotionCallback.HarmonyPotionEffect effect = new ApplyPotionCallback.HarmonyPotionEffect(matcher.getWhat(), matcher.getDuration(),
-                        matcher.getAmplifier(), false, matcher.isShowParticles(),
-                        matcher.expiredCallbacks != null ? matcher.expiredCallbacks : new IEntityCallbackContainer[0],
-                        matcher.curedCallbacks != null ? matcher.curedCallbacks : new IEntityCallbackContainer[0],
-                        matcher.removedCallbacks != null ? matcher.removedCallbacks : new IEntityCallbackContainer[0]);
-                effect.setCurativeItems(Lists.newArrayList(matcher.getCures()));
+                ApplyPotionCallback.HarmonyPotionEffect effect;
+                BaseMatchResult result;
 
-                // Check if this drop matches:
-                BaseMatchResult result = matcher.matches(entity, new BaseEntityMatcherData());
+                do {
+                    effect = new ApplyPotionCallback.HarmonyPotionEffect(matcher.getWhat(), matcher.getDuration(),
+                            matcher.getAmplifier(), false, matcher.isShowParticles(),
+                            matcher.expiredCallbacks != null ? matcher.expiredCallbacks : new IEntityCallbackContainer[0],
+                            matcher.curedCallbacks != null ? matcher.curedCallbacks : new IEntityCallbackContainer[0],
+                            matcher.removedCallbacks != null ? matcher.removedCallbacks : new IEntityCallbackContainer[0]);
+                    effect.setCurativeItems(Lists.newArrayList(matcher.getCures()));
+
+                    // Check if this drop matches:
+                    result = matcher.matches(entity, new BaseEntityMatcherData());
+                    if(result.isMatch()) break;
+                    matcher = (MobPotionEffect) matcher.getAltMatch();
+                } while(matcher != null);
+
                 if(!result.isMatch()) continue;
 
                 // Make sure we have sane drop amounts:

@@ -1,4 +1,65 @@
 <div>
+    <h2>Version 1.4.4</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Added an 'otherwise' parameter to 'setMobDrops', 'setBlockDrops', 'addMobShed', 'addMobPotionEffect', and
+            'addEntityEvent' so that, when a match fails, you may set up an alternate drop/potion effect/event.
+            <ul>
+                <li>
+                    This is useful primarily for replicating drop situations like gravel, where there's an N% chance of finding
+                    flint, but it should otherwise drop gravel.
+                </li>
+                <li>
+                    Each 'otherwise' entry is a full entry in itself, so it can have its own matchers, and its own
+                    'otherwise', in case you want to continue chaining them.  Remember that too many chains will
+                    begin to impact performance.
+                </li>
+            </ul>
+        </li>
+        <li>
+            Added HQM and Better Questing integration; both use a standard set of matchers/callbacks to promote
+            portability between the two mods.  The following matchers are available for 'setMobDrops', 'setBlockDrops',
+            'addMobShed', 'addMobPotionEffect', and 'addEntityEvent':
+            <ul>
+                <li>questingIsHardcore: Takes a single boolean parameter, determining if it should be valid when/when not in hardcore mode</li>
+                <li>questingInParty: Takes a single boolean parameter, determining if it should be valid when/when the player is in a party</li>
+                <li>questingHasSharedLoot: Takes a single boolean parameter, determining if it should be valid when/when the player's party has shared loot</li>
+                <li>questingHasSharedLives: Takes a single boolean parameter, determining if it should be valid when/when the player's party has shared lives</li>
+                <li>questingQuestStatus: Matches a given quest's status by its name (must be unique) and status, optionally against Any/All players online.</li>
+            </ul><br />
+            Additionally, the following callbacks are made available:
+            <ul>
+                <li>questingGiveLives: Gives the target player/party one or more lives.</li>
+                <li>questingTakeLives: Removes one or more lives from the player/party.</li>
+                <li>questingCompleteQuest: Completes all objectives for the named quest, and allows the player to claim any rewards.</li>
+                <li>questingResetQuest: Resets all objectives for the named quest, requiring completing them again prior to turning in the quest.</li>
+            </ul>
+        </li>
+        <li>
+            Added matcher 'isSleeping' to addMobShed, addMobPotionEffect, and addEntityEvent.  This checks to see if
+            the entity in question is a player, and if they are currently in a bed (or not, if set to false).
+        </li>
+        <li>
+            Added an operation 'setSkyColor', as well as callbacks 'setSkyColor' and 'revertSkyColor' in order to
+            allow you to change the sky color of a given dimension.
+        </li>
+        <li>
+            Improved how mob and block drops were calculated to ease some of the burden during processing.
+        </li>
+        <li>
+            Teleport callbacks will actually run some safety checks on the target area prior to teleporting things, by
+            default.  Added the optional parameters 'unsafeTeleport' (defaults to false) and 'safeRadius' (defaults to
+            5 blocks) to control this functionality.
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/92">issue #92</a> where
+            the 'teleportSpawn' callback was a bit off in doing cross-dimensional teleports.  By a lot.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
     <h2>Version 1.4.3</h2>
     <h4>Features</h4>
     <ul>

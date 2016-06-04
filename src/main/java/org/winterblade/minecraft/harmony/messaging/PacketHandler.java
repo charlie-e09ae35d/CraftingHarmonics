@@ -2,12 +2,14 @@ package org.winterblade.minecraft.harmony.messaging;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.messaging.server.ConfigSyncMessage;
 import org.winterblade.minecraft.harmony.messaging.server.RandomSynchronizerMessage;
 import org.winterblade.minecraft.harmony.messaging.server.RandomSynchronizerMessage.RandomSynchronizerMessageHandler;
+import org.winterblade.minecraft.harmony.messaging.server.SkyColorSync;
 
 import java.util.Map;
 
@@ -24,6 +26,7 @@ public class PacketHandler {
         wrapper.registerMessage(RandomSynchronizerMessageHandler.class, RandomSynchronizerMessage.class,
                 id++, Side.CLIENT);
         wrapper.registerMessage(ConfigSyncMessage.Handler.class, ConfigSyncMessage.class, id++, Side.CLIENT);
+        wrapper.registerMessage(SkyColorSync.Handler.class, SkyColorSync.class, id++, Side.CLIENT);
     }
 
     /**
