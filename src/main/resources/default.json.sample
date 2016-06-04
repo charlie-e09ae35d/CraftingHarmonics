@@ -916,6 +916,7 @@
                             min: 1,
                             max: 1,
                             chance: 0.5,
+                            questingIsHardcore: true, // only if we have a quest mod installed in hardcore mode.
                             otherwise: {
                                 // Otherwise, drop gravel.
                                 what: "minecraft:gravel",
@@ -923,6 +924,15 @@
                                 max: 1
                                 // You could also continue chaining more matchers/otherwise combos here.
                             }
+                        },
+                        {
+                            what: "minecraft:flint",
+                            min: 1,
+                            max: 1,
+
+                            // Checks to see if anybody online has the quest 'Test Quest 1' available, and drops flint.
+                            // Valid statuses are 'Active', 'Locked', 'Complete', and 'Closed'
+                            questingQuestStatus: {name: "Test Quest 1", status: "ACTIVE", player: "ANY"}
                         }
                     ]
                 },
@@ -1110,7 +1120,7 @@
 
                         // Or a bit more extended:
                         {
-                            aroundMobs: { what: ["Ocelot"], min: 1, dist: 10 },
+                            aroundMobs: { what: ["Ocelot"], min: 1, dist: 3 },
                             cooldown: 1200,
                             then: [
                                 {
@@ -1141,6 +1151,63 @@
                                     }
                                 }
                             ]
+                        },
+
+                        // We can even affect the quest system, if a quest mod is installed...
+                        {
+                            type: "questingGiveLives",
+                            lives: 1,
+                            aboveBlock: "minecraft:diamond_block",
+                            cooldown: 200,
+
+                            // onSuccess will run only if the player received as many lives as you asked to give them.
+                            onSuccess: [
+                                {
+                                    type: "runPlayerCommand",
+                                    command: "/tell @p You've gained a life."
+                                }
+                            ]
+                        },
+                        {
+                            type: "questingTakeLives",
+                            lives: 1,
+                            aboveBlock: "minecraft:soul_sand",
+                            cooldown: 200,
+
+                            // Similarly, this will only run if you were able to take the correct number of lives from a player.
+                            onSuccess: [
+                                {
+                                    type: "runPlayerCommand",
+                                    command: "/tell @p You've lost a life!"
+                                }
+                            ]
+                        },
+                        {
+                            type: "questingCompleteQuest",
+                            quest: "Test Quest 2",
+                            aboveBlock: "minecraft:gold_block"
+                        },
+                        {
+                            type: "questingResetQuest",
+                            quest: "Test Quest 2",
+                            aboveBlock: "minecraft:iron_block"
+                        },
+                    ]
+                },
+
+                // Tile Entity Events
+                {
+                    __comment: "Ticking tile entities in the game can also have events associated with them.",
+                    type: "addTileEntityEvent",
+                    what: ["net.minecraft.tileentity.TileEntityFurnace"],
+                    events: [
+                        // This is the same format as the entity events
+                        {
+                            // Cause furnaces to blow up if they get rained on.
+                            type: "explode",
+                            strength: 3,
+                            isSmoking: true,
+                            isRaining: { onlyOnTarget: true }
                         }
                     ]
                 },
