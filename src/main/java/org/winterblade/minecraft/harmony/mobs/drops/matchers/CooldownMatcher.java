@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.mobs.drops.matchers;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
@@ -14,7 +15,7 @@ import org.winterblade.minecraft.harmony.common.matchers.BaseCooldownMatcher;
  */
 @Component(properties = "cooldown")
 @PrioritizedObject(priority = Priority.LOWER)
-public class CooldownMatcher extends BaseCooldownMatcher implements IMobDropMatcher {
+public class CooldownMatcher extends BaseCooldownMatcher<Entity> implements IMobDropMatcher {
     public CooldownMatcher(int cooldown) {
         super(cooldown);
     }
@@ -29,6 +30,6 @@ public class CooldownMatcher extends BaseCooldownMatcher implements IMobDropMatc
     @Override
     public BaseMatchResult isMatch(LivingDropsEvent evt, ItemStack drop) {
         if(evt.getSource() == null || evt.getSource().getEntity() == null) return BaseMatchResult.False;
-        return matches(evt.getSource().getEntity());
+        return matches(evt.getSource().getEntity(), evt.getSource().getEntity().getEntityWorld());
     }
 }

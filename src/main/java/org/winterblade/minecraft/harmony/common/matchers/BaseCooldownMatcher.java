@@ -9,8 +9,8 @@ import java.util.WeakHashMap;
 /**
  * Created by Matt on 5/22/2016.
  */
-public abstract class BaseCooldownMatcher {
-    private final WeakHashMap<Entity, Long> cooldowns = new WeakHashMap<>();
+public abstract class BaseCooldownMatcher<T> {
+    private final WeakHashMap<T, Long> cooldowns = new WeakHashMap<>();
 
     private final int cooldownTicks;
 
@@ -18,9 +18,7 @@ public abstract class BaseCooldownMatcher {
         this.cooldownTicks = cooldownTicks;
     }
 
-    protected BaseMatchResult matches(Entity entity) {
-        World inWorld = entity.getEntityWorld();
-
+    protected BaseMatchResult matches(T entity, World inWorld) {
         // If we match, then go ahead and update our cooldown time...
         Runnable updateFn = () -> cooldowns.put(entity, inWorld.getTotalWorldTime()+cooldownTicks);
 

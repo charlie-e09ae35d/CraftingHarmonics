@@ -14,13 +14,13 @@ import org.winterblade.minecraft.harmony.common.matchers.BaseCooldownMatcher;
  */
 @Component(properties = "cooldown")
 @PrioritizedObject(priority = Priority.LOWER)
-public class CooldownMatcher extends BaseCooldownMatcher implements IEntityMatcher {
+public class CooldownMatcher extends BaseCooldownMatcher<Entity> implements IEntityMatcher {
     public CooldownMatcher(int cooldown) {
         super(cooldown);
     }
 
     @Override
     public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
-        return matches(entity);
+        return matches(entity, entity.getEntityWorld());
     }
 }

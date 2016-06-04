@@ -8,6 +8,8 @@ import org.winterblade.minecraft.harmony.api.questing.QuestStatus;
 import org.winterblade.minecraft.harmony.common.matchers.PlayerMatcherMode;
 import org.winterblade.minecraft.harmony.quests.QuestRegistry;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by Matt on 5/30/2016.
  */
@@ -20,7 +22,7 @@ public abstract class BaseQuestStatusMatcher {
         mode = PlayerMatcherMode.convert(data.getPlayer());
     }
 
-    protected BaseMatchResult matches(Entity entity) {
+    protected BaseMatchResult matches(@Nullable Entity entity) {
         // Allows for checking drops if any/all players are on the quest, even if the current target isn't a player...
         if(mode == PlayerMatcherMode.CURRENT
                 && (entity == null || !EntityPlayerMP.class.isAssignableFrom(entity.getClass()))) return BaseMatchResult.False;

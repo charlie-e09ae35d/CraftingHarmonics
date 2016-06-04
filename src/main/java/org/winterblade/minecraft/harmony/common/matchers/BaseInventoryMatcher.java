@@ -4,8 +4,10 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
@@ -39,12 +41,30 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
         // Sanity checking...
         if(player.inventory == null || player.inventory.mainInventory == null) return BaseMatchResult.False;
 
+        // Only search through the player's main inventory:
+        return matches(player.inventory, drop, 0, 36, true);
+    }
+
+    protected BaseMatchResult matches(TileEntity tileEntity, ItemStack drop, int min, int max, boolean partial) {
+        if(!IInventory.class.isAssignableFrom(tileEntity.getClass())) return BaseMatchResult.False;
+        return matches((IInventory)tileEntity, drop, min, max, partial);
+    }
+
+    /**
+     * Find all items in the inventory matching the required item
+     * @param inventory      The inventory to search through
+     * @param drop           The drop to modify (if any)
+     * @param lowerBound     The lower bound to search from
+     * @param upperBound     The upper bound to search to
+     * @param partial        If the matcher should match on a partial stack
+     * @return               The match result.
+     */
+    private BaseMatchResult matches(IInventory inventory, @Nullable ItemStack drop, int lowerBound, int upperBound, boolean partial) {
         // Find everything in the inventory that can match this...
         BiMap<Integer, ItemStack> matchingItems = HashBiMap.create();
 
-        ItemStack[] mainInventory = player.inventory.mainInventory;
-        for (int i = 0, mainInventoryLength = mainInventory.length; i < mainInventoryLength; i++) {
-            ItemStack item = mainInventory[i];
+        for (int i = lowerBound, len = Math.min(inventory.getSizeInventory(),upperBound); i < len; i++) {
+            ItemStack item = inventory.getStackInSlot(i);
             if(item == null
                     || !item.isItemEqualIgnoreDurability(requiredItem)
                     || (nbt != null && !ItemUtility.checkIfNbtMatches(nbt, item.getTagCompound(), fuzzyNbt))) continue;
@@ -60,7 +80,7 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
 
         Map<Integer, ItemStack> affectedItems = new HashMap<>();
 
-        int dropsRemaining = drop.stackSize;
+        int dropsRemaining = drop != null ? drop.stackSize : Integer.MAX_VALUE;
         for(Map.Entry<Integer, ItemStack> entry : matchingItems.entrySet()) {
             ItemStack equipment = ItemStack.copyItemStack(entry.getValue());
             int dropCount = 0;
@@ -104,14 +124,15 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
         }
 
         // If we couldn't generate all the items...
-        if(0 < dropsRemaining) drop.stackSize -= dropsRemaining;
+        if(0 < dropsRemaining && !partial) return BaseMatchResult.False;
+        if(drop != null && 0 < dropsRemaining) drop.stackSize -= dropsRemaining;
 
         // Return something to update the inventory if we succeed.
         return new BaseMatchResult(true, new Runnable() {
             @Override
             public void run() {
                 for(Map.Entry<Integer, ItemStack> entry : affectedItems.entrySet()) {
-                    player.replaceItemInInventory(entry.getKey(), entry.getValue());
+                    inventory.setInventorySlotContents(entry.getKey(), entry.getValue());
                 }
             }
         });

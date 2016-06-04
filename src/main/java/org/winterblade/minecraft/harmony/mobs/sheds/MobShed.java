@@ -13,7 +13,7 @@ import java.util.Random;
  * Created by Matt on 5/10/2016.
  */
 public class MobShed extends BaseDrop<EntityLivingBase, IMobShedMatcher> {
-    public static class Handler extends BaseEventMatch.BaseMatchHandler<MobShed> {
+    public static class Handler extends BaseEventMatch.BaseMatchHandler<MobShed, EntityLivingBase> {
         /**
          * Applies the handler to the given mob
          * @param rand       The rand to use

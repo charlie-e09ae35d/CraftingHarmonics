@@ -80,7 +80,7 @@ public class MobPotionEffect extends BaseEventMatch<Entity, IEntityMatcherData, 
         }
     }
 
-    public static class Handler extends BaseEventMatch.BaseMatchHandler<MobPotionEffect> {
+    public static class Handler extends BaseEventMatch.BaseMatchHandler<MobPotionEffect, EntityLivingBase> {
         /**
          * Applies the handler to the given mob
          * @param rand       The rand to use

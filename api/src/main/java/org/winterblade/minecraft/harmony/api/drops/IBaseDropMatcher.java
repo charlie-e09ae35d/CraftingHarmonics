@@ -2,12 +2,12 @@ package org.winterblade.minecraft.harmony.api.drops;
 
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
-import org.winterblade.minecraft.harmony.api.entities.IMobMatcher;
+import org.winterblade.minecraft.harmony.api.IMatcher;
 
 /**
  * Created by Matt on 5/10/2016.
  */
-public interface IBaseDropMatcher<TEvt> extends IMobMatcher<TEvt, ItemStack> {
+public interface IBaseDropMatcher<TEvt> extends IMatcher<TEvt, ItemStack> {
     /**
      * Should return true if this matcher matches the given event
      * @param evt    The event to match
