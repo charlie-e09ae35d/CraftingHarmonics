@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 
 /**
@@ -39,8 +40,8 @@ public class BaseScoreboardMatcher {
         }
     }
 
-    protected BaseMatchResult matches(World world, Entity entity) {
-        if(world == null || entity == null) return BaseMatchResult.False;
+    protected BaseMatchResult matches(World world, @Nullable Entity entity) {
+        if(world == null || (mode == PlayerMatcherMode.CURRENT && entity == null)) return BaseMatchResult.False;
 
         Scoreboard scoreboard = world.getScoreboard();
         if(scoreboard == null) return BaseMatchResult.False;
@@ -60,7 +61,7 @@ public class BaseScoreboardMatcher {
                 return checkOnlineForScoreboard(scoreboard, objective, true);
         }
 
-        int points = getPoints(scoreboard, objective, mode == PlayerMatcherMode.SPECIFIC ? data.getPlayer() : entity.getName());
+        int points = getPoints(scoreboard, objective, mode != PlayerMatcherMode.CURRENT ? data.getPlayer() : entity.getName());
         return checkPoints(points) ? BaseMatchResult.True : BaseMatchResult.False;
     }
 
