@@ -46,7 +46,7 @@ public abstract class BaseInventoryMatcher extends BaseItemStackMatcher {
     }
 
     protected BaseMatchResult matches(TileEntity tileEntity, ItemStack drop, int min, int max, boolean partial) {
-        if(IInventory.class.isAssignableFrom(tileEntity.getClass())) return BaseMatchResult.False;
+        if(!IInventory.class.isAssignableFrom(tileEntity.getClass())) return BaseMatchResult.False;
         return matches((IInventory)tileEntity, drop, min, max, partial);
     }
 

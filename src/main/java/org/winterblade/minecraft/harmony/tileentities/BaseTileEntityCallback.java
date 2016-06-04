@@ -49,8 +49,6 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
 
     @Override
     public final void apply(TileEntity target) {
-        LogHelper.info("Applying event for {}", target.getBlockType().getLocalizedName());
-
         // Figure out if we match
         Data data = new Data();
         BaseMatchResult result = matches(target, data);
