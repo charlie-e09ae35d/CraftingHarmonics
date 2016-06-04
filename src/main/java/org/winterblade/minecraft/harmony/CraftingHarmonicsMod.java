@@ -23,6 +23,7 @@ import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
 import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.proxies.CommonProxy;
+import org.winterblade.minecraft.harmony.quests.QuestRegistry;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.scripting.ScriptInteropRegistry;
@@ -71,6 +72,7 @@ public class CraftingHarmonicsMod {
         ScriptInteropRegistry.registerInterops(AnnotationUtil.getInteropClasses(event.getAsmData()));
         BaseEntityCallback.registerCallbacks(AnnotationUtil.getEntityCallbacks(event.getAsmData()));
         BaseTileEntityCallback.registerCallbacks(AnnotationUtil.getTileEntityCallbacks(event.getAsmData()));
+        QuestRegistry.registerProviders(AnnotationUtil.getQuestProviders(event.getAsmData()));
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
@@ -110,6 +112,9 @@ public class CraftingHarmonicsMod {
     public void serverStarted(FMLServerStartedEvent evt) {
         savedGameData = SavedGameData.get(DimensionManager.getWorld(0));
         proxy.onStarted(evt);
+
+        // Preload caches...
+        QuestRegistry.instance.resetCache();
     }
 
     /**

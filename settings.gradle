@@ -1,6 +1,8 @@
 include 'api'
 include 'integration'
 include 'integration:abyssalcraft'
+include 'integration:betterquesting'
 include 'integration:bloodmagic'
+include 'integration:hqm'
 include 'integration:techreborn'
 include 'integration:ticon'

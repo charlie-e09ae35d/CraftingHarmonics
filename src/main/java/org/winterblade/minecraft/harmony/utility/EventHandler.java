@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -12,21 +13,23 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.OperationSet;
-import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.callbacks.StopTimeCommand;
 import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.tileentities.TileEntityTickRegistry;
+import org.winterblade.minecraft.harmony.world.ProxiedWorldProvider;
+import org.winterblade.minecraft.harmony.world.sky.ClientSkyModifications;
+import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
 
 /**
  * Created by Matt on 4/13/2016.
  */
 public class EventHandler {
     @SubscribeEvent
-    // This is called on the server.
     public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent evt) {
         EntityPlayer basePlayer = evt.player;
 
@@ -48,8 +51,8 @@ public class EventHandler {
         }
 
         PacketHandler.synchronizeConfig(NashornConfigProcessor.getInstance().getCache(), player);
+        SkyModificationRegistry.resyncPlayerData(player);
     }
-
 
     @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent evt) {
@@ -76,6 +79,17 @@ public class EventHandler {
             BlockDropRegistry.clearExplodedList();
         } catch(Exception ex) {
             LogHelper.error("Error handling world tick; please report this along with your config file.", ex);
+        }
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent evt) {
+       if(evt.phase != TickEvent.Phase.END) return;
+
+        try {
+            ClientSkyModifications.update();
+        } catch (Exception ex) {
+            LogHelper.error("Error handling client tick; please report this along with your config file.", ex);
         }
     }
 
@@ -109,6 +123,17 @@ public class EventHandler {
             BlockDropRegistry.registerExplodedBlocks(evt.getAffectedBlocks());
         } catch (Exception ex) {
             LogHelper.error("Error handling explosion detonation event; please report this along with your config file.", ex);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onWorldLoaded(WorldEvent.Load evt) {
+        try {
+            if(evt.getWorld().isRemote) {
+                ProxiedWorldProvider.injectProvider(evt.getWorld());
+            }
+        } catch (Exception | VerifyError ex) {
+            LogHelper.error("Error handling world load event; please report this along with your config file.", ex);
         }
     }
 }

@@ -17,25 +17,25 @@ import java.util.Collection;
  */
 public class BaseScoreboardMatcher {
     private final ScoreboardMatchData data;
-    private final ScoreMatcherMode mode;
+    private final PlayerMatcherMode mode;
 
     public BaseScoreboardMatcher(ScoreboardMatchData data) {
         this.data = data;
         switch (data.getPlayer().toUpperCase()) {
             case "ALL":
-                mode = ScoreMatcherMode.ALL;
+                mode = PlayerMatcherMode.ALL;
                 break;
             case "ALLONLINE":
-                mode = ScoreMatcherMode.ALLONLINE;
+                mode = PlayerMatcherMode.ALLONLINE;
                 break;
             case "ANY":
-                mode = ScoreMatcherMode.ANY;
+                mode = PlayerMatcherMode.ANY;
                 break;
             case "ANYONLINE":
-                mode = ScoreMatcherMode.ANYONLINE;
+                mode = PlayerMatcherMode.ANYONLINE;
                 break;
             default:
-                mode = data.getPlayer().equals("") ? ScoreMatcherMode.CURRENT : ScoreMatcherMode.SPECIFIC;
+                mode = data.getPlayer().equals("") ? PlayerMatcherMode.CURRENT : PlayerMatcherMode.SPECIFIC;
         }
     }
 
@@ -60,7 +60,7 @@ public class BaseScoreboardMatcher {
                 return checkOnlineForScoreboard(scoreboard, objective, true);
         }
 
-        int points = getPoints(scoreboard, objective, mode == ScoreMatcherMode.SPECIFIC ? data.getPlayer() : entity.getName());
+        int points = getPoints(scoreboard, objective, mode == PlayerMatcherMode.SPECIFIC ? data.getPlayer() : entity.getName());
         return checkPoints(points) ? BaseMatchResult.True : BaseMatchResult.False;
     }
 
@@ -134,15 +134,6 @@ public class BaseScoreboardMatcher {
         }
 
         return any ? BaseMatchResult.False : BaseMatchResult.True;
-    }
-
-    private enum ScoreMatcherMode {
-        CURRENT,
-        SPECIFIC,
-        ALL,
-        ALLONLINE,
-        ANY,
-        ANYONLINE
     }
 
     public static class ScoreboardMatchData {
