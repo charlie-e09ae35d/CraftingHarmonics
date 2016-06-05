@@ -443,6 +443,24 @@ public class ItemUtility {
         }
     }
 
+    /**
+     * Checks if the given
+     * @param output          The output we're checking against
+     * @param recipeOutput    The recipe's output.
+     * @param input           The input we're checking against
+     * @param recipeInput     The recipe's input
+     * @return                If the recipe matches or not.
+     */
+    public static boolean areRecipesEquivalent(@Nullable ItemStack output, ItemStack recipeOutput, @Nullable ItemStack input, Object recipeInput) {
+        try {
+            return !(output != null && !recipeOutput.isItemEqualIgnoreDurability(output))
+                    && !(input != null && !ItemUtility.recipeInputsMatch(input, recipeInput));
+        } catch(Exception e) {
+            LogHelper.warn("Error testing recipe match.", e);
+            return false;
+        }
+    }
+
     private enum ItemType {
         Regular, ExactNbt, FuzzyNbt
     }
