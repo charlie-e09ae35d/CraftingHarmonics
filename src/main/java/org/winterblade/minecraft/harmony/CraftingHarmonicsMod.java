@@ -237,13 +237,15 @@ public class CraftingHarmonicsMod {
      * @param server    The server to reload it on
      */
     public static void reloadConfigs(MinecraftServer server) {
-        // Reload the configs:
-        String[] sets = appliedSets.toArray(new String[appliedSets.size()]);
-        clearSets();
-        configManager.reload();
-        initSets();
-        applySets(sets);
-        syncAllConfigs(server);
+        server.addScheduledTask(() -> {
+            // Reload the configs:
+            String[] sets = appliedSets.toArray(new String[appliedSets.size()]);
+            clearSets();
+            configManager.reload();
+            initSets();
+            applySets(sets);
+            syncAllConfigs(server);
+        });
     }
 
     /**
