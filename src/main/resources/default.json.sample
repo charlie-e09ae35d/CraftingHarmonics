@@ -1595,6 +1595,82 @@
                     ]
                 },
             ]
+        },
+
+        // Botania Integration
+        {
+            name: "botania",
+            operations: [
+                {
+                    __comment: "You can add recipes to the petal apothecary",
+                    type: "Botania.addPetalRecipe",
+                    output: "minecraft:gold_block",
+                    with: ["botania:petal:4", "botania:petal:4", "botania:petal:4", "botania:petal:4", "botania:petal:4"]
+                },
+                {
+                    __comment: "And remove them...",
+                    __result: "Removes any recipe using the white petals.",
+                    type: "Botania.removePetalRecipe",
+                    // Both 'what' and 'with' are optional.  If both are left out, it will remove every recipe.
+                    with: ["botania:petal:0"]
+                },
+                {
+                    __comment: "You can add 'recipes' to the pure daisy",
+                    type: "Botania.addPureDaisy",
+                    with: "minecraft:grass",
+                    output: {
+                        block: "minecraft:dirt",
+                        state: {
+                            variant: "podzol"
+                        }
+                    },
+                    time: 50 // The number of ticks it takes; can be left out for the 'default'.
+                },
+                {
+                    __comment: "You can also remove recipes from the pure daisy.",
+                    type: "Botania.removePureDaisy",
+                    what: "minecraft:sand" // You have to specify this one by the output.
+                },
+                {
+                    __comment: "You can also add recipes to the mana pool",
+                    type: "Botania.addManaInfusion",
+                    output: "minecraft:nether_star",
+                    with: "minecraft:golden_apple:1",
+                    mana: 100,
+                    // Both of these are optional, and default to false. Only one can be true, though.
+                    isConjuration: false,
+                    isAlchemy: true
+                },
+                {
+                    __comment: "You can also remove recipes from it.",
+                    type: "Botania.removeManaInfusion",
+                    // 'what' and 'with' are, again, optional.
+                    with: "minecraft:diamond"
+                },
+                {
+                    __comment: "The runic altar...",
+                    type: "Botania.addRunicAltar",
+                    output: "minecraft:nether_star",
+                    with: ["minecraft:golden_apple:1","<nuggetGold>"],
+                    mana: 10000 // This is roughly 1/10th of mana pool...
+                },
+                {
+                    __comment: "... and removing recipes.",
+                    type: "Botania.removeRunicAltar",
+                    what: "botania:rune:7"
+                },
+                {
+                    __comment: "Adding Elven trades...",
+                    type: "Botania.addElvenTrade",
+                    output: "minecraft:nether_star",
+                    with: ["minecraft:golden_apple:1","<nuggetGold>"],
+                },
+                {
+                    __comment: "... and removing them.",
+                    type: "Botania.removeElvenTrade",
+                    with: ["minecraft:quartz"]
+                }
+            ]
         }
     ]
 }

@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.common.blocks;
 
+import com.google.common.collect.ImmutableSet;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import jdk.nashorn.internal.runtime.ScriptObject;
@@ -10,10 +11,7 @@ import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Matt on 5/14/2016.
@@ -39,6 +37,14 @@ public class BlockMatcher {
 
     public Block getBlock() {
         return block;
+    }
+
+    public Set<IBlockState> getStates() {
+        return ImmutableSet.copyOf(states);
+    }
+
+    public Optional<IBlockState> getFirstState() {
+        return states.stream().findFirst();
     }
 
     public boolean matches(IBlockState state) {
