@@ -4,7 +4,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.entities.IMobMatcher;
+import org.winterblade.minecraft.harmony.api.IMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
  * @param <T>           The deserialized class itself
  */
 public abstract class BaseMatchingDeserializer
-        <TEvt, TResult, TMatcher extends IMobMatcher<TEvt, TResult>, T extends BaseEventMatch<TEvt, TResult, TMatcher>> extends BaseComponentDeserializer<T, TMatcher> {
+        <TEvt, TResult, TMatcher extends IMatcher<TEvt, TResult>, T extends BaseEventMatch<TEvt, TResult, TMatcher>> extends BaseComponentDeserializer<T, TMatcher> {
     protected BaseMatchingDeserializer(Class<TMatcher> matcherClass) {
         super(matcherClass);
     }

@@ -28,6 +28,7 @@ public class CommandHandler implements ICommand {
         subcommands.put("removeSet", new RemoveSetCommand());
         subcommands.put("getPotions", new GetPotionsCommand());
         subcommands.put("getAchievementList", new GetAchievementListCommand());
+        subcommands.put("reloadQuestCache", new ReloadQuestCacheCommand());
     }
 
     @Override

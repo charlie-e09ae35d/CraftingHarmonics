@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.common.TickHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.callbacks.EntityCallbackContainer;
 import org.winterblade.minecraft.harmony.entities.effects.MobPotionEffect;
@@ -27,9 +28,9 @@ public class MobTickRegistry {
     private static boolean isActive = false;
 
     // Tick handlers
-    private static TickHandler<MobShed, MobShed.Handler> shedHandler;
-    private static TickHandler<MobPotionEffect, MobPotionEffect.Handler> potionEffectHandler;
-    private static TickHandler<IEntityCallbackContainer, EntityCallbackContainer.Handler> effectHandler;
+    private static LivingEntityTickHandler<MobShed, MobShed.Handler> shedHandler;
+    private static LivingEntityTickHandler<MobPotionEffect, MobPotionEffect.Handler> potionEffectHandler;
+    private static LivingEntityTickHandler<IEntityCallbackContainer, EntityCallbackContainer.Handler> effectHandler;
 
     // Queued callbacks; this is a concurrent queue because we may add to it while processing it.
     private static Queue<EntityCallbackData> entityCallbackQueue = new ConcurrentLinkedQueue<>();
@@ -37,9 +38,9 @@ public class MobTickRegistry {
     public static void init() {
         inited = true;
 
-        shedHandler = new TickHandler<>(MobShed.Handler.class, CraftingHarmonicsMod.getConfigManager().getShedSeconds());
-        potionEffectHandler = new TickHandler<>(MobPotionEffect.Handler.class, CraftingHarmonicsMod.getConfigManager().getPotionEffectTicks());
-        effectHandler = new TickHandler<>(EntityCallbackContainer.Handler.class, CraftingHarmonicsMod.getConfigManager().getEventTicks());
+        shedHandler = new LivingEntityTickHandler<>(MobShed.Handler.class, CraftingHarmonicsMod.getConfigManager().getShedSeconds());
+        potionEffectHandler = new LivingEntityTickHandler<>(MobPotionEffect.Handler.class, CraftingHarmonicsMod.getConfigManager().getPotionEffectTicks());
+        effectHandler = new LivingEntityTickHandler<>(EntityCallbackContainer.Handler.class, CraftingHarmonicsMod.getConfigManager().getEventTicks());
     }
 
     /**
@@ -171,102 +172,11 @@ public class MobTickRegistry {
     }
 
 
-    /**
-     * Tick handler
-     */
+    private static class LivingEntityTickHandler<TMatcher, THandler extends BaseEventMatch.BaseMatchHandler<TMatcher, EntityLivingBase>>
+        extends TickHandler<TMatcher, EntityLivingBase, THandler> {
 
-    private static class TickHandler<TMatcher, THandler extends BaseEventMatch.BaseMatchHandler<TMatcher>> {
-        private final Class<THandler> handlerClass;
-        private final int freq;
-        private boolean isActive = false;
-
-        // Full handler list
-        private final Map<UUID, THandler> handlers = new HashMap<>();
-
-        // Entity-to-handler cache
-        private final Map<String, Set<UUID>> cache = new HashMap<>();
-
-        // Active handlers from all sets
-        private final Set<UUID> activeHandlers = new LinkedHashSet<>();
-
-        TickHandler(Class<THandler> handlerClass, int freq) {
-            this.handlerClass = handlerClass;
-            this.freq = freq;
-        }
-
-        void handle(Random rand, EntityLivingBase entity, String entityName, String entityClassName) {
-            // If we have a cached entry, just do that...
-            if(cache.containsKey(entityClassName)) {
-                for(UUID id : cache.get(entityClassName)) {
-                    // If we're inactive, just pass on it
-                    if(!activeHandlers.contains(id)) continue;
-
-                    // Get the handler, make sure we actually got one, then apply it
-                    THandler handler = handlers.get(id);
-                    if(handler == null) continue;
-                    handler.apply(rand, entity);
-                }
-                return;
-            }
-
-            // Populate the cache
-            cache.put(entityClassName, new HashSet<>());
-
-            for (Map.Entry<UUID, THandler> entry : handlers.entrySet()) {
-                // If we don't have a handler, or the handler doesn't match:
-                if (!entry.getValue().isMatch(entityName) && !entry.getValue().isMatch(entityClassName)) continue;
-                cache.get(entityClassName).add(entry.getKey());
-
-                // If it's active, apply it
-                if(activeHandlers.contains(entry.getKey())) entry.getValue().apply(rand, entity);
-            }
-        }
-
-
-        /**
-         * Registers the given handler for this handler
-         * @param what        The mobs to match
-         * @param matchers    The additional matchers to use
-         * @return            The registered UUID
-         */
-        @Nullable
-        UUID registerHandler(String[] what, TMatcher[] matchers) {
-            UUID id = UUID.randomUUID();
-            THandler handler;
-            try {
-                handler = handlerClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                LogHelper.error("Error registering tick handler.", e);
-                return null;
-            }
-
-            // Set our matchers
-            handler.setWhat(what);
-            handler.setMatchers(matchers);
-
-            handlers.put(id, handler);
-            cache.clear();
-            return id;
-        }
-
-        public void apply(UUID ticket) {
-            isActive = true;
-            activeHandlers.add(ticket);
-            cache.clear();
-        }
-
-        public void remove(UUID ticket) {
-            activeHandlers.remove(ticket);
-            if(activeHandlers.size() <= 0) isActive = false;
-            cache.clear();
-        }
-
-        boolean isActive() {
-            return isActive;
-        }
-
-        boolean isActiveThisTick(TickEvent.WorldTickEvent evt) {
-            return isActive() && (evt.world.getTotalWorldTime() % freq) == 0;
+        LivingEntityTickHandler(Class<THandler> handlerClass, int freq) {
+            super(freq, handlerClass);
         }
     }
 

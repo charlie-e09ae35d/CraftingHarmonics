@@ -27,6 +27,8 @@ import org.winterblade.minecraft.harmony.quests.QuestRegistry;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.scripting.ScriptInteropRegistry;
+import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
+import org.winterblade.minecraft.harmony.tileentities.TileEntityTickRegistry;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
 import org.winterblade.minecraft.harmony.utility.SavedGameData;
@@ -69,6 +71,7 @@ public class CraftingHarmonicsMod {
         ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
         ScriptInteropRegistry.registerInterops(AnnotationUtil.getInteropClasses(event.getAsmData()));
         BaseEntityCallback.registerCallbacks(AnnotationUtil.getEntityCallbacks(event.getAsmData()));
+        BaseTileEntityCallback.registerCallbacks(AnnotationUtil.getTileEntityCallbacks(event.getAsmData()));
         QuestRegistry.registerProviders(AnnotationUtil.getQuestProviders(event.getAsmData()));
 
         // Handle config
@@ -234,13 +237,15 @@ public class CraftingHarmonicsMod {
      * @param server    The server to reload it on
      */
     public static void reloadConfigs(MinecraftServer server) {
-        // Reload the configs:
-        String[] sets = appliedSets.toArray(new String[appliedSets.size()]);
-        clearSets();
-        configManager.reload();
-        initSets();
-        applySets(sets);
-        syncAllConfigs(server);
+        server.addScheduledTask(() -> {
+            // Reload the configs:
+            String[] sets = appliedSets.toArray(new String[appliedSets.size()]);
+            clearSets();
+            configManager.reload();
+            initSets();
+            applySets(sets);
+            syncAllConfigs(server);
+        });
     }
 
     /**

@@ -20,6 +20,7 @@ import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
+import org.winterblade.minecraft.harmony.tileentities.TileEntityTickRegistry;
 import org.winterblade.minecraft.harmony.world.ProxiedWorldProvider;
 import org.winterblade.minecraft.harmony.world.sky.ClientSkyModifications;
 import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
@@ -60,6 +61,7 @@ public class EventHandler {
         try {
             CraftingHarmonicsMod.checkServerTick();
             MobTickRegistry.processCallbackQueue();
+            TileEntityTickRegistry.processCallbackQueue();
         } catch (Exception ex) {
             LogHelper.error("Error handling server tick; please report this along with your config file.", ex);
         }
@@ -71,6 +73,7 @@ public class EventHandler {
 
         try {
             MobTickRegistry.handleTick(evt);
+            TileEntityTickRegistry.handleTick(evt);
             StopTimeCommand.checkTimeStops(evt.world);
 
             // We should (hopefully) be done dealing with the explosion by this point...

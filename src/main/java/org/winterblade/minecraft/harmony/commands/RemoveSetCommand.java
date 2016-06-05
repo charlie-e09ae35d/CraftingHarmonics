@@ -79,14 +79,17 @@ public class RemoveSetCommand extends SubCommand {
             }
         }
 
-        if(!CraftingHarmonicsMod.undoSets(sets.toArray(new String[sets.size()]))) {
-            if(!silent) sender.addChatMessage(new TextComponentString("One or more of the sets: "
-                    + Joiner.on(", ").join(sets) + " could not be removed."));
-            return;
-        }
+        boolean finalSilent = silent;
+        server.addScheduledTask(() -> {
+            if(!CraftingHarmonicsMod.undoSets(sets.toArray(new String[sets.size()]))) {
+                if(!finalSilent) sender.addChatMessage(new TextComponentString("One or more of the sets: "
+                        + Joiner.on(", ").join(sets) + " could not be removed."));
+                return;
+            }
 
-        if(!silent) sender.addChatMessage(new TextComponentString(Joiner.on(", ").join(sets) + " removed."));
-        CraftingHarmonicsMod.syncAllConfigs();
+            if(!finalSilent) sender.addChatMessage(new TextComponentString(Joiner.on(", ").join(sets) + " removed."));
+            CraftingHarmonicsMod.syncAllConfigs();
+        });
     }
 
     @Override

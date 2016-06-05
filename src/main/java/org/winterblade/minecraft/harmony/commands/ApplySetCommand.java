@@ -74,14 +74,17 @@ public class ApplySetCommand extends SubCommand {
             }
         }
 
-        if(!CraftingHarmonicsMod.applySets(sets.toArray(new String[sets.size()]))) {
-            if(!silent) sender.addChatMessage(new TextComponentString("One or more of the sets: "
-                    + Joiner.on(", ").join(sets) + " could not be applied."));
-            return;
-        }
+        boolean finalSilent = silent;
+        server.addScheduledTask(() -> {
+            if(!CraftingHarmonicsMod.applySets(sets.toArray(new String[sets.size()]))) {
+                if(!finalSilent) sender.addChatMessage(new TextComponentString("One or more of the sets: "
+                        + Joiner.on(", ").join(sets) + " could not be applied."));
+                return;
+            }
 
-        if(!silent) sender.addChatMessage(new TextComponentString(Joiner.on(", ").join(sets) + " applied."));
-        CraftingHarmonicsMod.syncAllConfigs();
+            if(!finalSilent) sender.addChatMessage(new TextComponentString(Joiner.on(", ").join(sets) + " applied."));
+            CraftingHarmonicsMod.syncAllConfigs();
+        });
     }
 
     @Override

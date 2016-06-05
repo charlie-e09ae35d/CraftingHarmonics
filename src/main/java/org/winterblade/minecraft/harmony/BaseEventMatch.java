@@ -1,10 +1,9 @@
 package org.winterblade.minecraft.harmony;
 
 import com.google.common.collect.Lists;
-import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.entities.IMobMatcher;
+import org.winterblade.minecraft.harmony.api.IMatcher;
 import org.winterblade.minecraft.harmony.utility.BasePrioritizedData;
 
 import javax.annotation.Nullable;
@@ -16,7 +15,7 @@ import java.util.Random;
 /**
  * Created by Matt on 5/20/2016.
  */
-public class BaseEventMatch<TEvt, TResult, TMatcher extends IMobMatcher<TEvt, TResult>> {
+public class BaseEventMatch<TEvt, TResult, TMatcher extends IMatcher<TEvt, TResult>> {
     private final PriorityQueue<BasePrioritizedData<TMatcher>> matchers = new PriorityQueue<>();
     private BaseEventMatch<TEvt, TResult, TMatcher> altMatch;
 
@@ -62,7 +61,7 @@ public class BaseEventMatch<TEvt, TResult, TMatcher extends IMobMatcher<TEvt, TR
         return altMatch;
     }
 
-    public static abstract class BaseMatchHandler<T> {
+    public static abstract class BaseMatchHandler<T, TEvt> {
         protected List<String> what;
         protected List<T> matchers;
 
@@ -82,7 +81,7 @@ public class BaseEventMatch<TEvt, TResult, TMatcher extends IMobMatcher<TEvt, TR
             return matchers;
         }
 
-        public abstract void apply(Random rand, EntityLivingBase entity);
+        public abstract void apply(Random rand, TEvt entity);
     }
 
 }
