@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -201,7 +202,7 @@ public class ReflectedBloodMagicRegistry {
             boolean matched = false;
 
             for (Object recipeInput : recipeInputs) {
-                if (!recipeInputsMatch(input, recipeInput)) continue;
+                if (!ItemUtility.recipeInputsMatch(input, recipeInput)) continue;
                 matched = true;
                 break;
             }
@@ -210,59 +211,6 @@ public class ReflectedBloodMagicRegistry {
         }
 
         return true;
-    }
-
-    /**
-     * Checks to see if the two sources match
-     * @param toCheck    The input to check
-     * @param against    The value to check against
-     * @return           True if the inputs match, checking ore-dictionaries
-     */
-    private static boolean recipeInputsMatch(Object toCheck, Object against) {
-        // TODO: Abstract this a bit more and then put it in ItemUtility
-        if(against == null) return false;
-
-        if(toCheck instanceof ItemStack) {
-            // If we're checking an ore-dict list:
-            if(against instanceof List<?>) {
-                for(Object i : (List<?>)against) {
-                    // Just to double check...
-                    if(!(i instanceof ItemStack)) return false;
-                    if(((ItemStack) i).isItemEqualIgnoreDurability((ItemStack)toCheck)) return true;
-                }
-
-                // If we got here without matching, we're not a match.
-                return false;
-            }
-
-            // If we're checking just a single item
-            if(against instanceof ItemStack) {
-                return ((ItemStack) against).isItemEqualIgnoreDurability((ItemStack)toCheck);
-            }
-
-            // What?
-            return false;
-        }
-
-        if(toCheck instanceof String) {
-            List<ItemStack> ores = OreDictionary.getOres((String) toCheck);
-
-            for(ItemStack sourceItem : ores) {
-                if (against instanceof List<?>) {
-                    // Find at least one match in the two lists...
-                    for(Object i : (List<?>)against) {
-                        // Just to double check...
-                        if(!(i instanceof ItemStack)) return false;
-                        if(((ItemStack) i).isItemEqualIgnoreDurability(sourceItem)) return true;
-                    }
-                } else if(against instanceof ItemStack) {
-                    if(((ItemStack) against).isItemEqualIgnoreDurability(sourceItem)) return true;
-                }
-            }
-            return false;
-        }
-
-        return false;
     }
 
     /*

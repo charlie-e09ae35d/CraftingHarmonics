@@ -11,7 +11,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.oredict.OreDictionary;
 import org.winterblade.minecraft.harmony.api.OperationException;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -364,6 +366,81 @@ public class ItemUtility {
 
         // And pretend we're crafting:
         return inv;
+    }
+
+    /**
+     * Checks to see if the two sources match
+     * @param toCheck    The input to check
+     * @param against    The value to check against
+     * @return           True if the inputs match, checking ore-dictionaries
+     */
+    public static boolean recipeInputsMatch(Object toCheck, Object against) {
+        if(toCheck == against) return true;
+        if(toCheck == null || against == null) return false;
+
+        if(toCheck instanceof ItemStack) {
+            // If we're checking an ore-dict list:
+            if(against instanceof String) {
+                against = OreDictionary.getOres(against.toString());
+            }
+
+            if(against instanceof List<?>) {
+                for(Object i : (List<?>)against) {
+                    // Just to double check...
+                    if(i instanceof String && recipeInputsMatch(toCheck, i)) return true;
+                    else if(i instanceof ItemStack && ((ItemStack) i).isItemEqualIgnoreDurability((ItemStack)toCheck)) return true;
+                }
+
+                // If we got here without matching, we're not a match.
+                return false;
+            }
+
+            // If we're checking just a single item
+            if(against instanceof ItemStack) {
+                return ((ItemStack) against).isItemEqualIgnoreDurability((ItemStack)toCheck);
+            }
+
+            // What?
+            return false;
+        }
+
+        if(toCheck instanceof String) {
+            toCheck = OreDictionary.getOres(toCheck.toString());
+        }
+
+        if(toCheck instanceof List<?>) {
+            for(Object i : (List<?>)toCheck) {
+                if(!(i instanceof ItemStack)) return false;
+                // Find at least one match...
+                if(recipeInputsMatch(i, against)) return true;
+            }
+            return false;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if the given
+     * @param output          The output we're checking against
+     * @param recipeOutput    The recipe's output.
+     * @param input           The input array we're checking against
+     * @param recipeInput     The recipe's input
+     * @return                If the recipe matches or not.
+     */
+    public static boolean areRecipesEquivalent(@Nullable ItemStack output, ItemStack recipeOutput, @Nullable ItemStack[] input, Object recipeInput) {
+        try {
+            if (output != null && !recipeOutput.isItemEqualIgnoreDurability(output)) return false;
+            if (input != null) {
+                for (ItemStack item : input) {
+                    if (!ItemUtility.recipeInputsMatch(item, recipeInput)) return false;
+                }
+            }
+            return true;
+        } catch(Exception e) {
+            LogHelper.warn("Error testing recipe match.", e);
+            return false;
+        }
     }
 
     private enum ItemType {
