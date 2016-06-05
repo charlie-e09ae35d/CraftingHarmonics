@@ -37,7 +37,7 @@ public class ProxiedWorldProvider extends WorldProvider {
      */
     public static void injectProvider(World world) {
         ProxiedWorldProvider provider = new ProxiedWorldProvider(world.provider);
-        ObfuscationReflectionHelper.setPrivateValue(World.class, world, provider, "provider");
+        ObfuscationReflectionHelper.setPrivateValue(World.class, world, provider, "field_73011_w");
     }
 
     @Override
