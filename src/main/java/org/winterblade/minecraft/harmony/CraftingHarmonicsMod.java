@@ -28,6 +28,7 @@ import org.winterblade.minecraft.harmony.quests.QuestRegistry;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.scripting.ScriptInteropRegistry;
+import org.winterblade.minecraft.harmony.temperature.TemperatureRegistry;
 import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
@@ -74,6 +75,7 @@ public class CraftingHarmonicsMod {
         BaseTileEntityCallback.registerCallbacks(AnnotationUtil.getTileEntityCallbacks(event.getAsmData()));
         QuestRegistry.instance.registerProviders(AnnotationUtil.getQuestProviders(event.getAsmData()));
         CalendarRegistry.instance.registerProviders(AnnotationUtil.getCalendarProviders(event.getAsmData()));
+        TemperatureRegistry.instance.registerProviders(AnnotationUtil.getTemperatureProviders(event.getAsmData()));
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
