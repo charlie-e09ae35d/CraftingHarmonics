@@ -23,14 +23,14 @@ public interface ICalendarProvider {
      * @param world     The world to check
      * @return          The season
      */
-    Season getSeason(World world);
+    String getSeason(World world);
 
     /**
      * Gets the current day of the year
      * @param world     The world to check
      * @return          The day of the year, with 1 being the first day of the year.
      */
-    short getDayOfYear(World world);
+    int getDayOfYear(World world);
 
 
 }

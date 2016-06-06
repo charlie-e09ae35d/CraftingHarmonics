@@ -26,7 +26,7 @@ public interface ITemperatureProvider {
      * @param pos      The position to check
      * @return         The temperature, in degrees Celsius.
      */
-    int getTemperatureAt(World world, BlockPos pos);
+    double getTemperatureAt(World world, BlockPos pos);
 
 
     /**
@@ -34,5 +34,5 @@ public interface ITemperatureProvider {
      * @param entity   The entity to check
      * @return         The entity's temperature, in degrees Celsius.
      */
-    int getInternalTemperature(EntityLivingBase entity);
+    double getInternalTemperature(EntityLivingBase entity);
 }
