@@ -1,22 +1,12 @@
 package org.winterblade.minecraft.harmony.api.calendar;
 
 import net.minecraft.world.World;
+import org.winterblade.minecraft.harmony.api.utility.IDependentProvider;
 
 /**
  * Interface denoting a calendar/season provider; this must be annotated with {@link CalendarProvider}.
  */
-public interface ICalendarProvider {
-    /**
-     * Gets the name of this provider.
-     * @return  The name of the provider, used to reference it in matchers/callbacks.
-     */
-    String getName();
-
-    /**
-     * Get a list of mod dependencies for this provider
-     * @return  A string array of mod dependencies.
-     */
-    String[] getDependencyList();
+public interface ICalendarProvider extends IDependentProvider {
 
     /**
      * Gets the current season

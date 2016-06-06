@@ -1,23 +1,12 @@
 package org.winterblade.minecraft.harmony.api.questing;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import org.winterblade.minecraft.harmony.api.utility.IDependentProvider;
 
 /**
  * Interface denoting a quest provider; this must be annotated with {@link QuestProvider}.
  */
-public interface IQuestProvider {
-    /**
-     * Gets the name of this provider.
-     * @return  The name of the provider, used to reference it in matchers/callbacks.
-     */
-    String getName();
-
-    /**
-     * Get a list of mod dependencies for this provider
-     * @return  A string array of mod dependencies.
-     */
-    String[] getDependencyList();
-
+public interface IQuestProvider extends IDependentProvider {
     /**
      * Gets if hardcore mode is enabled for the given provider.
      * @return  True if it is, false otherwise.  Should return false if the underlying provider doesn't support hardcore.

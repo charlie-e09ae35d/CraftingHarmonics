@@ -3,23 +3,12 @@ package org.winterblade.minecraft.harmony.api.temperature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.winterblade.minecraft.harmony.api.utility.IDependentProvider;
 
 /**
  * Interface denoting a calendar/season provider; this must be annotated with {@link TemperatureProvider}.
  */
-public interface ITemperatureProvider {
-    /**
-     * Gets the name of this provider.
-     * @return  The name of the provider, used to reference it in matchers/callbacks.
-     */
-    String getName();
-
-    /**
-     * Get a list of mod dependencies for this provider
-     * @return  A string array of mod dependencies.
-     */
-    String[] getDependencyList();
-
+public interface ITemperatureProvider extends IDependentProvider {
     /**
      * Gets the temperature in the given world at the given position
      * @param world    The world to check
