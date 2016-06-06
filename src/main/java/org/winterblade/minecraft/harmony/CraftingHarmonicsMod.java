@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapelessComponentRecipe;
+import org.winterblade.minecraft.harmony.calendar.CalendarRegistry;
 import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
@@ -28,7 +29,6 @@ import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.scripting.ScriptInteropRegistry;
 import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
-import org.winterblade.minecraft.harmony.tileentities.TileEntityTickRegistry;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
 import org.winterblade.minecraft.harmony.utility.SavedGameData;
@@ -72,7 +72,8 @@ public class CraftingHarmonicsMod {
         ScriptInteropRegistry.registerInterops(AnnotationUtil.getInteropClasses(event.getAsmData()));
         BaseEntityCallback.registerCallbacks(AnnotationUtil.getEntityCallbacks(event.getAsmData()));
         BaseTileEntityCallback.registerCallbacks(AnnotationUtil.getTileEntityCallbacks(event.getAsmData()));
-        QuestRegistry.registerProviders(AnnotationUtil.getQuestProviders(event.getAsmData()));
+        QuestRegistry.instance.registerProviders(AnnotationUtil.getQuestProviders(event.getAsmData()));
+        CalendarRegistry.instance.registerProviders(AnnotationUtil.getCalendarProviders(event.getAsmData()));
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");

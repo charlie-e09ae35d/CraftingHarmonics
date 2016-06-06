@@ -5,7 +5,11 @@ import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.ScriptInterop;
+import org.winterblade.minecraft.harmony.api.calendar.CalendarProvider;
+import org.winterblade.minecraft.harmony.api.calendar.ICalendarProvider;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
+import org.winterblade.minecraft.harmony.api.temperature.ITemperatureProvider;
+import org.winterblade.minecraft.harmony.api.temperature.TemperatureProvider;
 import org.winterblade.minecraft.harmony.api.tileentities.TileEntityCallback;
 import org.winterblade.minecraft.harmony.api.questing.IQuestProvider;
 import org.winterblade.minecraft.harmony.api.questing.QuestProvider;
@@ -48,6 +52,14 @@ public class AnnotationUtil {
 
     public static Map<String, Class<IQuestProvider>> getQuestProviders(ASMDataTable asmDataTable) {
         return getClassMap(asmDataTable, QuestProvider.class, IQuestProvider.class, null);
+    }
+
+    public static Map<String, Class<ICalendarProvider>> getCalendarProviders(ASMDataTable asmDataTable) {
+        return getClassMap(asmDataTable, CalendarProvider.class, ICalendarProvider.class, null);
+    }
+
+    public static Map<String, Class<ITemperatureProvider>> getTemperatureProviders(ASMDataTable asmDataTable) {
+        return getClassMap(asmDataTable, TemperatureProvider.class, ITemperatureProvider.class, null);
     }
 
     @SuppressWarnings("unchecked")
