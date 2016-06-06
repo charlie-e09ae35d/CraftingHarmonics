@@ -8,16 +8,15 @@ import org.winterblade.minecraft.harmony.api.ScriptInterop;
 import org.winterblade.minecraft.harmony.api.calendar.CalendarProvider;
 import org.winterblade.minecraft.harmony.api.calendar.ICalendarProvider;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
+import org.winterblade.minecraft.harmony.api.questing.IQuestProvider;
+import org.winterblade.minecraft.harmony.api.questing.QuestProvider;
 import org.winterblade.minecraft.harmony.api.temperature.ITemperatureProvider;
 import org.winterblade.minecraft.harmony.api.temperature.TemperatureProvider;
 import org.winterblade.minecraft.harmony.api.tileentities.TileEntityCallback;
-import org.winterblade.minecraft.harmony.api.questing.IQuestProvider;
-import org.winterblade.minecraft.harmony.api.questing.QuestProvider;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
 import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,48 +26,50 @@ import java.util.Set;
  * Borrowed mostly from mezz's JEI class of the same name; modified to load the name of the operation
  */
 public class AnnotationUtil {
-    private AnnotationUtil() {
+    private final ASMDataTable asmData;
+
+    public AnnotationUtil(ASMDataTable asmData) {
+        this.asmData = asmData;
     }
 
-    public static Map<String, Class<BasicOperation>> getRecipeOperations(@Nonnull ASMDataTable asmDataTable) {
-        return getClassMap(asmDataTable, Operation.class, BasicOperation.class, "name");
+    public Map<String, Class<BasicOperation>> getRecipeOperations() {
+        return getClassMap(Operation.class, BasicOperation.class, "name");
     }
 
-    public static Map<String, Class<Object>> getComponentClasses(@Nonnull ASMDataTable asmDataTable) {
-        return getClassMap(asmDataTable, Component.class, Object.class, null);
+    public Map<String, Class<Object>> getComponentClasses() {
+        return getClassMap(Component.class, Object.class, null);
     }
 
-    public static Map<String, Class<Object>> getInteropClasses(@Nonnull ASMDataTable asmDataTable) {
-        return getClassMap(asmDataTable, ScriptInterop.class, Object.class, null);
+    public Map<String, Class<Object>> getInteropClasses() {
+        return getClassMap(ScriptInterop.class, Object.class, null);
     }
 
-    public static Map<String, Class<BaseEntityCallback>> getEntityCallbacks(ASMDataTable asmDataTable) {
-        return getClassMap(asmDataTable, EntityCallback.class, BaseEntityCallback.class, "name");
+    public Map<String, Class<BaseEntityCallback>> getEntityCallbacks() {
+        return getClassMap(EntityCallback.class, BaseEntityCallback.class, "name");
     }
 
-    public static Map<String, Class<BaseTileEntityCallback>> getTileEntityCallbacks(ASMDataTable asmDataTable) {
-        return getClassMap(asmDataTable, TileEntityCallback.class, BaseTileEntityCallback.class, "name");
+    public Map<String, Class<BaseTileEntityCallback>> getTileEntityCallbacks() {
+        return getClassMap(TileEntityCallback.class, BaseTileEntityCallback.class, "name");
     }
 
-    public static Map<String, Class<IQuestProvider>> getQuestProviders(ASMDataTable asmDataTable) {
-        return getClassMap(asmDataTable, QuestProvider.class, IQuestProvider.class, null);
+    public Map<String, Class<IQuestProvider>> getQuestProviders() {
+        return getClassMap(QuestProvider.class, IQuestProvider.class, null);
     }
 
-    public static Map<String, Class<ICalendarProvider>> getCalendarProviders(ASMDataTable asmDataTable) {
-        return getClassMap(asmDataTable, CalendarProvider.class, ICalendarProvider.class, null);
+    public Map<String, Class<ICalendarProvider>> getCalendarProviders() {
+        return getClassMap(CalendarProvider.class, ICalendarProvider.class, null);
     }
 
-    public static Map<String, Class<ITemperatureProvider>> getTemperatureProviders(ASMDataTable asmDataTable) {
-        return getClassMap(asmDataTable, TemperatureProvider.class, ITemperatureProvider.class, null);
+    public Map<String, Class<ITemperatureProvider>> getTemperatureProviders() {
+        return getClassMap(TemperatureProvider.class, ITemperatureProvider.class, null);
     }
 
     @SuppressWarnings("unchecked")
-    private static <T,Tk> Map<Tk, Class<T>> getClassMap(@Nonnull ASMDataTable asmDataTable,
-                                                        Class<?> annotationClass,
+    private <T,Tk> Map<Tk, Class<T>> getClassMap(Class<?> annotationClass,
                                                         Class<T> outputClass,
                                                         @Nullable String idParam) {
         String annotationClassName = annotationClass.getCanonicalName();
-        Set<ASMDataTable.ASMData> asmTable = asmDataTable.getAll(annotationClassName);
+        Set<ASMDataTable.ASMData> asmTable = asmData.getAll(annotationClassName);
 
         Map<Tk,Class<T>> instances = new HashMap<>();
         for (ASMDataTable.ASMData asmData : asmTable) {

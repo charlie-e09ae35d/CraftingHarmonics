@@ -67,15 +67,18 @@ public class CraftingHarmonicsMod {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        // Load all recipe operations (thanks mezz, who thanks cpw... so also thanks cpw)
-        SetManager.CreateDeserializers(AnnotationUtil.getRecipeOperations(event.getAsmData()));
-        ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
-        ScriptInteropRegistry.registerInterops(AnnotationUtil.getInteropClasses(event.getAsmData()));
-        BaseEntityCallback.registerCallbacks(AnnotationUtil.getEntityCallbacks(event.getAsmData()));
-        BaseTileEntityCallback.registerCallbacks(AnnotationUtil.getTileEntityCallbacks(event.getAsmData()));
-        QuestRegistry.instance.registerProviders(AnnotationUtil.getQuestProviders(event.getAsmData()));
-        CalendarRegistry.instance.registerProviders(AnnotationUtil.getCalendarProviders(event.getAsmData()));
-        TemperatureRegistry.instance.registerProviders(AnnotationUtil.getTemperatureProviders(event.getAsmData()));
+        // Create our annotation utility...
+        AnnotationUtil annotationUtil = new AnnotationUtil(event.getAsmData());
+
+        // Load up all the parts of our system...
+        SetManager.CreateDeserializers(annotationUtil.getRecipeOperations());
+        ComponentRegistry.registerComponents(annotationUtil.getComponentClasses());
+        ScriptInteropRegistry.registerInterops(annotationUtil.getInteropClasses());
+        BaseEntityCallback.registerCallbacks(annotationUtil.getEntityCallbacks());
+        BaseTileEntityCallback.registerCallbacks(annotationUtil.getTileEntityCallbacks());
+        QuestRegistry.instance.registerProviders(annotationUtil.getQuestProviders());
+        CalendarRegistry.instance.registerProviders(annotationUtil.getCalendarProviders());
+        TemperatureRegistry.instance.registerProviders(annotationUtil.getTemperatureProviders());
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
