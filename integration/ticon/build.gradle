@@ -36,8 +36,8 @@ dependencies {
     compile project(":api")
 
     // TiCon integration; done badly.
-    deobfCompile "slimeknights.mantle:Mantle:1.9-0.9.4.jenkins126"
-    compile files("libs/TConstruct-1.9-2.2.2.DEV.adc860a.jar")
+    deobfCompile "slimeknights.mantle:Mantle:1.9.4-0.10.1.jenkins145"
+    compile files("libs/TConstruct-1.9.4-2.3.1.DEV.e91a7d1.jar")
 }
 
 //Add dependencies to the JAR
