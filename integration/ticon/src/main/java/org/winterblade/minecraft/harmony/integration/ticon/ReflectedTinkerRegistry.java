@@ -1,9 +1,11 @@
 package org.winterblade.minecraft.harmony.integration.ticon;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import slimeknights.mantle.util.RecipeMatchRegistry;
+import slimeknights.tconstruct.library.DryingRecipe;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.materials.IMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
@@ -25,6 +27,7 @@ public class ReflectedTinkerRegistry {
     private static List<AlloyRecipe> alloyRegistry;
     private static Map<FluidStack, Integer> smelteryFuels;
     private static Map<String, Material> materials;
+    private static List<DryingRecipe> dryingRegistry;
 
     // Harvest levels:
     public static Map<Integer, String> harvestLevelNames;
@@ -46,6 +49,8 @@ public class ReflectedTinkerRegistry {
         } catch (NoSuchFieldException e) {
             LogHelper.warn("Unable to access some of TiCon's Material fields");
         }
+
+        dryingRegistry = TinkerRegistry.getAllDryingRecipes();
     }
 
     private ReflectedTinkerRegistry() {}
@@ -194,6 +199,28 @@ public class ReflectedTinkerRegistry {
 
         harvestLevelNames.put(level, name);
     }
+
+    public static void addDryingRecipe(DryingRecipe recipe) {
+        dryingRegistry.add(recipe);
+    }
+
+    public static void removeDryingRecipe(DryingRecipe recipe) {
+        dryingRegistry.remove(recipe);
+    }
+
+
+    /**
+     * Creates a drying recipe
+     * @param with      The input item
+     * @param output    The output item
+     * @param time      The time to craft
+     * @return          The new drying recipe.
+     */
+    public static DryingRecipe makeDryingRecipe(ItemStack with, ItemStack output, int time) {
+        TinkerRegistry.registerDryingRecipe(with, output, time);
+        return dryingRegistry.remove(dryingRegistry.size()-1);
+    }
+
 
     /**
      * Encodes a color
