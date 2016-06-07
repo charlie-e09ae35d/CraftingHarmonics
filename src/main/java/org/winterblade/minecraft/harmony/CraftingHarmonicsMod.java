@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.RecipeSorter;
 import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapedComponentRecipe;
 import org.winterblade.minecraft.harmony.api.crafting.recipes.ShapelessComponentRecipe;
+import org.winterblade.minecraft.harmony.calendar.CalendarRegistry;
 import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
@@ -27,8 +28,8 @@ import org.winterblade.minecraft.harmony.quests.QuestRegistry;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.scripting.ScriptInteropRegistry;
+import org.winterblade.minecraft.harmony.temperature.TemperatureRegistry;
 import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
-import org.winterblade.minecraft.harmony.tileentities.TileEntityTickRegistry;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
 import org.winterblade.minecraft.harmony.utility.SavedGameData;
@@ -66,13 +67,18 @@ public class CraftingHarmonicsMod {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        // Load all recipe operations (thanks mezz, who thanks cpw... so also thanks cpw)
-        SetManager.CreateDeserializers(AnnotationUtil.getRecipeOperations(event.getAsmData()));
-        ComponentRegistry.registerComponents(AnnotationUtil.getComponentClasses(event.getAsmData()));
-        ScriptInteropRegistry.registerInterops(AnnotationUtil.getInteropClasses(event.getAsmData()));
-        BaseEntityCallback.registerCallbacks(AnnotationUtil.getEntityCallbacks(event.getAsmData()));
-        BaseTileEntityCallback.registerCallbacks(AnnotationUtil.getTileEntityCallbacks(event.getAsmData()));
-        QuestRegistry.registerProviders(AnnotationUtil.getQuestProviders(event.getAsmData()));
+        // Create our annotation utility...
+        AnnotationUtil annotationUtil = new AnnotationUtil(event.getAsmData());
+
+        // Load up all the parts of our system...
+        SetManager.CreateDeserializers(annotationUtil.getRecipeOperations());
+        ComponentRegistry.registerComponents(annotationUtil.getComponentClasses());
+        ScriptInteropRegistry.registerInterops(annotationUtil.getInteropClasses());
+        BaseEntityCallback.registerCallbacks(annotationUtil.getEntityCallbacks());
+        BaseTileEntityCallback.registerCallbacks(annotationUtil.getTileEntityCallbacks());
+        QuestRegistry.instance.registerProviders(annotationUtil.getQuestProviders());
+        CalendarRegistry.instance.registerProviders(annotationUtil.getCalendarProviders());
+        TemperatureRegistry.instance.registerProviders(annotationUtil.getTemperatureProviders());
 
         // Handle config
         configManager = new ConfigManager(event.getModConfigurationDirectory() + "/CraftingHarmonics/");
