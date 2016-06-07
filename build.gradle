@@ -55,7 +55,8 @@ def integrations = [
         'abyssalcraft',
         'betterquesting',
         'hqm',
-        'botania'
+        'botania',
+        'calendar-api'
 ]
 
 subprojects.each { subproject -> evaluationDependsOn( subproject.path ) }
