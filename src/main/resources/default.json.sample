@@ -1671,6 +1671,38 @@
                     with: ["minecraft:quartz"]
                 }
             ]
+        },
+
+        // Calendar and Temperature matching
+        {
+            name: "calendarAndTemp",
+            operations: [
+                {
+                    type: "setMobDrops",
+                    what: ["Sheep"],
+                    replace: false,
+                    drops: [
+                        {
+                            what: "minecraft:wool:0",
+                            min: 2,
+                            max: 3,
+                            or: [
+                                {
+                                    calendarIsSeason: "winter", // Depending on your provider, this could be named something else.
+                                    calendarProvider: "CalendarAPI"
+                                        // Use only Calendar API for this; if left out, it will default to the first installed
+                                        // and supported providers - which is currently only Calendar API.
+                                },
+                                {
+                                    // You can also query temperature; this will always be in degrees Celsius:
+                                    temperatureMin: 0.0, // TIP: Calendar API is configured in Kelvin; Tc = Tk - 273.15.
+                                    temperatureMax: 10.0
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

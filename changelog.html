@@ -3,6 +3,29 @@
     <h4>Features</h4>
     <ul>
         <li>
+            Adding support for Calendar API, and a calendar and temperature system in general,
+            with the following matchers, available for most everything:
+            <ul>
+                <li>calendarIsSeason: Checks to see if it is currently the given season.</li>
+                <li>calendarIsDayOfYear: Checks to see if it is currently the given day of the year, based on your config.</li>
+                <li>calendarMinDayOfYear: Checks to see if it is currently at least the given day of the yar.</li>
+                <li>calendarMaxDayOfYear: Checks to see if it is currently at most the given day of the year.</li>
+                <li>temperatureMin: Checks to see if it is at least the given minimum temperature.</li>
+                <li>temperatureMax: Checks to see if it is at most the given maximum temperature.</li>
+                <li>temperatureInternalMin: Checks to see if an entity has a minimum internal temperature.</li>
+                <li>temperatureInternalMax: Checks to see if an entity has a maximum internal temperature.</li>
+            </ul><br />
+            The last two are not supported by Calendar API, and, as such, will return the same as temperatureMin/Max,
+            they are simply in place for mods which do provide a way of tracking and distinguishing such things.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
+    <h2>Version 1.4.5</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
             Adding a new 'addTileEntityEvent' operation, and the ability to perform a (at this time) limited number
             of events on ticking tile entities (furnaces, chests, etc) based on the matcher system.
         </li>
