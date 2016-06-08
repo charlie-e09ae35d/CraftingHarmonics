@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.entities.callbacks;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.DimensionManager;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 
 /**
  * Created by Matt on 5/26/2016.
@@ -27,7 +28,7 @@ public abstract class BaseEntityAndDimensionCallback extends BaseEntityCallback 
     }
 
     @Override
-    protected final void applyTo(Entity target) {
+    protected final void applyTo(Entity target, CallbackMetadata data) {
         int targetDim = dimension == Integer.MIN_VALUE ? target.dimension : dimension;
         applyWithTargetDimension(target, targetDim);
     }

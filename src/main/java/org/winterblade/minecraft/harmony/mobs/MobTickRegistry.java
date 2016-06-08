@@ -6,7 +6,7 @@ import net.minecraft.util.EntitySelectors;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.common.TickHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
@@ -31,7 +31,7 @@ public class MobTickRegistry {
     // Tick handlers
     private static LivingEntityTickHandler<MobShed, MobShed.Handler> shedHandler;
     private static LivingEntityTickHandler<MobPotionEffect, MobPotionEffect.Handler> potionEffectHandler;
-    private static LivingEntityTickHandler<IEntityCallbackContainer, BaseEntityCallback.Handler> effectHandler;
+    private static LivingEntityTickHandler<IEntityCallback, BaseEntityCallback.Handler> effectHandler;
 
     // Queued callbacks; this is a concurrent queue because we may add to it while processing it.
     private static Queue<EntityCallbackData> entityCallbackQueue = new ConcurrentLinkedQueue<>();
@@ -80,7 +80,7 @@ public class MobTickRegistry {
      * @param target        The target of the operation
      * @param callbacks     The callbacks
      */
-    public static void addCallbackSet(Entity target, IEntityCallbackContainer[] callbacks) {
+    public static void addCallbackSet(Entity target, IEntityCallback[] callbacks) {
         entityCallbackQueue.add(new EntityCallbackData(target, callbacks));
     }
 
@@ -157,7 +157,7 @@ public class MobTickRegistry {
      * Entity Effects
      */
 
-    public static UUID registerEntityEffects(String[] what, IEntityCallbackContainer[] effects) {
+    public static UUID registerEntityEffects(String[] what, IEntityCallback[] effects) {
         if(!inited) init();
         return effectHandler.registerHandler(what, effects);
     }
@@ -183,9 +183,9 @@ public class MobTickRegistry {
 
     private static class EntityCallbackData {
         private final WeakReference<Entity> targetRef;
-        private final IEntityCallbackContainer[] callbacks;
+        private final IEntityCallback[] callbacks;
 
-        EntityCallbackData(Entity target, IEntityCallbackContainer[] callbacks) {
+        EntityCallbackData(Entity target, IEntityCallback[] callbacks) {
             targetRef = new WeakReference<>(target);
             this.callbacks = callbacks;
         }
@@ -194,7 +194,7 @@ public class MobTickRegistry {
             Entity target = targetRef.get();
             if(target == null) return;
 
-            for(IEntityCallbackContainer callback : callbacks) {
+            for(IEntityCallback callback : callbacks) {
                 callback.apply(target, new BaseEntityMatcherData(target));
             }
         }

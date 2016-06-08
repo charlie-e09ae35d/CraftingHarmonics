@@ -1,6 +1,9 @@
 package org.winterblade.minecraft.harmony.entities.callbacks;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import jdk.nashorn.api.scripting.ScriptUtils;
+import jdk.nashorn.internal.runtime.ScriptFunction;
+import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.common.Loader;
@@ -10,29 +13,36 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
+import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
+import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
-import org.winterblade.minecraft.harmony.scripting.deserializers.BaseComponentDeserializer;
 import org.winterblade.minecraft.harmony.common.utility.BasePrioritizedData;
+import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
  * Created by Matt on 5/26/2016.
  */
-public abstract class BaseEntityCallback implements IEntityCallback {
+public class BaseEntityCallback implements IEntityCallback {
     private static final Map<String, Class<BaseEntityCallback>> callbackMap = new HashMap<>();
     private final PriorityQueue<BasePrioritizedData<IEntityMatcher>> matchers = new PriorityQueue<>();
+    private final List<IEntityCallback> callbacks = new ArrayList<>();
 
     // Serialized property for every callback; only used by some.
     protected String id;
-    private EntityCallbackContainer altMatch;
+    private BaseEntityCallback altMatch;
+
+    private void addCallback(@Nullable IEntityCallback callback) {
+        if(callback != null) callbacks.add(callback);
+    }
 
     /**
      * Add the classes that we should register for entity callbacks.
@@ -69,10 +79,15 @@ public abstract class BaseEntityCallback implements IEntityCallback {
 
         // TODO: Target mod...
 
-        applyTo(target);
+        applyTo(target, data);
     }
 
-    protected abstract void applyTo(Entity target);
+    protected void applyTo(Entity target, CallbackMetadata metadata) {
+        // Run our callbacks
+        for(IEntityCallback callback : callbacks) {
+            callback.apply(target, metadata);
+        }
+    }
 
     /**
      * Adds a matcher to this callback
@@ -93,51 +108,86 @@ public abstract class BaseEntityCallback implements IEntityCallback {
         // Does nothing.
     }
 
-    protected void runCallbacks(IEntityCallbackContainer[] callbacks, Entity target) {
+    protected void runCallbacks(IEntityCallback[] callbacks, Entity target) {
         if(callbacks == null) return;
 
         MobTickRegistry.addCallbackSet(target, callbacks);
     }
 
-    public void setAltMatch(EntityCallbackContainer altMatch) {
+    private void setAltMatch(BaseEntityCallback altMatch) {
         this.altMatch = altMatch;
     }
 
-    @ScriptObjectDeserializer(deserializes = BaseEntityCallback.class)
-    public static class Deserializer extends BaseComponentDeserializer<BaseEntityCallback, IEntityMatcher> {
-        private static final EntityCallbackContainer.Deserializer OTHERWISE_DESERIAlIZER = new EntityCallbackContainer.Deserializer();
+    @ScriptObjectDeserializer(deserializes = IEntityCallback.class)
+    public static class Deserializer implements IScriptObjectDeserializer {
+        @Override
+        public final Object Deserialize(Object input) {
+            // Method callback
+            if(ScriptFunction.class.isAssignableFrom(input.getClass())) {
+                try {
+                    // Wrap it so we can pass interops instead of base objects
+                    FunctionCallback fn = new FunctionCallback((FunctionCallback.JSCallback) ScriptUtils.convert(input, FunctionCallback.JSCallback.class));
+                    BaseEntityCallback container = new BaseEntityCallback();
+                    container.addCallback(fn);
+                    return container;
+                } catch (Exception e) {
+                    LogHelper.error("Unable to convert given callback function into IEntityCallback", e);
+                    return null;
+                }
+            }
 
-        public Deserializer() {
-            super(IEntityMatcher.class);
+            // Make sure we can continue:
+            if(!ScriptObjectMirror.class.isAssignableFrom(input.getClass()) &&
+                    !ScriptObject.class.isAssignableFrom(input.getClass())) return null;
+
+            ScriptObjectMirror mirror;
+
+            // The first case will probably not happen, but, just in case...
+            if(ScriptObjectMirror.class.isAssignableFrom(input.getClass())) {
+                mirror = (ScriptObjectMirror) input;
+            } else {
+                mirror = ScriptUtils.wrap((ScriptObject) input);
+            }
+
+            // Make sure we have callbacks:
+            if(!mirror.containsKey("then")) {
+                // Check if this is a single callback with no matchers...
+                if(!mirror.containsKey("type")) {
+                    LogHelper.warn("Callback set contains no callbacks.");
+                    return null;
+                }
+
+                return deserializeCallback(mirror.get("type").toString(), mirror);
+            }
+
+            BaseEntityCallback container = new BaseEntityCallback();
+
+            // Add them to the container...
+            IEntityCallback[] callbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "then", this, IEntityCallback.class);
+            for(IEntityCallback callback : callbacks) {
+                container.addCallback(callback);
+            }
+
+            registerMatchersAndOtherwise(mirror, container);
+
+            return container;
         }
 
-        @Override
-        protected BaseEntityCallback newInstance(String type) {
-            type = type.toLowerCase();
+        /**
+         * Register our matchers and 'otherwise' object (if any)
+         * @param mirror       The mirror to add things from
+         * @param container    The container to add them to.
+         */
+        private void registerMatchersAndOtherwise(ScriptObjectMirror mirror, BaseEntityCallback container) {
+            // Get our registry data...
+            List<IEntityMatcher> matchers = getMatchers(mirror);
 
-            if(!callbackMap.containsKey(type)) {
-                LogHelper.error("Error creating entity callback of type '{}': The type is not registered.", type);
-                return null;
-            }
-            try {
-                return callbackMap.get(type).newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
-                LogHelper.error("Error creating entity callback of type '{}'.", type, e);
-                return null;
-            }
-        }
-
-        @Override
-        protected void update(ScriptObjectMirror mirror, BaseEntityCallback output, List<IEntityMatcher> matchers) {
-            for (IEntityMatcher matcher : matchers) {
+            for(IEntityMatcher matcher : matchers) {
                 PrioritizedObject priorityAnno = matcher.getClass().getAnnotation(PrioritizedObject.class);
                 Priority priority = priorityAnno != null ? priorityAnno.priority() : Priority.MEDIUM;
-                output.addMatcher(matcher, priority);
+                container.addMatcher(matcher, priority);
             }
 
-            // Deserialize the rest with the default serializer
-            NashornConfigProcessor.getInstance().nashorn.parseScriptObject(mirror, output);
-            output.finishDeserialization(mirror);
 
             // If we have an alt match...
             if (!mirror.containsKey("otherwise")) return;
@@ -146,18 +196,71 @@ public abstract class BaseEntityCallback implements IEntityCallback {
 
             // Try to deserialize it:
             try {
-                output.setAltMatch((EntityCallbackContainer) OTHERWISE_DESERIAlIZER.Deserialize(altMatchData));
+                container.setAltMatch((BaseEntityCallback) Deserialize(altMatchData));
             } catch (Exception ex) {
-                LogHelper.warn("Unable to deserialize 'otherwise' for this object.");
+                LogHelper.warn("Unable to deserialize 'otherwise' for this Entity callback.");
+            }
+        }
+
+        /**
+         * Get the matchers on the mirror
+         * @param mirror    The mirror to check
+         * @return          A list of matchers
+         */
+        private List<IEntityMatcher> getMatchers(ScriptObjectMirror mirror) {
+            ComponentRegistry registry = ComponentRegistry.compileRegistryFor(new Class[]{
+                    IEntityMatcher.class}, mirror);
+
+            // And find our matchers...
+            return registry.getComponentsOf(IEntityMatcher.class);
+        }
+
+        /**
+         * Deserialize our callback classes.
+         *
+         * @param type      The type to deserialize
+         * @param mirror    The mirror to check
+         * @return          Our deserialized callback
+         */
+        private BaseEntityCallback deserializeCallback(String type, ScriptObjectMirror mirror) {
+            BaseEntityCallback output = newTypedInstance(type);
+            if(output == null) return null;
+
+            NashornConfigProcessor.getInstance().nashorn.parseScriptObject(mirror, output);
+            output.finishDeserialization(mirror);
+
+            registerMatchersAndOtherwise(mirror, output);
+
+            return output;
+        }
+
+        /**
+         * Create an instance of our type
+         * @param type    The type to create
+         * @return        The new instance, ready to be populated.
+         */
+        private BaseEntityCallback newTypedInstance(String type) {
+            type = type.toLowerCase();
+
+            if(!callbackMap.containsKey(type)) {
+                LogHelper.error("Error creating Entity callback of type '{}': The type is not registered.", type);
+                return null;
+            }
+
+            try {
+                return callbackMap.get(type).newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                LogHelper.error("Error creating Entity callback of type '{}'.", type, e);
+                return null;
             }
         }
     }
 
-    public static class Handler extends BaseEventMatch.BaseMatchHandler<IEntityCallbackContainer, EntityLivingBase> {
+    public static class Handler extends BaseEventMatch.BaseMatchHandler<IEntityCallback, EntityLivingBase> {
         @Override
         public void apply(Random rand, EntityLivingBase entity) {
             // Easy enough... just apply all the callback containers we have:
-            for(IEntityCallbackContainer callbackContainer : matchers) {
+            for(IEntityCallback callbackContainer : matchers) {
                 callbackContainer.apply(entity, new BaseEntityMatcherData(entity)); // Because apply does check matchers as well.
             }
         }

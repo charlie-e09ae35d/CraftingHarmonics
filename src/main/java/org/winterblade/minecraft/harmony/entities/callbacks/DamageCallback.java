@@ -4,7 +4,8 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.DamageSource;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
@@ -20,10 +21,10 @@ public class DamageCallback extends BaseEntityCallback {
     private boolean isUnblockable;
     private boolean isAbsolute;
     private boolean isCreative;
-    private IEntityCallbackContainer[] onInvulnerable;
-    private IEntityCallbackContainer[] onDamage;
-    private IEntityCallbackContainer[] onDeath;
-    private IEntityCallbackContainer[] onComplete;
+    private IEntityCallback[] onInvulnerable;
+    private IEntityCallback[] onDamage;
+    private IEntityCallback[] onDeath;
+    private IEntityCallback[] onComplete;
 
     /*
      * Computed properties
@@ -53,7 +54,7 @@ public class DamageCallback extends BaseEntityCallback {
     }
 
     @Override
-    protected void applyTo(Entity target) {
+    protected void applyTo(Entity target, CallbackMetadata data) {
         // TIL: You can 'attack' all entities.
         target.attackEntityFrom(source, amount);
 

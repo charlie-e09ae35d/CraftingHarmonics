@@ -5,7 +5,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
@@ -17,9 +17,9 @@ public class SetTimeCallback extends BaseEntityAndDimensionCallback {
      * Serialized properties
      */
     private int time;
-    private IEntityCallbackContainer[] onSuccess;
-    private IEntityCallbackContainer[] onFailure;
-    private IEntityCallbackContainer[] onComplete;
+    private IEntityCallback[] onSuccess;
+    private IEntityCallback[] onFailure;
+    private IEntityCallback[] onComplete;
 
     @Override
     protected void applyWithTargetDimension(Entity target, int targetDim) {

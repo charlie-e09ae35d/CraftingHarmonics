@@ -12,7 +12,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import javax.annotation.Nullable;
@@ -35,11 +35,11 @@ public class StopTimeCommand extends BaseEntityAndDimensionCallback {
      * Serialized properties
      */
     private int duration;
-    private IEntityCallbackContainer[] onFailure;
-    private IEntityCallbackContainer[] onTimeStopStart;
-    private IEntityCallbackContainer[] onTimeStopExtended;
-    private IEntityCallbackContainer[] onTimeStopEnd;
-    private IEntityCallbackContainer[] onComplete;
+    private IEntityCallback[] onFailure;
+    private IEntityCallback[] onTimeStopStart;
+    private IEntityCallback[] onTimeStopExtended;
+    private IEntityCallback[] onTimeStopEnd;
+    private IEntityCallback[] onComplete;
 
     /**
      * Allows the instance to do any last minute updating it needs to, if necessary

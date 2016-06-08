@@ -5,7 +5,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
@@ -17,9 +18,9 @@ public class RemovePotionCallback extends BaseEntityCallback {
      * Serialized properties
      */
     private Potion what;
-    private IEntityCallbackContainer[] onSuccess;
-    private IEntityCallbackContainer[] onFailure;
-    private IEntityCallbackContainer[] onComplete;
+    private IEntityCallback[] onSuccess;
+    private IEntityCallback[] onFailure;
+    private IEntityCallback[] onComplete;
 
     /**
      * Allows the instance to do any last minute updating it needs to, if necessary
@@ -30,13 +31,13 @@ public class RemovePotionCallback extends BaseEntityCallback {
     protected void finishDeserialization(ScriptObjectMirror mirror) throws RuntimeException {
         if(what == null) throw new RuntimeException("removePotion callback has no valid potion.");
 
-        if(onSuccess == null) onSuccess = new IEntityCallbackContainer[0];
-        if(onFailure == null) onFailure = new IEntityCallbackContainer[0];
-        if(onComplete == null) onComplete = new IEntityCallbackContainer[0];
+        if(onSuccess == null) onSuccess = new IEntityCallback[0];
+        if(onFailure == null) onFailure = new IEntityCallback[0];
+        if(onComplete == null) onComplete = new IEntityCallback[0];
     }
 
     @Override
-    protected void applyTo(Entity target) {
+    protected void applyTo(Entity target, CallbackMetadata data) {
         if(!EntityLivingBase.class.isAssignableFrom(target.getClass())) {
             LogHelper.warn("Not removing potion '{}' from target ({}) as it isn't a mob.", what.getName(), target.getClass().getName());
             return;

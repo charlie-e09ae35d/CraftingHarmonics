@@ -5,19 +5,20 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 
 /**
  * Created by Matt on 5/26/2016.
  */
 @EntityCallback(name = "burn")
 public class BurnCallback extends VectorBaseCallback {
-    private IEntityCallbackContainer[] onSuccess;
-    private IEntityCallbackContainer[] onFailure;
-    private IEntityCallbackContainer[] onComplete;
+    private IEntityCallback[] onSuccess;
+    private IEntityCallback[] onFailure;
+    private IEntityCallback[] onComplete;
 
     @Override
-    protected void applyTo(Entity target) {
+    protected void applyTo(Entity target, CallbackMetadata data) {
         BlockPos pos = new BlockPos(getPosition(target));
 
         // Try to just burn the spot we're looking at:

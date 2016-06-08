@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import javax.annotation.Nullable;
@@ -25,7 +26,7 @@ public class CommandCallback extends BaseEntityCallback {
     private String name;
 
     @Override
-    public void applyTo(Entity target) {
+    public void applyTo(Entity target, CallbackMetadata data) {
         if(target.getEntityWorld().isRemote) return;
         if(!EntityPlayerMP.class.isAssignableFrom(target.getClass())) {
             LogHelper.info("Not running player command '{}' on target as target is not a player ({})", command, target.getClass().getName());

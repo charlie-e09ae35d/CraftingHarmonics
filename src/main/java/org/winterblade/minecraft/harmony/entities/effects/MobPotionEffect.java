@@ -10,12 +10,12 @@ import net.minecraft.potion.Potion;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.entities.callbacks.ApplyPotionCallback;
-import org.winterblade.minecraft.harmony.entities.callbacks.EntityCallbackContainer;
+import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
 import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
 import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMatchingDeserializer;
 import org.winterblade.minecraft.harmony.scripting.deserializers.ItemStackDeserializer;
@@ -36,12 +36,12 @@ public class MobPotionEffect extends BaseEventMatch<Entity, CallbackMetadata, IE
     private boolean showParticles;
     private int duration;
     private ItemStack[] cures;
-    private IEntityCallbackContainer[] applyCallbacks;
-    private IEntityCallbackContainer[] newCallbacks;
-    private IEntityCallbackContainer[] extendedCallbacks;
-    private IEntityCallbackContainer[] expiredCallbacks;
-    private IEntityCallbackContainer[] removedCallbacks;
-    private IEntityCallbackContainer[] curedCallbacks;
+    private IEntityCallback[] applyCallbacks;
+    private IEntityCallback[] newCallbacks;
+    private IEntityCallback[] extendedCallbacks;
+    private IEntityCallback[] expiredCallbacks;
+    private IEntityCallback[] removedCallbacks;
+    private IEntityCallback[] curedCallbacks;
 
     public Potion getWhat() {
         return what;
@@ -65,17 +65,17 @@ public class MobPotionEffect extends BaseEventMatch<Entity, CallbackMetadata, IE
 
     public void doApply(boolean isNew, EntityLivingBase entity) {
         if(isNew && newCallbacks != null) {
-            for(IEntityCallbackContainer callback : newCallbacks) {
+            for(IEntityCallback callback : newCallbacks) {
                 callback.apply(entity, new BaseEntityMatcherData(entity));
             }
         } else if(!isNew && extendedCallbacks != null){
-            for(IEntityCallbackContainer callback : extendedCallbacks) {
+            for(IEntityCallback callback : extendedCallbacks) {
                 callback.apply(entity, new BaseEntityMatcherData(entity));
             }
         }
 
         if(applyCallbacks != null) {
-            for(IEntityCallbackContainer callback : applyCallbacks) {
+            for(IEntityCallback callback : applyCallbacks) {
                 callback.apply(entity, new BaseEntityMatcherData(entity));
             }
         }
@@ -97,9 +97,9 @@ public class MobPotionEffect extends BaseEventMatch<Entity, CallbackMetadata, IE
                 do {
                     effect = new ApplyPotionCallback.HarmonyPotionEffect(matcher.getWhat(), matcher.getDuration(),
                             matcher.getAmplifier(), false, matcher.isShowParticles(),
-                            matcher.expiredCallbacks != null ? matcher.expiredCallbacks : new IEntityCallbackContainer[0],
-                            matcher.curedCallbacks != null ? matcher.curedCallbacks : new IEntityCallbackContainer[0],
-                            matcher.removedCallbacks != null ? matcher.removedCallbacks : new IEntityCallbackContainer[0]);
+                            matcher.expiredCallbacks != null ? matcher.expiredCallbacks : new IEntityCallback[0],
+                            matcher.curedCallbacks != null ? matcher.curedCallbacks : new IEntityCallback[0],
+                            matcher.removedCallbacks != null ? matcher.removedCallbacks : new IEntityCallback[0]);
                     effect.setCurativeItems(Lists.newArrayList(matcher.getCures()));
 
                     // Check if this drop matches:
@@ -131,7 +131,7 @@ public class MobPotionEffect extends BaseEventMatch<Entity, CallbackMetadata, IE
     public static class Deserializer extends BaseMatchingDeserializer<Entity, CallbackMetadata, IEntityMatcher, MobPotionEffect> {
         private static final PotionDeserializer POTION_DESERIALIZER = new PotionDeserializer();
         private static final ItemStackDeserializer ITEM_STACK_DESERIALIZER = new ItemStackDeserializer();
-        private static final EntityCallbackContainer.Deserializer ENTITY_CALLBACK_DESERIALIZER = new EntityCallbackContainer.Deserializer();
+        private static final BaseEntityCallback.Deserializer ENTITY_CALLBACK_DESERIALIZER = new BaseEntityCallback.Deserializer();
 
         public Deserializer() {super(IEntityMatcher.class);}
 
@@ -152,12 +152,12 @@ public class MobPotionEffect extends BaseEventMatch<Entity, CallbackMetadata, IE
             output.amplifier = mirror.containsKey("amplifier") ? (int) ScriptUtils.convert(mirror.get("amplifier"), Integer.class) : 0;
             output.showParticles = mirror.containsKey("showParticles") && (boolean) ScriptUtils.convert(mirror.get("showParticles"), Boolean.class);
             output.cures = DeserializerHelpers.convertArrayWithDeserializer(mirror, "cures", ITEM_STACK_DESERIALIZER, ItemStack.class);
-            output.newCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onNew", ENTITY_CALLBACK_DESERIALIZER, IEntityCallbackContainer.class);
-            output.extendedCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onExtended", ENTITY_CALLBACK_DESERIALIZER, IEntityCallbackContainer.class);
-            output.applyCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onApplied", ENTITY_CALLBACK_DESERIALIZER, IEntityCallbackContainer.class);
-            output.expiredCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onExpired", ENTITY_CALLBACK_DESERIALIZER, IEntityCallbackContainer.class);
-            output.curedCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onCured", ENTITY_CALLBACK_DESERIALIZER, IEntityCallbackContainer.class);
-            output.removedCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onRemoved", ENTITY_CALLBACK_DESERIALIZER, IEntityCallbackContainer.class);
+            output.newCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onNew", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.extendedCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onExtended", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.applyCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onApplied", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.expiredCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onExpired", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.curedCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onCured", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
+            output.removedCallbacks = DeserializerHelpers.convertArrayWithDeserializer(mirror, "onRemoved", ENTITY_CALLBACK_DESERIALIZER, IEntityCallback.class);
         }
     }
 

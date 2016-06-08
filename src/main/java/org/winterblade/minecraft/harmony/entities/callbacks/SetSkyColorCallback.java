@@ -3,7 +3,7 @@ package org.winterblade.minecraft.harmony.entities.callbacks;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.world.sky.SkyColorMapData;
 import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
 
@@ -18,9 +18,9 @@ public class SetSkyColorCallback extends BaseEntityAndDimensionCallback {
     private boolean global;
     private int transitionTime;
     private SkyColorMapData[] colormap;
-    private IEntityCallbackContainer[] onSuccess;
-    private IEntityCallbackContainer[] onFailure;
-    private IEntityCallbackContainer[] onComplete;
+    private IEntityCallback[] onSuccess;
+    private IEntityCallback[] onFailure;
+    private IEntityCallback[] onComplete;
 
     /*
      * Computed properties

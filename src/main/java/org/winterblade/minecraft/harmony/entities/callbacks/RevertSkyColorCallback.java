@@ -2,7 +2,7 @@ package org.winterblade.minecraft.harmony.entities.callbacks;
 
 import net.minecraft.entity.Entity;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
 
 /**
@@ -14,9 +14,9 @@ public class RevertSkyColorCallback extends BaseEntityAndDimensionCallback {
      * Serialized props
      */
     private boolean global;
-    private IEntityCallbackContainer[] onSuccess;
-    private IEntityCallbackContainer[] onFailure;
-    private IEntityCallbackContainer[] onComplete;
+    private IEntityCallback[] onSuccess;
+    private IEntityCallback[] onFailure;
+    private IEntityCallback[] onComplete;
 
     @Override
     protected void applyWithTargetDimension(Entity target, int targetDim) {

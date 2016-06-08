@@ -8,16 +8,16 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.server.FMLServerHandler;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
  * Created by Matt on 5/26/2016.
  */
 public abstract class TeleportBaseCallback extends BaseEntityAndDimensionCallback {
-    private IEntityCallbackContainer[] onSuccess;
-    protected IEntityCallbackContainer[] onFailure;
-    protected IEntityCallbackContainer[] onComplete;
+    private IEntityCallback[] onSuccess;
+    protected IEntityCallback[] onFailure;
+    protected IEntityCallback[] onComplete;
     private boolean unsafeTeleport;
     private int safeRadius = 5;
 

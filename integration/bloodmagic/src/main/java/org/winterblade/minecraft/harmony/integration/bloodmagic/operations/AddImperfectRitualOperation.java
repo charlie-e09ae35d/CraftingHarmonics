@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.common.blocks.BlockMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
@@ -28,7 +28,7 @@ public class AddImperfectRitualOperation extends BasicOperation {
      */
     private String name;
     private BlockMatcher capstone;
-    private IEntityCallbackContainer[] onActivate;
+    private IEntityCallback[] onActivate;
     private int lpCost;
     private boolean lightShow;
 
@@ -96,10 +96,10 @@ public class AddImperfectRitualOperation extends BasicOperation {
 
     public static class CallbackDrivenImperfectRitual extends ImperfectRitual {
 
-        private final IEntityCallbackContainer[] callbacks;
+        private final IEntityCallback[] callbacks;
 
         public CallbackDrivenImperfectRitual(String name, BlockStack requiredBlock, int activationCost, boolean lightshow,
-                                             String unlocalizedName, IEntityCallbackContainer[] callbacks) {
+                                             String unlocalizedName, IEntityCallback[] callbacks) {
             super(name, requiredBlock, activationCost, lightshow, unlocalizedName);
             this.callbacks = callbacks;
         }
@@ -113,7 +113,7 @@ public class AddImperfectRitualOperation extends BasicOperation {
          */
         @Override
         public boolean onActivate(IImperfectRitualStone imperfectRitualStone, EntityPlayer player) {
-            for(IEntityCallbackContainer callback : callbacks) {
+            for(IEntityCallback callback : callbacks) {
                 callback.apply(player, new BaseEntityMatcherData(player));
             }
             return true;
