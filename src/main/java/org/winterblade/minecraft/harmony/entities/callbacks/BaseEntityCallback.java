@@ -13,7 +13,9 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.entities.IEntityTargetModifier;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
+import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcher;
 import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
@@ -35,6 +37,7 @@ public class BaseEntityCallback implements IEntityCallback {
     private static final Map<String, Class<BaseEntityCallback>> callbackMap = new HashMap<>();
     private final PriorityQueue<BasePrioritizedData<IEntityMatcher>> matchers = new PriorityQueue<>();
     private final List<IEntityCallback> callbacks = new ArrayList<>();
+    private final List<IEntityTargetModifier> targetModifiers = new ArrayList<>();
 
     // Serialized property for every callback; only used by some.
     protected String id;
@@ -77,9 +80,16 @@ public class BaseEntityCallback implements IEntityCallback {
         // Run our matcher callbacks (if they exist...)
         result.runIfMatch();
 
-        // TODO: Target mod...
+        Set<Entity> targets = new HashSet<>();
+        targets.add(target);
+        for(IEntityTargetModifier modifier : targetModifiers) {
+            targets.addAll(modifier.getTargets(target, data));
+        }
 
-        applyTo(target, data);
+        for(Entity subtarget : targets) {
+            if(subtarget == null) continue;
+            applyTo(subtarget, data);
+        }
     }
 
     protected void applyTo(Entity target, CallbackMetadata metadata) {
@@ -180,7 +190,11 @@ public class BaseEntityCallback implements IEntityCallback {
          */
         private void registerMatchersAndOtherwise(ScriptObjectMirror mirror, BaseEntityCallback container) {
             // Get our registry data...
-            List<IEntityMatcher> matchers = getMatchers(mirror);
+            ComponentRegistry registry = ComponentRegistry.compileRegistryFor(new Class[]{
+                    IEntityMatcher.class, IEntityTargetModifier.class}, mirror);
+
+            // And find our matchers...
+            List<IEntityMatcher> matchers = registry.getComponentsOf(IEntityMatcher.class);
 
             for(IEntityMatcher matcher : matchers) {
                 PrioritizedObject priorityAnno = matcher.getClass().getAnnotation(PrioritizedObject.class);
@@ -188,6 +202,11 @@ public class BaseEntityCallback implements IEntityCallback {
                 container.addMatcher(matcher, priority);
             }
 
+            // And our modifiers...
+            List<IEntityTargetModifier> modifiers = registry.getComponentsOf(IEntityTargetModifier.class);
+            for(IEntityTargetModifier modifier : modifiers) {
+                container.targetModifiers.add(modifier);
+            }
 
             // If we have an alt match...
             if (!mirror.containsKey("otherwise")) return;
@@ -200,19 +219,6 @@ public class BaseEntityCallback implements IEntityCallback {
             } catch (Exception ex) {
                 LogHelper.warn("Unable to deserialize 'otherwise' for this Entity callback.");
             }
-        }
-
-        /**
-         * Get the matchers on the mirror
-         * @param mirror    The mirror to check
-         * @return          A list of matchers
-         */
-        private List<IEntityMatcher> getMatchers(ScriptObjectMirror mirror) {
-            ComponentRegistry registry = ComponentRegistry.compileRegistryFor(new Class[]{
-                    IEntityMatcher.class}, mirror);
-
-            // And find our matchers...
-            return registry.getComponentsOf(IEntityMatcher.class);
         }
 
         /**
