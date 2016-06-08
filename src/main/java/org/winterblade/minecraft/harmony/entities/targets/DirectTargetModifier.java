@@ -21,7 +21,7 @@ public class DirectTargetModifier implements IEntityTargetModifier {
     @Override
     public List<Entity> getTargets(Entity source, CallbackMetadata data) {
         switch (target) {
-            case "source":
+            case "original":
                 return Collections.singletonList(data.getSourceAs(Entity.class));
         }
         return null;
