@@ -5,6 +5,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityCallback;
 import org.winterblade.minecraft.harmony.api.tileentities.TileEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 
 /**
  * Created by Matt on 6/4/2016.
@@ -29,7 +30,7 @@ public class ExplodeCallback extends CoordinateBaseCallback {
     }
 
     @Override
-    protected void applyTo(TileEntity target, Data data) {
+    protected void applyTo(TileEntity target, CallbackMetadata data) {
         BlockPos pos = getPosition(target);
         target.getWorld().createExplosion(null, pos.getX(), pos.getY(), pos.getZ(), strength, isSmoking);
         runCallbacks(onComplete, target);

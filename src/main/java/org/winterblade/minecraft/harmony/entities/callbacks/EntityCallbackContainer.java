@@ -12,10 +12,10 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
-import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
-import org.winterblade.minecraft.harmony.entities.effects.BaseEntityMatcherData;
+import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
@@ -29,7 +29,7 @@ import java.util.Random;
 /**
  * Created by Matt on 5/24/2016.
  */
-public class EntityCallbackContainer extends BaseEventMatch<Entity, IEntityMatcherData, IEntityMatcher> implements IEntityCallbackContainer {
+public class EntityCallbackContainer extends BaseEventMatch<Entity, CallbackMetadata, IEntityMatcher> implements IEntityCallbackContainer {
     private final List<IEntityCallback> callbacks = new ArrayList<>();
 
     private void addCallback(@Nullable IEntityCallback callback) {
@@ -37,7 +37,7 @@ public class EntityCallbackContainer extends BaseEventMatch<Entity, IEntityMatch
     }
 
     @Override
-    public void apply(Entity source) {
+    public void apply(Entity source, CallbackMetadata metadata) {
         // Figure out if we match
         BaseMatchResult result = matches(source, new BaseEntityMatcherData());
 
@@ -46,7 +46,7 @@ public class EntityCallbackContainer extends BaseEventMatch<Entity, IEntityMatch
             if (getAltMatch() == null) return;
 
             // Run them if so:
-            ((EntityCallbackContainer)getAltMatch()).apply(source);
+            ((EntityCallbackContainer)getAltMatch()).apply(source, metadata);
             return;
         }
 
@@ -55,7 +55,7 @@ public class EntityCallbackContainer extends BaseEventMatch<Entity, IEntityMatch
 
         // Run our callbacks
         for(IEntityCallback callback : callbacks) {
-            callback.apply(source);
+            callback.apply(source, metadata);
         }
     }
 
@@ -147,7 +147,7 @@ public class EntityCallbackContainer extends BaseEventMatch<Entity, IEntityMatch
         public void apply(Random rand, EntityLivingBase entity) {
             // Easy enough... just apply all the callback containers we have:
             for(IEntityCallbackContainer callbackContainer : matchers) {
-                callbackContainer.apply(entity); // Because apply does check matchers as well.
+                callbackContainer.apply(entity, new BaseEntityMatcherData()); // Because apply does check matchers as well.
             }
         }
     }

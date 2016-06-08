@@ -10,6 +10,7 @@ import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.common.blocks.BlockMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.integration.bloodmagic.ReflectedBloodMagicRegistry;
@@ -113,7 +114,7 @@ public class AddImperfectRitualOperation extends BasicOperation {
         @Override
         public boolean onActivate(IImperfectRitualStone imperfectRitualStone, EntityPlayer player) {
             for(IEntityCallbackContainer callback : callbacks) {
-                callback.apply(player);
+                callback.apply(player, new BaseEntityMatcherData());
             }
             return true;
         }

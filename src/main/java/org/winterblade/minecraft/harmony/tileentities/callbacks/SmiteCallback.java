@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityCallback;
 import org.winterblade.minecraft.harmony.api.tileentities.TileEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
 
 /**
@@ -23,7 +24,7 @@ public class SmiteCallback extends CoordinateBaseCallback {
      * @param data   Any event data to deal with.
      */
     @Override
-    protected void applyTo(TileEntity target, BaseTileEntityCallback.Data data) {
+    protected void applyTo(TileEntity target, CallbackMetadata data) {
         BlockPos pos = getPosition(target);
         EntityLightningBolt bolt = new EntityLightningBolt(target.getWorld(), pos.getX(), pos.getY(), pos.getZ(), effectOnly);
         target.getWorld().addWeatherEffect(bolt);

@@ -6,7 +6,7 @@ import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcher;
-import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcherData;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.calendar.matchers.BaseDayOfYearMatcher;
 
 import javax.annotation.Nullable;
@@ -26,7 +26,7 @@ public class MinDayOfYearMatcher extends BaseDayOfYearMatcher implements ITileEn
     }
 
     @Override
-    public BaseMatchResult isMatch(TileEntity tileEntity, ITileEntityMatcherData iTileEntityMatcherData) {
+    public BaseMatchResult isMatch(TileEntity tileEntity, CallbackMetadata metadata) {
         return matches(tileEntity.getWorld());
     }
 }

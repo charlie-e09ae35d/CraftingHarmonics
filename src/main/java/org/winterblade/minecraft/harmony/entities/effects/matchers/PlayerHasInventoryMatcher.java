@@ -6,8 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.winterblade.minecraft.harmony.api.*;
-import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.matchers.BaseInventoryMatcher;
 
 /**
@@ -86,7 +86,7 @@ public class PlayerHasInventoryMatcher extends BaseInventoryMatcher implements I
      * @return                  True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
+    public BaseMatchResult isMatch(Entity entity, CallbackMetadata metadata) {
         // Make sure we have an appropriate stack size first
         dummy.stackSize = 1;
         return matches(entity, dummy);

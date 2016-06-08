@@ -6,8 +6,8 @@ import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 
 /**
  * Created by Matt on 5/21/2016.
@@ -29,7 +29,7 @@ public class MinMobHealthMatcher implements IEntityMatcher {
      * @return True if it should match; false otherwise
      */
     @Override
-    public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
+    public BaseMatchResult isMatch(Entity entity, CallbackMetadata metadata) {
         if(!EntityLivingBase.class.isAssignableFrom(entity.getClass())) return BaseMatchResult.False;
         return new BaseMatchResult(health <= ((EntityLivingBase)entity).getHealth());
     }

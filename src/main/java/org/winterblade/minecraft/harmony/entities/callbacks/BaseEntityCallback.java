@@ -10,12 +10,13 @@ import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
-import org.winterblade.minecraft.harmony.entities.effects.BaseEntityMatcherData;
+import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.scripting.deserializers.BaseComponentDeserializer;
-import org.winterblade.minecraft.harmony.utility.BasePrioritizedData;
+import org.winterblade.minecraft.harmony.common.utility.BasePrioritizedData;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
 import java.util.HashMap;
@@ -53,14 +54,14 @@ public abstract class BaseEntityCallback implements IEntityCallback {
     }
 
     @Override
-    public void apply(Entity target) {
+    public final void apply(Entity target, CallbackMetadata data) {
         // Figure out if we match
         BaseMatchResult result = BaseEntityMatcherData.match(target, matchers);
         if(!result.isMatch()) {
             if (altMatch == null) return;
 
             // Run them if so:
-            altMatch.apply(target);
+            altMatch.apply(target, data);
             return;
         }
 

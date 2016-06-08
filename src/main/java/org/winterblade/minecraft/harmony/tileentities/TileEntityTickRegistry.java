@@ -117,7 +117,7 @@ public class TileEntityTickRegistry {
             if(target == null) return;
 
             for(ITileEntityCallback callback : callbacks) {
-                callback.apply(target);
+                callback.apply(target, new BaseTileEntityCallback.Data());
             }
         }
     }

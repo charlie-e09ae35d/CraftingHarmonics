@@ -10,6 +10,7 @@ import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.common.TickHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.callbacks.EntityCallbackContainer;
+import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.entities.effects.MobPotionEffect;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
@@ -194,7 +195,7 @@ public class MobTickRegistry {
             if(target == null) return;
 
             for(IEntityCallbackContainer callback : callbacks) {
-                callback.apply(target);
+                callback.apply(target, new BaseEntityMatcherData());
             }
         }
     }

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.IMatcher;
-import org.winterblade.minecraft.harmony.utility.BasePrioritizedData;
+import org.winterblade.minecraft.harmony.common.utility.BasePrioritizedData;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
