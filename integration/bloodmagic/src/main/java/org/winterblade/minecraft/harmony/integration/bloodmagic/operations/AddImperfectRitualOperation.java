@@ -114,7 +114,7 @@ public class AddImperfectRitualOperation extends BasicOperation {
         @Override
         public boolean onActivate(IImperfectRitualStone imperfectRitualStone, EntityPlayer player) {
             for(IEntityCallbackContainer callback : callbacks) {
-                callback.apply(player, new BaseEntityMatcherData());
+                callback.apply(player, new BaseEntityMatcherData(player));
             }
             return true;
         }

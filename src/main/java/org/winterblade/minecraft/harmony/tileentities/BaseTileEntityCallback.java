@@ -52,8 +52,7 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, CallbackM
     @Override
     public final void apply(TileEntity target, CallbackMetadata metadata) {
         // Figure out if we match
-        Data data = new Data();
-        BaseMatchResult result = matches(target, data);
+        BaseMatchResult result = matches(target, metadata);
 
         // If we didn't match, check for alt matches...
         if(!result.isMatch()) {
@@ -68,7 +67,7 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, CallbackM
         result.runIfMatch();
 
         // Finally, actually do our thing...
-        applyTo(target, data);
+        applyTo(target, metadata);
     }
 
     /**
@@ -115,6 +114,9 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, CallbackM
      */
     protected static class Data extends CallbackMetadata {
 
+        protected Data(TileEntity source) {
+            super(source);
+        }
     }
 
     @ScriptObjectDeserializer(deserializes = ITileEntityCallback.class)
@@ -259,7 +261,7 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, CallbackM
         @Override
         public void apply(Random rand, TileEntity entity) {
             for(ITileEntityCallback callback : matchers) {
-                callback.apply(entity, new Data());
+                callback.apply(entity, new Data(entity));
             }
         }
     }

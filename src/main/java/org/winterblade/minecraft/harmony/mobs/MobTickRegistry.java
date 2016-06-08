@@ -195,7 +195,7 @@ public class MobTickRegistry {
             if(target == null) return;
 
             for(IEntityCallbackContainer callback : callbacks) {
-                callback.apply(target, new BaseEntityMatcherData());
+                callback.apply(target, new BaseEntityMatcherData(target));
             }
         }
     }

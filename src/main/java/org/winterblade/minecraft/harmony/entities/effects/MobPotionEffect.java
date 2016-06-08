@@ -66,17 +66,17 @@ public class MobPotionEffect extends BaseEventMatch<Entity, CallbackMetadata, IE
     public void doApply(boolean isNew, EntityLivingBase entity) {
         if(isNew && newCallbacks != null) {
             for(IEntityCallbackContainer callback : newCallbacks) {
-                callback.apply(entity, new BaseEntityMatcherData());
+                callback.apply(entity, new BaseEntityMatcherData(entity));
             }
         } else if(!isNew && extendedCallbacks != null){
             for(IEntityCallbackContainer callback : extendedCallbacks) {
-                callback.apply(entity, new BaseEntityMatcherData());
+                callback.apply(entity, new BaseEntityMatcherData(entity));
             }
         }
 
         if(applyCallbacks != null) {
             for(IEntityCallbackContainer callback : applyCallbacks) {
-                callback.apply(entity, new BaseEntityMatcherData());
+                callback.apply(entity, new BaseEntityMatcherData(entity));
             }
         }
     }
@@ -103,7 +103,7 @@ public class MobPotionEffect extends BaseEventMatch<Entity, CallbackMetadata, IE
                     effect.setCurativeItems(Lists.newArrayList(matcher.getCures()));
 
                     // Check if this drop matches:
-                    result = matcher.matches(entity, new BaseEntityMatcherData());
+                    result = matcher.matches(entity, new BaseEntityMatcherData(entity));
                     if(result.isMatch()) break;
                     matcher = (MobPotionEffect) matcher.getAltMatch();
                 } while(matcher != null);

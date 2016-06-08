@@ -39,7 +39,7 @@ public class EntityCallbackContainer extends BaseEventMatch<Entity, CallbackMeta
     @Override
     public void apply(Entity source, CallbackMetadata metadata) {
         // Figure out if we match
-        BaseMatchResult result = matches(source, new BaseEntityMatcherData());
+        BaseMatchResult result = matches(source, metadata);
 
         // If we didn't match, check for alt matches...
         if(!result.isMatch()) {
@@ -147,7 +147,7 @@ public class EntityCallbackContainer extends BaseEventMatch<Entity, CallbackMeta
         public void apply(Random rand, EntityLivingBase entity) {
             // Easy enough... just apply all the callback containers we have:
             for(IEntityCallbackContainer callbackContainer : matchers) {
-                callbackContainer.apply(entity, new BaseEntityMatcherData()); // Because apply does check matchers as well.
+                callbackContainer.apply(entity, new BaseEntityMatcherData(entity)); // Because apply does check matchers as well.
             }
         }
     }

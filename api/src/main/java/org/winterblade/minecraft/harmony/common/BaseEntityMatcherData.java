@@ -14,11 +14,15 @@ import java.util.PriorityQueue;
  * Created by Matt on 5/24/2016.
  */
 public class BaseEntityMatcherData extends CallbackMetadata {
+    public BaseEntityMatcherData(Entity source) {
+        super(source);
+    }
+
     public BaseMatchResult isMatch(Entity target, PriorityQueue<BasePrioritizedData<IEntityMatcher>> matchers) {
         List<Runnable> matcherCallbacks = new ArrayList<>();
 
         // Match us...
-        CallbackMetadata metadata = new BaseEntityMatcherData();
+        CallbackMetadata metadata = new BaseEntityMatcherData(target);
         for(BasePrioritizedData<IEntityMatcher> matcher : matchers) {
             BaseMatchResult matchResult = matcher.get().isMatch(target, metadata);
             if(!matchResult.isMatch()) return BaseMatchResult.False;
@@ -29,6 +33,6 @@ public class BaseEntityMatcherData extends CallbackMetadata {
     }
 
     public static BaseMatchResult match(Entity target, PriorityQueue<BasePrioritizedData<IEntityMatcher>> matchers) {
-        return new BaseEntityMatcherData().isMatch(target, matchers);
+        return new BaseEntityMatcherData(target).isMatch(target, matchers);
     }
 }
