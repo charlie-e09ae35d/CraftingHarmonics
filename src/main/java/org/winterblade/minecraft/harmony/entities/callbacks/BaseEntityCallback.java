@@ -2,7 +2,9 @@ package org.winterblade.minecraft.harmony.entities.callbacks;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.common.Loader;
+import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
@@ -19,10 +21,7 @@ import org.winterblade.minecraft.harmony.scripting.deserializers.BaseComponentDe
 import org.winterblade.minecraft.harmony.common.utility.BasePrioritizedData;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Created by Matt on 5/26/2016.
@@ -150,6 +149,16 @@ public abstract class BaseEntityCallback implements IEntityCallback {
                 output.setAltMatch((EntityCallbackContainer) OTHERWISE_DESERIAlIZER.Deserialize(altMatchData));
             } catch (Exception ex) {
                 LogHelper.warn("Unable to deserialize 'otherwise' for this object.");
+            }
+        }
+    }
+
+    public static class Handler extends BaseEventMatch.BaseMatchHandler<IEntityCallbackContainer, EntityLivingBase> {
+        @Override
+        public void apply(Random rand, EntityLivingBase entity) {
+            // Easy enough... just apply all the callback containers we have:
+            for(IEntityCallbackContainer callbackContainer : matchers) {
+                callbackContainer.apply(entity, new BaseEntityMatcherData(entity)); // Because apply does check matchers as well.
             }
         }
     }

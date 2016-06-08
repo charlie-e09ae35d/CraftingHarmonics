@@ -142,13 +142,4 @@ public class EntityCallbackContainer extends BaseEventMatch<Entity, CallbackMeta
         }
     }
 
-    public static class Handler extends BaseEventMatch.BaseMatchHandler<IEntityCallbackContainer, EntityLivingBase> {
-        @Override
-        public void apply(Random rand, EntityLivingBase entity) {
-            // Easy enough... just apply all the callback containers we have:
-            for(IEntityCallbackContainer callbackContainer : matchers) {
-                callbackContainer.apply(entity, new BaseEntityMatcherData(entity)); // Because apply does check matchers as well.
-            }
-        }
-    }
 }

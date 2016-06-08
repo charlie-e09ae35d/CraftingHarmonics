@@ -9,7 +9,7 @@ import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
 import org.winterblade.minecraft.harmony.common.TickHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
-import org.winterblade.minecraft.harmony.entities.callbacks.EntityCallbackContainer;
+import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
 import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.entities.effects.MobPotionEffect;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
@@ -31,7 +31,7 @@ public class MobTickRegistry {
     // Tick handlers
     private static LivingEntityTickHandler<MobShed, MobShed.Handler> shedHandler;
     private static LivingEntityTickHandler<MobPotionEffect, MobPotionEffect.Handler> potionEffectHandler;
-    private static LivingEntityTickHandler<IEntityCallbackContainer, EntityCallbackContainer.Handler> effectHandler;
+    private static LivingEntityTickHandler<IEntityCallbackContainer, BaseEntityCallback.Handler> effectHandler;
 
     // Queued callbacks; this is a concurrent queue because we may add to it while processing it.
     private static Queue<EntityCallbackData> entityCallbackQueue = new ConcurrentLinkedQueue<>();
@@ -41,7 +41,7 @@ public class MobTickRegistry {
 
         shedHandler = new LivingEntityTickHandler<>(MobShed.Handler.class, CraftingHarmonicsMod.getConfigManager().getShedSeconds());
         potionEffectHandler = new LivingEntityTickHandler<>(MobPotionEffect.Handler.class, CraftingHarmonicsMod.getConfigManager().getPotionEffectTicks());
-        effectHandler = new LivingEntityTickHandler<>(EntityCallbackContainer.Handler.class, CraftingHarmonicsMod.getConfigManager().getEventTicks());
+        effectHandler = new LivingEntityTickHandler<>(BaseEntityCallback.Handler.class, CraftingHarmonicsMod.getConfigManager().getEventTicks());
     }
 
     /**
