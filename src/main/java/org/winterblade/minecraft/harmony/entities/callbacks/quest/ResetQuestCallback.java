@@ -26,18 +26,18 @@ public class ResetQuestCallback extends BaseEntityCallback {
     protected void applyTo(Entity target, CallbackMetadata data) {
         if(!EntityPlayerMP.class.isAssignableFrom(target.getClass())) {
             LogHelper.warn("Not resetting '{}' for  '{}' as it's not a player.", quest, target.getName());
-            runCallbacks(onFailure, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onFailure, target, data);
+            runCallbacks(onComplete, target, data);
             return;
         }
 
         try {
-            runCallbacks(QuestRegistry.instance.resetQuest(quest, (EntityPlayerMP) target) ? onSuccess : onFailure, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(QuestRegistry.instance.resetQuest(quest, (EntityPlayerMP) target) ? onSuccess : onFailure, target, data);
+            runCallbacks(onComplete, target, data);
         } catch (Exception ex) {
             LogHelper.warn("Error resetting quest '{}' for '{}'.", quest, target.getName(), ex);
-            runCallbacks(onFailure, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onFailure, target, data);
+            runCallbacks(onComplete, target, data);
         }
     }
 }

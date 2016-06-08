@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.entities.callbacks;
 import net.minecraft.entity.Entity;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
 
 /**
@@ -19,12 +20,12 @@ public class RevertSkyColorCallback extends BaseEntityAndDimensionCallback {
     private IEntityCallback[] onComplete;
 
     @Override
-    protected void applyWithTargetDimension(Entity target, int targetDim) {
+    protected void applyWithTargetDimension(Entity target, int targetDim, CallbackMetadata metadata) {
         // If we're doing it for everyone...
         if(global) {
             SkyModificationRegistry.removeModifications(targetDim);
-            runCallbacks(onSuccess, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onSuccess, target, metadata);
+            runCallbacks(onComplete, target, metadata);
             return;
         }
 
@@ -32,7 +33,7 @@ public class RevertSkyColorCallback extends BaseEntityAndDimensionCallback {
         runCallbacks(SkyModificationRegistry.removeModifications(targetDim, target)
                         ? onSuccess
                         : onFailure,
-                target);
-        runCallbacks(onComplete, target);
+                target, metadata);
+        runCallbacks(onComplete, target, metadata);
     }
 }

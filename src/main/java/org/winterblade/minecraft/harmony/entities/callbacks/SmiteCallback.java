@@ -20,6 +20,6 @@ public class SmiteCallback extends VectorBaseCallback {
         Vec3d pos = getPosition(target);
         EntityLightningBolt bolt = new EntityLightningBolt(target.getEntityWorld(), pos.xCoord, pos.yCoord, pos.zCoord, effectOnly);
         target.getEntityWorld().addWeatherEffect(bolt);
-        runCallbacks(onComplete, target);
+        runCallbacks(onComplete, target, data);
     }
 }

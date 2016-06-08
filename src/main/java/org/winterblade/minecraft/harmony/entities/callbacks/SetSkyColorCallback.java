@@ -4,6 +4,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.world.sky.SkyColorMapData;
 import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
 
@@ -40,12 +41,12 @@ public class SetSkyColorCallback extends BaseEntityAndDimensionCallback {
     }
 
     @Override
-    protected void applyWithTargetDimension(Entity target, int targetDim) {
+    protected void applyWithTargetDimension(Entity target, int targetDim, CallbackMetadata metadata) {
         // If we're doing it for everyone...
         if(global) {
             SkyModificationRegistry.runModification(new SkyModificationRegistry.Data(targetDim, transitionTime, colormap, hash));
-            runCallbacks(onSuccess, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onSuccess, target, metadata);
+            runCallbacks(onComplete, target, metadata);
             return;
         }
 
@@ -54,8 +55,8 @@ public class SetSkyColorCallback extends BaseEntityAndDimensionCallback {
                 new SkyModificationRegistry.Data(targetDim, transitionTime, colormap, hash))
                     ? onSuccess
                     : onFailure,
-                target);
-        runCallbacks(onComplete, target);
+                target, metadata);
+        runCallbacks(onComplete, target, metadata);
     }
 
 }

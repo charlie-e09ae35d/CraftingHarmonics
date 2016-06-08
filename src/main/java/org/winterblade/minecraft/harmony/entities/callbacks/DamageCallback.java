@@ -60,13 +60,13 @@ public class DamageCallback extends BaseEntityCallback {
 
         // Run our callbacks...
         if(target.isEntityInvulnerable(source)) {
-            runCallbacks(onInvulnerable, target);
+            runCallbacks(onInvulnerable, target, data);
         } else if(target.isEntityAlive()) {
-            runCallbacks(onDamage, target);
+            runCallbacks(onDamage, target, data);
         } else {
-            runCallbacks(onDeath, target);
+            runCallbacks(onDeath, target, data);
         }
 
-        runCallbacks(onComplete, target);
+        runCallbacks(onComplete, target, data);
     }
 }

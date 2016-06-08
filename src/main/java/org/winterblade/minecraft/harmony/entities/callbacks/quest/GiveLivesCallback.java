@@ -26,13 +26,13 @@ public class GiveLivesCallback extends BaseEntityCallback {
     protected void applyTo(Entity target, CallbackMetadata data) {
         if(!EntityPlayerMP.class.isAssignableFrom(target.getClass())) {
             LogHelper.warn("Not giving lives to '{}' as it's not a player.",target.getName());
-            runCallbacks(onFailure, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onFailure, target, data);
+            runCallbacks(onComplete, target, data);
             return;
         }
 
         int livesGiven = QuestRegistry.instance.giveLives((EntityPlayerMP) target, lives);
-        runCallbacks(lives <= livesGiven ? onSuccess : onFailure, target);
-        runCallbacks(onComplete, target);
+        runCallbacks(lives <= livesGiven ? onSuccess : onFailure, target, data);
+        runCallbacks(onComplete, target, data);
     }
 }

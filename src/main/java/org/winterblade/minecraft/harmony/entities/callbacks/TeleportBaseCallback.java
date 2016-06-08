@@ -9,6 +9,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.server.FMLServerHandler;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
@@ -26,8 +27,9 @@ public abstract class TeleportBaseCallback extends BaseEntityAndDimensionCallbac
      * @param target       The target
      * @param dimension    The target dimension
      * @param pos          The target position
+     * @param metadata     The metadata to apply
      */
-    protected final void teleport(Entity target, int dimension, Vec3d pos) {
+    protected final void teleport(Entity target, int dimension, Vec3d pos, CallbackMetadata metadata) {
         int prevDim = target.getEntityWorld().provider.getDimension();
         // If we're a simple transfer...
         if(prevDim == dimension) {
@@ -36,14 +38,14 @@ public abstract class TeleportBaseCallback extends BaseEntityAndDimensionCallbac
             // Make sure we found a safe landing spot (or we're in unsafe mode)...
             if(pos == null) {
                 LogHelper.info("Unable to find a safe area to teleport to at the target coordinates.");
-                runCallbacks(onFailure, target);
-                runCallbacks(onComplete, target);
+                runCallbacks(onFailure, target, metadata);
+                runCallbacks(onComplete, target, metadata);
                 return;
             }
 
             target.setPositionAndUpdate(pos.xCoord, pos.yCoord, pos.zCoord);
-            runCallbacks(onSuccess, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onSuccess, target, metadata);
+            runCallbacks(onComplete, target, metadata);
             return;
         }
 
@@ -53,8 +55,8 @@ public abstract class TeleportBaseCallback extends BaseEntityAndDimensionCallbac
         WorldServer destServer = DimensionManager.getWorld(dimension);
         if(destServer == null) {
             LogHelper.info("Cannot teleport '{}' to non-existent dimension {}.", target.getName(), dimension);
-            runCallbacks(onFailure, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onFailure, target, metadata);
+            runCallbacks(onComplete, target, metadata);
             return;
         }
 
@@ -63,8 +65,8 @@ public abstract class TeleportBaseCallback extends BaseEntityAndDimensionCallbac
         // Make sure we found a safe landing spot (or we're in unsafe mode)...
         if(pos == null) {
             LogHelper.info("Unable to find a safe area to teleport to at the target coordinates.");
-            runCallbacks(onFailure, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onFailure, target, metadata);
+            runCallbacks(onComplete, target, metadata);
             return;
         }
 
@@ -80,8 +82,8 @@ public abstract class TeleportBaseCallback extends BaseEntityAndDimensionCallbac
             destServer.updateEntityWithOptionalForce(target, false);
         }
 
-        runCallbacks(onSuccess, target);
-        runCallbacks(onComplete, target);
+        runCallbacks(onSuccess, target, metadata);
+        runCallbacks(onComplete, target, metadata);
     }
 
     /**
@@ -91,9 +93,10 @@ public abstract class TeleportBaseCallback extends BaseEntityAndDimensionCallbac
      * @param x            The x-coordinate of the teleport.
      * @param y            The y-coordinate of the teleport.
      * @param z            The z-coordinate of the teleport.
+     * @param metadata     The metadata to use
      */
-    protected final void teleport(Entity target, int dimension, double x, double y, double z) {
-        teleport(target, dimension, new Vec3d(x, y, z));
+    protected final void teleport(Entity target, int dimension, double x, double y, double z, CallbackMetadata metadata) {
+        teleport(target, dimension, new Vec3d(x, y, z), metadata);
     }
 
     private Vec3d findNearestSafeLanding(World target, Vec3d pos) {

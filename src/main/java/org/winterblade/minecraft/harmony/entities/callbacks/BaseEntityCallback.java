@@ -116,10 +116,10 @@ public class BaseEntityCallback implements IEntityCallback {
         // Does nothing.
     }
 
-    protected void runCallbacks(IEntityCallback[] callbacks, Entity target) {
+    protected void runCallbacks(IEntityCallback[] callbacks, Entity target, CallbackMetadata metadata) {
         if(callbacks == null) return;
 
-        MobTickRegistry.addCallbackSet(target, callbacks);
+        MobTickRegistry.addCallbackSet(target, callbacks, metadata);
     }
 
     private void setAltMatch(BaseEntityCallback altMatch) {

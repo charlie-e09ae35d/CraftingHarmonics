@@ -46,12 +46,12 @@ public class RemovePotionCallback extends BaseEntityCallback {
         // Run our callbacks
         EntityLivingBase entity = (EntityLivingBase)target;
         if(entity.isPotionActive(what)) {
-            runCallbacks(onSuccess, target);
+            runCallbacks(onSuccess, target, data);
             entity.removePotionEffect(what);
         } else {
-            runCallbacks(onFailure, target);
+            runCallbacks(onFailure, target, data);
         }
 
-        runCallbacks(onComplete, target);
+        runCallbacks(onComplete, target, data);
     }
 }

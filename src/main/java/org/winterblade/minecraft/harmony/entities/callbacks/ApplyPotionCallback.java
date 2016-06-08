@@ -13,6 +13,7 @@ import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
+import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 
@@ -152,7 +153,7 @@ public class ApplyPotionCallback extends BaseEntityCallback {
         effect.setCurativeItems(Lists.newArrayList(getCures()));
 
         EntityLivingBase entity = (EntityLivingBase)target;
-        doApply(entity.getActivePotionEffect(what) == null, entity);
+        doApply(entity.getActivePotionEffect(what) == null, entity, data);
 
         // Do the effect:
         entity.addPotionEffect(effect);
@@ -164,15 +165,16 @@ public class ApplyPotionCallback extends BaseEntityCallback {
      * Do our apply callbacks
      * @param isNew     If the potion is new or  not
      * @param entity    The entity to apply it to
+     * @param metadata  The event metadata
      */
-    private void doApply(boolean isNew, EntityLivingBase entity) {
+    private void doApply(boolean isNew, EntityLivingBase entity, CallbackMetadata metadata) {
         if(isNew) {
-            runCallbacks(onNew, entity);
+            runCallbacks(onNew, entity, metadata);
         } else {
-            runCallbacks(onExtended, entity);
+            runCallbacks(onExtended, entity, metadata);
         }
 
-        runCallbacks(onApplied, entity);
+        runCallbacks(onApplied, entity, metadata);
     }
 
     /**
@@ -209,12 +211,12 @@ public class ApplyPotionCallback extends BaseEntityCallback {
             if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || expired) return;
 
             if(wasCured) {
-                MobTickRegistry.addCallbackSet(entity, curedCallbacks);
+                MobTickRegistry.addCallbackSet(entity, curedCallbacks, new BaseEntityMatcherData(entity));
             } else {
-                MobTickRegistry.addCallbackSet(entity, expiredCallbacks);
+                MobTickRegistry.addCallbackSet(entity, expiredCallbacks, new BaseEntityMatcherData(entity));
             }
 
-            MobTickRegistry.addCallbackSet(entity, removedCallbacks);
+            MobTickRegistry.addCallbackSet(entity, removedCallbacks, new BaseEntityMatcherData(entity));
         }
     }
 }

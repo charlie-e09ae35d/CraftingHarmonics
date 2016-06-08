@@ -40,6 +40,6 @@ public class HealCallback extends BaseEntityCallback {
         }
 
         ((EntityLivingBase)target).heal(amount);
-        runCallbacks(onComplete, target);
+        runCallbacks(onComplete, target, data);
     }
 }

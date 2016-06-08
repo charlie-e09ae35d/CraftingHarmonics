@@ -6,6 +6,7 @@ import net.minecraftforge.common.DimensionManager;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
@@ -22,12 +23,12 @@ public class SetTimeCallback extends BaseEntityAndDimensionCallback {
     private IEntityCallback[] onComplete;
 
     @Override
-    protected void applyWithTargetDimension(Entity target, int targetDim) {
+    protected void applyWithTargetDimension(Entity target, int targetDim, CallbackMetadata metadata) {
         WorldServer worldServer = DimensionManager.getWorld(targetDim);
         if(worldServer == null) {
             LogHelper.error("Attempted to set the time for a world (" + targetDim + ") that doesn't exist.");
-            runCallbacks(onFailure, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onFailure, target, metadata);
+            runCallbacks(onComplete, target, metadata);
             return;
         }
 
@@ -41,7 +42,7 @@ public class SetTimeCallback extends BaseEntityAndDimensionCallback {
 
         // Actually set the time now...
         worldServer.setWorldTime(newTime);
-        runCallbacks(onSuccess, target);
-        runCallbacks(onComplete, target);
+        runCallbacks(onSuccess, target, metadata);
+        runCallbacks(onComplete, target, metadata);
     }
 }

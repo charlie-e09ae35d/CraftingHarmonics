@@ -33,7 +33,7 @@ public class ExplodeCallback extends VectorBaseCallback {
     protected void applyTo(Entity target, CallbackMetadata data) {
         Vec3d pos = getPosition(target);
         target.getEntityWorld().createExplosion(target, pos.xCoord + x, pos.yCoord + y, pos.zCoord + z, strength, isSmoking);
-        runCallbacks(onComplete, target);
+        runCallbacks(onComplete, target, data);
     }
 
 }

@@ -30,8 +30,8 @@ public abstract class BaseEntityAndDimensionCallback extends BaseEntityCallback 
     @Override
     protected final void applyTo(Entity target, CallbackMetadata data) {
         int targetDim = dimension == Integer.MIN_VALUE ? target.dimension : dimension;
-        applyWithTargetDimension(target, targetDim);
+        applyWithTargetDimension(target, targetDim, data);
     }
 
-    protected abstract void applyWithTargetDimension(Entity target, int targetDim);
+    protected abstract void applyWithTargetDimension(Entity target, int targetDim, CallbackMetadata metadata);
 }

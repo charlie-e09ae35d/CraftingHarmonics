@@ -5,6 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
@@ -13,11 +14,11 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 @EntityCallback(name = "teleportSpawn")
 public class TeleportSpawnCallback extends TeleportBaseCallback {
     @Override
-    protected void applyWithTargetDimension(Entity target, int targetDim) {
+    protected void applyWithTargetDimension(Entity target, int targetDim, CallbackMetadata metadata) {
         // Current dimension:
         if(target.getEntityWorld().provider.getDimension() == targetDim) {
             BlockPos spawn = target.getEntityWorld().getSpawnPoint();
-            teleport(target, targetDim, spawn.getX(), spawn.getY(), spawn.getZ());
+            teleport(target, targetDim, spawn.getX(), spawn.getY(), spawn.getZ(), metadata);
             return;
         }
 
@@ -26,12 +27,12 @@ public class TeleportSpawnCallback extends TeleportBaseCallback {
 
         if(server == null) {
             LogHelper.warn("Destination dimension {} didn't exist; not teleporting.", dimension);
-            runCallbacks(onFailure, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onFailure, target, metadata);
+            runCallbacks(onComplete, target, metadata);
             return;
         }
 
         BlockPos spawn = server.getSpawnPoint();
-        teleport(target, targetDim, spawn.getX(), spawn.getY(), spawn.getZ());
+        teleport(target, targetDim, spawn.getX(), spawn.getY(), spawn.getZ(), metadata);
     }
 }

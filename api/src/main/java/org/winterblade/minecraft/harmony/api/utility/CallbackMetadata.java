@@ -1,15 +1,16 @@
 package org.winterblade.minecraft.harmony.api.utility;
 
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by Matt on 6/7/2016.
  */
 public abstract class CallbackMetadata {
-    protected final Object source;
+    protected final WeakReference<Object> source;
 
     protected CallbackMetadata(Object source) {
-        this.source = source;
+        this.source = new WeakReference<>(source);
     }
 
     /**
@@ -20,7 +21,8 @@ public abstract class CallbackMetadata {
      */
     @Nullable
     public <T> T getSourceAs(Class<T> outputClass) {
-        if(!outputClass.isAssignableFrom(source.getClass())) return null;
-        return outputClass.cast(source);
+        Object output = source.get();
+        if(output == null || !outputClass.isAssignableFrom(output.getClass())) return null;
+        return outputClass.cast(output);
     }
 }

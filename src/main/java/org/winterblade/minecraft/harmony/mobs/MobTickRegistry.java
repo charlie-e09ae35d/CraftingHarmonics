@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.TickHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
@@ -79,9 +80,10 @@ public class MobTickRegistry {
      * Add a set of callbacks to the callback queue
      * @param target        The target of the operation
      * @param callbacks     The callbacks
+     * @param metadata      The metadata to apply.
      */
-    public static void addCallbackSet(Entity target, IEntityCallback[] callbacks) {
-        entityCallbackQueue.add(new EntityCallbackData(target, callbacks));
+    public static void addCallbackSet(Entity target, IEntityCallback[] callbacks, CallbackMetadata metadata) {
+        entityCallbackQueue.add(new EntityCallbackData(target, callbacks, metadata));
     }
 
     /**
@@ -184,10 +186,12 @@ public class MobTickRegistry {
     private static class EntityCallbackData {
         private final WeakReference<Entity> targetRef;
         private final IEntityCallback[] callbacks;
+        private final CallbackMetadata metadata;
 
-        EntityCallbackData(Entity target, IEntityCallback[] callbacks) {
+        EntityCallbackData(Entity target, IEntityCallback[] callbacks, CallbackMetadata metadata) {
             targetRef = new WeakReference<>(target);
             this.callbacks = callbacks;
+            this.metadata = metadata;
         }
 
         public void runCallbacks() {
@@ -195,7 +199,7 @@ public class MobTickRegistry {
             if(target == null) return;
 
             for(IEntityCallback callback : callbacks) {
-                callback.apply(target, new BaseEntityMatcherData(target));
+                callback.apply(target, metadata);
             }
         }
     }
