@@ -15,7 +15,6 @@ import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.entities.IEntityTargetModifier;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
-import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcher;
 import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
@@ -37,7 +36,7 @@ public class BaseEntityCallback implements IEntityCallback {
     private static final Map<String, Class<BaseEntityCallback>> callbackMap = new HashMap<>();
     private final PriorityQueue<BasePrioritizedData<IEntityMatcher>> matchers = new PriorityQueue<>();
     private final List<IEntityCallback> callbacks = new ArrayList<>();
-    private final List<IEntityTargetModifier> targetModifiers = new ArrayList<>();
+    private IEntityTargetModifier targetModifier = null;
 
     // Serialized property for every callback; only used by some.
     protected String id;
@@ -80,11 +79,10 @@ public class BaseEntityCallback implements IEntityCallback {
         // Run our matcher callbacks (if they exist...)
         result.runIfMatch();
 
-        Set<Entity> targets = new HashSet<>();
-        targets.add(target);
-        for(IEntityTargetModifier modifier : targetModifiers) {
-            targets.addAll(modifier.getTargets(target, data));
-        }
+        // Figure out what our targets should be...
+        List<Entity> targets = targetModifier != null
+                ? targetModifier.getTargets(target, data)
+                : Collections.singletonList(target);
 
         for(Entity subtarget : targets) {
             if(subtarget == null) continue;
@@ -204,8 +202,8 @@ public class BaseEntityCallback implements IEntityCallback {
 
             // And our modifiers...
             List<IEntityTargetModifier> modifiers = registry.getComponentsOf(IEntityTargetModifier.class);
-            for(IEntityTargetModifier modifier : modifiers) {
-                container.targetModifiers.add(modifier);
+            if(0 < modifiers.size()) {
+                container.targetModifier = modifiers.get(0);
             }
 
             // If we have an alt match...
