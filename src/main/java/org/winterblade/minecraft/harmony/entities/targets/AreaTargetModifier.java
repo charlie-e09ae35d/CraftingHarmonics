@@ -21,7 +21,11 @@ public class AreaTargetModifier implements IEntityTargetModifier {
 
     @Override
     public List<Entity> getTargets(Entity source, CallbackMetadata data) {
+        return getTargets(source, Entity.class);
+    }
+
+    protected <T extends Entity> List<Entity> getTargets(Entity source, Class<T> target) {
         AxisAlignedBB aabb = new AxisAlignedBB(source.getPosition()).expandXyz(radius);
-        return source.getEntityWorld().getEntitiesWithinAABB(Entity.class, aabb);
+        return source.getEntityWorld().getEntitiesWithinAABB(target, aabb);
     }
 }
