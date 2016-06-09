@@ -1512,8 +1512,10 @@
                             // Any chests with rotten flesh...
                             itemInInventory: {what: "minecraft:rotten_flesh"},
 
-                            // Will affect any players within 5 blocks
-                            players: 5,
+                            multitarget: {
+                                players: 5, // Will affect any players within 5 blocks
+                                not: {aroundBlocks: { what: ["minecraft:air"], min: 24, dist: 3}} // Unless they're in fairly clear air
+                            },
                             perTarget: [
                                 {
                                     type: "applyPotion",
