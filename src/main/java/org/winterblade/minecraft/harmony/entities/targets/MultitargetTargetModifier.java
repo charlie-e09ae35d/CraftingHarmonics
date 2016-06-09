@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.entities.targets;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.entities.IEntityTargetModifier;
 import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
@@ -31,17 +32,37 @@ public class MultitargetTargetModifier implements IEntityTargetModifier {
     @Override
     public List<Entity> getTargets(Entity source, CallbackMetadata data) {
         if(modifiers == null || modifiers.getModifiers().length <= 0) return null;
+        return getTargets(modifier -> modifier.getTargets(source, data));
+    }
+
+    @Override
+    public List<Entity> getTargets(TileEntity source, CallbackMetadata data) {
+        if(modifiers == null || modifiers.getModifiers().length <= 0) return null;
+        return getTargets(modifier -> modifier.getTargets(source, data));
+    }
+
+    /**
+     * Get the targets using a selector
+     * @param selector    The selector to use
+     * @return            The target list.
+     */
+    private List<Entity> getTargets(TargetSelector selector) {
         List<Entity> output = new ArrayList<>();
 
         for(IEntityTargetModifier modifier : modifiers.getModifiers()) {
-            output.addAll(modifier.getTargets(source, data));
+            output.addAll(selector.getTargets(modifier));
         }
 
         for(IEntityTargetModifier modifier : except.getModifiers()) {
-            output.removeAll(modifier.getTargets(source, data));
+            output.addAll(selector.getTargets(modifier));
         }
 
         return output;
+    }
+
+    @FunctionalInterface
+    private interface TargetSelector {
+        List<Entity> getTargets(IEntityTargetModifier modifier);
     }
 
     public static class MultitargetContainer {

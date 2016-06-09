@@ -1,7 +1,10 @@
 package org.winterblade.minecraft.harmony.entities.targets;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.entities.IEntityTargetModifier;
 import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
@@ -21,11 +24,16 @@ public class AreaTargetModifier implements IEntityTargetModifier {
 
     @Override
     public List<Entity> getTargets(Entity source, CallbackMetadata data) {
-        return getTargets(source, Entity.class);
+        return getTargets(source.getEntityWorld(), source.getPosition(), Entity.class);
     }
 
-    protected <T extends Entity> List<Entity> getTargets(Entity source, Class<T> target) {
-        AxisAlignedBB aabb = new AxisAlignedBB(source.getPosition()).expandXyz(radius);
-        return source.getEntityWorld().getEntitiesWithinAABB(target, aabb);
+    @Override
+    public List<Entity> getTargets(TileEntity source, CallbackMetadata data) {
+        return getTargets(source.getWorld(), source.getPos(), Entity.class);
+    }
+
+    protected <T extends Entity> List<Entity> getTargets(World world, BlockPos pos, Class<T> target) {
+        AxisAlignedBB aabb = new AxisAlignedBB(pos).expandXyz(radius);
+        return world.getEntitiesWithinAABB(target, aabb);
     }
 }

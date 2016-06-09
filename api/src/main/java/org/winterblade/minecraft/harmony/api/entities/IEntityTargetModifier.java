@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.api.entities;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.tileentity.TileEntity;
 import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 
 import java.util.List;
@@ -10,4 +11,6 @@ import java.util.List;
  */
 public interface IEntityTargetModifier {
     List<Entity> getTargets(Entity source, CallbackMetadata data);
+
+    List<Entity> getTargets(TileEntity source, CallbackMetadata data);
 }
