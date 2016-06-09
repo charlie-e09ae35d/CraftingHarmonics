@@ -6,10 +6,12 @@ import net.minecraft.util.EntitySelectors;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.TickHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
-import org.winterblade.minecraft.harmony.entities.callbacks.EntityCallbackContainer;
+import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
+import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.entities.effects.MobPotionEffect;
 import org.winterblade.minecraft.harmony.mobs.sheds.MobShed;
 
@@ -30,7 +32,7 @@ public class MobTickRegistry {
     // Tick handlers
     private static LivingEntityTickHandler<MobShed, MobShed.Handler> shedHandler;
     private static LivingEntityTickHandler<MobPotionEffect, MobPotionEffect.Handler> potionEffectHandler;
-    private static LivingEntityTickHandler<IEntityCallbackContainer, EntityCallbackContainer.Handler> effectHandler;
+    private static LivingEntityTickHandler<IEntityCallback, BaseEntityCallback.Handler> effectHandler;
 
     // Queued callbacks; this is a concurrent queue because we may add to it while processing it.
     private static Queue<EntityCallbackData> entityCallbackQueue = new ConcurrentLinkedQueue<>();
@@ -40,7 +42,7 @@ public class MobTickRegistry {
 
         shedHandler = new LivingEntityTickHandler<>(MobShed.Handler.class, CraftingHarmonicsMod.getConfigManager().getShedSeconds());
         potionEffectHandler = new LivingEntityTickHandler<>(MobPotionEffect.Handler.class, CraftingHarmonicsMod.getConfigManager().getPotionEffectTicks());
-        effectHandler = new LivingEntityTickHandler<>(EntityCallbackContainer.Handler.class, CraftingHarmonicsMod.getConfigManager().getEventTicks());
+        effectHandler = new LivingEntityTickHandler<>(BaseEntityCallback.Handler.class, CraftingHarmonicsMod.getConfigManager().getEventTicks());
     }
 
     /**
@@ -78,9 +80,10 @@ public class MobTickRegistry {
      * Add a set of callbacks to the callback queue
      * @param target        The target of the operation
      * @param callbacks     The callbacks
+     * @param metadata      The metadata to apply.
      */
-    public static void addCallbackSet(Entity target, IEntityCallbackContainer[] callbacks) {
-        entityCallbackQueue.add(new EntityCallbackData(target, callbacks));
+    public static void addCallbackSet(Entity target, IEntityCallback[] callbacks, CallbackMetadata metadata) {
+        entityCallbackQueue.add(new EntityCallbackData(target, callbacks, metadata));
     }
 
     /**
@@ -156,7 +159,7 @@ public class MobTickRegistry {
      * Entity Effects
      */
 
-    public static UUID registerEntityEffects(String[] what, IEntityCallbackContainer[] effects) {
+    public static UUID registerEntityEffects(String[] what, IEntityCallback[] effects) {
         if(!inited) init();
         return effectHandler.registerHandler(what, effects);
     }
@@ -182,19 +185,21 @@ public class MobTickRegistry {
 
     private static class EntityCallbackData {
         private final WeakReference<Entity> targetRef;
-        private final IEntityCallbackContainer[] callbacks;
+        private final IEntityCallback[] callbacks;
+        private final CallbackMetadata metadata;
 
-        EntityCallbackData(Entity target, IEntityCallbackContainer[] callbacks) {
+        EntityCallbackData(Entity target, IEntityCallback[] callbacks, CallbackMetadata metadata) {
             targetRef = new WeakReference<>(target);
             this.callbacks = callbacks;
+            this.metadata = metadata;
         }
 
         public void runCallbacks() {
             Entity target = targetRef.get();
             if(target == null) return;
 
-            for(IEntityCallbackContainer callback : callbacks) {
-                callback.apply(target);
+            for(IEntityCallback callback : callbacks) {
+                callback.apply(target, metadata);
             }
         }
     }

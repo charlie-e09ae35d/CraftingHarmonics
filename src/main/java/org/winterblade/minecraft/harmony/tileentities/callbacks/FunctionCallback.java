@@ -2,6 +2,7 @@ package org.winterblade.minecraft.harmony.tileentities.callbacks;
 
 import net.minecraft.tileentity.TileEntity;
 import org.winterblade.minecraft.harmony.api.tileentities.TileEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.scripting.wrappers.tileentity.InteropTileEntity;
 import org.winterblade.minecraft.harmony.scripting.wrappers.world.InteropWorld;
 import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
@@ -20,7 +21,7 @@ public class FunctionCallback extends BaseTileEntityCallback {
     }
 
     @Override
-    public void applyTo(TileEntity target, Data data) {
+    public void applyTo(TileEntity target, CallbackMetadata data) {
         callback.apply(new InteropTileEntity(target), new InteropWorld(target.getWorld()));
     }
 

@@ -1365,21 +1365,44 @@
                                     // 50% chance of gaining 1hp
                                     chance: 0.5,
 
+                                    // Target modifier: Apply to everything in a 5 block radius...
+                                    area: 5,
+
                                     // This will only run if the event was matched:
                                     // Each 'on...' callback is actually an entire event object, so you can continue to nest them, add more matchers, etc.
                                     onComplete: [
                                         {
+                                            // Target modifier: apply to the original source (ie: the player).
+                                            // Works in most, but not all, situations, and will only fire if the original source still exists (in a loaded chunk)
+                                            // at the time the callback occurs.
+                                            target: "original",
                                             type: "runPlayerCommand",
                                             command: "/tell @p It made you feel a little better too."
                                         }
                                     ],
 
+                                    // Will only apply to the player themselves (because the 'area' is applied to the heal callback only)...
+                                    // We could have written this instead as { area: 5, then: [{ type: 'heal', otherwise: { ... } }] }, and the 'otherwise' would
+                                    // be applied to everything in the area, instead of just the original player.
                                     otherwise: {
                                         type: "runPlayerCommand",
                                         command: "/tell @p You feel good; not great, but good."
                                     }
                                 }
                             ]
+                        },
+                        {
+                            type: "smite",
+                            mobHasMainhand: "minecraft:nether_star", // When holding a nether star...
+                            cooldown: 20,
+                            // Target everything within 5 meters of the player...
+                            multitarget: {
+                                area: 5
+                            },
+                            // Except the player themselves... (note: 'except' can only be used with 'multitarget')
+                            except: {
+                                target: "original"
+                            }
                         },
 
                         // We can even affect the quest system, if a quest mod is installed...
@@ -1480,6 +1503,51 @@
                             isSmoking: true,
                             aroundBlocks: { what: ["minecraft:fire","minecraft:lava"], min: 1, dist: 2},
                             itemInInventory: {what: "minecraft:gunpowder", consume: 1000, partial: true} // Consume up to 1k gunpowder in the process
+                        },
+                        {
+                            // This will target entities around the tile entity every 15 seconds...
+                            type: "targetEntities",
+                            cooldown: 300,
+
+                            // Any chests with rotten flesh...
+                            itemInInventory: {what: "minecraft:rotten_flesh"},
+
+                            multitarget: {
+                                players: 5, // Will affect any players within 5 blocks
+                                not: {aroundBlocks: { what: ["minecraft:air"], min: 24, dist: 3}} // Unless they're in fairly clear air
+                            },
+                            perTarget: [
+                                {
+                                    type: "applyPotion",
+                                    what: "minecraft:nausea",
+                                    duration: 300,
+                                    // Remember that matchers can be applied here too...
+                                    onApplied: [
+                                        {
+                                            type: "runPlayerCommand",
+                                            command: "/tell @p A foul stench wafts from a nearby chest..."
+                                        }
+                                    ]
+                                }
+                            ],
+                            // Will run once per every target that was targeted, not necessarily if they were matched or not.
+                            onEachSuccess: [
+                                function() {
+                                    console.log("The smell of rotten flesh nauseates a nearby player.");
+                                }
+                            ],
+                            // Will run as long as at least one target was targeted, not necessarily if they were matched or not.
+                            onSuccess: [
+                                function() {
+                                    console.log("Some nearby players were nauseated.");
+                                }
+                            ],
+                            // I don't recommend onFailure logging, unless testing, as it gets spammy.
+                            onFailure: [
+                                function() {
+                                    console.log("The rotten flesh smells, but nobody is around to notice.");
+                                }
+                            ]
                         }
                     ]
                 },

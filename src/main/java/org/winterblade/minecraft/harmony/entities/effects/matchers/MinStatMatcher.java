@@ -5,8 +5,8 @@ import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
-import org.winterblade.minecraft.harmony.api.entities.IEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.dto.NameValuePair;
 import org.winterblade.minecraft.harmony.common.matchers.BaseStatMatcher;
 
@@ -21,7 +21,7 @@ public class MinStatMatcher extends BaseStatMatcher implements IEntityMatcher {
     }
 
     @Override
-    public BaseMatchResult isMatch(Entity entity, IEntityMatcherData metadata) {
+    public BaseMatchResult isMatch(Entity entity, CallbackMetadata metadata) {
         return matches(entity);
     }
 }

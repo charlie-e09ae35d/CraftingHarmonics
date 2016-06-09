@@ -1,7 +1,23 @@
 <div>
-    <h2>Version 1.4.5</h2>
+    <h2>Version 1.4.6</h2>
     <h4>Features</h4>
     <ul>
+        <li>
+            Added targeting for use with entity callbacks.  The following targets are available; only one may be specified per callback:
+            <ul>
+                <li>area: Targets a given area, in meters, around the player</li>
+                <li>hostile: As area, but only targeting hostile mobs</li>
+                <li>animals: As area, but only targeting animals</li>
+                <li>players: As area, but only targeting players</li>
+                <li>target: Specify a particular target; currently only 'original' supported, to target the entity that triggered the event</li>
+                <li>multitarget: Used to combine any number of the above; also supports matchers.</li>
+                <li>except: Can only be used when multitarget is specified; any targets matched here will be taken out of the list. Similarly supports matchers.</li>
+            </ul>
+        </li>
+        <li>
+            Added a 'targetEntities' callback for tile entities, will allow for a target modifier (above) to be declared
+            and will run a set of entity callbacks on each entity matched by the target modifier.  See the wiki for  more.
+        </li>
         <li>
             Adding support for Calendar API, and a calendar and temperature system in general,
             with the following matchers, available for most everything:

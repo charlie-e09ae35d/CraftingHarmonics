@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.entities.callbacks;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 
 /**
  * Created by Matt on 5/26/2016.
@@ -18,7 +19,7 @@ public class TeleportDimensionRelativeCallback extends TeleportBaseCallback {
     private double scaling = 1.0;
 
     @Override
-    protected void applyWithTargetDimension(Entity target, int targetDim) {
+    protected void applyWithTargetDimension(Entity target, int targetDim, CallbackMetadata metadata) {
         // Get their current position...
         Vec3d pos = target.getPositionVector();
 
@@ -28,6 +29,6 @@ public class TeleportDimensionRelativeCallback extends TeleportBaseCallback {
         }
 
         // Do the teleport...
-        teleport(target, targetDim, pos);
+        teleport(target, targetDim, pos, metadata);
     }
 }

@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.utility;
+package org.winterblade.minecraft.harmony.common.utility;
 
 import org.winterblade.minecraft.harmony.api.Priority;
 

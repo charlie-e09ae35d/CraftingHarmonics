@@ -5,7 +5,7 @@ import org.winterblade.minecraft.harmony.api.Component;
 import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcher;
-import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcherData;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.matchers.BaseOrMatcher;
 import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
 
@@ -14,7 +14,7 @@ import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
  */
 @Component(properties = {"or"})
 @PrioritizedObject(priority = Priority.MEDIUM)
-public class OrMatcher extends BaseOrMatcher<TileEntity, ITileEntityMatcherData, ITileEntityMatcher, BaseTileEntityCallback> implements ITileEntityMatcher {
+public class OrMatcher extends BaseOrMatcher<TileEntity, CallbackMetadata, ITileEntityMatcher, BaseTileEntityCallback> implements ITileEntityMatcher {
     public OrMatcher(BaseTileEntityCallback[] composites) {
         super(composites);
     }

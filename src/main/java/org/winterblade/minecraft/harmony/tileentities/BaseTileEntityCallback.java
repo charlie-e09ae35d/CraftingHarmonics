@@ -12,8 +12,8 @@ import org.winterblade.minecraft.harmony.api.PrioritizedObject;
 import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityCallback;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcher;
-import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcherData;
 import org.winterblade.minecraft.harmony.api.tileentities.TileEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
@@ -27,7 +27,7 @@ import java.util.*;
 /**
  * Created by Matt on 5/29/2016.
  */
-public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEntityMatcherData, ITileEntityMatcher> implements ITileEntityCallback {
+public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, CallbackMetadata, ITileEntityMatcher> implements ITileEntityCallback {
     private static final Map<String, Class<BaseTileEntityCallback>> callbackMap = new HashMap<>();
     private final List<ITileEntityCallback> callbacks = new ArrayList<>();
 
@@ -50,17 +50,16 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
     }
 
     @Override
-    public final void apply(TileEntity target) {
+    public final void apply(TileEntity target, CallbackMetadata metadata) {
         // Figure out if we match
-        Data data = new Data();
-        BaseMatchResult result = matches(target, data);
+        BaseMatchResult result = matches(target, metadata);
 
         // If we didn't match, check for alt matches...
         if(!result.isMatch()) {
             if (getAltMatch() == null) return;
 
             // Run them if so:
-            ((BaseTileEntityCallback)getAltMatch()).apply(target);
+            ((BaseTileEntityCallback)getAltMatch()).apply(target, metadata);
             return;
         }
 
@@ -68,7 +67,7 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
         result.runIfMatch();
 
         // Finally, actually do our thing...
-        applyTo(target, data);
+        applyTo(target, metadata);
     }
 
     /**
@@ -76,10 +75,10 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
      * @param target    The target to apply to.
      * @param data      Any event data to deal with.
      */
-    protected void applyTo(TileEntity target, Data data) {
+    protected void applyTo(TileEntity target, CallbackMetadata data) {
         // Run our callbacks
         for(ITileEntityCallback callback : callbacks) {
-            callback.apply(target);
+            callback.apply(target, data);
         }
     }
 
@@ -113,8 +112,11 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
     /**
      * Container for holding our callback data.
      */
-    protected static class Data implements ITileEntityMatcherData {
+    protected static class Data extends CallbackMetadata {
 
+        protected Data(TileEntity source) {
+            super(source);
+        }
     }
 
     @ScriptObjectDeserializer(deserializes = ITileEntityCallback.class)
@@ -259,7 +261,7 @@ public class BaseTileEntityCallback extends BaseEventMatch<TileEntity, ITileEnti
         @Override
         public void apply(Random rand, TileEntity entity) {
             for(ITileEntityCallback callback : matchers) {
-                callback.apply(entity);
+                callback.apply(entity, new Data(entity));
             }
         }
     }

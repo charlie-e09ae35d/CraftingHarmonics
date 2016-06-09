@@ -11,7 +11,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
+import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 
@@ -34,12 +36,12 @@ public class ApplyPotionCallback extends BaseEntityCallback {
     private boolean showParticles;
     private int duration;
     private ItemStack[] cures;
-    private IEntityCallbackContainer[] onApplied;
-    private IEntityCallbackContainer[] onNew;
-    private IEntityCallbackContainer[] onExtended;
-    private IEntityCallbackContainer[] onExpired;
-    private IEntityCallbackContainer[] onRemoved;
-    private IEntityCallbackContainer[] onCured;
+    private IEntityCallback[] onApplied;
+    private IEntityCallback[] onNew;
+    private IEntityCallback[] onExtended;
+    private IEntityCallback[] onExpired;
+    private IEntityCallback[] onRemoved;
+    private IEntityCallback[] onCured;
 
     /**
      * Called when an effect expires
@@ -128,16 +130,16 @@ public class ApplyPotionCallback extends BaseEntityCallback {
         }
 
         // And confirm all our callbacks are proper arrays...
-        if(onApplied == null) onApplied = new IEntityCallbackContainer[0];
-        if(onNew == null) onNew = new IEntityCallbackContainer[0];
-        if(onExtended == null) onExtended = new IEntityCallbackContainer[0];
-        if(onExpired == null) onExpired = new IEntityCallbackContainer[0];
-        if(onRemoved == null) onRemoved = new IEntityCallbackContainer[0];
-        if(onCured == null) onCured = new IEntityCallbackContainer[0];
+        if(onApplied == null) onApplied = new IEntityCallback[0];
+        if(onNew == null) onNew = new IEntityCallback[0];
+        if(onExtended == null) onExtended = new IEntityCallback[0];
+        if(onExpired == null) onExpired = new IEntityCallback[0];
+        if(onRemoved == null) onRemoved = new IEntityCallback[0];
+        if(onCured == null) onCured = new IEntityCallback[0];
     }
 
     @Override
-    protected void applyTo(Entity target) {
+    protected void applyTo(Entity target, CallbackMetadata data) {
         if(!EntityLivingBase.class.isAssignableFrom(target.getClass())) {
             LogHelper.warn("Not applying potion '{}' to target ({}) as it isn't a mob.", what.getName(), target.getClass().getName());
             return;
@@ -145,13 +147,13 @@ public class ApplyPotionCallback extends BaseEntityCallback {
 
         HarmonyPotionEffect effect = new HarmonyPotionEffect(getWhat(), getDuration(),
                 getAmplifier(), false, isShowParticles(),
-                onExpired != null ? onExpired : new IEntityCallbackContainer[0],
-                onCured != null ? onCured : new IEntityCallbackContainer[0],
-                onRemoved != null ? onRemoved : new IEntityCallbackContainer[0]);
+                onExpired != null ? onExpired : new IEntityCallback[0],
+                onCured != null ? onCured : new IEntityCallback[0],
+                onRemoved != null ? onRemoved : new IEntityCallback[0]);
         effect.setCurativeItems(Lists.newArrayList(getCures()));
 
         EntityLivingBase entity = (EntityLivingBase)target;
-        doApply(entity.getActivePotionEffect(what) == null, entity);
+        doApply(entity.getActivePotionEffect(what) == null, entity, data);
 
         // Do the effect:
         entity.addPotionEffect(effect);
@@ -163,15 +165,16 @@ public class ApplyPotionCallback extends BaseEntityCallback {
      * Do our apply callbacks
      * @param isNew     If the potion is new or  not
      * @param entity    The entity to apply it to
+     * @param metadata  The event metadata
      */
-    private void doApply(boolean isNew, EntityLivingBase entity) {
+    private void doApply(boolean isNew, EntityLivingBase entity, CallbackMetadata metadata) {
         if(isNew) {
-            runCallbacks(onNew, entity);
+            runCallbacks(onNew, entity, metadata);
         } else {
-            runCallbacks(onExtended, entity);
+            runCallbacks(onExtended, entity, metadata);
         }
 
-        runCallbacks(onApplied, entity);
+        runCallbacks(onApplied, entity, metadata);
     }
 
     /**
@@ -189,14 +192,14 @@ public class ApplyPotionCallback extends BaseEntityCallback {
      * Custom PotionEffect implementation that handles our cured/expired/removed callbacks.
      */
     public static class HarmonyPotionEffect extends PotionEffect {
-        private final IEntityCallbackContainer[] expiredCallbacks;
-        private final IEntityCallbackContainer[] curedCallbacks;
-        private final IEntityCallbackContainer[] removedCallbacks;
+        private final IEntityCallback[] expiredCallbacks;
+        private final IEntityCallback[] curedCallbacks;
+        private final IEntityCallback[] removedCallbacks;
         private boolean expired = false;
 
         public HarmonyPotionEffect(Potion potionIn, int durationIn, int amplifierIn, boolean ambientIn,
-                                   boolean showParticlesIn, IEntityCallbackContainer[] expiredCallbacks,
-                                   IEntityCallbackContainer[] curedCallbacks, IEntityCallbackContainer[] removedCallbacks) {
+                                   boolean showParticlesIn, IEntityCallback[] expiredCallbacks,
+                                   IEntityCallback[] curedCallbacks, IEntityCallback[] removedCallbacks) {
             super(potionIn, durationIn, amplifierIn, ambientIn, showParticlesIn);
             this.expiredCallbacks = expiredCallbacks;
             this.curedCallbacks = curedCallbacks;
@@ -208,12 +211,12 @@ public class ApplyPotionCallback extends BaseEntityCallback {
             if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT || expired) return;
 
             if(wasCured) {
-                MobTickRegistry.addCallbackSet(entity, curedCallbacks);
+                MobTickRegistry.addCallbackSet(entity, curedCallbacks, new BaseEntityMatcherData(entity));
             } else {
-                MobTickRegistry.addCallbackSet(entity, expiredCallbacks);
+                MobTickRegistry.addCallbackSet(entity, expiredCallbacks, new BaseEntityMatcherData(entity));
             }
 
-            MobTickRegistry.addCallbackSet(entity, removedCallbacks);
+            MobTickRegistry.addCallbackSet(entity, removedCallbacks, new BaseEntityMatcherData(entity));
         }
     }
 }

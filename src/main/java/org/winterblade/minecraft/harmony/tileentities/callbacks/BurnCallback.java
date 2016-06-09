@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityCallback;
 import org.winterblade.minecraft.harmony.api.tileentities.TileEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 
 /**
  * Created by Matt on 6/4/2016.
@@ -35,7 +36,7 @@ public class BurnCallback extends CoordinateBaseCallback {
      * @param data   Any event data to deal with.
      */
     @Override
-    protected void applyTo(TileEntity target, Data data) {
+    protected void applyTo(TileEntity target, CallbackMetadata data) {
         BlockPos pos = new BlockPos(getPosition(target));
 
         // Try to just burn the spot we're looking at:
