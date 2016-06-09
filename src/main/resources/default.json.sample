@@ -308,8 +308,8 @@
                     output: "minecraft:cooked_chicken",
                     with: "minecraft:egg", // This can be an oreDict as well
                     catalyst: "minecraft:stick",
-                    circle: "minecraft:textures/items/feather.png", // This is a resource location, leave out for the default circle
-                    isBinding: false, // Adds 100% more lightning if true
+                    circle: "minecraft:textures/items/feather.png", // This is a resource location, leave out for the default circle; you cannot specify a circle with isBinding: true
+                    isBinding: true, // Adds 100% more lightning if true; time and circle are ignored when using binding mode.
                     time: 100 // Time in ticks; ignored with isBinding: true
                 },
                 {
