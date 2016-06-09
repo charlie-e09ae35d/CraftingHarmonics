@@ -3,6 +3,8 @@ package org.winterblade.minecraft.harmony.integration.bloodmagic.operations;
 import WayofTime.bloodmagic.alchemyArray.AlchemyArrayEffectBinding;
 import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyArrayEffect;
 import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyArrayEffectCrafting;
+import WayofTime.bloodmagic.api.alchemyCrafting.AlchemyCircleRenderer;
+import WayofTime.bloodmagic.client.render.alchemyArray.BindingAlchemyCircleRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
@@ -31,16 +33,18 @@ public class AddAlchemyArray extends BasicOperation {
     /*
      * Computed properties
      */
-    private transient ResourceLocation renderer;
+    private transient AlchemyCircleRenderer renderer;
     private transient AlchemyArrayEffect effect;
     private transient Object input;
 
     @Override
     public void init() throws OperationException {
         // Figure out our renderer first...
-        renderer = circle != null && !circle.equals("")
-                ? new ResourceLocation(circle)
-                : null;
+        renderer = isBinding
+                ? new BindingAlchemyCircleRenderer()
+                : circle != null && !circle.equals("")
+                    ? new AlchemyCircleRenderer(new ResourceLocation(circle))
+                    : null;
 
         // Our effect...
         effect = isBinding

@@ -57,12 +57,12 @@ public class ReflectedBloodMagicRegistry {
         tartaricForgeRecipes.remove(recipe);
     }
 
-    public static void addAlchemyArray(ItemStack input, @Nullable ItemStack catalystStack, AlchemyArrayEffect arrayEffect, ResourceLocation circleRenderer) {
+    public static void addAlchemyArray(ItemStack input, @Nullable ItemStack catalystStack, AlchemyArrayEffect arrayEffect, AlchemyCircleRenderer circleRenderer) {
         AlchemyArrayRecipeRegistry.registerRecipe(Collections.singletonList(input), catalystStack, arrayEffect, circleRenderer);
     }
 
-    public static void addAlchemyArray(String input, @Nullable ItemStack catalystStack, AlchemyArrayEffect arrayEffect, ResourceLocation circleRenderer) {
-        AlchemyArrayRecipeRegistry.registerRecipe(input, catalystStack, arrayEffect, circleRenderer);
+    public static void addAlchemyArray(String input, @Nullable ItemStack catalystStack, AlchemyArrayEffect arrayEffect, AlchemyCircleRenderer circleRenderer) {
+        addAlchemyArray(OreDictionary.getOres(input), catalystStack, arrayEffect, circleRenderer);
     }
 
     public static void addAlchemyArray(List<ItemStack> input, @Nullable ItemStack catalyst, AlchemyArrayEffect effect, AlchemyCircleRenderer renderer) {
