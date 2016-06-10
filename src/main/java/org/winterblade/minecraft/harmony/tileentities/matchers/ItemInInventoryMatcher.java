@@ -7,7 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import org.winterblade.minecraft.harmony.api.*;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcher;
-import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcherData;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.matchers.BaseInventoryMatcher;
 
 /**
@@ -25,7 +25,7 @@ public class ItemInInventoryMatcher extends BaseInventoryMatcher implements ITil
     }
 
     @Override
-    public BaseMatchResult isMatch(TileEntity tileEntity, ITileEntityMatcherData iTileEntityMatcherData) {
+    public BaseMatchResult isMatch(TileEntity tileEntity, CallbackMetadata metadata) {
         dummy.stackSize = data.consume;
         return matches(tileEntity, dummy, data.minSlot, data.maxSlot, data.partial);
     }

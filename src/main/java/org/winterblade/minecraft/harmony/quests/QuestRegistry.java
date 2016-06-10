@@ -2,49 +2,19 @@ package org.winterblade.minecraft.harmony.quests;
 
 import com.google.common.cache.CacheLoader;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraftforge.fml.common.Loader;
 import org.winterblade.minecraft.harmony.api.questing.IQuestProvider;
 import org.winterblade.minecraft.harmony.api.questing.QuestStatus;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import org.winterblade.minecraft.harmony.utility.TypedProviderRegistry;
 
 /**
  * Created by Matt on 5/30/2016.
  */
-public class QuestRegistry implements IQuestProvider {
+public class QuestRegistry extends TypedProviderRegistry<IQuestProvider> implements IQuestProvider {
     private QuestRegistry() {}
 
     public static final QuestRegistry instance = new QuestRegistry();
-    private static final Map<String, IQuestProvider> providers = new HashMap<>();
 
-    /**
-     * Does initial registration of the quest providers
-     * @param registeredClasses    The registered classes.
-     */
-    public static void registerProviders(Map<String, Class<IQuestProvider>> registeredClasses) {
-
-        providers.clear();
-
-        for(Map.Entry<String, Class<IQuestProvider>> regClass : registeredClasses.entrySet()) {
-            try {
-                IQuestProvider provider = regClass.getValue().newInstance();
-
-                if(provider.getDependencyList() != null
-                        && !Arrays.stream(provider.getDependencyList()).allMatch(Loader::isModLoaded)) {
-                    LogHelper.info("Not registering quest provider '{}', due to a missing dependency.", provider.getName());
-                    continue;
-                }
-
-                providers.put(provider.getName(), provider);
-                LogHelper.info("Registering quest provider '{}'.", provider.getName());
-            } catch (InstantiationException | IllegalAccessException | NoClassDefFoundError e) {
-                LogHelper.warn("Error registering quest provider '{}'.", regClass.getKey(), e);
-            }
-        }
-    }
 
     /**
      * Gets the name of this provider.

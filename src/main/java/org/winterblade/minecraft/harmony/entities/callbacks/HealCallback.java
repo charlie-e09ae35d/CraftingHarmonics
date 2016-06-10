@@ -4,7 +4,8 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
@@ -16,7 +17,7 @@ public class HealCallback extends BaseEntityCallback {
      * Serialized properties
      */
     private float amount;
-    private IEntityCallbackContainer[] onComplete;
+    private IEntityCallback[] onComplete;
 
     /**
      * Allows the instance to do any last minute updating it needs to, if necessary
@@ -32,13 +33,13 @@ public class HealCallback extends BaseEntityCallback {
     }
 
     @Override
-    protected void applyTo(Entity target) {
+    protected void applyTo(Entity target, CallbackMetadata data) {
         if(!EntityLivingBase.class.isAssignableFrom(target.getClass())) {
             LogHelper.warn("Not healing target ({}) as it isn't a mob.", target.getClass().getName());
             return;
         }
 
         ((EntityLivingBase)target).heal(amount);
-        runCallbacks(onComplete, target);
+        runCallbacks(onComplete, target, data);
     }
 }

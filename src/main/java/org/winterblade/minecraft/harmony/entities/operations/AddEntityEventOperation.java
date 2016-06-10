@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 
@@ -19,7 +19,7 @@ public class AddEntityEventOperation extends BasicOperation {
     * Serialized properties
     */
     private String[] what;
-    private IEntityCallbackContainer[] events;
+    private IEntityCallback[] events;
 
     /*
      * Computed properties

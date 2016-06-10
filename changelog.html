@@ -1,4 +1,55 @@
 <div>
+    <h2>Version 1.4.6</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Added targeting for use with entity callbacks.  The following targets are available; only one may be specified per callback:
+            <ul>
+                <li>area: Targets a given area, in meters, around the player</li>
+                <li>hostile: As area, but only targeting hostile mobs</li>
+                <li>animals: As area, but only targeting animals</li>
+                <li>players: As area, but only targeting players</li>
+                <li>target: Specify a particular target; currently only 'original' supported, to target the entity that triggered the event</li>
+                <li>multitarget: Used to combine any number of the above; also supports matchers.</li>
+                <li>except: Can only be used when multitarget is specified; any targets matched here will be taken out of the list. Similarly supports matchers.</li>
+            </ul>
+        </li>
+        <li>
+            Added a 'targetEntities' callback for tile entities, will allow for a target modifier (above) to be declared
+            and will run a set of entity callbacks on each entity matched by the target modifier.  See the wiki for  more.
+        </li>
+        <li>
+            Adding support for Calendar API, and a calendar and temperature system in general,
+            with the following matchers, available for most everything:
+            <ul>
+                <li>calendarIsSeason: Checks to see if it is currently the given season.</li>
+                <li>calendarIsDayOfYear: Checks to see if it is currently the given day of the year, based on your config.</li>
+                <li>calendarMinDayOfYear: Checks to see if it is currently at least the given day of the yar.</li>
+                <li>calendarMaxDayOfYear: Checks to see if it is currently at most the given day of the year.</li>
+                <li>temperatureMin: Checks to see if it is at least the given minimum temperature.</li>
+                <li>temperatureMax: Checks to see if it is at most the given maximum temperature.</li>
+                <li>temperatureInternalMin: Checks to see if an entity has a minimum internal temperature.</li>
+                <li>temperatureInternalMax: Checks to see if an entity has a maximum internal temperature.</li>
+            </ul><br />
+            The last two are not supported by Calendar API, and, as such, will return the same as temperatureMin/Max,
+            they are simply in place for mods which do provide a way of tracking and distinguishing such things.
+        </li>
+        <li>
+            Adding the ability to control Tinker's Construct drying rack recipes with:
+            <ul>
+                <li>TConstruct.addDryingRecipe</li>
+                <li>TConstruct.removeDryingRecipe</li>
+            </ul>
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/107">issue #107</a> where
+            the Blood Magic Alchemy Array integration wasn't actually using the proper alchemy circle renderer
+            when isBinding was set to true.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
     <h2>Version 1.4.5</h2>
     <h4>Features</h4>
     <ul>

@@ -12,7 +12,9 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallbackContainer;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
+import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import javax.annotation.Nullable;
@@ -35,11 +37,11 @@ public class StopTimeCommand extends BaseEntityAndDimensionCallback {
      * Serialized properties
      */
     private int duration;
-    private IEntityCallbackContainer[] onFailure;
-    private IEntityCallbackContainer[] onTimeStopStart;
-    private IEntityCallbackContainer[] onTimeStopExtended;
-    private IEntityCallbackContainer[] onTimeStopEnd;
-    private IEntityCallbackContainer[] onComplete;
+    private IEntityCallback[] onFailure;
+    private IEntityCallback[] onTimeStopStart;
+    private IEntityCallback[] onTimeStopExtended;
+    private IEntityCallback[] onTimeStopEnd;
+    private IEntityCallback[] onComplete;
 
     /**
      * Allows the instance to do any last minute updating it needs to, if necessary
@@ -53,20 +55,20 @@ public class StopTimeCommand extends BaseEntityAndDimensionCallback {
     }
 
     @Override
-    protected void applyWithTargetDimension(Entity target, int targetDim) {
+    protected void applyWithTargetDimension(Entity target, int targetDim, CallbackMetadata metadata) {
         WorldServer worldServer = DimensionManager.getWorld(targetDim);
         if(worldServer == null) {
             LogHelper.error("Attempted to stop the time for a world (" + targetDim + ") that doesn't exist.");
-            runCallbacks(onFailure, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onFailure, target, metadata);
+            runCallbacks(onComplete, target, metadata);
             return;
         }
 
         // Make sure we're not already doing this...
         if(timeStopsInProgress.containsKey(targetDim)) {
             timeStopsInProgress.get(targetDim).extend(this, target);
-            runCallbacks(onTimeStopExtended, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onTimeStopExtended, target, metadata);
+            runCallbacks(onComplete, target, metadata);
             CraftingHarmonicsMod.updateSavedData();
             return;
         }
@@ -74,15 +76,15 @@ public class StopTimeCommand extends BaseEntityAndDimensionCallback {
         // If an op has disabled time in the world anyway
         if(!worldServer.getGameRules().getBoolean("doDaylightCycle")) {
             LogHelper.warn("World (" + targetDim + ") already has time stopped by something else.");
-            runCallbacks(onFailure, target);
-            runCallbacks(onComplete, target);
+            runCallbacks(onFailure, target, metadata);
+            runCallbacks(onComplete, target, metadata);
             return;
         }
 
         // Otherwise, this is a new time stop...
         timeStopsInProgress.put(targetDim, new TimeStopData(targetDim, worldServer.getTotalWorldTime()+duration, this, target));
-        runCallbacks(onTimeStopStart, target);
-        runCallbacks(onComplete, target);
+        runCallbacks(onTimeStopStart, target, metadata);
+        runCallbacks(onComplete, target, metadata);
         worldServer.getGameRules().setOrCreateGameRule("doDaylightCycle", "false");
 
         // TODO: Also prevent sleeping.
@@ -300,7 +302,8 @@ public class StopTimeCommand extends BaseEntityAndDimensionCallback {
     private void done(@Nullable Entity target, UUID entityId) {
         // If we have a target in the world, run the command...
         if(target != null) {
-            runCallbacks(onTimeStopEnd, target);
+            // TODO: Consider saving the metadata somewhere...
+            runCallbacks(onTimeStopEnd, target, new BaseEntityMatcherData(target));
             return;
         }
 
@@ -310,7 +313,8 @@ public class StopTimeCommand extends BaseEntityAndDimensionCallback {
             //noinspection ConstantConditions <-- not always null, IDEA
             if(player == null) return;
 
-            runCallbacks(onTimeStopEnd, player);
+            // TODO: Consider saving the metadata somewhere...
+            runCallbacks(onTimeStopEnd, player, new BaseEntityMatcherData(player));
         }
         catch(Exception ex) {
             // Probably expected at this point.
