@@ -20,6 +20,21 @@ CraftingOperation.prototype.height = function(height) {
     return this;
 }
 
+CraftingOperation.prototype.name = function(name) {
+    this.displayName = name;
+    return this;
+}
+
+CraftingOperation.prototype.withNbt = function(nbt) {
+    this.nbt = nbt;
+    return this;
+}
+
+CraftingOperation.prototype.quantity = function(qty) {
+    this.quantity = qty;
+    return this;
+}
+
 /*
  * Remove operations...
  */
