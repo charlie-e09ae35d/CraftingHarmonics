@@ -26,6 +26,7 @@ import java.util.Map;
 public class NashornConfigProcessor implements INashornMod {
     private final static NashornConfigProcessor instance = new NashornConfigProcessor();
     private final static String[] headers = new String[]{
+            "libs/lodash/lodash.js",
             "InternalFileProcessor.js"
     };
 
