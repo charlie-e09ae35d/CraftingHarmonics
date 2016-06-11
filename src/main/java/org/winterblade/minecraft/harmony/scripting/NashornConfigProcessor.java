@@ -10,13 +10,13 @@ import org.winterblade.minecraft.scripting.api.INashornMod;
 import org.winterblade.minecraft.scripting.api.IScriptContext;
 import org.winterblade.minecraft.scripting.api.NashornMod;
 
+import javax.annotation.Nonnull;
 import javax.script.ScriptException;
 import java.io.File;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Matt on 4/8/2016.
@@ -27,10 +27,8 @@ public class NashornConfigProcessor implements INashornMod {
     private final static String[] headers = new String[]{
             "libs/lodash/lodash.js",
             "InternalFileProcessor.js",
-            "models/Set.js",
-            "models/Operation.js",
-            "models/CraftingOperation.js",
-            "crafting/RecipeManager.js"
+            "models",
+            "crafting"
     };
 
     public IScriptContext nashorn;
@@ -53,13 +51,25 @@ public class NashornConfigProcessor implements INashornMod {
 
         // Assign out our script header files...
         long timeMillis = System.currentTimeMillis();
+        Set<File> headerFiles = new HashSet<>();
+
         for(String headerPath : headers) {
             try {
-                nashorn.eval(Resources.toString(Resources.getResource("scripts/" + headerPath), Charsets.UTF_8));
-            } catch (Exception e) {
-                LogHelper.fatal("Unable to process header scripts/{}; things will go badly from here out...", headerPath);
+                headerFiles.addAll(getResources(new File(Resources.getResource("scripts/" + headerPath).toURI())));
+            } catch (URISyntaxException e) {
+                LogHelper.error("Error reading resource file.", e);
             }
         }
+
+        for (File file : headerFiles) {
+            try {
+                nashorn.eval(Resources.toString(file.toURI().toURL(), Charsets.UTF_8));
+            } catch (Exception e) {
+                LogHelper.fatal("Unable to process header file {}; things will go badly from here out...", file.getName());
+            }
+        }
+
+
         LogHelper.info("Loading script headers took {} milliseconds.", System.currentTimeMillis() - timeMillis);
     }
 
@@ -119,6 +129,17 @@ public class NashornConfigProcessor implements INashornMod {
             LogHelper.error("Error processing file " + file.getPath(),e);
             return "";
         }
+    }
+
+    private Set<File> getResources(@Nonnull File rootDir) {
+        if(!rootDir.isDirectory()) return Collections.singleton(rootDir);
+
+        Set<File> resources = new HashSet<>();
+        for (File resource : rootDir.listFiles()) {
+            if(resource.isDirectory()) resources.addAll(getResources(resource));
+            else resources.add(resource);
+        }
+        return resources;
     }
 
     /**

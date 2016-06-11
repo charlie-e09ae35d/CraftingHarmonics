@@ -1,11 +1,7 @@
 var CraftingOperation = function(type, output) {
-    Operation.call(this, type);
+    this.type = type;
     this.output = output;
 }
-
-// Inheritance and such...
-CraftingOperation.prototype = Object.create(Operation.prototype);
-CraftingOperation.prototype.constructor = CraftingOperation;
 
 // Actual methods...
 CraftingOperation.prototype.with = function() {
