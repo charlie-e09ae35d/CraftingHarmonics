@@ -25,25 +25,16 @@ import java.util.Map;
 @NashornMod
 public class NashornConfigProcessor implements INashornMod {
     private final static NashornConfigProcessor instance = new NashornConfigProcessor();
+    private final static String[] headers = new String[]{
+            "InternalFileProcessor.js"
+    };
 
-    private final String header;
     public IScriptContext nashorn;
     private final Map<String, String> cache = new HashMap<>();
     private boolean loadedInterops = false;
     private String[] contextRoots = new String[] {"org.winterblade.minecraft.harmony"};
 
-    public NashornConfigProcessor() {
-        // Assign out our script header file...
-        String tempHeader;
-        try {
-            tempHeader = Resources.toString(Resources.getResource("scripts/InternalFileProcessor.js"), Charsets.UTF_8);
-        } catch (IllegalArgumentException | IOException e) {
-            LogHelper.fatal("Unable to load file processing header; things will go badly from here out...");
-            tempHeader = "";
-        }
-
-        header = tempHeader;
-    }
+    public NashornConfigProcessor() {}
 
     /**
      * Gets the instance of this singleton
@@ -56,8 +47,16 @@ public class NashornConfigProcessor implements INashornMod {
     public void init(IScriptContext nashorn) {
         this.nashorn = nashorn;
 
-        // Actually try and load our script header into Nashorn.
-        nashorn.eval(header);
+        // Assign out our script header files...
+        long timeMillis = System.currentTimeMillis();
+        for(String headerPath : headers) {
+            try {
+                nashorn.eval(Resources.toString(Resources.getResource("scripts/" + headerPath), Charsets.UTF_8));
+            } catch (Exception e) {
+                LogHelper.fatal("Unable to process header scripts/{}; things will go badly from here out...", headerPath);
+            }
+        }
+        LogHelper.info("Loading script headers took {} milliseconds.", System.currentTimeMillis() - timeMillis);
     }
 
 
