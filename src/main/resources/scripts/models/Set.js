@@ -6,7 +6,7 @@ var Set = function(name) {
 /*
  * Extend our internal operations
  */
-Set.prototype.addOperation = function(op) {
+Set.prototype.addOperation = Set.prototype.add = function(op) {
     this.__internal.addOperation(op);
 }
 

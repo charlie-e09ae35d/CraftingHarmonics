@@ -27,7 +27,10 @@ public class NashornConfigProcessor implements INashornMod {
     private final static String[] headers = new String[]{
             "libs/lodash/lodash.js",
             "InternalFileProcessor.js",
-            "models/Set.js"
+            "models/Set.js",
+            "models/Operation.js",
+            "models/CraftingOperation.js",
+            "crafting/RecipeManager.js"
     };
 
     public IScriptContext nashorn;
