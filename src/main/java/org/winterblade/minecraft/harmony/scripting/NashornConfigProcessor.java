@@ -12,7 +12,6 @@ import org.winterblade.minecraft.scripting.api.NashornMod;
 
 import javax.script.ScriptException;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -67,7 +66,7 @@ public class NashornConfigProcessor implements INashornMod {
             LogHelper.fatal("Nashorn library isn't loaded; please make sure you have NashornLib in your mods folder.");
         }
 
-        String fileContent = getJsonFileContent(file);
+        String fileContent = file.getName().endsWith(".json") ? getJsonFileContent(file) : getFileContent(file);
 
         try {
             processConfig(fileContent);
@@ -75,7 +74,7 @@ public class NashornConfigProcessor implements INashornMod {
             // Only put valid configs in the cache:
             cache.put(file.getName(), fileContent);
         } catch (Exception e) {
-            LogHelper.error("Error processing Set file " + file.getPath(), e);
+            LogHelper.error("Error processing file " + file.getPath(), e);
         }
     }
 
@@ -101,15 +100,22 @@ public class NashornConfigProcessor implements INashornMod {
      */
     private String getJsonFileContent(File file) {
         // Wrap and retreive the content...
-        String fileContent = "module.exports = ";
+        return "module.exports = " + getFileContent(file) + "; __CraftingHarmonicsInternal.FileProcessor('"
+                + file.getName() + "',module.exports);";
+    }
+
+    /**
+     * Read the contents of the given file
+     * @param file    The file to read
+     * @return        The contents, or an empty string if it failed.
+     */
+    private String getFileContent(File file) {
         try {
-            fileContent += new String(Files.readAllBytes(Paths.get(file.getPath())));
+            return new String(Files.readAllBytes(Paths.get(file.getPath())));
         } catch (Exception e) {
-            LogHelper.error("Error processing Set file " + file.getPath(),e);
-            return null;
+            LogHelper.error("Error processing file " + file.getPath(),e);
+            return "";
         }
-        fileContent += "; __CraftingHarmonicsInternal.FileProcessor('" + file.getName() + "',module.exports);";
-        return fileContent;
     }
 
     /**
