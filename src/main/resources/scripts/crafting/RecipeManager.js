@@ -8,5 +8,8 @@ var RecipeManager = {
         if(height) op.height(height);
 
         return op;
+    },
+    remove: function(what) {
+        return new RemoveOperation(what);
     }
 };

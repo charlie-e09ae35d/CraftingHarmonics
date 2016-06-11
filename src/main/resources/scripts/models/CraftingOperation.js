@@ -3,7 +3,7 @@ var CraftingOperation = function(type, output) {
     this.output = output;
 }
 
-// Actual methods...
+ // Actual methods...
 CraftingOperation.prototype.with = function() {
     // Oh JavaScript and your argument silliness.
     this.with = Array.prototype.slice.call(arguments);
@@ -17,5 +17,21 @@ CraftingOperation.prototype.width = function(width) {
 
 CraftingOperation.prototype.height = function(height) {
     this.height = height;
+    return this;
+}
+
+/*
+ * Remove operations...
+ */
+var RemoveOperation = function(what) {
+    this.type = "remove";
+    this.what = what;
+}
+
+RemoveOperation.prototype = CraftingOperation.prototype;
+RemoveOperation.prototype.constructor = RemoveOperation;
+
+RemoveOperation.prototype.from = function() {
+    this.from = Array.prototype.slice.call(arguments);
     return this;
 }
