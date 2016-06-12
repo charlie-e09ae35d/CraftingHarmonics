@@ -3,7 +3,7 @@ var CraftingOperation = function(type, output) {
     this.op.output = output;
 }
 
-CraftingOperation.prototype = Operation.prototype;
+CraftingOperation.prototype = Object.create(Operation.prototype);
 CraftingOperation.prototype.constructor = CraftingOperation;
 
  // Actual methods...
@@ -46,7 +46,7 @@ var RemoveOperation = function(what) {
     this.op.what = what;
 }
 
-RemoveOperation.prototype = CraftingOperation.prototype;
+RemoveOperation.prototype = Object.create(CraftingOperation.prototype);
 RemoveOperation.prototype.constructor = RemoveOperation;
 
 RemoveOperation.prototype.from = function() {
@@ -62,10 +62,15 @@ var FurnaceOperation = function(output) {
     CraftingOperation.call(this, "addFurnace", output);
 }
 
-FurnaceOperation.prototype = CraftingOperation.prototype;
+FurnaceOperation.prototype = Object.create(CraftingOperation.prototype);
 FurnaceOperation.prototype.constructor = FurnaceOperation;
 
 FurnaceOperation.prototype.xp = FurnaceOperation.prototype.experience = function(xp) {
     this.op.experience = xp;
+    return this;
+}
+
+FurnaceOperation.prototype.with = function(input) {
+    this.op.with = input;
     return this;
 }
