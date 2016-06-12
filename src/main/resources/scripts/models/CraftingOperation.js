@@ -53,3 +53,19 @@ RemoveOperation.prototype.from = function() {
     this.op.from = Array.prototype.slice.call(arguments);
     return this;
 }
+
+
+/*
+ * Furnace
+ */
+var FurnaceOperation = function(output) {
+    CraftingOperation.call(this, "addFurnace", output);
+}
+
+FurnaceOperation.prototype = CraftingOperation.prototype;
+FurnaceOperation.prototype.constructor = FurnaceOperation;
+
+FurnaceOperation.prototype.xp = FurnaceOperation.prototype.experience = function(xp) {
+    this.op.experience = xp;
+    return this;
+}

@@ -11,5 +11,11 @@ var RecipeManager = {
     },
     remove: function(what) {
         return new RemoveOperation(what);
+    },
+    furnace: function(output, input, xp) {
+        var op = new FurnaceOperation(output);
+        if(input) op.with(input);
+        if(xp) op.xp(xp);
+        return op;
     }
 };
