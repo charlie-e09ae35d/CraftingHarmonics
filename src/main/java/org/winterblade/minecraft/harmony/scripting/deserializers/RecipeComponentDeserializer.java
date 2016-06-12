@@ -45,7 +45,15 @@ public class RecipeComponentDeserializer implements IScriptObjectDeserializer {
             return component;
         }
 
-        ScriptObjectMirror item = ScriptUtils.wrap((ScriptObject) data);
+        ScriptObjectMirror item;
+
+        if(ScriptObjectMirror.class.isAssignableFrom(data.getClass())) {
+            item = (ScriptObjectMirror)data;
+        } else if(ScriptObject.class.isAssignableFrom(data.getClass())) {
+            item = ScriptUtils.wrap((ScriptObject) data);
+        } else {
+            return null;
+        }
 
         if(!item.hasMember("item")) return null;
 
