@@ -27,6 +27,7 @@ public class NashornConfigProcessor implements INashornMod {
     private final static String[] headers = new String[]{
             "libs/lodash/lodash.js",
             "InternalFileProcessor.js",
+            "models/Operation.js",
             "models",
             "crafting"
     };
@@ -51,7 +52,7 @@ public class NashornConfigProcessor implements INashornMod {
 
         // Assign out our script header files...
         long timeMillis = System.currentTimeMillis();
-        Set<File> headerFiles = new HashSet<>();
+        Set<File> headerFiles = new LinkedHashSet<>();
 
         for(String headerPath : headers) {
             try {

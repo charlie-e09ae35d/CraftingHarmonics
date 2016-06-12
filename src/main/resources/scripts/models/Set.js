@@ -7,7 +7,7 @@ var Set = function(name) {
  * Extend our internal operations
  */
 Set.prototype.addOperation = Set.prototype.add = function(op) {
-    this.__internal.addOperation(op);
+    this.__internal.addOperation(op.op ? op.op : op);
 }
 
 Set.prototype.setDuration = function(duration) {
