@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.Logger;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.scripting.api.INashornMod;
@@ -36,6 +37,8 @@ public class NashornConfigProcessor implements INashornMod {
     private final Map<String, String> cache = new HashMap<>();
     private boolean loadedInterops = false;
     private String[] contextRoots = new String[] {"org.winterblade.minecraft.harmony"};
+
+    private final Map<String, IFilePreprocessor> preprocessorMap = new HashMap<>();
 
     public NashornConfigProcessor() {}
 
@@ -72,6 +75,11 @@ public class NashornConfigProcessor implements INashornMod {
 
 
         LogHelper.info("Loading script headers took {} milliseconds.", System.currentTimeMillis() - timeMillis);
+
+        // Register our preprocessors:
+        preprocessorMap.put("json", (filename, input) -> "module.exports = " + input + "; __CraftingHarmonicsInternal.FileProcessor('"
+                + filename + "',module.exports);");
+        preprocessorMap.put("js", (filename, input) -> "(function() {" + input + "}());");
     }
 
 
@@ -80,7 +88,14 @@ public class NashornConfigProcessor implements INashornMod {
             LogHelper.fatal("Nashorn library isn't loaded; please make sure you have NashornLib in your mods folder.");
         }
 
-        String fileContent = file.getName().endsWith(".json") ? getJsonFileContent(file) : getFileContent(file);
+        // Load our config...
+        String fileContent = getFileContent(file);
+
+        // Process our content...
+        String fileExtension = FilenameUtils.getExtension(file.getAbsolutePath());
+        if(preprocessorMap.containsKey(fileExtension)) {
+            fileContent = preprocessorMap.get(fileExtension).process(file.getName(), fileContent);
+        }
 
         try {
             processConfig(fileContent);
@@ -105,17 +120,6 @@ public class NashornConfigProcessor implements INashornMod {
      */
     public ImmutableMap<String,String> getCache() {
         return ImmutableMap.copyOf(cache);
-    }
-
-    /**
-     * Read the file content into something that's understandable by the system.
-     * @param file  The file to process
-     * @return      The script.
-     */
-    private String getJsonFileContent(File file) {
-        // Wrap and retreive the content...
-        return "module.exports = " + getFileContent(file) + "; __CraftingHarmonicsInternal.FileProcessor('"
-                + file.getName() + "',module.exports);";
     }
 
     /**
@@ -186,5 +190,10 @@ public class NashornConfigProcessor implements INashornMod {
      */
     public void reloadConfigs() {
         cache.clear();
+    }
+
+    @FunctionalInterface
+    private static interface IFilePreprocessor {
+        String process(String filename, String input);
     }
 }
