@@ -14,7 +14,7 @@ import java.util.Map;
 @IFMLLoadingPlugin.TransformerExclusions(value = "org.winterblade.harmony.asm.")
 @IFMLLoadingPlugin.DependsOn( "forge" )
 @IFMLLoadingPlugin.MCVersion(value = "1.9.4")
-public class HarmonyPreloader extends DummyModContainer implements IFMLLoadingPlugin {
+public class HarmonyPreloader implements IFMLLoadingPlugin {
     ModMetadata metadata = new ModMetadata();
 
     public HarmonyPreloader() {
@@ -45,7 +45,7 @@ public class HarmonyPreloader extends DummyModContainer implements IFMLLoadingPl
      */
     @Override
     public String getModContainerClass() {
-        return "org.winterblade.minecraft.harmony.asm.HarmonyPreloader";
+        return null;
     }
 
     /**
@@ -85,18 +85,7 @@ public class HarmonyPreloader extends DummyModContainer implements IFMLLoadingPl
         return null;
     }
 
-    @Override
-    public String getModId() {
-        return metadata.modId;
-    }
-
-    @Override
     public String getName() {
         return metadata.name;
-    }
-
-    @Override
-    public String getVersion() {
-        return metadata.version;
     }
 }
