@@ -17,3 +17,8 @@ Set.prototype.setDuration = function(duration) {
 Set.prototype.setCooldown = function(cooldown) {
     this.__internal.setCooldown(cooldown);
 }
+
+Set.prototype.removesSets = function(sets) {
+    if(!Array.isArray(sets)) sets = [sets];
+    this.__internal.setRemovedSets(sets);
+}
