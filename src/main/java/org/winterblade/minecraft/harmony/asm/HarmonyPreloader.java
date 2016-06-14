@@ -10,18 +10,13 @@ import java.util.Map;
 /**
  * Created by Matt on 5/22/2016.
  */
+@IFMLLoadingPlugin.Name("Crafting Harmonics Core")
 @IFMLLoadingPlugin.SortingIndex(1001)
 @IFMLLoadingPlugin.TransformerExclusions(value = "org.winterblade.harmony.asm.")
 @IFMLLoadingPlugin.DependsOn( "forge" )
 @IFMLLoadingPlugin.MCVersion(value = "1.9.4")
 public class HarmonyPreloader implements IFMLLoadingPlugin {
-    ModMetadata metadata = new ModMetadata();
-
-    public HarmonyPreloader() {
-        metadata.modId = CraftingHarmonicsMod.MODID + "Preloader";
-        metadata.version = CraftingHarmonicsMod.VERSION;
-        metadata.name = "Crafting Harmonics Preloader";
-    }
+    public HarmonyPreloader() {}
 
     /**
      * Return a list of classes that implements the IClassTransformer interface
@@ -83,9 +78,5 @@ public class HarmonyPreloader implements IFMLLoadingPlugin {
     @Override
     public String getAccessTransformerClass() {
         return null;
-    }
-
-    public String getName() {
-        return metadata.name;
     }
 }
