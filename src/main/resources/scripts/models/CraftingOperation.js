@@ -74,3 +74,25 @@ FurnaceOperation.prototype.with = function(input) {
     this.op.with = input;
     return this;
 }
+
+/*
+ * Add brews
+ */
+var AddBrewOperation = function(what, input, ingredient) {
+    CraftingOperation.call(this, "addBrew", what);
+    if(input) this.op.input = input;
+    if(ingredient) this.op.ingredient = ingredient;
+}
+
+AddBrewOperation.prototype = Object.create(CraftingOperation.prototype);
+AddBrewOperation.prototype.constructor = AddBrewOperation;
+
+AddBrewOperation.prototype.input = function(input) {
+    this.op.input = time;
+    return this;
+}
+
+AddBrewOperation.prototype.ingredient = function(ingredient) {
+    this.op.ingredient = ingredient;
+    return this;
+}

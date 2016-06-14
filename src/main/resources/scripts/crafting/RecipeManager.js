@@ -17,5 +17,8 @@ var RecipeManager = {
         if(input) op.with(input);
         if(xp) op.xp(xp);
         return op;
+    },
+    brew: function(output, input, ingredient) {
+        return new AddBrewOperation(output, input, ingredient);
     }
 };
