@@ -19,6 +19,5 @@ public class RebornRecipeUtils {
 
     public static void removeRecipe(IBaseRecipeType recipe) {
         RecipeHandler.recipeList.remove(recipe);
-        RecipeHandler.stackMap.remove(recipe);
     }
 }

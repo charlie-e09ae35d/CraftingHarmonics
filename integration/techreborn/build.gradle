@@ -16,7 +16,7 @@ buildscript {
 repositories {
     maven { url "http://maven.winterblade.org/content/repositories/minecraft/" }
     maven { url "http://maven.modmuss50.me/" } // TechReborn, RebornCore
-    maven { url 'http://maven.rubbix.net' } // Tesla API
+    maven { url 'http://maven.epoxide.xyz' } // Tesla API
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -35,8 +35,8 @@ minecraft {
 
 dependencies {
     compile project(":api")
-    compile "RebornCore:RebornCore-1.9:+:dev"
-    compile "TechReborn:TechReborn-1.9:1.0.6.254:dev"
+    compile "RebornCore:RebornCore-1.9.4:+:dev"
+    compile "TechReborn:TechReborn-1.9.4:1.3.2.166:dev"
 }
 
 //Add dependencies to the JAR
