@@ -17,6 +17,7 @@ import net.minecraftforge.client.IRenderHandler;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.world.sky.ClientSkyModifications;
 
 import javax.annotation.Nullable;
@@ -370,7 +371,18 @@ public class ProxiedWorldProvider extends WorldProvider {
     @Override
     @SideOnly(Side.CLIENT)
     public Vec3d getSkyColor(Entity cameraEntity, float partialTicks) {
-        return ClientSkyModifications.getSkyColorFor(cameraEntity, wrapped.getSkyColor(cameraEntity, partialTicks), wrapped.getDimension());
+        // Prevent a null camera entity from being tested; this is occurring due to someone's mod...
+        if(cameraEntity == null) {
+            LogHelper.warn("Unable to get the sky color for world {} because a null entity was passed in.", wrapped.getDimension());
+            return new Vec3d(0,0,0);
+        }
+
+        try {
+            return ClientSkyModifications.getSkyColorFor(cameraEntity, wrapped.getSkyColor(cameraEntity, partialTicks), wrapped.getDimension());
+        } catch(Exception e) {
+            LogHelper.warn("Error getting sky color for world {}", wrapped.getDimension(), e);
+            return new Vec3d(0,0,0);
+        }
     }
 
     @Override
