@@ -38,6 +38,14 @@ Drop.prototype.max = function(val) {
     this.data.max = val;
 }
 
+Drop.prototype.lootingMultiplier = function(val) {
+    this.data.lootingMultiplier = val;
+}
+
+Drop.prototype.fortuneMultiplier = function(val) {
+    this.data.fortuneMultiplier = val;
+}
+
 /*
  * Mob drops
  */
