@@ -11,11 +11,23 @@ DropOperation.prototype.constructor = DropOperation;
 
 DropOperation.prototype.replace = function(isReplace) {
     this.op.replace = isReplace;
+    return this;
 }
 
 DropOperation.prototype.addDrop = function(drop) {
     this.op.drops = this.op.drops || [];
-    this.op.drops.push(drop);
+    this.op.drops.push(drop.data ? drop.data : drop);
+    return this;
+}
+
+
+/*
+ * Actual drop object
+ */
+var Drop = function(what) {
+    this.data = {what: what};
+    // Extend this with all our dynamically generated matchers
+    _.assign(this, Matchers);
 }
 
 

@@ -6,6 +6,12 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.Logger;
+import org.winterblade.minecraft.harmony.api.IMatcher;
+import org.winterblade.minecraft.harmony.api.blocks.IBlockDropMatcher;
+import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
+import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
+import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
+import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.scripting.api.INashornMod;
 import org.winterblade.minecraft.scripting.api.IScriptContext;
@@ -57,24 +63,21 @@ public class NashornConfigProcessor implements INashornMod {
 
         // Assign out our script header files...
         long timeMillis = System.currentTimeMillis();
-        Set<File> headerFiles = new LinkedHashSet<>();
+        initHeaders(nashorn);
 
-        for(String headerPath : headers) {
-            try {
-                headerFiles.addAll(getResources(new File(Resources.getResource("scripts/" + headerPath).toURI())));
-            } catch (URISyntaxException e) {
-                LogHelper.error("Error reading resource file.", e);
+        Set<String> matcherProps = ComponentRegistry.getAllPropertiesFor(IEntityMatcher.class);
+        matcherProps.addAll(ComponentRegistry.getAllPropertiesFor(IBlockDropMatcher.class));
+        matcherProps.addAll(ComponentRegistry.getAllPropertiesFor(IMobDropMatcher.class));
+        matcherProps.addAll(ComponentRegistry.getAllPropertiesFor(ITileEntityMatcher.class));
+        matcherProps.addAll(ComponentRegistry.getAllPropertiesFor(IMobShedMatcher.class));
+
+        try {
+            for(String prop : matcherProps) {
+                    nashorn.invokeFunction("__addMatcher", prop);
             }
+        } catch (ScriptException | NoSuchMethodException e) {
+            LogHelper.info("Unable to register matchers with the JavaScript interpreter; these will not be available in js scripts.");
         }
-
-        for (File file : headerFiles) {
-            try {
-                nashorn.eval(Resources.toString(file.toURI().toURL(), Charsets.UTF_8));
-            } catch (Exception e) {
-                LogHelper.fatal("Unable to process header file {}; things will go badly from here out...", file.getName());
-            }
-        }
-
 
         LogHelper.info("Loading script headers took {} milliseconds.", System.currentTimeMillis() - timeMillis);
 
@@ -83,7 +86,6 @@ public class NashornConfigProcessor implements INashornMod {
                 + filename + "',module.exports);");
         preprocessorMap.put("js", (filename, input) -> "(function() {" + input + "}());");
     }
-
 
     public void ReadConfigFile(File file) {
         if(nashorn == null) {
@@ -168,6 +170,30 @@ public class NashornConfigProcessor implements INashornMod {
                 nashorn.invokeFunction("__CraftingHarmonicsInternalAddInterop", interop.getKey(), interop.getValue());
             } catch (ScriptException | NoSuchMethodException e) {
                 LogHelper.error("Unable to add interop class '" + interop.getKey() + "'.", e);
+            }
+        }
+    }
+
+    /**
+     * Initializes the header files in the resources directory.
+     * @param nashorn    The script context to initialize it to.
+     */
+    private void initHeaders(IScriptContext nashorn) {
+        Set<File> headerFiles = new LinkedHashSet<>();
+
+        for(String headerPath : headers) {
+            try {
+                headerFiles.addAll(getResources(new File(Resources.getResource("scripts/" + headerPath).toURI())));
+            } catch (URISyntaxException e) {
+                LogHelper.error("Error reading resource file.", e);
+            }
+        }
+
+        for (File file : headerFiles) {
+            try {
+                nashorn.eval(Resources.toString(file.toURI().toURL(), Charsets.UTF_8));
+            } catch (Exception e) {
+                LogHelper.fatal("Unable to process header file {}; things will go badly from here out...", file.getName());
             }
         }
     }
