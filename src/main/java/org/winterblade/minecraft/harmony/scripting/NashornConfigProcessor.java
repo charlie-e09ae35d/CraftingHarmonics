@@ -31,6 +31,7 @@ public class NashornConfigProcessor implements INashornMod {
             "models/Operation.js",
             "models",
             "crafting",
+            "drops",
             "integration"
     };
 
