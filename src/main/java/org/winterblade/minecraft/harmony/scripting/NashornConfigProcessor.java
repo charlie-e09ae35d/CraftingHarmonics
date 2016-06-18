@@ -30,7 +30,8 @@ public class NashornConfigProcessor implements INashornMod {
             "InternalFileProcessor.js",
             "models/Operation.js",
             "models",
-            "crafting"
+            "crafting",
+            "integration"
     };
 
     public IScriptContext nashorn;
