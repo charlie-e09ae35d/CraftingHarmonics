@@ -10,18 +10,13 @@ import java.util.Map;
 /**
  * Created by Matt on 5/22/2016.
  */
+@IFMLLoadingPlugin.Name("Crafting Harmonics Core")
 @IFMLLoadingPlugin.SortingIndex(1001)
 @IFMLLoadingPlugin.TransformerExclusions(value = "org.winterblade.harmony.asm.")
 @IFMLLoadingPlugin.DependsOn( "forge" )
 @IFMLLoadingPlugin.MCVersion(value = "1.9.4")
-public class HarmonyPreloader extends DummyModContainer implements IFMLLoadingPlugin {
-    ModMetadata metadata = new ModMetadata();
-
-    public HarmonyPreloader() {
-        metadata.modId = CraftingHarmonicsMod.MODID + "Preloader";
-        metadata.version = CraftingHarmonicsMod.VERSION;
-        metadata.name = "Crafting Harmonics Preloader";
-    }
+public class HarmonyPreloader implements IFMLLoadingPlugin {
+    public HarmonyPreloader() {}
 
     /**
      * Return a list of classes that implements the IClassTransformer interface
@@ -45,7 +40,7 @@ public class HarmonyPreloader extends DummyModContainer implements IFMLLoadingPl
      */
     @Override
     public String getModContainerClass() {
-        return "org.winterblade.minecraft.harmony.asm.HarmonyPreloader";
+        return null;
     }
 
     /**
@@ -83,20 +78,5 @@ public class HarmonyPreloader extends DummyModContainer implements IFMLLoadingPl
     @Override
     public String getAccessTransformerClass() {
         return null;
-    }
-
-    @Override
-    public String getModId() {
-        return metadata.modId;
-    }
-
-    @Override
-    public String getName() {
-        return metadata.name;
-    }
-
-    @Override
-    public String getVersion() {
-        return metadata.version;
     }
 }
