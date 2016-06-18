@@ -1,5 +1,5 @@
 var OreDictionary = {
-    registerOre = function(item, dict) {
+    registerOre: function(item, dict) {
         return new RegisterOreDictionary(item, dict);
     },
 
