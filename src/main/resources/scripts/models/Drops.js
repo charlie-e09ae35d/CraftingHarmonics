@@ -24,12 +24,19 @@ DropOperation.prototype.addDrop = function(drop) {
 /*
  * Actual drop object
  */
-var Drop = function(what) {
-    this.data = {what: what};
+var Drop = function(what, min, max) {
+    this.data = {what: what, min: min || 1, max: max || 1};
     // Extend this with all our dynamically generated matchers
     _.assign(this, Matchers);
 }
 
+Drop.prototype.min = function(val) {
+    this.data.min = val;
+}
+
+Drop.prototype.max = function(val) {
+    this.data.max = val;
+}
 
 /*
  * Mob drops
