@@ -55,3 +55,13 @@ var MobDropOperation = function(what) {
 
 MobDropOperation.prototype = Object.create(DropOperation.prototype);
 MobDropOperation.prototype.constructor = MobDropOperation;
+
+MobDropOperation.prototype.exclude = function() {
+    this.op.exclude = _.concat(Array.prototype.slice.call(arguments));
+    return this;
+}
+
+MobDropOperation.prototype.includePlayers = MobDropOperation.prototype.includePlayerDrops = function(inc) {
+    this.op.includePlayerDrops = inc;
+    return this;
+}
