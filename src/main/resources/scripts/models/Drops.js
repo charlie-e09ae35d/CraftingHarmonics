@@ -17,9 +17,10 @@ DropOperation.prototype.replace = function(isReplace) {
 DropOperation.prototype.addDrop = function(drop) {
     this.op.drops = this.op.drops || [];
     this.op.drops.push(drop.data ? drop.data : drop);
+    console.log(drop);
+    console.log(this.op.drops);
     return this;
 }
-
 
 /*
  * Actual drop object
@@ -32,19 +33,29 @@ var Drop = function(what, min, max) {
 
 Drop.prototype.min = function(val) {
     this.data.min = val;
+    return this;
 }
 
 Drop.prototype.max = function(val) {
     this.data.max = val;
+    return this;
 }
 
 Drop.prototype.lootingMultiplier = function(val) {
     this.data.lootingMultiplier = val;
+    return this;
 }
 
 Drop.prototype.fortuneMultiplier = function(val) {
     this.data.fortuneMultiplier = val;
+    return this;
 }
+
+Drop.prototype.otherwise = function(drop) {
+    this.data.otherwise = drop.data ? drop.data : drop;
+    return this;
+}
+
 
 /*
  * Mob drops
