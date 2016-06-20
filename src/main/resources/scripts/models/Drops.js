@@ -60,7 +60,7 @@ Drop.prototype.otherwise = function(drop) {
  * Mob drops
  */
 var MobDropOperation = function(what) {
-    DropOperation.call(this, "setMobDrops", what);
+    DropOperation.call(this, "setMobDrops", what || []);
 }
 
 MobDropOperation.prototype = Object.create(DropOperation.prototype);
@@ -87,3 +87,22 @@ MobShedOperation.prototype = Object.create(DropOperation.prototype);
 MobShedOperation.prototype.constructor = MobShedOperation;
 
 MobShedOperation.prototype.addShed = DropOperation.prototype.addDrop;
+
+
+
+
+/*
+ * Block drops
+ */
+var BlockDropOperation = function(what, state) {
+    DropOperation.call(this, "setBlockDrops", what ? _.concat(what) : []);
+    if(state) this.op.state = state;
+}
+
+BlockDropOperation.prototype = Object.create(DropOperation.prototype);
+BlockDropOperation.prototype.constructor = BlockDropOperation;
+
+BlockDropOperation.prototype.exclude = function() {
+    this.op.exclude = _.concat(Array.prototype.slice.call(arguments));
+    return this;
+}
