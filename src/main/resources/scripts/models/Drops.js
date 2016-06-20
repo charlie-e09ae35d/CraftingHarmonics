@@ -17,8 +17,6 @@ DropOperation.prototype.replace = function(isReplace) {
 DropOperation.prototype.addDrop = function(drop) {
     this.op.drops = this.op.drops || [];
     this.op.drops.push(drop.data ? drop.data : drop);
-    console.log(drop);
-    console.log(this.op.drops);
     return this;
 }
 
