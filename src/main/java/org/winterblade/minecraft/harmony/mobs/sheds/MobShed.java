@@ -40,6 +40,7 @@ public class MobShed extends BaseDrop<EntityLivingBase, IMobShedMatcher> {
 
                     // Do the drop!
                     dropStack = ItemStack.copyItemStack(drop.getWhat());
+                    dropStack.stackSize = qty;
 
                     // Check if this drop matches:
                     result = drop.matches(entity, dropStack);
