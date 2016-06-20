@@ -43,7 +43,7 @@ public class MobShed extends BaseDrop<EntityLivingBase, IMobShedMatcher> {
 
                     // Check if this drop matches:
                     result = drop.matches(entity, dropStack);
-                    if(result.isMatch()) return;
+                    if(result.isMatch()) break;
                     drop = (MobShed) drop.getAltMatch();
                 } while(drop != null);
                 if(!result.isMatch()) continue;
