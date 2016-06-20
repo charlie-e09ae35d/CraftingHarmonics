@@ -6,3 +6,5 @@ var Mobs = {
         return new MobDropOperation(what);
     }
 }
+
+Mobs.setDrops = Mobs.setDropsFor;
