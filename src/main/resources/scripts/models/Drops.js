@@ -16,6 +16,7 @@ DropOperation.prototype.replace = function(isReplace) {
 
 DropOperation.prototype.addDrop = function(drop) {
     this.op.drops = this.op.drops || [];
+    this.op.sheds = this.op.drops;
     this.op.drops.push(drop.data ? drop.data : drop);
     return this;
 }
@@ -74,3 +75,15 @@ MobDropOperation.prototype.includePlayers = MobDropOperation.prototype.includePl
     this.op.includePlayerDrops = inc;
     return this;
 }
+
+/*
+ * Mob shedding.
+ */
+var MobShedOperation = function(what) {
+    DropOperation.call(this, "addMobShed", what);
+}
+
+MobShedOperation.prototype = Object.create(DropOperation.prototype);
+MobShedOperation.prototype.constructor = MobShedOperation;
+
+MobShedOperation.prototype.addShed = DropOperation.prototype.addDrop;
