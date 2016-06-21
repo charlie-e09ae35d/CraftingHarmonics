@@ -1,4 +1,4 @@
-package org.winterblade.minecraft.harmony.blocks.drops;
+package org.winterblade.minecraft.harmony.blocks.drops.matchers;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.world.BlockEvent;
@@ -28,6 +28,6 @@ public class IsSnowingMatcher extends BaseIsSnowingMatcher implements IBlockDrop
      */
     @Override
     public BaseMatchResult isMatch(BlockEvent.HarvestDropsEvent harvestDropsEvent, ItemStack drop) {
-        return matches(harvestDropsEvent.getWorld(), harvestDropsEvent.getPos());
+        return matches(harvestDropsEvent.getWorld(), harvestDropsEvent.getPos().up());
     }
 }
