@@ -28,6 +28,6 @@ public class IsRainingMatcher extends BaseIsRainingMatcher implements IBlockDrop
      */
     @Override
     public BaseMatchResult isMatch(BlockEvent.HarvestDropsEvent harvestDropsEvent, ItemStack drop) {
-        return matches(harvestDropsEvent.getWorld(), harvestDropsEvent.getPos());
+        return matches(harvestDropsEvent.getWorld(), harvestDropsEvent.getPos().up());
     }
 }
