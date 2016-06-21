@@ -20,7 +20,6 @@ import org.winterblade.minecraft.harmony.commands.CommandHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.config.ConfigManager;
 import org.winterblade.minecraft.harmony.crafting.FuelRegistry;
-import org.winterblade.minecraft.harmony.crafting.ItemRegistry;
 import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
 import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.proxies.CommonProxy;
@@ -95,9 +94,6 @@ public class CraftingHarmonicsMod {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        ItemRegistry.Init();
-
-        // Now that our item registry is set up, process our set files.
         configManager.processSetFiles();
 
         // Link in our recipes

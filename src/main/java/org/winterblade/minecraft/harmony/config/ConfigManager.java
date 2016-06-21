@@ -110,7 +110,7 @@ public class ConfigManager {
         }
 
         for(File config : files) {
-            if(!config.getName().endsWith(".json")) continue;
+            if(!config.getName().endsWith(".json") && !config.getName().endsWith(".js")) continue;
             setFiles.add(config);
         }
     }
@@ -123,11 +123,11 @@ public class ConfigManager {
 
         for(File config : setFiles) {
             setProgress.step(config.getName());
-            LogHelper.info("Reading set definition " + config.getPath());
+            LogHelper.info("Reading " + config.getPath());
             try {
                 NashornConfigProcessor.getInstance().ReadConfigFile(config);
             } catch (Exception e) {
-                LogHelper.error("Error processing Set file " + config.getPath() + ": " + e.getMessage());
+                LogHelper.error("Error processing file " + config.getPath() + ": " + e.getMessage());
             }
         }
 
