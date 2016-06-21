@@ -15,5 +15,11 @@ TileEntityEffectOperation.prototype.addEvent = function(effect) {
     return this;
 }
 
+TileEntityEffectOperation.prototype.otherwise = function(alt) {
+    this.data.otherwise = alt.data ? alt.data : alt;
+    return this;
+}
+
+
 // Alias it
 TileEntityEffectOperation.prototype.addEffect = TileEntityEffectOperation.prototype.addEvent;

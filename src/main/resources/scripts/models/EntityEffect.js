@@ -18,6 +18,11 @@ EntityEffectOperation.prototype.addEvent = function(effect) {
 // Alias it
 EntityEffectOperation.prototype.addEffect = EntityEffectOperation.prototype.addEvent;
 
+EntityEffectOperation.prototype.otherwise = function(alt) {
+    this.data.otherwise = alt.data ? alt.data : alt;
+    return this;
+}
+
 
 /*
  * The wrapper for potion effects...
