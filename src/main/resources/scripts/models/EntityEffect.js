@@ -42,7 +42,7 @@ MobPotionEffectOperation.prototype.addPotion = function(potion) {
  */
 var Event = function(type, data) {
     this.data = {type: type};
-    _.assign(this.data, data);
+    if(data) _.assign(this.data, data);
 
     // Extend this with all our dynamically generated matchers
     _.assign(this, Matchers);
