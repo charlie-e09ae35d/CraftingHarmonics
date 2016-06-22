@@ -6,23 +6,20 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.Logger;
-import org.winterblade.minecraft.harmony.api.IMatcher;
 import org.winterblade.minecraft.harmony.api.blocks.IBlockDropMatcher;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.api.mobs.sheds.IMobShedMatcher;
 import org.winterblade.minecraft.harmony.api.tileentities.ITileEntityMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.utility.ResourceHelper;
 import org.winterblade.minecraft.scripting.api.INashornMod;
 import org.winterblade.minecraft.scripting.api.IScriptContext;
 import org.winterblade.minecraft.scripting.api.NashornMod;
 
-import javax.annotation.Nonnull;
 import javax.script.ScriptException;
 import java.io.File;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 /**
@@ -93,7 +90,7 @@ public class NashornConfigProcessor implements INashornMod {
         }
 
         // Load our config...
-        String fileContent = getFileContent(file);
+        String fileContent = ResourceHelper.getFileContent(file);
 
         // Process our content...
         String fileExtension = FilenameUtils.getExtension(file.getAbsolutePath());
@@ -124,31 +121,6 @@ public class NashornConfigProcessor implements INashornMod {
      */
     public ImmutableMap<String,String> getCache() {
         return ImmutableMap.copyOf(cache);
-    }
-
-    /**
-     * Read the contents of the given file
-     * @param file    The file to read
-     * @return        The contents, or an empty string if it failed.
-     */
-    private String getFileContent(File file) {
-        try {
-            return new String(Files.readAllBytes(Paths.get(file.getPath())));
-        } catch (Exception e) {
-            LogHelper.error("Error processing file " + file.getPath(),e);
-            return "";
-        }
-    }
-
-    private Set<File> getResources(@Nonnull File rootDir) {
-        if(!rootDir.isDirectory()) return Collections.singleton(rootDir);
-
-        Set<File> resources = new HashSet<>();
-        for (File resource : rootDir.listFiles()) {
-            if(resource.isDirectory()) resources.addAll(getResources(resource));
-            else resources.add(resource);
-        }
-        return resources;
     }
 
     /**
@@ -183,7 +155,7 @@ public class NashornConfigProcessor implements INashornMod {
 
         for(String headerPath : headers) {
             try {
-                headerFiles.addAll(getResources(new File(Resources.getResource("scripts/" + headerPath).toURI())));
+                headerFiles.addAll(ResourceHelper.getResources(Resources.getResource("scripts/" + headerPath)));
             } catch (URISyntaxException e) {
                 LogHelper.error("Error reading resource file.", e);
             }
