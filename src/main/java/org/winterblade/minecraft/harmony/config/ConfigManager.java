@@ -21,7 +21,6 @@ import java.util.Set;
  * Created by Matt on 4/5/2016.
  */
 public class ConfigManager {
-
     private final String configPath;
     private final List<File> setFiles = new ArrayList<>();
     private boolean debugMobDropEvents;
@@ -109,7 +108,10 @@ public class ConfigManager {
         }
     }
 
-    private void outputSamples() {
+    /**
+     * Outputs the sample files into the config directory.
+     */
+    public void outputSamples() {
         try {
             Set<File> samples = ResourceHelper.getResources(Resources.getResource("samples"));
 
