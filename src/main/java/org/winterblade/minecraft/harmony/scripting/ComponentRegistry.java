@@ -90,6 +90,22 @@ public class ComponentRegistry {
     }
 
     /**
+     * Gets all of the properties that can be used in the given class.
+     * @param cls    The class to get
+     * @return       A list of all unique properties.
+     */
+    public static Set<String> getAllPropertiesFor(Class<?> cls) {
+        List<ComponentRegistration> components = ComponentRegistry.components.get(cls.getName());
+        if(components == null) return new HashSet<>();
+
+        Set<String> output = new HashSet<>();
+        for (ComponentRegistration registration : components) {
+            output.addAll(registration.propertyMap.keySet());
+        }
+        return output;
+    }
+
+    /**
      * Compiles a registry for the given classes by identifying which components it can pull out of the mirror.
      * @param classes   The classes to compile for; useful if you have more than one type of component in your object.
      * @param mirror    The mirror to check

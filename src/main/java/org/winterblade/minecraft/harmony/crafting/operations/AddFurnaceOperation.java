@@ -32,6 +32,7 @@ public class AddFurnaceOperation extends BaseAddOperation {
     public void init() throws OperationException {
         super.init();
 
+        if(with == null) throw new OperationException("You must specify 'with' to add things to the furnace.");
         if(with.getItemStack() == null) throw new OperationException("Unable to find requested input item " + with.toString());
         if(with.hasNbt()) {
             throw new OperationException("NBT matching is not supported for furnace recipes.");

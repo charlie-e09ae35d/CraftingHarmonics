@@ -5,8 +5,8 @@ import com.google.common.io.Resources;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
-import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,6 @@ import java.util.List;
  * Created by Matt on 4/5/2016.
  */
 public class ConfigManager {
-
     private final String configPath;
     private final List<File> setFiles = new ArrayList<>();
     private boolean debugMobDropEvents;
@@ -27,6 +26,7 @@ public class ConfigManager {
     private int dayTickLength;
     private int potionEffectTicks;
     private int eventTicks;
+    private File setsDir;
 
     /**
      * Generates a new config manager using the config path
@@ -73,7 +73,7 @@ public class ConfigManager {
     private void setupRecipeSets() {
         LogHelper.info("Reading set definitions from " + configPath + "Sets/");
         setFiles.clear();
-        File setsDir = new File(configPath + "Sets/");
+        setsDir = new File(configPath + "Sets/");
 
         // Make sure we have a set directory before trying to iterate it...
         if(!setsDir.exists()) {
@@ -82,17 +82,7 @@ public class ConfigManager {
                 return;
             }
 
-            // Generate a sample config for users...
-            // TODO: Fix edge case where this isn't a directory at this point?
-            try {
-                PrintWriter out = new PrintWriter(setsDir + "/default.json.sample");
-                String sampleText = Resources.toString(Resources.getResource("default.json.sample"), Charsets.UTF_8);
-                out.println(sampleText);
-                out.close();
-            } catch (IOException e) {
-                LogHelper.error("Error writing sample config to config directory.");
-                return;
-            }
+            outputSamples();
         }
 
         // Also make sure it's actually a directory
@@ -110,8 +100,34 @@ public class ConfigManager {
         }
 
         for(File config : files) {
-            if(!config.getName().endsWith(".json")) continue;
+            if(!config.getName().endsWith(".json") && !config.getName().endsWith(".js")) continue;
             setFiles.add(config);
+        }
+    }
+
+    /**
+     * Outputs the sample files into the config directory.
+     */
+    public void outputSamples() {
+        try {
+            String[] samples = new String[] {
+                "default.json.sample",
+                "testSet.js.sample"
+            };
+
+            // Generate sample configs for users...
+            for (String sample : samples) {
+                try {
+                    PrintWriter out = new PrintWriter(setsDir + "/" + sample);
+                    String sampleText = Resources.toString(Resources.getResource("samples/" + sample), Charsets.UTF_8);
+                    out.println(sampleText);
+                    out.close();
+                } catch (IOException e) {
+                    LogHelper.error("Error writing sample config '{}' to config directory.", sample);
+                }
+            }
+        } catch (Exception e) {
+            LogHelper.error("Error getting sample configs.");
         }
     }
 
@@ -123,11 +139,11 @@ public class ConfigManager {
 
         for(File config : setFiles) {
             setProgress.step(config.getName());
-            LogHelper.info("Reading set definition " + config.getPath());
+            LogHelper.info("Reading " + config.getPath());
             try {
                 NashornConfigProcessor.getInstance().ReadConfigFile(config);
             } catch (Exception e) {
-                LogHelper.error("Error processing Set file " + config.getPath() + ": " + e.getMessage());
+                LogHelper.error("Error processing file " + config.getPath() + ": " + e.getMessage());
             }
         }
 
