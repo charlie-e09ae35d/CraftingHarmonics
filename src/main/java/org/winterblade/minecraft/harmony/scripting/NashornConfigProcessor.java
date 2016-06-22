@@ -19,8 +19,10 @@ import org.winterblade.minecraft.scripting.api.NashornMod;
 
 import javax.script.ScriptException;
 import java.io.File;
-import java.net.URISyntaxException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Matt on 4/8/2016.
@@ -28,14 +30,25 @@ import java.util.*;
 @NashornMod
 public class NashornConfigProcessor implements INashornMod {
     private final static NashornConfigProcessor instance = new NashornConfigProcessor();
+    // Try to figure out a way to do this better when JAR'ed, since I can't iterate the directory...
     private final static String[] headers = new String[]{
             "libs/lodash/lodash.js",
             "InternalFileProcessor.js",
             "models/Operation.js",
-            "models",
-            "crafting",
-            "registries",
-            "integration"
+            "models/CraftingOperation.js",
+            "models/Drops.js",
+            "models/Events.js",
+            "models/EntityEffect.js",
+            "models/FurnaceFuelOperation.js",
+            "models/Matchers.js",
+            "models/RegisterOreDictionaryOperation.js",
+            "models/Set.js",
+            "models/TileEntityEvents.js",
+            "crafting/OreDict.js",
+            "crafting/RecipeManager.js",
+            "registries/Blocks.js",
+            "registries/Mobs.js",
+            "integration/JEI.js"
     };
 
     public IScriptContext nashorn;
@@ -151,21 +164,11 @@ public class NashornConfigProcessor implements INashornMod {
      * @param nashorn    The script context to initialize it to.
      */
     private void initHeaders(IScriptContext nashorn) {
-        Set<File> headerFiles = new LinkedHashSet<>();
-
         for(String headerPath : headers) {
             try {
-                headerFiles.addAll(ResourceHelper.getResources(Resources.getResource("scripts/" + headerPath)));
-            } catch (URISyntaxException e) {
-                LogHelper.error("Error reading resource file.", e);
-            }
-        }
-
-        for (File file : headerFiles) {
-            try {
-                nashorn.eval(Resources.toString(file.toURI().toURL(), Charsets.UTF_8));
+                nashorn.eval(Resources.toString(Resources.getResource("scripts/" + headerPath), Charsets.UTF_8));
             } catch (Exception e) {
-                LogHelper.fatal("Unable to process header file {}; things will go badly from here out...", file.getName());
+                LogHelper.fatal("Unable to process header file {}; things will go badly from here out...", headerPath, e);
             }
         }
     }

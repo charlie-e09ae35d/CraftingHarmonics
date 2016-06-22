@@ -5,17 +5,14 @@ import com.google.common.io.Resources;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.ProgressManager.ProgressBar;
-import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
-import org.winterblade.minecraft.harmony.utility.ResourceHelper;
+import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Matt on 4/5/2016.
@@ -113,20 +110,23 @@ public class ConfigManager {
      */
     public void outputSamples() {
         try {
-            Set<File> samples = ResourceHelper.getResources(Resources.getResource("samples"));
+            String[] samples = new String[] {
+                "default.json.sample",
+                "testSet.js.sample"
+            };
 
             // Generate sample configs for users...
-            for (File sample : samples) {
+            for (String sample : samples) {
                 try {
-                    PrintWriter out = new PrintWriter(setsDir + "/" + sample.getName());
-                    String sampleText = ResourceHelper.getFileContent(sample);
+                    PrintWriter out = new PrintWriter(setsDir + "/" + sample);
+                    String sampleText = Resources.toString(Resources.getResource("samples/" + sample), Charsets.UTF_8);
                     out.println(sampleText);
                     out.close();
                 } catch (IOException e) {
-                    LogHelper.error("Error writing sample config '{}' to config directory.", sample.getName());
+                    LogHelper.error("Error writing sample config '{}' to config directory.", sample);
                 }
             }
-        } catch (URISyntaxException e) {
+        } catch (Exception e) {
             LogHelper.error("Error getting sample configs.");
         }
     }
