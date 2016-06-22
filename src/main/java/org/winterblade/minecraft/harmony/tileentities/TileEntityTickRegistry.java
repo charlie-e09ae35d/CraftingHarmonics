@@ -33,6 +33,7 @@ public class TileEntityTickRegistry {
     }
 
     public static UUID registerTileEntityEvents(String[] what, ITileEntityCallback[] events) {
+        if(!inited) init();
         return eventHandler.registerHandler(what, events);
     }
 
