@@ -123,8 +123,14 @@ public class RemoveOperation extends BasicOperation {
     @Override
     public void undo() {
         for(IRemovedRecipe removedRecipe : removedRecipes) {
-            removedRecipe.Undo();
+            try {
+                removedRecipe.Undo();
+            }
+            catch(Exception ex) {
+                LogHelper.warn("Unable to restore a recipe for {}.", ItemUtility.outputItemName(removedRecipe.output()), ex);
+            }
         }
+        removedRecipes.clear();
     }
 
     /**
@@ -162,7 +168,7 @@ public class RemoveOperation extends BasicOperation {
             if(with != null && with.length > 0 && !recipe.matches(inv, null)) continue;
 
             // We matched something:
-            LogHelper.info("Removing " + recipe.getRecipeOutput().getUnlocalizedName());
+            LogHelper.info("Removing {}.", ItemUtility.outputItemName(recipe.getRecipeOutput()));
             removedRecipes.add(new RemovedCraftingRecipe(recipe));
             recipeIterator.remove();
         }
@@ -215,6 +221,8 @@ public class RemoveOperation extends BasicOperation {
 
     private interface IRemovedRecipe {
         void Undo();
+
+        ItemStack output();
     }
 
     private class RemovedFurnaceRecipe implements IRemovedRecipe {
@@ -222,7 +230,7 @@ public class RemoveOperation extends BasicOperation {
         private final ItemStack output;
         private final float xp;
 
-        public RemovedFurnaceRecipe(Map.Entry<ItemStack, ItemStack> recipe) {
+        RemovedFurnaceRecipe(Map.Entry<ItemStack, ItemStack> recipe) {
             input = recipe.getKey();
             output = recipe.getValue();
             xp = FurnaceRecipes.instance().getSmeltingExperience(output);
@@ -231,17 +239,27 @@ public class RemoveOperation extends BasicOperation {
         public void Undo() {
             FurnaceRecipes.instance().addSmeltingRecipe(input, output, xp);
         }
+
+        @Override
+        public ItemStack output() {
+            return output;
+        }
     }
 
     private class RemovedCraftingRecipe implements IRemovedRecipe {
         private final IRecipe recipe;
 
-        public RemovedCraftingRecipe(IRecipe recipe) {
+        RemovedCraftingRecipe(IRecipe recipe) {
             this.recipe = recipe;
         }
 
         public void Undo() {
             CraftingManager.getInstance().addRecipe(recipe);
+        }
+
+        @Override
+        public ItemStack output() {
+            return recipe.getRecipeOutput();
         }
     }
 }
