@@ -10,6 +10,11 @@ public class ItemRegistry {
 
     public static final ItemRegistry instance = new ItemRegistry();
 
+    /**
+     * Called to determine if an item should be allowed to be used
+     * @param evt    The event to check
+     * @return       True if it should be cancelled, false otherwise.
+     */
     public boolean shouldCancelUse(PlayerInteractEvent evt) {
         return false;
     }

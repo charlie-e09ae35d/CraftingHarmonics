@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.OperationSet;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
+import org.winterblade.minecraft.harmony.blocks.BlockRegistry;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.callbacks.StopTimeCommand;
@@ -157,6 +158,12 @@ public class EventHandler {
     public void onPlayerInteractEvent(PlayerInteractEvent.RightClickItem evt) {
         // Called when right clicking with an item, on nothing
         if(evt.isCanceled() || !ItemRegistry.instance.shouldCancelUse(evt)) return;
+        evt.setCanceled(true);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onBlockPlaced(BlockEvent.PlaceEvent evt) {
+        if(evt.isCanceled() || !BlockRegistry.instance.shouldCancelPlace(evt)) return;
         evt.setCanceled(true);
     }
 }
