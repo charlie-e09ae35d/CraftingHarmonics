@@ -1,12 +1,15 @@
 package org.winterblade.minecraft.harmony.utility;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -14,8 +17,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.OperationSet;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.entities.callbacks.StopTimeCommand;
+import org.winterblade.minecraft.harmony.items.ItemRegistry;
 import org.winterblade.minecraft.harmony.messaging.PacketHandler;
 import org.winterblade.minecraft.harmony.mobs.MobDropRegistry;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
@@ -136,5 +141,22 @@ public class EventHandler {
         } catch (Exception | VerifyError ex) {
             LogHelper.error("Error handling world load event; please report this along with your config file.", ex);
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onPlayerInteractEvent(PlayerInteractEvent.RightClickBlock evt) {
+        // Called when right clicking on a block (potentially with something...)
+        if(evt.isCanceled() || !ItemRegistry.instance.shouldCancelUse(evt)) return;
+
+        // If we're cancelling, should set:
+        evt.setUseItem(Event.Result.DENY);
+        evt.setUseBlock(Event.Result.ALLOW);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onPlayerInteractEvent(PlayerInteractEvent.RightClickItem evt) {
+        // Called when right clicking with an item, on nothing
+        if(evt.isCanceled() || !ItemRegistry.instance.shouldCancelUse(evt)) return;
+        evt.setCanceled(true);
     }
 }
