@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.items.operations;
 
+import com.google.common.base.Joiner;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
@@ -7,12 +8,16 @@ import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.items.ItemRegistry;
 import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
 import org.winterblade.minecraft.scripting.api.IScriptContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Matt on 6/24/2016.
@@ -48,6 +53,11 @@ public class PreventItemOperation extends BasicOperation {
      */
     @Override
     public void apply() {
+        LogHelper.info("Preventing {} from being used.",
+                Joiner.on(", ").join(
+                        Arrays.stream(what)
+                                .map(i -> i.getFacsimileItem().toString())
+                                .collect(Collectors.toList())));
         data = ItemRegistry.instance.preventUse(what, onBlock, matchers);
     }
 

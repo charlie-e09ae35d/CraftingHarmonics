@@ -1,10 +1,12 @@
 package org.winterblade.minecraft.harmony.blocks.operations;
 
+import com.google.common.base.Joiner;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.blocks.BlockRegistry;
 import org.winterblade.minecraft.harmony.common.blocks.BlockMatcher;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
  * Created by Matt on 6/23/2016.
@@ -32,6 +34,7 @@ public class PreventBlockOperation extends BasicOperation {
     @Override
     public void apply() {
         for (BlockMatcher blockMatcher : what) {
+            LogHelper.info("Preventing {} from being placed.", Joiner.on(", ").join(blockMatcher.getStates()));
             BlockRegistry.instance.preventPlacement(blockMatcher.getStates());
         }
     }
