@@ -100,7 +100,7 @@ public class BlockMatcher {
             ScriptObjectMirror stateMirror;
 
             // The first case will probably not happen, but, just in case...
-            if(ScriptObjectMirror.class.isAssignableFrom(input.getClass())) {
+            if(ScriptObjectMirror.class.isAssignableFrom(state.getClass())) {
                 stateMirror = (ScriptObjectMirror) state;
             } else {
                 stateMirror = ScriptUtils.wrap((ScriptObject) state);
