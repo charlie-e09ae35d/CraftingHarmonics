@@ -48,6 +48,7 @@ public class NashornConfigProcessor implements INashornMod {
             "crafting/OreDict.js",
             "crafting/RecipeManager.js",
             "registries/Blocks.js",
+            "registries/Items.js",
             "registries/Mobs.js",
             "integration/JEI.js"
     };

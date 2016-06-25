@@ -5,8 +5,8 @@ var Blocks = {
     addEventsFor: function() {
         return new TileEntityEffectOperation(_.concat(Array.prototype.slice.call(arguments)));
     },
-    block: function(what) {
-        return new PreventBlockOperation(what);
+    block: function() {
+        return new PreventBlockOperation(_.flatten(Array.prototype.slice.call(arguments)));
     }
 }
 
