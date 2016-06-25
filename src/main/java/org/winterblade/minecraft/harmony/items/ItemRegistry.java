@@ -2,14 +2,11 @@ package org.winterblade.minecraft.harmony.items;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.winterblade.minecraft.harmony.api.crafting.RecipeInput;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 
 import javax.annotation.Nonnull;
-import java.util.Set;
 
 /**
  * Created by Matt on 6/22/2016.
@@ -35,18 +32,18 @@ public class ItemRegistry {
 
 
     /**
-     * Adds the given stacks to the list of items to prevent using.
-     * @param stacks    The stacks to prevent.
+     * Adds the given input to the list of items to prevent using.
+     * @param input    The input to prevent.
      */
-    public void preventUse(@Nonnull Set<RecipeInput> stacks) {
-        preventedItems.addAll(stacks);
+    public void preventUse(@Nonnull RecipeInput input) {
+        preventedItems.add(input);
     }
 
     /**
-     * Removes the given stacks from the list of items to prevent using
-     * @param stacks    The stacks to allow again.
+     * Removes the given input from the list of items to prevent using
+     * @param input    The input to allow again.
      */
-    public void allowUse(@Nonnull Set<RecipeInput> stacks) {
-        preventedItems.removeAll(stacks);
+    public void allowUse(@Nonnull RecipeInput input) {
+        preventedItems.remove(input);
     }
 }
