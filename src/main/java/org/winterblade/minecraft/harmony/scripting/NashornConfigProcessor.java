@@ -44,6 +44,7 @@ public class NashornConfigProcessor implements INashornMod {
             "models/RegisterOreDictionaryOperation.js",
             "models/Set.js",
             "models/TileEntityEvents.js",
+            "models/PreventOperations.js",
             "crafting/OreDict.js",
             "crafting/RecipeManager.js",
             "registries/Blocks.js",
