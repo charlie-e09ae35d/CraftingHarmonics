@@ -35,6 +35,8 @@ import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
  * Created by Matt on 4/13/2016.
  */
 public class EventHandler {
+    private boolean debounceItemRightClick;
+
     @SubscribeEvent
     public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent evt) {
         EntityPlayer basePlayer = evt.player;
@@ -152,11 +154,23 @@ public class EventHandler {
         // If we're cancelling, should set:
         evt.setUseItem(Event.Result.DENY);
         evt.setUseBlock(Event.Result.ALLOW);
+        evt.setCanceled(true);
+
+        // The game ends up firing the RightClickItem event as well; we set this here to make sure
+        // we don't end up doing all the checks/callbacks a second time in that event:
+        debounceItemRightClick = true;
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerInteractEvent(PlayerInteractEvent.RightClickItem evt) {
-        // Called when right clicking with an item, on nothing
+        // If we just cancelled it for the RightClickBlock evt, don't bother:
+        if(debounceItemRightClick) {
+            evt.setCanceled(true);
+            debounceItemRightClick = false;
+            return;
+        }
+
+        // Called when right clicking with an item, always, even after right clicking a block
         if(evt.isCanceled() || !ItemRegistry.instance.shouldCancelUse(evt)) return;
         evt.setCanceled(true);
     }

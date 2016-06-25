@@ -93,8 +93,10 @@ public class ItemRegistry {
                 runnable.run();
             }
 
-            // Also fire our callbacks...
-            MobTickRegistry.addCallbackSet(evt.getEntity(), onBlock, matcherData);
+            // Also fire our callbacks if we're on the server thread...
+            if(!evt.getWorld().isRemote) {
+                MobTickRegistry.addCallbackSet(evt.getEntity(), onBlock, matcherData);
+            }
 
             return true;
         }
