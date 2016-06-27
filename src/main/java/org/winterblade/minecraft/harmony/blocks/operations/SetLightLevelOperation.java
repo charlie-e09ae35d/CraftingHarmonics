@@ -1,6 +1,7 @@
 package org.winterblade.minecraft.harmony.blocks.operations;
 
 import net.minecraft.block.Block;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
@@ -12,6 +13,7 @@ import org.winterblade.minecraft.harmony.common.blocks.BlockMatcher;
  */
 @Operation(name = "setLightLevel")
 public class SetLightLevelOperation extends BasicOperation {
+    private final Block air = Block.REGISTRY.getObject(new ResourceLocation("minecraft:air"));
     /*
      * Serialized properties
      */
@@ -31,7 +33,7 @@ public class SetLightLevelOperation extends BasicOperation {
     @Override
     public void init() throws OperationException {
         if(lightLevel < 0.0 || 1.0 < lightLevel) throw new OperationException("setLightLevel can only have a light level between 0.0 and 1.0.");
-        if(what.getBlock() == null) throw new OperationException("setLightLevel could not find a valid block to adjust.");
+        if(what.getBlock() == null || what.getBlock() == air) throw new OperationException("setLightLevel could not find a valid block to adjust.");
 
         prevLevel = ((int)ObfuscationReflectionHelper.getPrivateValue(Block.class, what.getBlock(), "field_149784_t"))/15.0F;
     }
