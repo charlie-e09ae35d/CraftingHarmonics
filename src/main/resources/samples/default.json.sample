@@ -1827,6 +1827,20 @@
                     ]
                 }
             ]
+        },
+
+        {
+            name: "misc",
+            operations: [
+                {
+                    // Makes iron blocks give off a decent amount of light.
+                    // Should generally only be used in base sets, as it will only affect
+                    // blocks when they're picked up / placed down.
+                    type: "setLightLevel",
+                    what: "minecraft:iron_block",
+                    lightLevel: 0.75
+                }
+            ]
         }
     ]
 }
