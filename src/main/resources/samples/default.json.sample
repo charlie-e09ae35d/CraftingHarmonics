@@ -1839,6 +1839,12 @@
                     type: "setLightLevel",
                     what: "minecraft:iron_block",
                     lightLevel: 0.75
+                },
+                {
+                    // Makes iron blocks take as long as Obsidian:
+                    type: "setBlockHardness",
+                    what: "minecraft:iron_block",
+                    hardness: 50.0
                 }
             ]
         }
