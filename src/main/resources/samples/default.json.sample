@@ -1845,6 +1845,20 @@
                     type: "setBlockHardness",
                     what: "minecraft:iron_block",
                     hardness: 50.0
+                },
+                {
+                    // Make it to where sheep can walk up 2 blocks:
+                    // Note that this will always cause them to go up that much,
+                    // regardless of the actual required height of the step.
+                    // Also note: this does not work for players in 1.10
+                    type: "addEntityEvent",
+                    what: ["Sheep"],
+                    events: [
+                        {
+                            type: "setStepHeight",
+                            height: 2.0
+                        }
+                    ]
                 }
             ]
         }
