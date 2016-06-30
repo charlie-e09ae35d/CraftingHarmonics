@@ -13,6 +13,18 @@ var Items = {
         }
 
         return op;
+    },
+    setDurability: function(what, value) {
+        var op = new Operation("setItemDurability");
+        op.op.what = what;
+        if(value) op.op.durability = value;
+
+        op.to = function(value) {
+            this.op.durability = value;
+            return this;
+        }
+
+        return op;
     }
 }
 

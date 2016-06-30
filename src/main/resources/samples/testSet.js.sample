@@ -84,3 +84,4 @@ testSet.add(Blocks.setLightLevel("minecraft:gold_block", 1.0));
 testSet.add(Blocks.setHardness("minecraft:obsidian", 3.0));
 
 testSet.add(Items.rename("minecraft:gold_block").to("Block of Butter"));
+testSet.add(Items.setDurability("minecraft:golden_pickaxe").to(10));
