@@ -1302,6 +1302,11 @@
                                     // Note: SSP has some problems showing updates, but the value still gets checked fine.
                                     minStat: { name: "stat.walkOneCm", value: 1600 },
                                     maxStat: { name: "stat.walkOneCm", value: 3200 }
+                                },
+                                {
+                                    // Check if the player is wearing between 8 and 16 points of armor...
+                                    // Each point of armor being half an 'armor' icon on your bar.
+                                    armorRange: { min: 8, max: 16 }
                                 }
                             ]
                         },
