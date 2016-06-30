@@ -65,7 +65,7 @@ public class GetHeldNbtCommand extends SubCommand {
             return;
         }
 
-        String nbtText = mainHand.getTagCompound().toString();
+        String nbtText = mainHand.getDisplayName() + ": " + mainHand.getTagCompound().toString();
         LogHelper.info(nbtText);
         sender.addChatMessage(new TextComponentString("NBT (also logged): " + nbtText));
     }

@@ -1302,6 +1302,11 @@
                                     // Note: SSP has some problems showing updates, but the value still gets checked fine.
                                     minStat: { name: "stat.walkOneCm", value: 1600 },
                                     maxStat: { name: "stat.walkOneCm", value: 3200 }
+                                },
+                                {
+                                    // Check if the player is wearing between 8 and 16 points of armor...
+                                    // Each point of armor being half an 'armor' icon on your bar.
+                                    armorRange: { min: 8, max: 16 }
                                 }
                             ]
                         },
@@ -1786,6 +1791,79 @@
                     __comment: "And remove them",
                     type: "TConstruct.removeDryingRecipe",
                     // 'what' and 'with' are both optional.
+                }
+            ]
+        },
+
+        {
+            name: "blocking",
+            operations: [
+                {
+                    __comment: "You can prevent the placing of blocks...",
+                    __result: "Prevents placing a gold block, and podzol while the set is active...",
+                    type: "preventBlock",
+                    what: [
+                        "minecraft:gold_block",
+                        {
+                            block: "minecraft:dirt",
+                            state: {
+                                variant: "podzol"
+                            }
+                        }
+                    ]
+                    // For performance reasons, this does not currently accept matchers/callbacks.
+                },
+                {
+                    __comment: "... and the using of items.",
+                    __result: "Prevents using flint and steel when it's raining",
+                    type: "preventItem",
+                    what: [
+                        "minecraft:flint_and_steel"
+                    ],
+                    // Unlike blocks, items can use all entity matchers...
+                    isRaining: { onlyOnTarget: true },
+                    // And can have a callback when they prevent something from happening:
+                    onBlock: [
+                        {
+                            type: "runPlayerCommand",
+                            command: "/tell @p Now is not the time to use that.",
+                            name: "The Server"
+                        }
+                    ]
+                }
+            ]
+        },
+
+        {
+            name: "misc",
+            operations: [
+                {
+                    // Makes iron blocks give off a decent amount of light.
+                    // Should generally only be used in base sets, as it will only affect
+                    // blocks when they're picked up / placed down.
+                    type: "setLightLevel",
+                    what: "minecraft:iron_block",
+                    lightLevel: 0.75
+                },
+                {
+                    // Makes iron blocks take as long as Obsidian:
+                    type: "setBlockHardness",
+                    what: "minecraft:iron_block",
+                    hardness: 50.0
+                },
+                {
+                    // Make it to where sheep can walk up 2 blocks:
+                    // Note that this will always cause them to go up that much,
+                    // regardless of the actual required height of the step.
+                    // Also note: this does not work for players in 1.10
+                    type: "addEntityEvent",
+                    what: ["Sheep"],
+                    events: [
+                        {
+                            type: "setStepHeight",
+                            height: 2.0
+                        }
+                    ]
                 }
             ]
         }

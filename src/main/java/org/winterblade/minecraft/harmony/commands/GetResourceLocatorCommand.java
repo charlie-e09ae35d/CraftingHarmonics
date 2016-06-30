@@ -77,7 +77,7 @@ public class GetResourceLocatorCommand extends SubCommand {
             return;
         }
 
-        String resourceLocator = ItemUtility.outputItemName(mainHand);
+        String resourceLocator = mainHand.getDisplayName() + ": " + ItemUtility.outputItemName(mainHand);
         LogHelper.info(resourceLocator);
         sender.addChatMessage(new TextComponentString("Locator (also logged): " + resourceLocator));
     }

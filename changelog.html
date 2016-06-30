@@ -1,4 +1,55 @@
 <div>
+    <h2>Version 1.5.1</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Adding in a way to prevent specific blocks from being placed, or items from being used.
+        </li>
+        <li>
+            Adding in item display names to the getResourceLocator and getHeldNBT commands, in order to
+            assist in reading the logs later on.
+        </li>
+        <li>
+            Adding in the 'setLightLevel' operation to set the light level for a given block; this should generally
+            only be used in a base set, as blocks must be picked up and placed back down to update their lighting.
+        </li>
+        <li>
+            Adding int he 'setBlockHardness' operation to set the hardness of individual blocks; unlike the light level
+            this can be changed on the fly.
+        </li>
+        <li>
+            Adding new entity callback 'setStepHeight'; this operation will immediately change the entity's step height
+            to the given value.<br>
+            <i>1.10 note: This will not work for players, due to the changes made for auto-jump.</i>
+        </li>
+        <li>
+            Adding a few new matchers to check for the armor value of the respective entity:
+            <ul>
+                <li>armorMin</li>
+                <li>armorMax</li>
+                <li>armorRange</li>
+            </ul>
+            <br />
+            These can be applied to the following:
+            <ul>
+                <li>Block Drops: Checks the harvester.</li>
+                <li>Entity Events/Potions: Checks the target.</li>
+                <li>Mob Drops: Checks the mob being killed.</li>
+                <li>Mob Sheds: Checks the target mob.</li>
+            </ul>
+        </li>
+        <li>
+            Updating the coremod portion of the mod; this will produce a warning, but will allow it to load between
+            versions.
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/128">issue #128</a> where
+            our command handler wasn't properly implementing compareTo, causing a warning when used with HelpFixer.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
     <h2>Version 1.5.0</h2>
     <h4>Features</h4>
     <ul>

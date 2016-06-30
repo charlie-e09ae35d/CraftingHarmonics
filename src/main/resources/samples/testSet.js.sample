@@ -68,3 +68,17 @@ testSet.add(Blocks.addEventsFor("net.minecraft.tileentity.TileEntityFurnace").ad
         .chance(0.1)
         .isRaining({ onlyOnTarget: true})
 ));
+
+
+// Prevent using blocks and items...
+testSet.add(Blocks.block("minecraft:iron_block"));
+
+testSet.add(Items.block("minecraft:writable_book").maxLightLevel(7).onBlock(function() {
+    console.log("A player tried to write a book in low light.")
+}));
+
+// Setting the light level on blocks...
+testSet.add(Blocks.setLightLevel("minecraft:gold_block", 1.0));
+
+// Set the hardness on blocks:
+testSet.add(Blocks.setHardness("minecraft:obsidian", 3.0));
