@@ -1866,9 +1866,18 @@
                     ]
                 },
                 {
+                    // You can rename items.  This will make all diamonds be named "DIAMONDS!" instead of just "Diamond"
                     type: "rename",
                     what: "minecraft:diamond",
                     name: "DIAMONDS!"
+                },
+                {
+                    // You can also adjust the durability of tools and such:
+                    type: "setItemDurability",
+                    what: "minecraft:diamond_pickaxe",
+                    // This can be set to 0 to make the tool have infinite durability, but I wouldn't suggest
+                    // doing that in a custom set, as it will cause havoc with tools that are already in-game:
+                    durability: 5
                 }
             ]
         }
