@@ -1864,6 +1864,11 @@
                             height: 2.0
                         }
                     ]
+                },
+                {
+                    type: "rename",
+                    what: "minecraft:diamond",
+                    name: "DIAMONDS!"
                 }
             ]
         }

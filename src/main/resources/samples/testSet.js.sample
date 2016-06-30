@@ -82,3 +82,5 @@ testSet.add(Blocks.setLightLevel("minecraft:gold_block", 1.0));
 
 // Set the hardness on blocks:
 testSet.add(Blocks.setHardness("minecraft:obsidian", 3.0));
+
+testSet.add(Items.rename("minecraft:gold_block").to("Block of Butter"));
