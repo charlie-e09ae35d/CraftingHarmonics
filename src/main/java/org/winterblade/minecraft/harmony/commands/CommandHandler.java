@@ -104,8 +104,10 @@ public class CommandHandler implements ICommand {
     }
 
     @Override
-    public int compareTo(@Nonnull ICommand o) {
-        return 0;
+    public int compareTo(ICommand o) {
+        String name = o.getCommandName();
+        if(name == null) return -1;
+        return getCommandName().compareTo(name);
     }
 
     /**
