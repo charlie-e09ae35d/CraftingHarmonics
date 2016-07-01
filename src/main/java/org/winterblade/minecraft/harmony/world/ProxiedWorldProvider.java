@@ -21,11 +21,14 @@ import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.world.sky.ClientSkyModifications;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
 
 /**
  * Created by Matt on 5/31/2016.
  */
 public class ProxiedWorldProvider extends WorldProvider {
+    private static final HashSet<Integer> weatherLockedDims = new HashSet<>();
+
     private final WorldProvider wrapped;
 
     public ProxiedWorldProvider(WorldProvider wrapped) {
@@ -39,6 +42,14 @@ public class ProxiedWorldProvider extends WorldProvider {
     public static void injectProvider(World world) {
         ProxiedWorldProvider provider = new ProxiedWorldProvider(world.provider);
         ObfuscationReflectionHelper.setPrivateValue(World.class, world, provider, "field_73011_w");
+    }
+
+    public static void lockWeatherFor(int dimension) {
+        weatherLockedDims.add(dimension);
+    }
+
+    public static void unlockWeatherFor(int dimension) {
+        weatherLockedDims.remove(dimension);
     }
 
     @Override
@@ -490,6 +501,7 @@ public class ProxiedWorldProvider extends WorldProvider {
 
     @Override
     public void resetRainAndThunder() {
+        if(weatherLockedDims.contains(getDimension())) return;
         wrapped.resetRainAndThunder();
     }
 
@@ -552,4 +564,5 @@ public class ProxiedWorldProvider extends WorldProvider {
     public boolean canDropChunk(int x, int z) {
         return wrapped.canDropChunk(x, z);
     }
+
 }
