@@ -1878,6 +1878,12 @@
                     // This can be set to 0 to make the tool have infinite durability, but I wouldn't suggest
                     // doing that in a custom set, as it will cause havoc with tools that are already in-game:
                     durability: 5
+                },
+                {
+                    // You can also force the weather in a given dimension
+                    type: "forceWeather",
+                    dimension: 0,
+                    weather: "storm"
                 }
             ]
         }
