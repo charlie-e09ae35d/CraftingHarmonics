@@ -8,6 +8,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
+import net.minecraft.world.WorldProviderEnd;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.border.WorldBorder;
@@ -40,6 +41,9 @@ public class ProxiedWorldProvider extends WorldProvider {
      * @param world    The world to proxy
      */
     public static void injectProvider(World world) {
+        // DO NOT PROXY THE END PROVIDER ON THE SERVER:
+        if(!world.isRemote && world.provider instanceof WorldProviderEnd) return;
+
         ProxiedWorldProvider provider = new ProxiedWorldProvider(world.provider);
         ObfuscationReflectionHelper.setPrivateValue(World.class, world, provider, "field_73011_w");
     }
