@@ -7,6 +7,7 @@ import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
@@ -57,8 +58,14 @@ public class BlockMatcher {
         public Object Deserialize(Object input) {
             // If we just have a string, go ahead and return that.
             if(input instanceof String) {
-                Block b = Block.REGISTRY.getObject(new ResourceLocation((String) input));
-                return b != null ? new BlockMatcher(b) : null;
+                String inputStr = (String)input;
+                if(inputStr.indexOf(':') != inputStr.lastIndexOf(':')) {
+                    LogHelper.warn("The block definition '{}' is invalid; specify this using block states, not metadata.", inputStr);
+                    return null;
+                }
+
+                Block b = Block.REGISTRY.getObject(new ResourceLocation(inputStr));
+                return new BlockMatcher(b);
             }
 
             // Otherwise, make sure we can continue:
