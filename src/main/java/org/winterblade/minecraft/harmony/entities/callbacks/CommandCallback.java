@@ -11,7 +11,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.winterblade.minecraft.harmony.api.entities.EntityCallback;
-import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
@@ -22,7 +21,7 @@ import javax.annotation.Nullable;
  */
 @EntityCallback(name = "runPlayerCommand")
 public class CommandCallback extends BaseEntityCallback {
-    private String command;
+    private String[] command;
     private String name;
 
     @Override
@@ -33,18 +32,22 @@ public class CommandCallback extends BaseEntityCallback {
             return;
         }
 
-        String specificCommand = command.replaceAll("@p", target.getName());
+        CommandCallbackSender sender = new CommandCallbackSender((EntityPlayerMP) target, name);
 
-        // Method train of doom...
-        int result = FMLCommonHandler.instance()
-                        .getMinecraftServerInstance()
-                        .getCommandManager()
-                        .executeCommand(
-                            new CommandCallbackSender((EntityPlayerMP)target, name), specificCommand
-                        );
+        for (String s : command) {
+            String specificCommand = s.replaceAll("@p", target.getName());
 
-        // TODO: "onError" callback.
-        LogHelper.info("Ran '{}' from '{}'.  Result code: {}", specificCommand, target.getName(), result);
+            // Method train of doom...
+            int result = FMLCommonHandler.instance()
+                    .getMinecraftServerInstance()
+                    .getCommandManager()
+                    .executeCommand(
+                            sender, specificCommand
+                    );
+
+            // TODO: "onError" callback.
+            LogHelper.info("Ran '{}' from '{}'.  Result code: {}", specificCommand, target.getName(), result);
+        }
     }
 
     /**
