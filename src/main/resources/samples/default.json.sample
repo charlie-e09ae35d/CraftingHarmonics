@@ -753,7 +753,8 @@
                             lootingMultiplier: 1.5, // But taking looting into account (grants an additional 1.5  per level of looting)
                             damageType: "player", // only when being killed by the player; this can be left out, or set to other damage sources
                             inDimensions: [-1,0,1],
-                            inBiomes: ["Plains"]
+                            inBiomes: ["Plains"],
+                            isBurning: true // When on fire
                         },
                         {
                             what: "minecraft:cooked_chicken", // Make them drop cooked chicken instead when in a Forest
