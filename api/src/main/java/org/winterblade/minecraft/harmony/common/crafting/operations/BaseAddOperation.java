@@ -52,7 +52,14 @@ public abstract class BaseAddOperation extends BasicOperation {
         BaseAddOperation other = (BaseAddOperation)o;
         if(output == null) return 1;
         if(other.output == null) return -1;
-        return output.getItemStack().getUnlocalizedName().compareTo(
+        // More sanity checks on this...
+        if(output.getItemStack() == null) return 1;
+        if(other.output.getItemStack() == null) return -1;
+        String thisUnlocName = output.getItemStack().getUnlocalizedName();
+        String otherUnlocName = other.output.getItemStack().getUnlocalizedName();
+        if(thisUnlocName == null) return 1;
+        if(otherUnlocName == null) return -1;
+        return thisUnlocName.compareTo(
                 other.output.getItemStack().getUnlocalizedName());
     }
 
