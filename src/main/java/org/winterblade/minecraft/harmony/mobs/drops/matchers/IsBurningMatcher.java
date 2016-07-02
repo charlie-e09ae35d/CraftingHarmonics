@@ -4,6 +4,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.Component;
+import org.winterblade.minecraft.harmony.api.PrioritizedObject;
+import org.winterblade.minecraft.harmony.api.Priority;
 import org.winterblade.minecraft.harmony.api.mobs.drops.IMobDropMatcher;
 import org.winterblade.minecraft.harmony.common.matchers.BaseIsBurningMatcher;
 
@@ -11,6 +13,7 @@ import org.winterblade.minecraft.harmony.common.matchers.BaseIsBurningMatcher;
  * Created by Matt on 7/1/2016.
  */
 @Component(properties = {"isBurning"})
+@PrioritizedObject(priority = Priority.HIGHER)
 public class IsBurningMatcher extends BaseIsBurningMatcher implements IMobDropMatcher {
     public IsBurningMatcher(boolean shouldBeBurning) {
         super(shouldBeBurning);
