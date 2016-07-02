@@ -248,16 +248,16 @@ public class CraftingHarmonicsMod {
             configManager.reload();
 
             // Check if we had any errors...
-            List<NashornConfigProcessor.ScriptError> errors = NashornConfigProcessor.getInstance().getErrors();
-            if(0 < errors.size()) {
-                callback.call(false, errors);
+            if(NashornConfigProcessor.getInstance().hasErrors()) {
+                callback.call(false);
                 return;
             }
 
+            // Don't bother trying to do anything else.
             initSets();
             applySets(sets);
             syncAllConfigs(server);
-            callback.call(true, null);
+            callback.call(true);
         });
     }
 

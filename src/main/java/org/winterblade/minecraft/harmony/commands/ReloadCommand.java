@@ -51,16 +51,13 @@ public class ReloadCommand extends SubCommand {
      */
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        CraftingHarmonicsMod.reloadConfigs(server, (boolean success, List<NashornConfigProcessor.ScriptError> errors) -> {
-            if(success || errors == null) {
+        CraftingHarmonicsMod.reloadConfigs(server, (boolean success) -> {
+            if(success) {
                 sender.addChatMessage(new TextComponentString("Configuration reloaded successfully."));
                 return;
             }
 
-            sender.addChatMessage(new TextComponentString("The following errors were found in the configuration:"));
-            for (NashornConfigProcessor.ScriptError error : errors) {
-                sender.addChatMessage(new TextComponentString(error.error.replace('\r', ' ')));
-            }
+            NashornConfigProcessor.getInstance().reportErrorsTo(sender);
         });
     }
 

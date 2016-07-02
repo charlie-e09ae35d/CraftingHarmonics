@@ -10,5 +10,5 @@ import java.util.List;
  */
 @FunctionalInterface
 public interface ConfigStatusCallback {
-    void call(boolean success, @Nullable List<NashornConfigProcessor.ScriptError> errors);
+    void call(boolean success);
 }
