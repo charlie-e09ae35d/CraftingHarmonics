@@ -184,7 +184,11 @@ public class OperationSet {
         ProgressManager.pop(setProgress);
 
         // So we're only sorting it once...
-        Collections.sort(operations);
+        try {
+            Collections.sort(operations);
+        } catch(Exception e) {
+            LogHelper.error("Error sorting operations in set {}; please report this error.", setName, e);
+        }
     }
 
     void apply() {
@@ -222,7 +226,11 @@ public class OperationSet {
     void undo() {
         // Reverse the sort order... badly.
         List<IOperation> revserseOps = new ArrayList<>(operations);
-        Collections.reverse(revserseOps);
+        try {
+            Collections.reverse(revserseOps);
+        } catch(Exception e) {
+            LogHelper.error("Error reversing sort on operations in set {}; please report this error.", setName, e);
+        }
         Side curSide = FMLCommonHandler.instance().getEffectiveSide();
 
         // Undo the operations in the opposite way we applied them:
