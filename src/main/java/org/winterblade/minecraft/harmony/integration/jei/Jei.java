@@ -7,12 +7,15 @@ import mezz.jei.api.JEIPlugin;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by Matt on 4/15/2016.
  */
 @JEIPlugin
 public class Jei implements IModPlugin {
+    private static final Queue<Runnable> opQueue = new ConcurrentLinkedQueue<>();
     private static IModRegistry jeiRegistry;
 
     /**
@@ -25,6 +28,11 @@ public class Jei implements IModPlugin {
     @Override
     public void register(@Nonnull IModRegistry registry) {
         jeiRegistry = registry;
+
+        for (Runnable runnable : opQueue) {
+            runnable.run();
+        }
+        opQueue.clear();
     }
 
     /**
@@ -53,7 +61,10 @@ public class Jei implements IModPlugin {
      */
     public static void show(ItemStack itemStack) {
         // If we don't have JEI, we don't care...
-        if(jeiRegistry == null) return;
+        if(jeiRegistry == null) {
+            opQueue.add(() -> show(itemStack));
+            return;
+        }
         jeiRegistry.getJeiHelpers().getItemBlacklist().removeItemFromBlacklist(itemStack);
     }
 
@@ -63,7 +74,10 @@ public class Jei implements IModPlugin {
      */
     public static void hide(ItemStack itemStack) {
         // If we don't have JEI, we don't care...
-        if(jeiRegistry == null) return;
+        if(jeiRegistry == null) {
+            opQueue.add(() -> hide(itemStack));
+            return;
+        }
         jeiRegistry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(itemStack);
     }
 }
