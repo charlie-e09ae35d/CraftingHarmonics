@@ -9,7 +9,7 @@ import org.winterblade.minecraft.harmony.integration.jei.Jei;
 /**
  * Created by Matt on 5/6/2016.
  */
-@Operation(name = "hide", dependsOn = "JEI")
+@Operation(name = "show", dependsOn = "JEI")
 public class ShowOperation extends BasicOperation {
     /*
      * Serialized properties
