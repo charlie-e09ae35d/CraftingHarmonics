@@ -138,9 +138,7 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onWorldLoaded(WorldEvent.Load evt) {
         try {
-            if(evt.getWorld().isRemote) {
-                ProxiedWorldProvider.injectProvider(evt.getWorld());
-            }
+            ProxiedWorldProvider.injectProvider(evt.getWorld());
         } catch (Exception | VerifyError ex) {
             LogHelper.error("Error handling world load event; please report this along with your config file.", ex);
         }

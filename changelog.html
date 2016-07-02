@@ -1,4 +1,31 @@
 <div>
+    <h2>Version 1.5.2</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Adding a new operation 'rename' in order to rename every instance of an item that doesn't have a custom
+            display name.
+        </li>
+        <li>
+            Adding a new operation 'setItemDurability' in order to set the maximum durability of a damageable item
+            such as a pickaxe/battery/etc.
+        </li>
+        <li>
+            Adding a new operation 'forceWeather' that can force the weather in a given dimension to be clear,
+            rain, or storming while the operation is in effect unless something else overrides it.
+        </li>
+        <li>
+            Adding a new matcher 'isBurning' to check if the relevant entity is on fire or not.  This will test the
+            slain mob for mob drops, and the harvester/target for all others.
+        </li>
+        <li>
+            Adding support for 'onDrop' entity callbacks for block drops, mob drops, and mob sheds.  Use this in order
+            to apply a variety of interesting effects when a particular drop is obtained.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
     <h2>Version 1.5.1</h2>
     <h4>Features</h4>
     <ul>

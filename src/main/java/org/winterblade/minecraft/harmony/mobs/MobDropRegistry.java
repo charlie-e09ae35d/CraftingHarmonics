@@ -8,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
+import org.winterblade.minecraft.harmony.common.BaseEntityMatcherData;
 import org.winterblade.minecraft.harmony.common.drops.BaseDropHandler;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.mobs.drops.MobDrop;
@@ -142,7 +144,7 @@ public class MobDropRegistry {
                     if(result.isMatch()) break;
                     drop = (MobDrop) drop.getAltMatch();
                 } while(drop != null);
-                if(!result.isMatch()) continue;
+                if(!result.isMatch() || drop == null) continue;
 
                 // Make sure we have sane drop amounts:
                 if(dropStack.stackSize < 0) continue;
@@ -150,6 +152,15 @@ public class MobDropRegistry {
 
                 // Now perform our updates:
                 if(result.getCallback() != null) result.getCallback().run();
+
+
+                // Run any entity callbacks we have:
+                IEntityCallback[] callbacks = drop.getOnDrop();
+                if(callbacks != null && 0 < callbacks.length && evt.getSource() != null && evt.getSource().getEntity() != null) {
+                    // TODO: Consider adding the target as a target to the metadata.
+                    MobTickRegistry.addCallbackSet(evt.getSource().getEntity(), callbacks,
+                            new BaseEntityMatcherData(evt.getSource().getEntity()));
+                }
 
                 evt.getDrops().add(
                         new EntityItem(

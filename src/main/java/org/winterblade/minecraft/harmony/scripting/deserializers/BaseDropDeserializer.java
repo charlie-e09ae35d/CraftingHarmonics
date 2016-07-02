@@ -4,9 +4,13 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.drops.IBaseDropMatcher;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
+import org.winterblade.minecraft.harmony.common.blocks.BlockMatcher;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.common.drops.BaseDrop;
+import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
+import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 
 /**
@@ -15,6 +19,8 @@ import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 abstract class BaseDropDeserializer <TEvt, TMatcher extends IBaseDropMatcher<TEvt>, T extends BaseDrop<TEvt, TMatcher>>
         extends BaseMatchingDeserializer<TEvt, ItemStack, TMatcher, T>
         implements IScriptObjectDeserializer {
+
+    private static final IScriptObjectDeserializer CALLBACK_DESERIALIZER = new BaseEntityCallback.Deserializer();
 
     BaseDropDeserializer(Class<TMatcher> matcherClass) {
         super(matcherClass);
@@ -44,6 +50,11 @@ abstract class BaseDropDeserializer <TEvt, TMatcher extends IBaseDropMatcher<TEv
 
         if(mirror.containsKey("max")) {
             output.setMax((Integer) mirror.get("max"));
+        }
+
+        if(mirror.containsKey("onDrop")) {
+            output.setOnDrop(DeserializerHelpers
+                    .convertArrayWithDeserializer(mirror, "onDrop", CALLBACK_DESERIALIZER, IEntityCallback.class));
         }
 
         // Allow the actual deserializer to do its work:

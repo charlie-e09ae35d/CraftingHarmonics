@@ -753,7 +753,8 @@
                             lootingMultiplier: 1.5, // But taking looting into account (grants an additional 1.5  per level of looting)
                             damageType: "player", // only when being killed by the player; this can be left out, or set to other damage sources
                             inDimensions: [-1,0,1],
-                            inBiomes: ["Plains"]
+                            inBiomes: ["Plains"],
+                            isBurning: true // When on fire
                         },
                         {
                             what: "minecraft:cooked_chicken", // Make them drop cooked chicken instead when in a Forest
@@ -1018,7 +1019,9 @@
                             what: "minecraft:soul_sand",
                             min: 1,
                             max: 1,
-                            aboveBlock: "minecraft:soul_sand" // Simple form is acceptable.
+                            aboveBlock: "minecraft:soul_sand", // Simple form is acceptable.
+                            // You can also run entity callbacks when a drop occurs; this will target the harvester:
+                            onDrop: [ { type: "smite" } ]
                         },
                         {
                             // And makes it drop a mushroom when above podzol
@@ -1864,6 +1867,26 @@
                             height: 2.0
                         }
                     ]
+                },
+                {
+                    // You can rename items.  This will make all diamonds be named "DIAMONDS!" instead of just "Diamond"
+                    type: "rename",
+                    what: "minecraft:diamond",
+                    name: "DIAMONDS!"
+                },
+                {
+                    // You can also adjust the durability of tools and such:
+                    type: "setItemDurability",
+                    what: "minecraft:diamond_pickaxe",
+                    // This can be set to 0 to make the tool have infinite durability, but I wouldn't suggest
+                    // doing that in a custom set, as it will cause havoc with tools that are already in-game:
+                    durability: 5
+                },
+                {
+                    // You can also force the weather in a given dimension
+                    type: "forceWeather",
+                    dimension: 0,
+                    weather: "storm"
                 }
             ]
         }
