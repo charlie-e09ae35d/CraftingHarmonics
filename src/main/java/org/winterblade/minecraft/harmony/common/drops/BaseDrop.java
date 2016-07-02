@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.common.drops;
 import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.api.drops.IBaseDropMatcher;
+import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 
 /**
  * Created by Matt on 5/10/2016.
@@ -11,6 +12,8 @@ public abstract class BaseDrop<TEvt, TMatch extends IBaseDropMatcher<TEvt>> exte
     private ItemStack what;
     private int min;
     private int max;
+
+    private IEntityCallback[] onDrop;
 
     public ItemStack getWhat() {
         return what;
@@ -36,4 +39,11 @@ public abstract class BaseDrop<TEvt, TMatch extends IBaseDropMatcher<TEvt>> exte
         this.max = max;
     }
 
+    public IEntityCallback[] getOnDrop() {
+        return onDrop;
+    }
+
+    public void setOnDrop(IEntityCallback[] onDrop) {
+        this.onDrop = onDrop;
+    }
 }
