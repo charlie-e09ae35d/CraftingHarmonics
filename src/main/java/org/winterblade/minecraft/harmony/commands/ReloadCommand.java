@@ -4,7 +4,9 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
+import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 
 import java.util.List;
 
@@ -49,7 +51,14 @@ public class ReloadCommand extends SubCommand {
      */
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        CraftingHarmonicsMod.reloadConfigs(server);
+        CraftingHarmonicsMod.reloadConfigs(server, (boolean success) -> {
+            if(success) {
+                sender.addChatMessage(new TextComponentString("Configuration reloaded successfully."));
+                return;
+            }
+
+            NashornConfigProcessor.getInstance().reportErrorsTo(sender);
+        });
     }
 
     @Override

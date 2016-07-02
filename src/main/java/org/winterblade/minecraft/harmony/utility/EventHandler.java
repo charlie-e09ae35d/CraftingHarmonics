@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.utility;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -31,6 +32,8 @@ import org.winterblade.minecraft.harmony.world.ProxiedWorldProvider;
 import org.winterblade.minecraft.harmony.world.sky.ClientSkyModifications;
 import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
 
+import java.util.List;
+
 /**
  * Created by Matt on 4/13/2016.
  */
@@ -57,6 +60,8 @@ public class EventHandler {
             // Apply our per-player operations...
             OperationSet.runPerPlayerOperations(player);
         }
+
+        NashornConfigProcessor.getInstance().reportErrorsTo(player);
 
         PacketHandler.synchronizeConfig(NashornConfigProcessor.getInstance().getCache(), player);
         SkyModificationRegistry.resyncPlayerData(player);

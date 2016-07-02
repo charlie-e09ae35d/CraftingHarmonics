@@ -1,9 +1,13 @@
 package org.winterblade.minecraft.harmony.scripting;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.text.TextComponentString;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.Logger;
 import org.winterblade.minecraft.harmony.api.blocks.IBlockDropMatcher;
@@ -19,10 +23,7 @@ import org.winterblade.minecraft.scripting.api.NashornMod;
 
 import javax.script.ScriptException;
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Matt on 4/8/2016.
@@ -55,6 +56,7 @@ public class NashornConfigProcessor implements INashornMod {
 
     public IScriptContext nashorn;
     private final Map<String, String> cache = new HashMap<>();
+    private final List<ScriptError> errors = new ArrayList<>();
     private boolean loadedInterops = false;
     private String[] contextRoots = new String[] {"org.winterblade.minecraft.harmony"};
 
@@ -118,6 +120,11 @@ public class NashornConfigProcessor implements INashornMod {
 
             // Only put valid configs in the cache:
             cache.put(file.getName(), fileContent);
+        } catch (ScriptException e) {
+            int skip = ("<eval>:" + e.getLineNumber() + ":" + e.getColumnNumber() + ":").length();
+            ScriptError err = new ScriptError(file.getName(), e.getLineNumber(), e.getMessage().substring(skip));
+            errors.add(err);
+            LogHelper.error(err.error);
         } catch (Exception e) {
             LogHelper.error("Error processing file " + file.getPath(), e);
         }
@@ -195,10 +202,52 @@ public class NashornConfigProcessor implements INashornMod {
      */
     public void reloadConfigs() {
         cache.clear();
+        errors.clear();
+    }
+
+    /**
+     * Gets all the errors since the last reload
+     * @return  An immutable list of script errors.
+     */
+    public List<ScriptError> getErrors() {
+        return ImmutableList.copyOf(errors);
+    }
+
+    /**
+     * Reports any errors to the given player
+     * @param player    The player to report to.
+     */
+    public void reportErrorsTo(ICommandSender player) {
+        if (errors.size() <= 0) return;
+
+        player.addChatMessage(new TextComponentString("[Crafting Harmonics] The following errors were found in the configuration:"));
+        for (NashornConfigProcessor.ScriptError error : errors) {
+            player.addChatMessage(new TextComponentString(error.error.replace('\r', ' ')));
+        }
+    }
+
+    /**
+     * Checks to see if we had any errors since our last reload
+     * @return  True if we did, false otherwise
+     */
+    public boolean hasErrors() {
+        return 0 < errors.size();
     }
 
     @FunctionalInterface
     private static interface IFilePreprocessor {
         String process(String filename, String input);
+    }
+
+    public static class ScriptError {
+        public final String file;
+        public final int line;
+        public final String error;
+
+        public ScriptError(String file, int line, String error) {
+            this.file = file;
+            this.line = line;
+            this.error = error.replaceAll("<eval>",file);
+        }
     }
 }

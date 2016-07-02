@@ -30,6 +30,7 @@ import org.winterblade.minecraft.harmony.scripting.ScriptInteropRegistry;
 import org.winterblade.minecraft.harmony.temperature.TemperatureRegistry;
 import org.winterblade.minecraft.harmony.tileentities.BaseTileEntityCallback;
 import org.winterblade.minecraft.harmony.utility.AnnotationUtil;
+import org.winterblade.minecraft.harmony.utility.ConfigStatusCallback;
 import org.winterblade.minecraft.harmony.utility.EventHandler;
 import org.winterblade.minecraft.harmony.utility.SavedGameData;
 
@@ -237,16 +238,26 @@ public class CraftingHarmonicsMod {
     /**
      * Reload all configs for the server
      * @param server    The server to reload it on
+     * @param callback  A callback to apply with the status of the configuration.
      */
-    public static void reloadConfigs(MinecraftServer server) {
+    public static void reloadConfigs(MinecraftServer server, ConfigStatusCallback callback) {
         server.addScheduledTask(() -> {
             // Reload the configs:
             String[] sets = appliedSets.toArray(new String[appliedSets.size()]);
             clearSets();
             configManager.reload();
+
+            // Check if we had any errors...
+            if(NashornConfigProcessor.getInstance().hasErrors()) {
+                callback.call(false);
+                return;
+            }
+
+            // Don't bother trying to do anything else.
             initSets();
             applySets(sets);
             syncAllConfigs(server);
+            callback.call(true);
         });
     }
 
