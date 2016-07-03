@@ -36,7 +36,7 @@ public class BaseBiomeTypeMatcher {
 
         // Get all the tags for this biome:
         BiomeDictionary.Type[] biomeTags = BiomeDictionary.getTypesForBiome(
-                world.getBiomeGenForCoords(pos));
+                world.getBiome(pos));
 
         // Figure out if we match:
         for(BiomeDictionary.Type type : biomeTags) {
