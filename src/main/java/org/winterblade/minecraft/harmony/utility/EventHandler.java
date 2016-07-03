@@ -29,6 +29,7 @@ import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
 import org.winterblade.minecraft.harmony.scripting.NashornConfigProcessor;
 import org.winterblade.minecraft.harmony.tileentities.TileEntityTickRegistry;
 import org.winterblade.minecraft.harmony.world.ProxiedWorldProvider;
+import org.winterblade.minecraft.harmony.world.WeatherRegistry;
 import org.winterblade.minecraft.harmony.world.sky.ClientSkyModifications;
 import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
 
@@ -88,6 +89,7 @@ public class EventHandler {
             MobTickRegistry.handleTick(evt);
             TileEntityTickRegistry.handleTick(evt);
             StopTimeCommand.checkTimeStops(evt.world);
+            WeatherRegistry.updateWeather(evt.world);
 
             // We should (hopefully) be done dealing with the explosion by this point...
             BlockDropRegistry.clearExplodedList();
