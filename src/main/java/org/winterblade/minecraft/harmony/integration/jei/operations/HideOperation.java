@@ -4,6 +4,8 @@ import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.integration.jei.Jei;
 
 /**
@@ -23,6 +25,7 @@ public class HideOperation extends BasicOperation {
 
     @Override
     public void apply() {
+        LogHelper.info("Hiding {} from JEI.", ItemUtility.outputItemName(what));
         Jei.hide(what);
     }
 

@@ -23,6 +23,6 @@ public abstract class BaseBiomeMatcher {
     }
 
     protected BaseMatchResult matches(World world, BlockPos pos) {
-        return new BaseMatchResult(biomeIds.contains(world.getBiomeGenForCoords(pos).getBiomeName()));
+        return new BaseMatchResult(biomeIds.contains(world.getBiome(pos).getBiomeName()));
     }
 }
