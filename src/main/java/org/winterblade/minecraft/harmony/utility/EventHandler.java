@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.utility;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -39,6 +40,7 @@ import java.util.List;
  */
 public class EventHandler {
     private boolean debounceItemRightClick;
+    private boolean debounceEntityInteract;
 
     @SubscribeEvent
     public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent evt) {
@@ -182,5 +184,25 @@ public class EventHandler {
     public void onBlockPlaced(BlockEvent.PlaceEvent evt) {
         if(evt.isCanceled() || !BlockRegistry.instance.shouldCancelPlace(evt)) return;
         evt.setCanceled(true);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onPlayerInteract(PlayerInteractEvent.EntityInteract evt) {
+        // If we're cancelling on this thread...
+        if(debounceEntityInteract) {
+            debounceEntityInteract = false;
+            evt.setCanceled(true);
+            return;
+        }
+
+        // We don't care about offhands if we're not cancelling them...
+        if(evt.getHand() == EnumHand.OFF_HAND) return;
+
+        // TODO: Run matchers here:
+        LogHelper.info("Cancelling interact event on {}, thread {}, hand {}.", evt.getSide(), Thread.currentThread().getId(), evt.getHand());
+        evt.setCanceled(true);
+
+        // Debounce our off-hand click:
+        debounceEntityInteract = true;
     }
 }
