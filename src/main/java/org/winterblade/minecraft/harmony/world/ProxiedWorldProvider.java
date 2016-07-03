@@ -41,8 +41,8 @@ public class ProxiedWorldProvider extends WorldProvider {
      * @param world    The world to proxy
      */
     public static void injectProvider(World world) {
-        // DO NOT PROXY THE END PROVIDER ON THE SERVER:
-        if(!world.isRemote && world.provider instanceof WorldProviderEnd) return;
+        // DO NOT PROXY THE WORLD ON THE SERVER AT ALL:
+        if(!world.isRemote) return;
 
         ProxiedWorldProvider provider = new ProxiedWorldProvider(world.provider);
         ObfuscationReflectionHelper.setPrivateValue(World.class, world, provider, "field_73011_w");
