@@ -1,5 +1,6 @@
 package org.winterblade.minecraft.harmony.integration.jei;
 
+import io.netty.util.internal.ConcurrentSet;
 import mezz.jei.api.IJeiRuntime;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.IModRegistry;
@@ -7,15 +8,14 @@ import mezz.jei.api.JEIPlugin;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nonnull;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Set;
 
 /**
  * Created by Matt on 4/15/2016.
  */
 @JEIPlugin
 public class Jei implements IModPlugin {
-    private static final Queue<Runnable> opQueue = new ConcurrentLinkedQueue<>();
+    private static final Set<ItemStack> hiddenItems = new ConcurrentSet<>();
     private static IModRegistry jeiRegistry;
 
     /**
@@ -29,10 +29,9 @@ public class Jei implements IModPlugin {
     public void register(@Nonnull IModRegistry registry) {
         jeiRegistry = registry;
 
-        for (Runnable runnable : opQueue) {
-            runnable.run();
+        for (ItemStack stack : hiddenItems) {
+            jeiRegistry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(stack);
         }
-        opQueue.clear();
     }
 
     /**
@@ -60,11 +59,11 @@ public class Jei implements IModPlugin {
      * @param itemStack    The item to show
      */
     public static void show(ItemStack itemStack) {
+        hiddenItems.remove(itemStack);
+
         // If we don't have JEI, we don't care...
-        if(jeiRegistry == null) {
-            opQueue.add(() -> show(itemStack));
-            return;
-        }
+        if(jeiRegistry == null) return;
+
         jeiRegistry.getJeiHelpers().getItemBlacklist().removeItemFromBlacklist(itemStack);
     }
 
@@ -73,11 +72,11 @@ public class Jei implements IModPlugin {
      * @param itemStack    The item to hide
      */
     public static void hide(ItemStack itemStack) {
+        hiddenItems.add(itemStack);
+
         // If we don't have JEI, we don't care...
-        if(jeiRegistry == null) {
-            opQueue.add(() -> hide(itemStack));
-            return;
-        }
+        if(jeiRegistry == null) return;
+
         jeiRegistry.getJeiHelpers().getItemBlacklist().addItemToBlacklist(itemStack);
     }
 }

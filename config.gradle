@@ -3,9 +3,9 @@
  */
 ext {
     repo = "http://maven.winterblade.org/content/repositories/MinecraftDev/"
-    version = "1.9.4_1.10_1.10.2-1.5.4"
+    version = "1.9.4_1.10_1.10.2-1.5.5"
     forgeVersion = "1.9.4-12.17.0.1976"
-    mappings = "snapshot_20160518"
+    mappings = "stable_26"
 }
 
 /*

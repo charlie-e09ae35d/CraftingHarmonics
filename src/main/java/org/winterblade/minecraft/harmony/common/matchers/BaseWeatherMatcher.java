@@ -36,7 +36,7 @@ public abstract class BaseWeatherMatcher {
         }
 
         // Otherwise, we're just checking the biome...
-        return canOccurInBiome(world.getBiomeGenForCoords(pos)) == presence ? BaseMatchResult.True : BaseMatchResult.False;
+        return canOccurInBiome(world.getBiome(pos)) == presence ? BaseMatchResult.True : BaseMatchResult.False;
     }
 
     protected abstract boolean isOccurring(World inWorld);
