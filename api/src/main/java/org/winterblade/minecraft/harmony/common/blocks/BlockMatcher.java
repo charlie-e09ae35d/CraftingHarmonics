@@ -7,6 +7,7 @@ import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
 import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
@@ -17,6 +18,7 @@ import java.util.*;
  * Created by Matt on 5/14/2016.
  */
 public class BlockMatcher {
+    private static final Block AIR = Block.REGISTRY.getObject(new ResourceLocation("minecraft:air"));
     private final Block block;
     private final Set<IBlockState> states = new HashSet<>();
 
@@ -57,8 +59,10 @@ public class BlockMatcher {
         public Object Deserialize(Object input) {
             // If we just have a string, go ahead and return that.
             if(input instanceof String) {
-                Block b = Block.REGISTRY.getObject(new ResourceLocation((String) input));
-                return b != null ? new BlockMatcher(b) : null;
+                Block b = stringToBlock((String) input);
+                if (b == null) return null;
+
+                return new BlockMatcher(b);
             }
 
             // Otherwise, make sure we can continue:
@@ -79,7 +83,7 @@ public class BlockMatcher {
             }
 
             // Get our block:
-            Block b = Block.REGISTRY.getObject(new ResourceLocation((String) mirror.get("block")));
+            Block b = stringToBlock((String)mirror.get("block"));
 
             // If we failed to find the block:
             if(b == null) return null;
@@ -113,6 +117,29 @@ public class BlockMatcher {
             }
 
             return new BlockMatcher(b, new BlockStateMatcher(properties));
+        }
+
+        /**
+         * Translates the given string to a block, returning null if it's not found.
+         * @param input    The input string
+         * @return         The block, or null if none was found.
+         */
+        @Nullable
+        private Block stringToBlock(String input) {
+            if(input.indexOf(':') != input.lastIndexOf(':')) {
+                LogHelper.warn("The block definition '{}' is invalid; specify this using block states, not metadata.", input);
+                return null;
+            }
+
+            Block b = Block.REGISTRY.getObject(new ResourceLocation(input));
+
+            // Make sure we don't have air, unless we wanted it:
+            if(b == AIR && !input.equals("minecraft:air")) {
+                LogHelper.warn("Cannot find a valid block for '{}'.", input);
+                return null;
+            }
+
+            return b;
         }
     }
 }
