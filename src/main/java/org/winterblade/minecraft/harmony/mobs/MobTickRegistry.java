@@ -83,6 +83,7 @@ public class MobTickRegistry {
      * @param metadata      The metadata to apply.
      */
     public static void addCallbackSet(Entity target, IEntityCallback[] callbacks, CallbackMetadata metadata) {
+        if(target == null || callbacks == null || callbacks.length <= 0) return;
         entityCallbackQueue.add(new EntityCallbackData(target, callbacks, metadata));
     }
 
