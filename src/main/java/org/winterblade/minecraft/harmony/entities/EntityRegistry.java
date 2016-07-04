@@ -104,7 +104,7 @@ public class EntityRegistry {
             }
 
             for (IEntityMatcher matcher : sourceMatchers) {
-                BaseMatchResult result = matcher.isMatch(target, data);
+                BaseMatchResult result = matcher.isMatch(source, data);
                 if(!result.isMatch()) return false;
                 callbacks.add(result.getCallback());
             }
