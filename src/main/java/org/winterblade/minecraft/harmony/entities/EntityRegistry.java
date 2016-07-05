@@ -65,4 +65,31 @@ public class EntityRegistry {
 
         return true;
     }
+
+    /**
+     * Adds a handler to the list of available handlers.
+     * @param handler    The handler to add.
+     * @return           The ID of the newly created handler.
+     */
+    public static UUID addInteractionHandler(EntityInteractionHandler handler) {
+        UUID id = UUID.randomUUID();
+        handlers.put(id, handler);
+        return id;
+    }
+
+    /**
+     * Activate the given handler
+     * @param id    The handler to activate
+     */
+    public static void activateInteractionHandler(UUID id) {
+        if(activeHandlers.add(id)) cache.invalidateAll();
+    }
+
+    /**
+     * Deactivate the given handler
+     * @param id    The handler to remove.
+     */
+    public static void deactivateInteractionHandler(UUID id) {
+        if(activeHandlers.remove(id)) cache.invalidateAll();
+    }
 }
