@@ -7,7 +7,7 @@ public class NameClassPair {
     private final String name;
     private final Class<?> clazz;
 
-    private NameClassPair(String name, Class<?> clazz) {
+    public NameClassPair(String name, Class<?> clazz) {
         this.name = name;
         this.clazz = clazz;
     }

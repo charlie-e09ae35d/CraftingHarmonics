@@ -3,11 +3,13 @@ package org.winterblade.minecraft.harmony.entities;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import net.minecraft.entity.Entity;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.common.dto.NameClassPair;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -34,4 +36,33 @@ public class EntityRegistry {
             });
     private EntityRegistry() {}
 
+    /**
+     * Checks the given entity against the active handlers
+     * @param target    The target entity
+     * @param source    The source entity
+     * @return          True if the interaction should go through, false otherwise
+     */
+    public static boolean check(Entity target, Entity source) {
+        Set<UUID> ids;
+
+        // Attempt to query the cache for this target entity.
+        try {
+            ids = cache.get(new NameClassPair(target.getName(), target.getClass()));
+        } catch (ExecutionException e) {
+            LogHelper.warn("Unable to get interaction handlers for interaction between {} and {}",
+                    source.getName(), target.getName());
+            return true;
+        }
+
+        // Iterate our handlers
+        for (UUID id : ids) {
+            EntityInteractionHandler handler = handlers.get(id);
+            if(handler == null) continue;
+
+            // The first one to deny wins:
+            if(!handler.check(target, source)) return false;
+        }
+
+        return true;
+    }
 }
