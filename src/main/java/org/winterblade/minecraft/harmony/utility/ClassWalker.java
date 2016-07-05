@@ -33,7 +33,7 @@ public class ClassWalker {
 
                         // Add our superclass, if it's not Object:
                         Class<?> superclass = cur.getSuperclass();
-                        if(superclass != Object.class) openList.add(superclass);
+                        if(superclass != null && superclass != Object.class) openList.add(superclass);
 
                         // And all the interfaces...
                         Collections.addAll(openList, cur.getInterfaces());
