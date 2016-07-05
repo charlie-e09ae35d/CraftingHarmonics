@@ -36,8 +36,8 @@ import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
  * Created by Matt on 4/13/2016.
  */
 public class EventHandler {
-    private boolean debounceItemRightClick;
-    private boolean debounceEntityInteract;
+    private ThreadLocal<Boolean> debounceItemRightClick = new ThreadLocal<>();
+    private ThreadLocal<Boolean> debounceEntityInteract = new ThreadLocal<>();
 
     @SubscribeEvent
     public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent evt) {
@@ -161,15 +161,16 @@ public class EventHandler {
 
         // The game ends up firing the RightClickItem event as well; we set this here to make sure
         // we don't end up doing all the checks/callbacks a second time in that event:
-        debounceItemRightClick = true;
+        debounceItemRightClick.set(true);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerInteractEvent(PlayerInteractEvent.RightClickItem evt) {
         // If we just cancelled it for the RightClickBlock evt, don't bother:
-        if(debounceItemRightClick) {
+        Boolean debounce = debounceItemRightClick.get();
+        if(debounce != null && debounce) {
             evt.setCanceled(true);
-            debounceItemRightClick = false;
+            debounceItemRightClick.set(false);
             return;
         }
 
@@ -187,8 +188,9 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerInteract(PlayerInteractEvent.EntityInteract evt) {
         // If we're cancelling on this thread...
-        if(debounceEntityInteract) {
-            debounceEntityInteract = false;
+        Boolean debounce = debounceEntityInteract.get();
+        if(debounce != null && debounce) {
+            debounceEntityInteract.set(false);
             evt.setCanceled(true);
             return;
         }
@@ -201,6 +203,6 @@ public class EventHandler {
 
         // Otherwise, cancel, and debounce our off-hand click:
         evt.setCanceled(true);
-        debounceEntityInteract = true;
+        debounceEntityInteract.set(true);
     }
 }
