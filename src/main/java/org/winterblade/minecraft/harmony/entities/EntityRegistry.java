@@ -42,7 +42,7 @@ public class EntityRegistry {
      * @param source    The source entity
      * @return          True if the interaction should go through, false otherwise
      */
-    public static boolean check(Entity target, Entity source) {
+    public static boolean allowInteractionBetween(Entity target, Entity source) {
         Set<UUID> ids;
 
         // Attempt to query the cache for this target entity.

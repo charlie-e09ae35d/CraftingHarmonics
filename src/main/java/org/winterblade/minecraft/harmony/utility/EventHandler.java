@@ -1,10 +1,8 @@
 package org.winterblade.minecraft.harmony.utility;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -20,8 +18,8 @@ import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.OperationSet;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
 import org.winterblade.minecraft.harmony.blocks.BlockRegistry;
-import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.entities.EntityRegistry;
 import org.winterblade.minecraft.harmony.entities.callbacks.StopTimeCommand;
 import org.winterblade.minecraft.harmony.items.ItemRegistry;
 import org.winterblade.minecraft.harmony.messaging.PacketHandler;
@@ -33,8 +31,6 @@ import org.winterblade.minecraft.harmony.world.ProxiedWorldProvider;
 import org.winterblade.minecraft.harmony.world.WeatherRegistry;
 import org.winterblade.minecraft.harmony.world.sky.ClientSkyModifications;
 import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
-
-import java.util.List;
 
 /**
  * Created by Matt on 4/13/2016.
@@ -200,11 +196,11 @@ public class EventHandler {
         // We don't care about offhands if we're not cancelling them...
         if(evt.getHand() == EnumHand.OFF_HAND) return;
 
-        // TODO: Run matchers here:
-        LogHelper.info("Cancelling interact event on {}, thread {}, hand {}.", evt.getSide(), Thread.currentThread().getId(), evt.getHand());
-        evt.setCanceled(true);
+        // If we pass the check, then we can allow the event to go through...
+        if(EntityRegistry.allowInteractionBetween(evt.getTarget(), evt.getEntityPlayer())) return;
 
-        // Debounce our off-hand click:
+        // Otherwise, cancel, and debounce our off-hand click:
+        evt.setCanceled(true);
         debounceEntityInteract = true;
     }
 }
