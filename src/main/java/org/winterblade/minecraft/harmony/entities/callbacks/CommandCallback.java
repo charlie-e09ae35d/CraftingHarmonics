@@ -32,6 +32,8 @@ public class CommandCallback extends BaseEntityCallback {
             return;
         }
 
+        if(name != null) name = name.replaceAll("@p", target.getName());
+
         CommandCallbackSender sender = new CommandCallbackSender((EntityPlayerMP) target, name);
 
         for (String s : command) {
