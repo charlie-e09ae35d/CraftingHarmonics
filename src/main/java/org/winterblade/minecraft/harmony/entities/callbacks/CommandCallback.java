@@ -27,12 +27,14 @@ public class CommandCallback extends BaseEntityCallback {
     @Override
     public void applyTo(Entity target, CallbackMetadata data) {
         if(target.getEntityWorld().isRemote) return;
-        if(!EntityPlayerMP.class.isAssignableFrom(target.getClass())) {
-            LogHelper.info("Not running player command '{}' on target as target is not a player ({})", command, target.getClass().getName());
+        if(!EntityLivingBase.class.isAssignableFrom(target.getClass())) {
+            LogHelper.info("Not running command '{}' on target as target is not a living entity ({})", command, target.getClass().getName());
             return;
         }
 
-        CommandCallbackSender sender = new CommandCallbackSender((EntityPlayerMP) target, name);
+        if(name != null) name = name.replaceAll("@p", target.getName());
+
+        CommandCallbackSender sender = new CommandCallbackSender((EntityLivingBase) target, name);
 
         for (String s : command) {
             String specificCommand = s.replaceAll("@p", target.getName());
