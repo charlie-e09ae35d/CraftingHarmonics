@@ -3,12 +3,14 @@ package org.winterblade.minecraft.harmony.common.matchers;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreCriteria;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -44,10 +46,24 @@ public class BaseScoreboardMatcher {
         if(world == null || (mode == PlayerMatcherMode.CURRENT && entity == null)) return BaseMatchResult.False;
 
         Scoreboard scoreboard = world.getScoreboard();
+        // Sanity check, because I don't trust this to always be non-null:
+        //noinspection ConstantConditions
         if(scoreboard == null) return BaseMatchResult.False;
 
         ScoreObjective objective = scoreboard.getObjective(data.getName());
-        if(objective == null) return BaseMatchResult.False;
+        if(objective == null) {
+            if(!data.isCreate()) return BaseMatchResult.False;
+
+            // Create the objective...
+            scoreboard.addScoreObjective(data.getName(), ScoreCriteria.DUMMY);
+            objective = scoreboard.getObjective(data.getName());
+
+            // Make sure we're not still null...
+            if(objective == null) {
+                LogHelper.warn("Unable to create score objective '{}'.", data.getName());
+                return BaseMatchResult.False;
+            }
+        }
 
         // If we have a special mode:
         switch (mode) {
