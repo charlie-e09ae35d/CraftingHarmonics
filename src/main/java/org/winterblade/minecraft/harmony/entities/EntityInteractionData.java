@@ -1,13 +1,23 @@
 package org.winterblade.minecraft.harmony.entities;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import jdk.nashorn.api.scripting.ScriptUtils;
+import jdk.nashorn.internal.runtime.ScriptObject;
 import net.minecraft.entity.Entity;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
 import org.winterblade.minecraft.harmony.api.mobs.effects.IEntityMatcher;
 import org.winterblade.minecraft.harmony.api.utility.CallbackMetadata;
 import org.winterblade.minecraft.harmony.common.dto.Action;
+import org.winterblade.minecraft.harmony.entities.callbacks.BaseEntityCallback;
 import org.winterblade.minecraft.harmony.mobs.MobTickRegistry;
+import org.winterblade.minecraft.harmony.scripting.ComponentRegistry;
+import org.winterblade.minecraft.harmony.scripting.DeserializerHelpers;
+import org.winterblade.minecraft.harmony.scripting.deserializers.BaseMirroredDeserializer;
+import org.winterblade.minecraft.scripting.api.IScriptObjectDeserializer;
+import org.winterblade.minecraft.scripting.api.ScriptObjectDeserializer;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,5 +111,113 @@ public class EntityInteractionData {
         }
 
         return true;
+    }
+
+    @ScriptObjectDeserializer(deserializes = EntityInteractionData.class)
+    public static class Deserializer extends BaseMirroredDeserializer {
+        @Override
+        protected Object DeserializeMirror(ScriptObjectMirror mirror) {
+            // First, get our actions:
+            Action matchedAction = getAction(mirror.get("matchedAction"));
+            Action unmatchedAction = getAction(mirror.get("unmatchedAction"));
+
+            // Now build out the data from each:
+            InteractionTargetData targetData = InteractionTargetData.deserialize(mirror.get("target"));
+            InteractionTargetData sourceData = InteractionTargetData.deserialize(mirror.get("source"));
+
+            // Then build the actual object:
+            return new EntityInteractionData(sourceData.getMatchers(), targetData.getMatchers(),
+                    sourceData.getOnAllowed(), sourceData.getOnDenied(), sourceData.getOnPassed(),
+                    targetData.getOnAllowed(), targetData.getOnDenied(), targetData.getOnPassed(),
+                    matchedAction, unmatchedAction);
+        }
+
+        private Action getAction(Object matchedAction) {
+            if(matchedAction == null) return Action.PASS;
+            switch (matchedAction.toString().toLowerCase()) {
+                case "allow":
+                case "run":
+                case "accept":
+                case "permit":
+                    return Action.ALLOW;
+                case "deny":
+                case "prevent":
+                case "reject":
+                case "refuse":
+                    return Action.DENY;
+                case "pass":
+                default:
+                    return Action.PASS;
+            }
+        }
+
+    }
+
+    private static class InteractionTargetData {
+        private static final IScriptObjectDeserializer CALLBACK_DESERIALIZER = new BaseEntityCallback.Deserializer();
+
+        private final IEntityMatcher[] matchers;
+        private final IEntityCallback[] onAllowed;
+        private final IEntityCallback[] onDenied;
+        private final IEntityCallback[] onPassed;
+
+        private InteractionTargetData(@Nullable IEntityMatcher[] matchers, @Nullable IEntityCallback[] onAllowed,
+                                      @Nullable IEntityCallback[] onDenied, @Nullable IEntityCallback[] onPassed) {
+            this.matchers = matchers != null ? matchers : new IEntityMatcher[0];
+            this.onAllowed = onAllowed != null ? onAllowed : new IEntityCallback[0];
+            this.onDenied = onDenied != null ? onDenied : new IEntityCallback[0];
+            this.onPassed = onPassed != null ? onPassed : new IEntityCallback[0];
+        }
+
+
+        public static InteractionTargetData deserialize(Object input) {
+            // Figure out if we have a valid input here:
+            if(input == null || (!ScriptObjectMirror.class.isAssignableFrom(input.getClass()) &&
+                    !ScriptObject.class.isAssignableFrom(input.getClass()))) return new InteractionTargetData(null, null, null, null);
+
+            ScriptObjectMirror mirror;
+
+            // Convert it over...
+            if(ScriptObjectMirror.class.isAssignableFrom(input.getClass())) {
+                mirror = (ScriptObjectMirror) input;
+            } else {
+                mirror = ScriptUtils.wrap((ScriptObject) input);
+            }
+
+            // Gather our callbacks:
+            IEntityCallback[] onAllowed = mirror.containsKey("onAllowed")
+                    ? DeserializerHelpers.convertArrayWithDeserializer(mirror, "onAllowed", CALLBACK_DESERIALIZER, IEntityCallback.class)
+                    : new IEntityCallback[0];
+            IEntityCallback[] onDenied = mirror.containsKey("onDenied")
+                    ? DeserializerHelpers.convertArrayWithDeserializer(mirror, "onDenied", CALLBACK_DESERIALIZER, IEntityCallback.class)
+                    : new IEntityCallback[0];
+            IEntityCallback[] onPassed = mirror.containsKey("onPassed")
+                    ? DeserializerHelpers.convertArrayWithDeserializer(mirror, "onPassed", CALLBACK_DESERIALIZER, IEntityCallback.class)
+                    : new IEntityCallback[0];
+
+            // Finally, get our matchers:
+            ComponentRegistry registry = ComponentRegistry.compileRegistryFor(new Class[]{IEntityMatcher.class}, mirror);
+            List<IEntityMatcher> components = registry.getComponentsOf(IEntityMatcher.class);
+
+            // And build it out...
+            return new InteractionTargetData(components != null ? components.toArray(new IEntityMatcher[components.size()]) : null,
+                    onAllowed, onDenied, onPassed);
+        }
+
+        public IEntityMatcher[] getMatchers() {
+            return matchers;
+        }
+
+        public IEntityCallback[] getOnAllowed() {
+            return onAllowed;
+        }
+
+        public IEntityCallback[] getOnDenied() {
+            return onDenied;
+        }
+
+        public IEntityCallback[] getOnPassed() {
+            return onPassed;
+        }
     }
 }
