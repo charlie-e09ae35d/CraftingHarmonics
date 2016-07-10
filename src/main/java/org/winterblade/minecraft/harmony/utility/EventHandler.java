@@ -1,9 +1,8 @@
 package org.winterblade.minecraft.harmony.utility;
 
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -19,8 +18,8 @@ import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.OperationSet;
 import org.winterblade.minecraft.harmony.blocks.BlockDropRegistry;
 import org.winterblade.minecraft.harmony.blocks.BlockRegistry;
-import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.entities.EntityRegistry;
 import org.winterblade.minecraft.harmony.entities.callbacks.StopTimeCommand;
 import org.winterblade.minecraft.harmony.items.ItemRegistry;
 import org.winterblade.minecraft.harmony.messaging.PacketHandler;
@@ -33,13 +32,12 @@ import org.winterblade.minecraft.harmony.world.WeatherRegistry;
 import org.winterblade.minecraft.harmony.world.sky.ClientSkyModifications;
 import org.winterblade.minecraft.harmony.world.sky.SkyModificationRegistry;
 
-import java.util.List;
-
 /**
  * Created by Matt on 4/13/2016.
  */
 public class EventHandler {
-    private boolean debounceItemRightClick;
+    private ThreadLocal<Boolean> debounceItemRightClick = new ThreadLocal<>();
+    private ThreadLocal<Boolean> debounceEntityInteract = new ThreadLocal<>();
 
     @SubscribeEvent
     public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent evt) {
@@ -163,15 +161,16 @@ public class EventHandler {
 
         // The game ends up firing the RightClickItem event as well; we set this here to make sure
         // we don't end up doing all the checks/callbacks a second time in that event:
-        debounceItemRightClick = true;
+        debounceItemRightClick.set(true);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerInteractEvent(PlayerInteractEvent.RightClickItem evt) {
         // If we just cancelled it for the RightClickBlock evt, don't bother:
-        if(debounceItemRightClick) {
+        Boolean debounce = debounceItemRightClick.get();
+        if(debounce != null && debounce) {
             evt.setCanceled(true);
-            debounceItemRightClick = false;
+            debounceItemRightClick.set(false);
             return;
         }
 
@@ -184,5 +183,26 @@ public class EventHandler {
     public void onBlockPlaced(BlockEvent.PlaceEvent evt) {
         if(evt.isCanceled() || !BlockRegistry.instance.shouldCancelPlace(evt)) return;
         evt.setCanceled(true);
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onPlayerInteract(PlayerInteractEvent.EntityInteract evt) {
+        // If we're cancelling on this thread...
+        Boolean debounce = debounceEntityInteract.get();
+        if(debounce != null && debounce) {
+            debounceEntityInteract.set(false);
+            evt.setCanceled(true);
+            return;
+        }
+
+        // We don't care about offhands if we're not cancelling them...
+        if(evt.getHand() == EnumHand.OFF_HAND) return;
+
+        // If we pass the check, then we can allow the event to go through...
+        if(EntityRegistry.allowInteractionBetween(evt.getTarget(), evt.getEntityPlayer())) return;
+
+        // Otherwise, cancel, and debounce our off-hand click:
+        evt.setCanceled(true);
+        debounceEntityInteract.set(true);
     }
 }

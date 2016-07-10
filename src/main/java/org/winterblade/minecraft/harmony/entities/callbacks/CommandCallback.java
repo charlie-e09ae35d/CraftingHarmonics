@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.entities.callbacks;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.CommandBlockBaseLogic;
@@ -32,7 +33,7 @@ public class CommandCallback extends BaseEntityCallback {
             return;
         }
 
-        if(name != null) name = name.replaceAll("@p", target.getName());
+        if(name != null) name = name.replaceAll("@p", target.getDisplayName().getUnformattedText());
 
         CommandCallbackSender sender = new CommandCallbackSender((EntityLivingBase) target, name);
 
