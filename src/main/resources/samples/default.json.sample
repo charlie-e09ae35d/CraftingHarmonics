@@ -1889,6 +1889,61 @@
                     weather: "storm"
                 }
             ]
+        },
+
+        {
+            name: "entityInteractions",
+            operations: [
+                {
+                    // You can also define some complex interactions (right-click events) for dealing with entities...
+                    type: "addEntityInteractionHandlers",
+                    what: ["net.minecraft.entity.passive.EntityVillager"], // You may also specify any parent class for this one
+                    defaultDeny: true, // When true, this will block interactions that reach the end of the list without having an explicit action
+                    interactions: [
+                        // Each element defines a matched interaction that should be tested, in order from top to bottom:
+                        {
+                            matchedAction: "allow", // Allow the normal right-click handler to go through.  Valid options are: allow/deny/pass
+                            unmatchedAction: "pass", // Move on to the next item in the list.
+                            // The first interaction matcher to allow or deny will run, and no further processing will occur.
+                            // Otherwise, If all interactions end up passing, it either denies (if defaultDeny: true) or
+                            // allows the interaction (if defaultDeny is false, or unspecified).
+                            // These will both default to 'pass'
+
+                            // Matchers and callbacks to run on the source (ie: the player)
+                            source: {
+                                mobHasMainhand: "minecraft:stick"
+                            },
+                            target: {
+                                // Callbacks can be defined for: onAllowed, onDenied, and onPassed, though only two of those three
+                                // will ever make sense for the given interaction (for instance, in this case, our only actions are allow and pass,
+                                // therefore, 'onDenied' will never be run for this set).
+                                onAllowed: [
+                                    {
+                                        // Whisper to all players within a 5 meter radius:
+                                        type: "runPlayerCommand",
+                                        command: "/tell @a[r=5] Oh, I see you have a stick... let me trade with you.",
+                                        name: "@p" // Use the villager's name (profession)
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            // If you need to run a callback on your default action, add it in as the last element, with no matchers,
+                            // and a matchedAction of the default action you want to apply:
+                            matchedAction: "deny",
+                            target: {
+                                onDenied: [
+                                    {
+                                        type: "runPlayerCommand",
+                                        command: "/tell @a[r=5] I'm sorry, but I cannot trade with you if you aren't wielding our sacred item.",
+                                        name: "@p"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
