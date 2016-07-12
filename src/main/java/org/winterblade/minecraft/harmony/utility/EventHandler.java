@@ -152,9 +152,11 @@ public class EventHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerInteractEvent(PlayerInteractEvent.RightClickBlock evt) {
         // Called when right clicking on a block (potentially with something...)
-        if(evt.isCanceled() || !ItemRegistry.instance.shouldCancelUse(evt)) return;
+        if(evt.isCanceled()) return;
 
-        // If we're cancelling, should set:
+        // Check if we're cancelling, or if our interaction handler says we should cancel:
+        if (!ItemRegistry.instance.shouldCancelUse(evt) && BlockRegistry.instance.handleInteraction(evt)) return;
+
         evt.setUseItem(Event.Result.DENY);
         evt.setUseBlock(Event.Result.ALLOW);
         evt.setCanceled(true);
