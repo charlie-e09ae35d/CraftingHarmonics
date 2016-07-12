@@ -187,6 +187,8 @@ public class EventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerInteract(PlayerInteractEvent.EntityInteract evt) {
+        if(evt.isCanceled()) return;
+
         // If we're cancelling on this thread...
         Boolean debounce = debounceEntityInteract.get();
         if(debounce != null && debounce) {
