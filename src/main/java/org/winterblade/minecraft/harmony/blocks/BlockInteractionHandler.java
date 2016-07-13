@@ -3,6 +3,7 @@ package org.winterblade.minecraft.harmony.blocks;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.api.scripting.ScriptUtils;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import org.winterblade.minecraft.harmony.api.BaseMatchResult;
@@ -60,8 +61,11 @@ public class BlockInteractionHandler {
             matcherCallback.run();
         }
 
-        // Run our callbacks, if we're on the server:
-        MobTickRegistry.addCallbackSet(evt.getEntity(), callbacks, new BaseEntityMatcherData(evt.getEntity()));
+        // Run our callbacks, only for the main hand:
+        // TODO: Consider moving this to the event handler to prevent going through everything else...
+        if(evt.getHand() == EnumHand.MAIN_HAND) {
+            MobTickRegistry.addCallbackSet(evt.getEntity(), callbacks, new BaseEntityMatcherData(evt.getEntity()));
+        }
 
         return !cancelAfterMatch;
     }
