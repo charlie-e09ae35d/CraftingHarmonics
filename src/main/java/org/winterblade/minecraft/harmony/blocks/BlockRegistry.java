@@ -77,4 +77,23 @@ public class BlockRegistry {
         return true;
     }
 
+    /**
+     * Add all the handlers given
+     * @param state       The state to add handlers to
+     * @param handlers    The handlers to add
+     */
+    public void addInteractionHandler(IBlockState state, BlockInteractionHandler... handlers) {
+        interactionHandlers.putAll(state, Arrays.asList(handlers));
+    }
+
+    /**
+     * Removes all the given interaction handlers
+     * @param state       The state to remove them from
+     * @param handlers    The handlers to remove
+     */
+    public void removeInteractionHandlers(IBlockState state, BlockInteractionHandler... handlers) {
+        for (BlockInteractionHandler handler : handlers) {
+            interactionHandlers.remove(state, handler);
+        }
+    }
 }
