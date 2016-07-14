@@ -1944,6 +1944,35 @@
                     ]
                 }
             ]
+        },
+
+        {
+            name: "blockInteractions",
+            operations: [
+                {
+                    // Blocks can also have interaction handlers....
+                    type: "addBlockInteraction",
+                    what: ["minecraft:chest"], // These can be simple blocks or full block matchers with states.
+                    interactions: [
+                        {
+                            // They accept any block drop matcher:
+                            maxLightLevel: 6,
+                            onUsed: [
+                                // Any entity callback may be run here, and will fire when matched:
+                                {
+                                    type: "runPlayerCommand",
+                                    command: "/tell @p You cannot see well enough to open this right now.",
+                                    name: "The chest"
+                                }
+                            ],
+                            // Set this true if you want to stop processing afterwards; much like
+                            // entity interactions, interactions are processed top to bottom, and
+                            // this will stop processing after the first event that cancels.
+                            cancelAfterMatch: true
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }
