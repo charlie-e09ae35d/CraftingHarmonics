@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Created by Matt on 7/9/2016.
  */
-@Operation(name = "addEntityInteractionHandlers")
+@Operation(name = "addEntityInteraction")
 public class AddEntityInteractionHandlerOperation extends BasicOperation {
     /*
      * Serialized properties
@@ -34,7 +34,7 @@ public class AddEntityInteractionHandlerOperation extends BasicOperation {
      */
     @Override
     public void init() throws OperationException {
-        if(interactions == null || interactions.length <= 0) throw new OperationException("addEntityInteractionHandlers operation must have at least one interaction defined.");
+        if(interactions == null || interactions.length <= 0) throw new OperationException("addEntityInteraction operation must have at least one interaction defined.");
         if(what == null) what = new String[0];
         ticket = EntityRegistry.addInteractionHandler(new EntityInteractionHandler(what, interactions, defaultDeny));
     }

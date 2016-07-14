@@ -1896,7 +1896,7 @@
             operations: [
                 {
                     // You can also define some complex interactions (right-click events) for dealing with entities...
-                    type: "addEntityInteractionHandlers",
+                    type: "addEntityInteraction",
                     what: ["net.minecraft.entity.passive.EntityVillager"], // You may also specify any parent class for this one
                     defaultDeny: true, // When true, this will block interactions that reach the end of the list without having an explicit action
                     interactions: [
