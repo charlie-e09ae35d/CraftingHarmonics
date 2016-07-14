@@ -3,7 +3,9 @@ package org.winterblade.minecraft.harmony.mobs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EntitySelectors;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.winterblade.minecraft.harmony.BaseEventMatch;
 import org.winterblade.minecraft.harmony.CraftingHarmonicsMod;
 import org.winterblade.minecraft.harmony.api.entities.IEntityCallback;
@@ -83,7 +85,8 @@ public class MobTickRegistry {
      * @param metadata      The metadata to apply.
      */
     public static void addCallbackSet(Entity target, IEntityCallback[] callbacks, CallbackMetadata metadata) {
-        if(target == null || callbacks == null || callbacks.length <= 0) return;
+        if(target == null || callbacks == null || callbacks.length <= 0
+                || FMLCommonHandler.instance().getEffectiveSide() != Side.SERVER) return;
         entityCallbackQueue.add(new EntityCallbackData(target, callbacks, metadata));
     }
 

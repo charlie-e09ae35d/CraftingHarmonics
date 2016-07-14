@@ -461,6 +461,14 @@ public class ItemUtility {
         }
     }
 
+    /**
+     * Gets a dummy item stack to use
+     * @return  The item stack
+     */
+    public static ItemStack getDummyItemStack() {
+        return new ItemStack(Item.REGISTRY.getObjectById(1));
+    }
+
     private enum ItemType {
         Regular, ExactNbt, FuzzyNbt
     }
