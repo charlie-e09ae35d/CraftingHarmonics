@@ -1,4 +1,4 @@
-package com.winterblade.minecraft.harmony.integration.betterquesting.quests;
+package org.winterblade.minecraft.harmony.integration.betterquesting.quests;
 
 import betterquesting.lives.LifeManager;
 import betterquesting.party.PartyInstance;
