@@ -105,6 +105,17 @@ public class RecipeInput {
         this.facsimileItem = oreDictName;
     }
 
+    /**
+     * Outputs an input to character map of the given width/height
+     * @param width     The recipe width
+     * @param height    The recipe height
+     * @return          The character map
+     */
+    public static String[] toCharMap(int width, int height) {
+        // TODO: Implement me.
+        return new String[]{"abc", "def", "ghi"};
+    }
+
     private class RecipeInputMatcherData implements Comparable<RecipeInputMatcherData> {
         private final IRecipeInputMatcher matcher;
         private final Priority priority;
