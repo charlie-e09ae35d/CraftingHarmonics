@@ -17,7 +17,7 @@ public abstract class BaseForestryRecipeAdder <T extends IForestryRecipe> extend
     private final ICraftingProvider<T> provider;
     private final String target;
 
-    protected BaseForestryRecipeAdder(ICraftingProvider<T> provider, String target) {
+    public BaseForestryRecipeAdder(ICraftingProvider<T> provider, String target) {
         this.provider = provider;
         this.target = target;
     }

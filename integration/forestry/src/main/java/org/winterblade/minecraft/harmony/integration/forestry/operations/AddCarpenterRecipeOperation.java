@@ -25,7 +25,7 @@ public class AddCarpenterRecipeOperation extends BaseForestryRecipeAdder<ICarpen
     private ItemStack output;
     private RecipeInput[] input;
 
-    protected AddCarpenterRecipeOperation() {
+    public AddCarpenterRecipeOperation() {
         super(RecipeManagers.carpenterManager, "Carpenter");
     }
 
