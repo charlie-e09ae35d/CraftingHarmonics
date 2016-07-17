@@ -52,7 +52,6 @@ public class AddCarpenterRecipeOperation extends BaseForestryRecipeAdder<ICarpen
         return new CarpenterRecipe(packagingTime, liquid, box,
                 new ShapedRecipeCustom(
                         output,
-                        RecipeInput.toCharMap(3, 3, input),
-                        RecipeInput.getFacsimileItems(input)));
+                        RecipeInput.toInputMap(3, 3, input).toArgs()));
     }
 }

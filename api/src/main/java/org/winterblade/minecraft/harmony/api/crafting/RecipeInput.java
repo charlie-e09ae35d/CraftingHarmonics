@@ -108,12 +108,12 @@ public class RecipeInput {
      * Outputs an input to character map of the given width/height
      * @param width     The recipe width
      * @param height    The recipe height
-     * @param input
+     * @param input     The recipe inputs to use
      * @return          The character map
      */
-    public static String[] toCharMap(int width, int height, RecipeInput[] input) {
-        // TODO: Implement me.
+    public static RecipeInputMap toInputMap(int width, int height, RecipeInput[] input) {
         String[] lines = new String[height];
+        Map<Character, Object> charmap = new HashMap<>();
 
         /**
          * Build out the recipe's pattern
@@ -122,19 +122,20 @@ public class RecipeInput {
         for(int y = 0; y < height; y++) {
             lines[y] = "";
             for(int x = 0; x < width; x++) {
-                if(input[offset] == null) {
+                if(input.length <= offset || input[offset] == null || input[offset].getFacsimileItem() == null) {
                     lines[y] += " ";
                 } else {
                     // This will produce increasing values of A, B, C, etc
                     char id = (char)(CHAR_A +offset);
                     lines[y] += id;
+                    charmap.put(id, input[offset].getFacsimileItem());
                 }
 
                 offset++;
             }
         }
 
-        return lines;
+        return new RecipeInputMap(lines, charmap);
     }
 
     private class RecipeInputMatcherData implements Comparable<RecipeInputMatcherData> {
@@ -170,5 +171,32 @@ public class RecipeInput {
                 ", transformerList=" + transformerList +
                 ", facsimileItem=" + facsimileItem +
                 '}';
+    }
+
+    /**
+     * An input map
+     */
+    public static class RecipeInputMap {
+        private final String[] lines;
+        private final Map<Character, Object> data;
+        private final Object[] args;
+
+        public RecipeInputMap(String[] lines, Map<Character, Object> data) {
+            this.lines = lines;
+            this.data = data;
+
+            List<Object> args = new ArrayList<>();
+            args.add(false); // This will turn off mirroring.
+            Collections.addAll(args, lines);
+            for(Map.Entry<Character, Object> kv : data.entrySet()) {
+                args.add(kv.getKey());
+                args.add(kv.getValue());
+            }
+            this.args = args.toArray();
+        }
+
+        public Object[] toArgs() {
+            return args;
+        }
     }
 }
