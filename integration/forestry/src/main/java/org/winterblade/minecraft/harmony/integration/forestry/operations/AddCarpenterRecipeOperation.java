@@ -1,13 +1,11 @@
 package org.winterblade.minecraft.harmony.integration.forestry.operations;
 
 import forestry.api.recipes.ICarpenterRecipe;
-import forestry.api.recipes.ICraftingProvider;
 import forestry.api.recipes.RecipeManagers;
 import forestry.core.recipes.ShapedRecipeCustom;
 import forestry.factory.recipes.CarpenterRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.crafting.RecipeInput;
@@ -26,8 +24,6 @@ public class AddCarpenterRecipeOperation extends BaseForestryRecipeAdder<ICarpen
     private ItemStack box;
     private ItemStack output;
     private RecipeInput[] input;
-    private int width;
-    private int height;
 
     protected AddCarpenterRecipeOperation() {
         super(RecipeManagers.carpenterManager, "Carpenter");
@@ -56,7 +52,7 @@ public class AddCarpenterRecipeOperation extends BaseForestryRecipeAdder<ICarpen
         return new CarpenterRecipe(packagingTime, liquid, box,
                 new ShapedRecipeCustom(
                         output,
-                        RecipeInput.toCharMap(width, height),
+                        RecipeInput.toCharMap(3, 3, input),
                         RecipeInput.getFacsimileItems(input)));
     }
 }

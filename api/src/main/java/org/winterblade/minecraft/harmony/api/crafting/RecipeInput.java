@@ -7,14 +7,13 @@ import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
 import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
 import org.winterblade.minecraft.harmony.api.Priority;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Created by Matt on 4/9/2016.
  */
 public class RecipeInput {
+    private static final int CHAR_A = 65;
     private final PriorityQueue<RecipeInputMatcherData> matchers = new PriorityQueue<>();
     private final List<IItemStackTransformer> transformerList = new ArrayList<>();
     private Object facsimileItem;
@@ -109,11 +108,33 @@ public class RecipeInput {
      * Outputs an input to character map of the given width/height
      * @param width     The recipe width
      * @param height    The recipe height
+     * @param input
      * @return          The character map
      */
-    public static String[] toCharMap(int width, int height) {
+    public static String[] toCharMap(int width, int height, RecipeInput[] input) {
         // TODO: Implement me.
-        return new String[]{"abc", "def", "ghi"};
+        String[] lines = new String[height];
+
+        /**
+         * Build out the recipe's pattern
+         */
+        int offset = 0;
+        for(int y = 0; y < height; y++) {
+            lines[y] = "";
+            for(int x = 0; x < width; x++) {
+                if(input[offset] == null) {
+                    lines[y] += " ";
+                } else {
+                    // This will produce increasing values of A, B, C, etc
+                    char id = (char)(CHAR_A +offset);
+                    lines[y] += id;
+                }
+
+                offset++;
+            }
+        }
+
+        return lines;
     }
 
     private class RecipeInputMatcherData implements Comparable<RecipeInputMatcherData> {
