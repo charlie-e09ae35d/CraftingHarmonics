@@ -14,7 +14,7 @@ import org.winterblade.minecraft.harmony.common.ItemUtility;
 /**
  * Created by Matt on 7/15/2016.
  */
-@Operation(name = "addCarpenterRecipe", dependsOn = "forestry")
+@Operation(name = "Forestry.addCarpenterRecipe", dependsOn = "forestry")
 public class AddCarpenterRecipeOperation extends BaseForestryRecipeAdder<ICarpenterRecipe> {
     /*
      * Serialized properties
