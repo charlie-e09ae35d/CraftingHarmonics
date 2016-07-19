@@ -20,7 +20,7 @@ public class AddCentrifugeRecipeOperation extends BaseForestryRecipeAdder<ICentr
     /*
      * Serialized properties
      */
-    private int processingTime;
+    private int time;
     private ItemStack input;
     private CentrifugeOutput[] output;
 
@@ -51,7 +51,7 @@ public class AddCentrifugeRecipeOperation extends BaseForestryRecipeAdder<ICentr
         if(output == null || output.length <= 0) throw new OperationException("addCentrifugeRecipe must have at least one valid 'output'.");
         if(input == null) throw new OperationException("addCentrifugeRecipe must have a valid 'input'.");
 
-        return new CentrifugeRecipe(processingTime, input,
+        return new CentrifugeRecipe(time, input,
                 Arrays.stream(output).collect(Collectors.toMap(i -> i.what, i -> i.chance)));
     }
 

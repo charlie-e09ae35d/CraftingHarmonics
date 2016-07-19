@@ -19,7 +19,7 @@ public class AddCarpenterRecipeOperation extends BaseForestryRecipeAdder<ICarpen
     /*
      * Serialized properties
      */
-    private int packagingTime;
+    private int time;
     private FluidStack fluid;
     private ItemStack box;
     private ItemStack output;
@@ -49,7 +49,7 @@ public class AddCarpenterRecipeOperation extends BaseForestryRecipeAdder<ICarpen
         if(output == null) throw new OperationException("addCarpenterRecipe must have valid 'output'.");
         if(input == null || input.length <= 0) throw new OperationException("addCarpenterRecipe must have valid 'input' items.");
 
-        return new CarpenterRecipe(packagingTime, fluid, box,
+        return new CarpenterRecipe(time, fluid, box,
                 new ShapedRecipeCustom(
                         output,
                         RecipeInput.toInputMap(3, 3, input).toArgs()));
