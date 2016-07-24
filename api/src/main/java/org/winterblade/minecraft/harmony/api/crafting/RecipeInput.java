@@ -7,14 +7,13 @@ import org.winterblade.minecraft.harmony.api.IItemStackTransformer;
 import org.winterblade.minecraft.harmony.api.IRecipeInputMatcher;
 import org.winterblade.minecraft.harmony.api.Priority;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Created by Matt on 4/9/2016.
  */
 public class RecipeInput {
+    private static final int CHAR_A = 65;
     private final PriorityQueue<RecipeInputMatcherData> matchers = new PriorityQueue<>();
     private final List<IItemStackTransformer> transformerList = new ArrayList<>();
     private Object facsimileItem;
@@ -105,6 +104,40 @@ public class RecipeInput {
         this.facsimileItem = oreDictName;
     }
 
+    /**
+     * Outputs an input to character map of the given width/height
+     * @param width     The recipe width
+     * @param height    The recipe height
+     * @param input     The recipe inputs to use
+     * @return          The character map
+     */
+    public static RecipeInputMap toInputMap(int width, int height, RecipeInput[] input) {
+        String[] lines = new String[height];
+        Map<Character, Object> charmap = new HashMap<>();
+
+        /**
+         * Build out the recipe's pattern
+         */
+        int offset = 0;
+        for(int y = 0; y < height; y++) {
+            lines[y] = "";
+            for(int x = 0; x < width; x++) {
+                if(input.length <= offset || input[offset] == null || input[offset].getFacsimileItem() == null) {
+                    lines[y] += " ";
+                } else {
+                    // This will produce increasing values of A, B, C, etc
+                    char id = (char)(CHAR_A +offset);
+                    lines[y] += id;
+                    charmap.put(id, input[offset].getFacsimileItem());
+                }
+
+                offset++;
+            }
+        }
+
+        return new RecipeInputMap(lines, charmap);
+    }
+
     private class RecipeInputMatcherData implements Comparable<RecipeInputMatcherData> {
         private final IRecipeInputMatcher matcher;
         private final Priority priority;
@@ -138,5 +171,32 @@ public class RecipeInput {
                 ", transformerList=" + transformerList +
                 ", facsimileItem=" + facsimileItem +
                 '}';
+    }
+
+    /**
+     * An input map
+     */
+    public static class RecipeInputMap {
+        private final String[] lines;
+        private final Map<Character, Object> data;
+        private final Object[] args;
+
+        public RecipeInputMap(String[] lines, Map<Character, Object> data) {
+            this.lines = lines;
+            this.data = data;
+
+            List<Object> args = new ArrayList<>();
+            args.add(false); // This will turn off mirroring.
+            Collections.addAll(args, lines);
+            for(Map.Entry<Character, Object> kv : data.entrySet()) {
+                args.add(kv.getKey());
+                args.add(kv.getValue());
+            }
+            this.args = args.toArray();
+        }
+
+        public Object[] toArgs() {
+            return args;
+        }
     }
 }
