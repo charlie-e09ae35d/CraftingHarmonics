@@ -1,4 +1,43 @@
 <div>
+    <h2>Version 1.5.5</h2>
+    <h4>Features</h4>
+    <ul>
+        <li>
+            Added @p replacement for runPlayerCommand callback's name parameter, and allowing it to be used for
+            any living entity, not just players.
+        </li>
+        <li>
+            Added the new 'addEntityInteraction', which allows for custom interactions with command callbacks
+            when dealing with entities.
+        </li>
+        <li>
+            Added the new 'addBlockInteraction' operation, which allows for custom interactions with command callbacks
+            when the player right-clicks on a block, including preventing default handling when matched.
+        </li>
+        <li>
+            Adding the ability to add recipes to Forestry machines with the following operations:
+            <ul>
+                <li>Forestry.addCarpenterRecipe</li>
+                <li>Forestry.addCentrifugeRecipe</li>
+                <li>Forestry.addFabricatorRecipe</li>
+                <li>Forestry.addFermenterRecipe</li>
+                <li>Forestry.addMoistenerRecipe</li>
+                <li>Forestry.addSqueezerRecipe</li>
+                <li>Forestry.addStillRecipe</li>
+            </ul>
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/145">issue #145</a> where
+            the 'create' parameter was ignored if the scoreboard objective didn't exist at all.
+        </li>
+        <li>
+            Fixing <a href="https://github.com/legendblade/CraftingHarmonics/issues/149">issue #149</a> where
+            looting and fortune multipliers had to be specified as doubles and would fail if they were integers.
+        </li>
+    </ul>
+</div>
+<hr />
+<div>
     <h2>Version 1.5.4</h2>
     <h4>Features</h4>
     <ul>

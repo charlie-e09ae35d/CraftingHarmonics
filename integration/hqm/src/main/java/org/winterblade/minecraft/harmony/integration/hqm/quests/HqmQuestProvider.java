@@ -1,4 +1,4 @@
-package com.winterblade.minecraft.harmony.integration.hqm.quests;
+package org.winterblade.minecraft.harmony.integration.hqm.quests;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;

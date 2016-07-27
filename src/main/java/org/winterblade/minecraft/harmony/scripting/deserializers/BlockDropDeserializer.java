@@ -21,7 +21,7 @@ public class BlockDropDeserializer extends BaseDropDeserializer<BlockEvent.Harve
     @Override
     protected void updateExtraProps(ScriptObjectMirror mirror, BlockDrop drop) {
         if(mirror.containsKey("fortuneMultiplier")) {
-            drop.setFortuneMultiplier((Double) mirror.get("fortuneMultiplier"));
+            drop.setFortuneMultiplier(Double.parseDouble(mirror.get("fortuneMultiplier").toString()));
         }
     }
 }
