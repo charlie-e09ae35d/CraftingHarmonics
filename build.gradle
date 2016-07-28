@@ -57,7 +57,8 @@ def integrations = [
         'hqm',
         'botania',
         'calendar-api',
-        'forestry'
+        'forestry',
+        'roots'
 ]
 
 subprojects.each { subproject -> evaluationDependsOn( subproject.path ) }
