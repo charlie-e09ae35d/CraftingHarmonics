@@ -7,7 +7,9 @@ import net.minecraft.item.ItemStack;
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
+import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.ColorHelper;
+import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.integration.roots.RootsRegistry;
 
 import java.awt.*;
@@ -77,6 +79,7 @@ public class AddRitualOperation extends BasicOperation {
      */
     @Override
     public void apply() {
+        LogHelper.info("Adding Roots ritual for '{}'.", ItemUtility.outputItemName(output));
         RootsRegistry.addRitual(ritual);
     }
 

@@ -33,4 +33,13 @@ public class RootsRegistry {
                 return RegistryManager.standingStoneT2;
         }
     }
+
+    /**
+     * Get ritual by name
+     * @param name  The ritual name
+     * @return      The ritual to get
+     */
+    public static RitualBase getRitual(String name) {
+        return RitualManager.getRitualFromName(name);
+    }
 }
