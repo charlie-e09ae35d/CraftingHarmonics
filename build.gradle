@@ -216,6 +216,7 @@ curseforge {
             optionalLibrary 'just-enough-items-jei'
             optionalLibrary 'techreborn'
             optionalLibrary 'tinkers-construct'
+            optionalLibrary 'roots'
         }
     }
 }
