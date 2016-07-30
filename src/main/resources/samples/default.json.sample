@@ -1287,10 +1287,22 @@
                             duration: 40,
 
                             // Inventory matchers work similarly to the other versions, though each application of the effect only counts for 1 item.
-                            playerHasInventory: "minecraft:soul_sand",
-                            consumeInventory: true,
-                            minMobHealth: 3, // Only if they're at a level of HP that won't kill them.
-                            chance: 0.01 // 1% chance
+                            or: [
+                                {
+                                    playerHasInventory: "minecraft:soul_sand",
+                                    consumeInventory: true,
+                                    minMobHealth: 3, // Only if they're at a level of HP that won't kill them.
+                                    chance: 0.01 // 1% chance
+                                },
+                                {
+                                    // If Blood Magic is installed, you can also check to see if there's
+                                    // a particular quantity of demon will in the chunk:
+                                    // Types: default, corrosive, destructive, vengeful, steadfast
+                                    // Valid common values are 0 - 100
+                                    bloodMagicHasDemonWill: { type: "default", min: 10, max: 100 }
+                                    chance: 0.1 // 10% chance
+                                }
+                            ]
                         },
                         {
                             // Makes players move slowly in near pitch darkness
