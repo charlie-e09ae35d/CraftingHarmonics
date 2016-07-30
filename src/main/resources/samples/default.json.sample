@@ -1299,7 +1299,7 @@
                                     // a particular quantity of demon will in the chunk:
                                     // Types: default, corrosive, destructive, vengeful, steadfast
                                     // Valid common values are 0 - 100
-                                    bloodMagicHasDemonWill: { type: "default", min: 10, max: 100 }
+                                    bloodMagicHasDemonWill: { type: "default", min: 10, max: 100 },
                                     chance: 0.1 // 10% chance
                                 }
                             ]
