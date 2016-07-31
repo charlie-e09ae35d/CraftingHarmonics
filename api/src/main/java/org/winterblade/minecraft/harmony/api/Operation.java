@@ -20,4 +20,6 @@ public @interface Operation {
     String name();
 
     String dependsOn() default "";
+
+    String[] aliases() default {};
 }
