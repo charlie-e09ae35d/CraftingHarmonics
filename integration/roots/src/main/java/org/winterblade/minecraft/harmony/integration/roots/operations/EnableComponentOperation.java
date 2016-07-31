@@ -8,10 +8,10 @@ import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 
 /**
- * Created by Matt on 7/30/2016.
+ * Created by Matt on 7/31/2016.
  */
-@Operation(name = "Roots.removeDust", aliases = {"Roots.disableDust"}, dependsOn = "roots")
-public class RemoveComponentOperation extends BasicOperation {
+@Operation(name = "Roots.enableDust", dependsOn = "roots")
+public class EnableComponentOperation extends BasicOperation {
     /*
      * Serialized properties
      */
@@ -21,6 +21,7 @@ public class RemoveComponentOperation extends BasicOperation {
      * Computed properties
      */
     private transient ComponentRecipe component;
+    private transient boolean isDisabled = false;
 
     /**
      * Called to initialize the set
@@ -30,7 +31,7 @@ public class RemoveComponentOperation extends BasicOperation {
     @Override
     public void init() throws OperationException {
         component = ComponentManager.getRecipe(what);
-        if(component == null) throw new OperationException("Roots.removeDust cannot find dust matching '" + what + "'.");
+        if(component == null) throw new OperationException("Roots.enableDust cannot find dust matching '" + what + "'.");
     }
 
     /**
@@ -38,8 +39,9 @@ public class RemoveComponentOperation extends BasicOperation {
      */
     @Override
     public void apply() {
-        LogHelper.info("Disabling Roots dust '{}'.", what);
-        component.disabled = true;
+        LogHelper.info("Enabling Roots dust '{}'.", what);
+        isDisabled = component.disabled;
+        component.disabled = false;
     }
 
     /**
@@ -47,6 +49,6 @@ public class RemoveComponentOperation extends BasicOperation {
      */
     @Override
     public void undo() {
-        component.disabled = false;
+        component.disabled = isDisabled;
     }
 }
