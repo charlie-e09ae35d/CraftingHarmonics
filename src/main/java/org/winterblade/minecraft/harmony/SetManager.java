@@ -30,7 +30,7 @@ public class SetManager {
             Operation anno = deserializer.getValue().getAnnotation(Operation.class);
 
             // Check if we have the specified mod loaded:
-            if(!anno.dependsOn().equals("") && !Loader.isModLoaded(anno.dependsOn())) {
+            if (!anno.dependsOn().equals("") && !Loader.isModLoaded(anno.dependsOn())) {
                 LogHelper.warn(anno.name() + " depends on '" + anno.dependsOn() + "', which is not loaded.");
                 continue;
             } else {
@@ -38,6 +38,11 @@ public class SetManager {
             }
 
             deserializerMap.put(deserializer.getKey().toLowerCase(), deserializer.getValue());
+
+            // Also register our aliases...
+            for (String alias : anno.aliases()) {
+                deserializerMap.put(alias.toLowerCase(), deserializer.getValue());
+            }
         }
     }
 

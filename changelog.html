@@ -3,6 +3,19 @@
     <h4>Features</h4>
     <ul>
         <li>
+            Adding in the ability to change some aspects of Roots with the following operations:
+            <ul>
+                <li>Roots.addRitual: Add a crafting ritual.</li>
+                <li>Roots.removeRitual: Remove any ritual.</li>
+                <li>Roots.disableDust: Remove the ability to craft a petal dust.</li>
+                <li>Roots.enableDust: Enables the ability to craft a given petal dust after disabling it.</li>
+                <li>Roots.setReagents: Set the list of items required to craft a given petal dust.</li>
+                <li>Roots.setSpellCost: Set the mana cost for a given spell.</li>
+            </ul><br />
+            In addition, a matcher - rootsHasMana - has been added to check player mana; this is
+            available for everything but tile entity events.
+        </li>
+        <li>
             Adding in a new matcher for Blood Magic that will apply to all matcher types that checks for the demonic
             will in a given chunk.
         </li>

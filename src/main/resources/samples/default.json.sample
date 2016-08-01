@@ -1338,7 +1338,11 @@
                             // Gives varying levels of regeneration based on the light level...
                             what: "minecraft:regeneration",
                             amplifier: 2,
-                            minLightLevel: 15,
+                            or: [
+                                {minLightLevel: 15},
+                                // If you have Roots, you can check the player's mana:
+                                {rootsHasMana: {min: 38, max: 40}},
+                            ],
                             otherwise: {
                                 what: "minecraft:regeneration",
                                 amplifier: 1,
@@ -2043,6 +2047,62 @@
                     input: "water:1000",
                     output: "lava:10",
                     time: 10000
+                }
+            ]
+        },
+
+        {
+            name: "roots",
+            operations: [
+                {
+                    type: "Roots.addRitual",
+                    output: "minecraft:diamond_sword",
+                    input: [
+                        "minecraft:diamond"
+                    ],
+                    incense: [
+                        "minecraft:stick"
+                    ],
+                    // An array of standing stones to be used in the ritual:
+                    stones: [
+                        { tier: 1, x: -3, z: -3 }, // You can use y here as well.
+                        { tier: 1, x: -3, z:  3 },
+                        { tier: 1, x:  3, z: -3 },
+                        { tier: 1, x:  3, z:  3 },
+                        { tier: 1, x:  0, z: -3 },
+                        { tier: 1, x:  0, z:  3 },
+                        { tier: 1, x: -3, z:  0 },
+                        { tier: 1, x:  3, z:  0 }
+                    ],
+                    name: "swordyCraftingRitual", // The name of the ritual
+                    color: "#FF5555", // The primary color
+                    color2: "#99FF55" // The secondary color
+                },
+                {
+                    // A list of rituals/names can be found at:
+                    // https://github.com/RootsTeam/Roots/blob/master/src/main/java/elucent/roots/ritual/RitualManager.java
+                    type: "Roots.removeRitual",
+                    name: "banishrain"
+                },
+                {
+                    // A list of components can be found at:
+                    // https://github.com/RootsTeam/Roots/blob/master/src/main/java/elucent/roots/component/ComponentManager.java#L52-L166
+                    type: "Roots.disableDust",
+                    what: "dandelion"
+                    // There is also a "Roots.enableDust" operation to reverse this; though you can also just remove the
+                    // set the operation is a part of to enable the dust again.
+                },
+                {
+                    // Make Rose's Thorns cost quite a bit more:
+                    type: "Roots.setSpellCost",
+                    what: "rosebush",
+                    cost: 20 // About half a mana bar
+                },
+                {
+                    // You can also change the reagents used in a dust; there must be at least 3 reagents used:
+                    type: "Roots.setReagents",
+                    what: "rosebush",
+                    reagents: ["minecraft:diamond","minecraft:string","minecraft:diamond_sword"]
                 }
             ]
         }
