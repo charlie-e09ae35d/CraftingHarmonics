@@ -10,7 +10,7 @@ import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.materials.IMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
 import slimeknights.tconstruct.library.smeltery.AlloyRecipe;
-import slimeknights.tconstruct.library.smeltery.CastingRecipe;
+import slimeknights.tconstruct.library.smeltery.ICastingRecipe;
 import slimeknights.tconstruct.library.traits.ITrait;
 import slimeknights.tconstruct.library.utils.HarvestLevels;
 
@@ -89,7 +89,7 @@ public class ReflectedTinkerRegistry {
      * Add a recipe to the casting table
      * @param recipe    The recipe to add
      */
-    public static void addTableCast(CastingRecipe recipe) {
+    public static void addTableCast(ICastingRecipe recipe) {
         TinkerRegistry.registerTableCasting(recipe);
     }
 
@@ -97,7 +97,7 @@ public class ReflectedTinkerRegistry {
      * Remove a recipe from the casting table
      * @param recipe    The recipe to remove
      */
-    public static void removeTableCast(CastingRecipe recipe) {
+    public static void removeTableCast(ICastingRecipe recipe) {
         TinkerRegistry.getAllTableCastingRecipes().remove(recipe);
     }
 
@@ -105,7 +105,7 @@ public class ReflectedTinkerRegistry {
      * Add a recipe to the casting basin
      * @param recipe    The recipe to add
      */
-    public static void addBasinCast(CastingRecipe recipe) {
+    public static void addBasinCast(ICastingRecipe recipe) {
         TinkerRegistry.registerBasinCasting(recipe);
     }
 
@@ -113,7 +113,7 @@ public class ReflectedTinkerRegistry {
      * Remove a recipe from the casting basin
      * @param recipe    The recipe to remove
      */
-    public static void removeBasinCast(CastingRecipe recipe) {
+    public static void removeBasinCast(ICastingRecipe recipe) {
         TinkerRegistry.getAllBasinCastingRecipes().remove(recipe);
     }
 
