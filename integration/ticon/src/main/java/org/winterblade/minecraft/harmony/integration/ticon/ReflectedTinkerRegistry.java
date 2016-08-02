@@ -28,6 +28,8 @@ public class ReflectedTinkerRegistry {
     private static Map<FluidStack, Integer> smelteryFuels;
     private static Map<String, Material> materials;
     private static List<DryingRecipe> dryingRegistry;
+    private static List<ICastingRecipe> tableCastRegistry;
+    private static List<ICastingRecipe> basinCastRegistry;
 
     // Harvest levels:
     public static Map<Integer, String> harvestLevelNames;
@@ -40,6 +42,8 @@ public class ReflectedTinkerRegistry {
         alloyRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "alloyRegistry");
         smelteryFuels = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "smelteryFuels");
         materials = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "materials");
+        tableCastRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "tableCastRegistry");
+        basinCastRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "basinCastRegistry");
 
         // Harvest levels:
         harvestLevelNames = ObfuscationReflectionHelper.getPrivateValue(HarvestLevels.class, null, "harvestLevelNames");
@@ -98,7 +102,7 @@ public class ReflectedTinkerRegistry {
      * @param recipe    The recipe to remove
      */
     public static void removeTableCast(ICastingRecipe recipe) {
-        TinkerRegistry.getAllTableCastingRecipes().remove(recipe);
+        tableCastRegistry.remove(recipe);
     }
 
     /**
@@ -114,7 +118,7 @@ public class ReflectedTinkerRegistry {
      * @param recipe    The recipe to remove
      */
     public static void removeBasinCast(ICastingRecipe recipe) {
-        TinkerRegistry.getAllBasinCastingRecipes().remove(recipe);
+        basinCastRegistry.remove(recipe);
     }
 
     /**
