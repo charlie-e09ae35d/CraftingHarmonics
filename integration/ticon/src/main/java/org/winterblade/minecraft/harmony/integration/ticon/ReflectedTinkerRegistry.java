@@ -11,6 +11,7 @@ import slimeknights.tconstruct.library.materials.IMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
 import slimeknights.tconstruct.library.smeltery.AlloyRecipe;
 import slimeknights.tconstruct.library.smeltery.ICastingRecipe;
+import slimeknights.tconstruct.library.smeltery.MeltingRecipe;
 import slimeknights.tconstruct.library.traits.ITrait;
 import slimeknights.tconstruct.library.utils.HarvestLevels;
 
@@ -30,6 +31,7 @@ public class ReflectedTinkerRegistry {
     private static List<DryingRecipe> dryingRegistry;
     private static List<ICastingRecipe> tableCastRegistry;
     private static List<ICastingRecipe> basinCastRegistry;
+    private static List<MeltingRecipe> meltingRegistry;
 
     // Harvest levels:
     public static Map<Integer, String> harvestLevelNames;
@@ -44,6 +46,7 @@ public class ReflectedTinkerRegistry {
         materials = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "materials");
         tableCastRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "tableCastRegistry");
         basinCastRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "basinCastRegistry");
+        meltingRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "meltingRegistry");
 
         // Harvest levels:
         harvestLevelNames = ObfuscationReflectionHelper.getPrivateValue(HarvestLevels.class, null, "harvestLevelNames");
@@ -254,6 +257,10 @@ public class ReflectedTinkerRegistry {
                 ((char)(MARKER + (r&0xFF))),
                 ((char)(MARKER + (g&0xFF))),
                 ((char)(MARKER + (b&0xFF))));
+    }
+
+    public static List<MeltingRecipe> getAllMeltingRecipes() {
+        return meltingRegistry;
     }
 }
 
