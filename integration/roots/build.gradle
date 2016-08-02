@@ -1,0 +1,64 @@
+
+// For those who want the bleeding edge
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+    }
+}
+
+repositories {
+    maven { url "http://maven.winterblade.org/content/repositories/minecraft/" }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+archivesBaseName = "craftingharmonics-integration-" + project.projectDir.name
+
+// Java Version
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+minecraft {
+    version = project.forgeVersion
+    runDir = "run"
+    mappings = project.mappings
+    replace '@VERSION@', project.version
+}
+
+dependencies {
+    compile project(":api")
+
+    // BQ dependency, done the same way the mod author does it.
+    compile files("libs/roots-1.10.2-0.108.0.jar")
+}
+
+//Add dependencies to the JAR
+jar {
+    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+processResources
+{
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
