@@ -47,6 +47,7 @@ public class ReflectedTinkerRegistry {
         tableCastRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "tableCastRegistry");
         basinCastRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "basinCastRegistry");
         meltingRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "meltingRegistry");
+        dryingRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "dryingRegistry");
 
         // Harvest levels:
         harvestLevelNames = ObfuscationReflectionHelper.getPrivateValue(HarvestLevels.class, null, "harvestLevelNames");
@@ -56,8 +57,6 @@ public class ReflectedTinkerRegistry {
         } catch (NoSuchFieldException e) {
             LogHelper.warn("Unable to access some of TiCon's Material fields");
         }
-
-        dryingRegistry = TinkerRegistry.getAllDryingRecipes();
     }
 
     private ReflectedTinkerRegistry() {}
