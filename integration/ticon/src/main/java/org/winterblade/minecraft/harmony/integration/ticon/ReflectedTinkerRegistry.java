@@ -267,6 +267,14 @@ public class ReflectedTinkerRegistry {
     }
 
     /**
+     * Removes the given melting recipe
+     * @param recipe    The melting recipe
+     */
+    public static void removeMeltingRegistry(MeltingRecipe recipe) {
+        meltingRegistry.remove(recipe);
+    }
+
+    /**
      * Gets all the aliases for the given modifier
      * @param modifier    The modifier
      * @return            The aliases

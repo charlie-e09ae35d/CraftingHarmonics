@@ -7,6 +7,7 @@ import org.winterblade.minecraft.harmony.api.OperationException;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.common.ItemUtility;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
+import org.winterblade.minecraft.harmony.integration.ticon.ReflectedTinkerRegistry;
 import slimeknights.mantle.util.RecipeMatch;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.smeltery.MeltingRecipe;
@@ -48,6 +49,6 @@ public class AddSmelteryMaterial extends BasicOperation {
 
     @Override
     public void undo() {
-        TinkerRegistry.getAllMeltingRecipies().remove(recipe);
+        ReflectedTinkerRegistry.removeMeltingRegistry(recipe);
     }
 }
