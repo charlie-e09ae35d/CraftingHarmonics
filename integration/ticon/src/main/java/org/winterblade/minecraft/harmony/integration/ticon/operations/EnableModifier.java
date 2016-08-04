@@ -1,5 +1,9 @@
 package org.winterblade.minecraft.harmony.integration.ticon.operations;
 
+/**
+ * Created by Matt on 8/3/2016.
+ */
+
 import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.api.OperationException;
@@ -13,8 +17,8 @@ import java.util.List;
 /**
  * Created by Matt on 8/3/2016.
  */
-@Operation(name = "TConstruct.disableModifier", dependsOn = "tconstruct")
-public class DisableModifier extends BasicOperation {
+@Operation(name = "TConstruct.enableModifier", dependsOn = "tconstruct")
+public class EnableModifier extends BasicOperation {
     /*
      * Serialzied properties
      */
@@ -35,7 +39,7 @@ public class DisableModifier extends BasicOperation {
     public void init() throws OperationException {
         modifier = TinkerRegistry.getModifier(what);
 
-        if(modifier == null) throw new OperationException("TConstruct.disableModifier cannot find modifier with ID '" + what + "'.");
+        if(modifier == null) throw new OperationException("TConstruct.enableModifier cannot find modifier with ID '" + what + "'.");
 
         aliases = ReflectedTinkerRegistry.getModifierAliasesFor(modifier);
     }
@@ -45,8 +49,8 @@ public class DisableModifier extends BasicOperation {
      */
     @Override
     public void apply() {
-        LogHelper.info("Disabling Tinker's Construct modifier '" + what + "'.");
-        ReflectedTinkerRegistry.removeModifier(aliases);
+        LogHelper.info("Enabling Tinker's Construct modifier '" + what + "'.");
+        ReflectedTinkerRegistry.addModifier(modifier, aliases);
     }
 
     /**
@@ -54,6 +58,6 @@ public class DisableModifier extends BasicOperation {
      */
     @Override
     public void undo() {
-        ReflectedTinkerRegistry.addModifier(modifier, aliases);
+        ReflectedTinkerRegistry.removeModifier(aliases);
     }
 }
