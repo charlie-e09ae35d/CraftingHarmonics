@@ -1810,6 +1810,32 @@
                     __comment: "And remove them",
                     type: "TConstruct.removeDryingRecipe",
                     // 'what' and 'with' are both optional.
+                },
+                {
+                    // You can disable/enable modifiers
+                    // Currently, modifiers include...
+                    // luck, fortifyendstone, infitool, harvestheight, fortifybone,
+                    // fortifyobsidian, fortifyknightslime, fiery, stiff, crude,
+                    // fortify, duritos, writable, silktouch, fortifyardite,
+                    // enderference, fortifywood, momentum, fortifymagmaslime,
+                    // prickly, diamond, unnatural, squeaky, crude1,
+                    // harvestwidth, fortifymanyullyn, tasty, fortifycobalt,
+                    // fortifycactus, fortifypaper, baconlicious, slimey_green,
+                    // ecological, knockback, lightweight, splintering, fractured,
+                    // poisonous, autosmelt, hellish, glowing, splinters, aridiculous,
+                    // coldblooded, spiky, haste, shulking, soulbound, aquadynamic,
+                    // fortifypigiron, reinforced, fortifyslime, fortifyfirewood,
+                    // writable2, writable1, alien, flammable, slimey_blue,
+                    // fortifyiron, superheat, established, shocking, beheading,
+                    // petramor, holy, fortifysponge, stonebound, depthdigger,
+                    // fortifyprismarine, beheading_cleaver, blasting, cheap, crumbling,
+                    // fortifyflint, fortifystone, bane_of_arthopods, sharp, dense, smite,
+                    // webbed, emerald, creative, crude2, insatiable, mending_moss, magnetic,
+                    // magnetic2, magnetic1, necrotic, fortifynetherrack, jagged,
+                    // fortifyblueslime, sharpness, cheapskate
+                    // ... though some should probably not be disabled, as they're linked directly to materials.
+                    type: "TConstruct.disableModifier",
+                    what: "glowing"
                 }
             ]
         },
