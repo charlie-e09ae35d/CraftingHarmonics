@@ -53,8 +53,6 @@ public class ReflectedTinkerRegistry {
         dryingRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "dryingRegistry");
         modifiers = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "modifiers");
 
-        modifiers.keySet().forEach(LogHelper::info);
-
         // Harvest levels:
         harvestLevelNames = ObfuscationReflectionHelper.getPrivateValue(HarvestLevels.class, null, "harvestLevelNames");
         try {
