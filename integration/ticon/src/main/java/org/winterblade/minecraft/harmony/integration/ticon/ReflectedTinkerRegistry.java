@@ -9,6 +9,7 @@ import slimeknights.tconstruct.library.DryingRecipe;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.materials.IMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
+import slimeknights.tconstruct.library.modifiers.IModifier;
 import slimeknights.tconstruct.library.smeltery.AlloyRecipe;
 import slimeknights.tconstruct.library.smeltery.ICastingRecipe;
 import slimeknights.tconstruct.library.smeltery.MeltingRecipe;
@@ -16,6 +17,7 @@ import slimeknights.tconstruct.library.traits.ITrait;
 import slimeknights.tconstruct.library.utils.HarvestLevels;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,7 @@ public class ReflectedTinkerRegistry {
     private static List<ICastingRecipe> tableCastRegistry;
     private static List<ICastingRecipe> basinCastRegistry;
     private static List<MeltingRecipe> meltingRegistry;
+    private static Map<String, IModifier> modifiers;
 
     // Harvest levels:
     public static Map<Integer, String> harvestLevelNames;
@@ -48,6 +51,9 @@ public class ReflectedTinkerRegistry {
         basinCastRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "basinCastRegistry");
         meltingRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "meltingRegistry");
         dryingRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "dryingRegistry");
+        modifiers = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "modifiers");
+
+        modifiers.keySet().forEach(LogHelper::info);
 
         // Harvest levels:
         harvestLevelNames = ObfuscationReflectionHelper.getPrivateValue(HarvestLevels.class, null, "harvestLevelNames");
@@ -260,6 +266,39 @@ public class ReflectedTinkerRegistry {
 
     public static List<MeltingRecipe> getAllMeltingRecipes() {
         return meltingRegistry;
+    }
+
+    /**
+     * Gets all the aliases for the given modifier
+     * @param modifier    The modifier
+     * @return            The aliases
+     */
+    public static List<String> getModifierAliasesFor(IModifier modifier) {
+        List<String> output = new ArrayList<>();
+
+        for (Map.Entry<String, IModifier> modifierPair : modifiers.entrySet()) {
+            if(modifierPair.getValue() != modifier) continue;
+
+            output.add(modifierPair.getKey());
+        }
+
+        return output;
+    }
+
+    /**
+     * Removes the given modifier from the modifier map
+     * @param aliases     The aliases to remove it from
+     */
+    public static void removeModifier(List<String> aliases) {
+        for (String alias : aliases) {
+            modifiers.remove(alias);
+        }
+    }
+
+    public static void addModifier(IModifier modifier, List<String> aliases) {
+        for (String alias : aliases) {
+            modifiers.put(alias, modifier);
+        }
     }
 }
 
