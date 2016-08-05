@@ -7,6 +7,7 @@ import org.winterblade.minecraft.harmony.integration.ticon.ReflectedTinkerRegist
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.smeltery.CastingRecipe;
+import slimeknights.tconstruct.library.smeltery.ICastingRecipe;
 
 import java.util.List;
 
@@ -18,9 +19,9 @@ public class RemoveSmelteryTableCast extends RemoveSmelteryCast {
 
     @Override
     public void init() throws OperationException {
-        List<CastingRecipe> recipeList = TinkerRegistry.getAllTableCastingRecipes();
+        List<ICastingRecipe> recipeList = TinkerRegistry.getAllTableCastingRecipes();
 
-        for(CastingRecipe recipe : recipeList) {
+        for(ICastingRecipe recipe : recipeList) {
             if(!matches(recipe)) continue;
             recipes.add(recipe);
         }
@@ -29,14 +30,14 @@ public class RemoveSmelteryTableCast extends RemoveSmelteryCast {
     @Override
     public void apply() {
         LogHelper.info("Removing Tinker's table cast for '" + ItemUtility.outputItemName(what) + "'.");
-        for(CastingRecipe recipe : recipes) {
+        for(ICastingRecipe recipe : recipes) {
             ReflectedTinkerRegistry.removeTableCast(recipe);
         }
     }
 
     @Override
     public void undo() {
-        for(CastingRecipe recipe : recipes) {
+        for(ICastingRecipe recipe : recipes) {
             ReflectedTinkerRegistry.addTableCast(recipe);
         }
     }

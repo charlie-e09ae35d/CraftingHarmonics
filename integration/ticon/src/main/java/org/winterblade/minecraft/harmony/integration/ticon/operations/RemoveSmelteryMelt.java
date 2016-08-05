@@ -6,6 +6,7 @@ import org.winterblade.minecraft.harmony.api.BasicOperation;
 import org.winterblade.minecraft.harmony.api.Operation;
 import org.winterblade.minecraft.harmony.common.utility.LogHelper;
 import org.winterblade.minecraft.harmony.api.OperationException;
+import org.winterblade.minecraft.harmony.integration.ticon.ReflectedTinkerRegistry;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.smeltery.MeltingRecipe;
 
@@ -39,9 +40,9 @@ public class RemoveSmelteryMelt extends BasicOperation {
         recipes.clear();
 
         LogHelper.info("Removing '" + what.getFluid().getName() + "' melts from the smeltery.");
-        List<MeltingRecipe> meltingRecipies = TinkerRegistry.getAllMeltingRecipies();
+        List<MeltingRecipe> meltingRecipes = ReflectedTinkerRegistry.getAllMeltingRecipes();
 
-        for(Iterator<MeltingRecipe> recipeIterator = meltingRecipies.iterator(); recipeIterator.hasNext(); ) {
+        for(Iterator<MeltingRecipe> recipeIterator = meltingRecipes.iterator(); recipeIterator.hasNext(); ) {
             MeltingRecipe recipe = recipeIterator.next();
 
             if(!matches(recipe)) continue;
@@ -64,11 +65,10 @@ public class RemoveSmelteryMelt extends BasicOperation {
      * @return          True if the recipe matches
      */
     private boolean matches(MeltingRecipe recipe) {
-        if(!recipe.getResult().isFluidEqual(what)) return false;
+        if (!recipe.getResult().isFluidEqual(what)) return false;
 
         // If that's all we're checking
-        if(with == null) return true;
+        return with == null || recipe.matches(with);
 
-        return recipe.matches(with);
     }
 }

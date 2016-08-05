@@ -9,12 +9,15 @@ import slimeknights.tconstruct.library.DryingRecipe;
 import slimeknights.tconstruct.library.TinkerRegistry;
 import slimeknights.tconstruct.library.materials.IMaterialStats;
 import slimeknights.tconstruct.library.materials.Material;
+import slimeknights.tconstruct.library.modifiers.IModifier;
 import slimeknights.tconstruct.library.smeltery.AlloyRecipe;
-import slimeknights.tconstruct.library.smeltery.CastingRecipe;
+import slimeknights.tconstruct.library.smeltery.ICastingRecipe;
+import slimeknights.tconstruct.library.smeltery.MeltingRecipe;
 import slimeknights.tconstruct.library.traits.ITrait;
 import slimeknights.tconstruct.library.utils.HarvestLevels;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +31,10 @@ public class ReflectedTinkerRegistry {
     private static Map<FluidStack, Integer> smelteryFuels;
     private static Map<String, Material> materials;
     private static List<DryingRecipe> dryingRegistry;
+    private static List<ICastingRecipe> tableCastRegistry;
+    private static List<ICastingRecipe> basinCastRegistry;
+    private static List<MeltingRecipe> meltingRegistry;
+    private static Map<String, IModifier> modifiers;
 
     // Harvest levels:
     public static Map<Integer, String> harvestLevelNames;
@@ -40,6 +47,11 @@ public class ReflectedTinkerRegistry {
         alloyRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "alloyRegistry");
         smelteryFuels = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "smelteryFuels");
         materials = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "materials");
+        tableCastRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "tableCastRegistry");
+        basinCastRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "basinCastRegistry");
+        meltingRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "meltingRegistry");
+        dryingRegistry = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "dryingRegistry");
+        modifiers = ObfuscationReflectionHelper.getPrivateValue(TinkerRegistry.class, null, "modifiers");
 
         // Harvest levels:
         harvestLevelNames = ObfuscationReflectionHelper.getPrivateValue(HarvestLevels.class, null, "harvestLevelNames");
@@ -49,8 +61,6 @@ public class ReflectedTinkerRegistry {
         } catch (NoSuchFieldException e) {
             LogHelper.warn("Unable to access some of TiCon's Material fields");
         }
-
-        dryingRegistry = TinkerRegistry.getAllDryingRecipes();
     }
 
     private ReflectedTinkerRegistry() {}
@@ -89,7 +99,7 @@ public class ReflectedTinkerRegistry {
      * Add a recipe to the casting table
      * @param recipe    The recipe to add
      */
-    public static void addTableCast(CastingRecipe recipe) {
+    public static void addTableCast(ICastingRecipe recipe) {
         TinkerRegistry.registerTableCasting(recipe);
     }
 
@@ -97,15 +107,15 @@ public class ReflectedTinkerRegistry {
      * Remove a recipe from the casting table
      * @param recipe    The recipe to remove
      */
-    public static void removeTableCast(CastingRecipe recipe) {
-        TinkerRegistry.getAllTableCastingRecipes().remove(recipe);
+    public static void removeTableCast(ICastingRecipe recipe) {
+        tableCastRegistry.remove(recipe);
     }
 
     /**
      * Add a recipe to the casting basin
      * @param recipe    The recipe to add
      */
-    public static void addBasinCast(CastingRecipe recipe) {
+    public static void addBasinCast(ICastingRecipe recipe) {
         TinkerRegistry.registerBasinCasting(recipe);
     }
 
@@ -113,8 +123,8 @@ public class ReflectedTinkerRegistry {
      * Remove a recipe from the casting basin
      * @param recipe    The recipe to remove
      */
-    public static void removeBasinCast(CastingRecipe recipe) {
-        TinkerRegistry.getAllBasinCastingRecipes().remove(recipe);
+    public static void removeBasinCast(ICastingRecipe recipe) {
+        basinCastRegistry.remove(recipe);
     }
 
     /**
@@ -250,6 +260,51 @@ public class ReflectedTinkerRegistry {
                 ((char)(MARKER + (r&0xFF))),
                 ((char)(MARKER + (g&0xFF))),
                 ((char)(MARKER + (b&0xFF))));
+    }
+
+    public static List<MeltingRecipe> getAllMeltingRecipes() {
+        return meltingRegistry;
+    }
+
+    /**
+     * Removes the given melting recipe
+     * @param recipe    The melting recipe
+     */
+    public static void removeMeltingRegistry(MeltingRecipe recipe) {
+        meltingRegistry.remove(recipe);
+    }
+
+    /**
+     * Gets all the aliases for the given modifier
+     * @param modifier    The modifier
+     * @return            The aliases
+     */
+    public static List<String> getModifierAliasesFor(IModifier modifier) {
+        List<String> output = new ArrayList<>();
+
+        for (Map.Entry<String, IModifier> modifierPair : modifiers.entrySet()) {
+            if(modifierPair.getValue() != modifier) continue;
+
+            output.add(modifierPair.getKey());
+        }
+
+        return output;
+    }
+
+    /**
+     * Removes the given modifier from the modifier map
+     * @param aliases     The aliases to remove it from
+     */
+    public static void removeModifier(List<String> aliases) {
+        for (String alias : aliases) {
+            modifiers.remove(alias);
+        }
+    }
+
+    public static void addModifier(IModifier modifier, List<String> aliases) {
+        for (String alias : aliases) {
+            modifiers.put(alias, modifier);
+        }
     }
 }
 
